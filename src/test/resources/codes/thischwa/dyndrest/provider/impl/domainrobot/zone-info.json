@@ -1,0 +1,90 @@
+{
+	"stid": "20210525-app3-177618",
+	"status": {
+		"code": "S0205",
+		"text": "Zonen-Informationen wurden erfolgreich ermittelt.",
+		"type": "SUCCESS"
+	},
+	"object": {
+		"type": "Zone",
+		"value": "mydomain.info"
+	},
+	"data": [
+		{
+			"created": "2021-04-15T18:18:18.000+0200",
+			"updated": "2021-05-21T13:33:54.000+0200",
+			"origin": "mydomain.info",
+			"soa": {
+				"refresh": 43200,
+				"retry": 7200,
+				"expire": 1209600,
+				"ttl": 86400,
+				"email": "me@mydomain.com"
+			},
+			"owner": {
+				"context": 4,
+				"user": "dev-autodyn"
+			},
+			"updater": {
+				"context": 4,
+				"user": "1500124"
+			},
+			"domainsafe": false,
+			"nameServers": [
+				{
+					"name": "a.ns14.net"
+				},
+				{
+					"name": "b.ns14.net"
+				},
+				{
+					"name": "c.ns14.net"
+				},
+				{
+					"name": "d.ns14.net"
+				}
+			],
+			"main": {
+				"address": "85.209.51.215",
+				"ttl": 360
+			},
+			"wwwInclude": false,
+			"virtualNameServer": "a.ns14.net",
+			"action": "COMPLETE",
+			"resourceRecords": [
+				{
+					"name": "",
+					"ttl": 360,
+					"type": "MX",
+					"value": "mail.mydomain.com.",
+					"pref": 1
+				},
+				{
+					"name": "",
+					"ttl": 360,
+					"type": "A",
+					"value": "85.209.51.215"
+				},
+				{
+					"name": "sub",
+					"ttl": 360,
+					"type": "A",
+					"value": "85.209.51.215"
+				},
+				{
+					"name": "sub",
+					"ttl": 360,
+					"type": "AAAA",
+					"value": "2a03:4000:41:32::10"
+				},
+				{
+					"name": "_dmarc",
+					"ttl": 360,
+					"type": "TXT",
+					"value": "v=DMARC1; p=quarantine; sp=quarantine"
+				}
+			],
+			"roid": 8539157
+		}
+	]
+}

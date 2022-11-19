@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.7.5</version>
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>codes.thischwa</groupId>
+	<artifactId>dyndrest</artifactId>
+	<version>0.1-SNAPSHOT</version>
+	<name>DynRest</name>
+	<description>A simple REST-service for dynamic DNS.</description>
+	<url>https://github.com/th-schwarz/DynDRest</url>
+	<inceptionYear>2022</inceptionYear>
+
+	<properties>
+		<java.version>11</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<springdoc.version>1.6.12</springdoc.version>
+        <domainrobot.version>0.2.8</domainrobot.version>
+		<sonar.organization>th-schwarz</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<sonar.coverage.exclusions>
+			src/main/java/codes/thischwa/dyndrest/Starter.java,
+			src/main/java/codes/thischwa/dyndrest/ApiController.java,
+			src/main/java/codes/thischwa/dyndrest/config/AppEventListener.java
+			src/main/java/codes/thischwa/dyndrest/config/SecurityConfig.java
+			src/main/java/codes/thischwa/dyndrest/provider/ProviderException.java,
+			src/main/java/codes/thischwa/dyndrest/provider/UpdateHookException.java,
+			src/main/java/codes/thischwa/dyndrest/provider/Provider.java
+		</sonar.coverage.exclusions>
+		<fakerepo.dir>${project.basedir}/fake-repo</fakerepo.dir>
+		<openapi.outputDir>${project.build.directory}</openapi.outputDir>
+		<openapi.outputFile.extless>openapi</openapi.outputFile.extless>
+		<openapi.outputFile>${openapi.outputFile.extless}.yaml</openapi.outputFile>
+		<fakerepo.dir>${project.basedir}/fake-repo</fakerepo.dir>
+	</properties>
+
+	<repositories>
+		<repository>
+			<!-- DO NOT set id to "local" because it is reserved by Maven -->
+			<!-- This is a fake maven repo. -->
+			<id>fake-repo</id>
+			<name>Just a fake repository.</name>
+			<url>file://${fakerepo.dir}</url>
+		</repository>
+	</repositories>
+
+	<distributionManagement>
+		<repository>
+			<id>myrepo</id>
+			<url>https://myrepo.thischwa.codes/repository/dyndrest/</url>
+		</repository>
+		<snapshotRepository>
+			<id>myrepo</id>
+			<url>https://myrepo.thischwa.codes/repository/dyndrest/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<issueManagement>
+		<url>https://github.com/th-schwarz/DynDRest/issues</url>
+		<system>GitHub Issues</system>
+	</issueManagement>
+
+	<scm>
+		<developerConnection>scm:git:git@github.com:th-schwarz/dyndrest</developerConnection>
+		<connection>scm:git:git@github.com:th-schwarz/dyndrest</connection>
+		<tag>HEAD</tag>
+	</scm>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-to-slf4j</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jetty</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>dnsjava</groupId>
+			<artifactId>dnsjava</artifactId>
+			<version>3.5.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.domainrobot</groupId>
+			<artifactId>sdk-model</artifactId>
+			<version>${domainrobot.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.domainrobot</groupId>
+			<artifactId>sdk-client</artifactId>
+			<version>${domainrobot.version}</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-webmvc-core</artifactId>
+			<version>${springdoc.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.junit.vintage</groupId>
+					<artifactId>junit-vintage-engine</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<tagNameFormat>v@{project.version}</tagNameFormat>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<!-- generates the code coverage report for sonar cube -->
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.7</version>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report-code-coverage</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<formats>XML</formats>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<!-- starts spring boot for generating the openapi docu -->
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<executable>true</executable>
+					<includeSystemScope>true</includeSystemScope>
+					<commandlineArguments>--swagger.enabled=true --springdoc.writer-with-default-pretty-printer=true
+                        --springdoc.api-docs.enabled=true --zone.validation.enabled=false --server.port=8080</commandlineArguments>
+					<jvmArguments>-Dspring.application.admin.enabled=true
+                        -Dspring.config.import=file:target/test-classes/application.yml</jvmArguments>
+				</configuration>
+				<executions>
+					<execution>
+						<id>pre-integration-test</id>
+						<goals>
+							<goal>start</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>post-integration-test</id>
+						<goals>
+							<goal>stop</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<!-- generates the openapi docu -->
+				<groupId>org.springdoc</groupId>
+				<artifactId>springdoc-openapi-maven-plugin</artifactId>
+				<version>1.4</version>
+				<configuration>
+					<apiDocsUrl>http://localhost:8080/v3/api-docs.yaml</apiDocsUrl>
+					<outputFileName>${openapi.outputFile}</outputFileName>
+				</configuration>
+				<executions>
+					<execution>
+						<id>generate-openapi</id>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<!-- converts the openapi docu to html -->
+				<groupId>io.swagger.codegen.v3</groupId>
+				<artifactId>swagger-codegen-maven-plugin</artifactId>
+				<version>3.0.36</version>
+				<executions>
+					<execution>
+						<id>export-to-html-doc</id>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${openapi.outputDir}/${openapi.outputFile}</inputSpec>
+							<language>html2</language>
+							<output>${project.basedir}/docs</output>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<developers>
+		<developer>
+			<id>th-schwarz</id>
+			<name>Thilo Schwarz</name>
+			<email>osp AT thischwa.codes</email>
+			<url>https://www.thischwa.codes</url>
+			<roles>
+				<role>Head Project Manager</role>
+				<role>Developer</role>
+			</roles>
+			<timezone>+1</timezone>
+		</developer>
+	</developers>
+</project>

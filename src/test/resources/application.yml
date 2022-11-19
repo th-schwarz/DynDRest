@@ -1,0 +1,43 @@
+spring:
+  security:
+    user:
+      name: dyndns
+      password: test123
+
+server:
+  address: 127.0.0.1
+  port: 8081
+  servlet:
+    context-path: /
+
+dyndrest:
+  greeting-enabled: true
+  provider: domainrobot
+  update-log-pattern: (.*)\s+-\s+([a-zA-Z\.-]*)\s+(\S*)\s+(\S*)
+  update-log-date-pattern: yyyy-MM-dd HH:mm:SSS
+  # update-log-file-pattern: classpath:/test-files/dyndrest-update*
+  update-log-file-pattern: file:target/test-classes/test-files/dyndrest-update*
+  update-log-page-enabled: true
+  update-log-page-size: 4
+  update-log-user-name: log-dev
+  update-log-user-password: l0g-dev
+  host-validation-enabled: false
+
+domainrobot:
+  default-ttl: 61
+  autodns:
+    context: 4
+    password: pwd_t
+    url: https://api.autodns.com/v1
+    user: user_t
+  zones:
+    - name: dynhost0.info
+      ns: ns0.domain.info
+      hosts:
+        - my0:1234567890abcdef
+        - test0:1234567890abcdx
+    - name: dynhost1.info
+      ns: ns1.domain.info
+      hosts:
+        - my1:1234567890abcdef
+        - test1:1234567890abcdx

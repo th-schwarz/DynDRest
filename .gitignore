@@ -1,0 +1,16 @@
+pom.xml.*
+/.settings/
+/target/
+/.classpath
+/.project
+/.factorypath
+/.springBeans
+/.idea
+/info.txt
+/logback.xml
+/logback-update.xml
+/docs/.swagger-codegen/
+/docs/.swagger-codegen-ignore
+/dyndrest.yml
+/dyndrest-update*
+/domainrobot.yml
