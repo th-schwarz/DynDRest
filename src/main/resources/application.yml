@@ -36,7 +36,7 @@ spring:
   config:
     import: optional:file:./dyndrest.yml
 
-# must beset by the individual properties file
+# must be set by the individual properties file
 ## spring security
 #  security:
 #    user:
