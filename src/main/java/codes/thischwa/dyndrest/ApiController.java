@@ -6,6 +6,7 @@ import codes.thischwa.dyndrest.provider.Provider;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.service.UpdateLogCache;
 import codes.thischwa.dyndrest.service.UpdateLogger;
+import codes.thischwa.dyndrest.util.NetUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +55,7 @@ public class ApiController implements ApiRoutes {
 		if(ipv4Str == null && ipv6Str == null) {
 			log.debug("Both IP parameters are null, try to fetch the remote IP.");
 			String remoteIP = req.getRemoteAddr();
-			if(remoteIP == null) {
+			if(remoteIP == null || !NetUtil.isIP(remoteIP)) {
 				log.error("Couldn't determine the remote ip!");
 				throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 			}
