@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>codes.thischwa</groupId>
 	<artifactId>dyndrest</artifactId>
-	<version>0.1</version>
+	<version>0.2-SNAPSHOT</version>
 	<name>DynRest</name>
 	<description>A simple REST-service for dynamic DNS.</description>
 	<url>https://github.com/th-schwarz/DynDRest</url>
@@ -68,7 +68,7 @@
 	<scm>
 		<developerConnection>scm:git:git@github.com:th-schwarz/dyndrest</developerConnection>
 		<connection>scm:git:git@github.com:th-schwarz/dyndrest</connection>
-		<tag>v0.1</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<dependencies>
