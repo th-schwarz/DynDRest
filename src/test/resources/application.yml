@@ -11,8 +11,8 @@ server:
     context-path: /
 
 dyndrest:
-  greeting-enabled: true
   provider: domainrobot
+  greeting-enabled: true
   update-log-pattern: (.*)\s+-\s+([a-zA-Z\.-]*)\s+(\S*)\s+(\S*)
   update-log-date-pattern: yyyy-MM-dd HH:mm:SSS
   # update-log-file-pattern: classpath:/test-files/dyndrest-update*
@@ -26,9 +26,9 @@ dyndrest:
 domainrobot:
   default-ttl: 61
   autodns:
+    url: https://api.autodns.com/v1
     context: 4
     password: pwd_t
-    url: https://api.autodns.com/v1
     user: user_t
   zones:
     - name: dynhost0.info

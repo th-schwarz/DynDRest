@@ -57,10 +57,10 @@ Here is the suggested directory/file structure:
 ```
 Side note: If the names of the configuration files are kept as above, they will be found and loaded automatically.
 
-dyndrest.yml defines the individual properties and will be merged with the default one in the classpath, therefore the file can be kept as small as possible. A minimal configuration example can be found further below. If the file is inside the working directory, it is loaded automatically. The default properties can be found [here](https://github.com/th-schwarz/DDAuto/wiki/Complete-Configuration-Example). <br>
+**dyndrest.yml** defines the individual properties and will be merged with the default properties in the classpath, therefore the file can be kept as small as possible. A minimal configuration example can be found further below. If the file is inside the working directory, it is loaded automatically. The complete configuration setings can be found [here](https://github.com/th-schwarz/DynDRest/wiki/DynDRest-Configuration). <br>
 Important: The basic-auth, the api-tokens and the credentials for AutoDNS should be defined in this file!<br>
 The configuration of Logback can be split into two files, one for the application logging and one for a the well-formatted zone update log. The second one is the one on which the log view is based. <br>
-**_TODO_**: logback docu
+For further information have look at [Logback Configuration](https://github.com/th-schwarz/DynDRest/wiki/Logback-Configuration) wiki article.
 
 The start by command line looks like:
 ```bash
@@ -70,6 +70,30 @@ DynDRest can also be started easily as a service. For further information, see h
 
 BTW: This project uses _spring-doc_ to document the routes. The endpoints for this and the _swagger-ui_ are disabled by default.
 
+## Configuration
+
+This is a minimal configuration example for your individual properties file _dyndrest.yml_ using the provider _domainrobot_:
+```yaml
+spring:
+  security:
+    user:
+      name: dyndns
+      password: test123
+      
+dyndrest:
+  provider: domainrobot
+
+domainrobot:
+  autodns:
+    password: pwd_t
+    user: user_t
+  zones:
+    - name: dynhost.info
+      ns: ns.domain.info
+      hosts:
+        - myhost:1234567890abcdef
+```
+The 'zone' section defines a host ```myhost.dynhost.info``` with the api-token `1234567890abcdef`.
 
 ## Routes
 
