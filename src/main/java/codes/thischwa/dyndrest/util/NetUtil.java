@@ -55,7 +55,7 @@ public interface NetUtil {
 	 *
 	 * @param hostName the host name
 	 * @return the ip setting
-	 * @throws IllegalArgumentException if the resolving fails
+	 * @throws IOException if the resolving fails
 	 */
 	static IpSetting resolve(String hostName) throws IOException {
 		IpSetting ipSetting = new IpSetting();

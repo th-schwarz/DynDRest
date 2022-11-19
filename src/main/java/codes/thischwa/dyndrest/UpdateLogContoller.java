@@ -28,7 +28,7 @@ public class UpdateLogContoller {
 
 	/**
 	 * Delivers page to show the zone update logs.
-	 *
+	 * @param model optional model for processing
 	 * @return the zone update logs page
 	 */
 	@GetMapping(value = "/log", produces = MediaType.TEXT_HTML_VALUE)

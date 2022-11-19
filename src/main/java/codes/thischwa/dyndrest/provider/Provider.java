@@ -5,7 +5,7 @@ import codes.thischwa.dyndrest.model.IpSetting;
 import java.util.Set;
 
 /**
- * Defines the functionality of a dns provider. <br/>
+ * Defines the functionality of a dns provider. <br>
  * A new provider implementation should be extended from {@link GenericProvider}. It already implements some basic functions.
  */
 public interface Provider {
@@ -23,7 +23,7 @@ public interface Provider {
 	Set<String> getConfiguredHosts();
 
 	/**
-	 * Checks if the desired 'hosts' exists. <br/>
+	 * Checks if the desired 'hosts' exists. <br>
 	 * Hint: There is no need to override it!
 	 *
 	 * @param host the host
@@ -78,7 +78,7 @@ public interface Provider {
 	IpSetting info(String host) throws ProviderException;
 
 	/**
-	 * Updates the desired 'host' with the desired IP setting with consideration of the before- and after-hooks. <br/>
+	 * Updates the desired 'host' with the desired IP setting with consideration of the before- and after-hooks. <br>
 	 * Hint: There is no need to implement this, if the implementation derives from {@link GenericProvider}!
 	 *
 	 * @param host      the host
