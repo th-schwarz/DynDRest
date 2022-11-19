@@ -18,7 +18,7 @@ DynDRest can be executed by `commandline`, `init.d` or `systemd`.
 
 If you find a bug or certain features are missing, don't hesitate to file an issue on [Github](https://github.com/th-schwarz/DynDRest/issues).
 
-![Project Status](https://img.shields.io/badge/project%20status-ALPHA-orange)
+![Project Status](https://img.shields.io/badge/project%20status-BETA-orange)
 
 DynDRest is kindly supported by <br> <a href="https://jb.gg/OpenSourceSupport"><img src="https://resources.jetbrains.com/storage/products/company/brand/logos/IntelliJ_IDEA.png" width="250px" alt="IntelliJ IDEA logo."></a>
 
