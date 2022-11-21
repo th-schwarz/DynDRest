@@ -26,8 +26,8 @@
 		<sonar.coverage.exclusions>
 			src/main/java/codes/thischwa/dyndrest/Starter.java,
 			src/main/java/codes/thischwa/dyndrest/ApiController.java,
-			src/main/java/codes/thischwa/dyndrest/config/AppEventListener.java
-			src/main/java/codes/thischwa/dyndrest/config/SecurityConfig.java
+			src/main/java/codes/thischwa/dyndrest/config/AppEventListener.java,
+			src/main/java/codes/thischwa/dyndrest/config/SecurityConfig.java,
 			src/main/java/codes/thischwa/dyndrest/provider/ProviderException.java,
 			src/main/java/codes/thischwa/dyndrest/provider/UpdateHookException.java,
 			src/main/java/codes/thischwa/dyndrest/provider/Provider.java
