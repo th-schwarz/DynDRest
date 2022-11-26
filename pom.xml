@@ -132,7 +132,6 @@
 			<version>${domainrobot.version}</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-webmvc-core</artifactId>

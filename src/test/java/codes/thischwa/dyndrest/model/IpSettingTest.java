@@ -33,6 +33,13 @@ class IpSettingTest {
 	}
 
 	@Test
+	final void compareIPv6Test() throws UnknownHostException {
+		IpSetting is1 = new IpSetting(null, "2a03:4000:41:32:0:0:0:1");
+		IpSetting is2 = new IpSetting(null, "2a03:4000:41:32::1");
+		assertEquals(is1, is2);
+	}
+
+	@Test
 	final void constructorTest() throws UnknownHostException {
 		IpSetting is = new IpSetting("198.0.0.1");
 		assertNull(is.getIpv6());
