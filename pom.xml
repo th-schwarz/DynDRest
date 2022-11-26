@@ -21,6 +21,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<springdoc.version>1.6.13</springdoc.version>
         <domainrobot.version>0.2.8</domainrobot.version>
+		<dnsjava.version>3.5.2</dnsjava.version>
 		<sonar.organization>th-schwarz</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.coverage.exclusions>
@@ -118,7 +119,7 @@
 		<dependency>
 			<groupId>dnsjava</groupId>
 			<artifactId>dnsjava</artifactId>
-			<version>3.5.1</version>
+			<version>${dnsjava.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.domainrobot</groupId>
