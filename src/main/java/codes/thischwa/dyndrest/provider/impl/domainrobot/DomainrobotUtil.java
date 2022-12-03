@@ -63,12 +63,12 @@ interface DomainrobotUtil {
 	static boolean hasIPsChanged(Zone zone, String sld, String ipv4, String ipv6) {
 		ResourceRecord rrv4 = searchResourceRecord(zone, sld, ResouceRecordTypeIP.A);
 		ResourceRecord rrv6 = searchResourceRecord(zone, sld, ResouceRecordTypeIP.AAAA);
-		boolean ipv4Changed = !hasIP(rrv4, ipv4);
-		boolean ipv6Changed = !hasIP(rrv6, ipv6);
+		boolean ipv4Changed = !hasIPChanged(rrv4, ipv4);
+		boolean ipv6Changed = !hasIPChanged(rrv6, ipv6);
 		return ipv4Changed || ipv6Changed;
 	}
 
-	private static boolean hasIP(ResourceRecord rr, String ip) {
+	private static boolean hasIPChanged(ResourceRecord rr, String ip) {
 		return rr != null && ip != null && rr.getValue().equals(ip);
 	}
 
