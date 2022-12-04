@@ -1,7 +1,8 @@
 ---
 ## server settings
 server:
-  address: 127.0.0.1
+  # listen to all interfaces for docker
+  address: 0.0.0.0
   forward-headers-strategy: NATIVE
   port: 8081
   servlet:
@@ -41,6 +42,9 @@ domainrobot:
   ## credentials for the domainrobot sdk
   autodns:
     context: 4
+    # production
+    # url: https://api.autodns.com/v1
+    # demo
     url: https://api.demo.autodns.com/v1
 
 # ---------------------- non-default section -------------------
