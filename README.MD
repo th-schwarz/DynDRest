@@ -92,6 +92,7 @@ To run the docker image with your configuration file.
 
 ```bash
 docker run --rm \
+  --network host \
   --name dyndrest \
   --volume ${PWD}/src/test/resources/example.yml:/opt/dyndrest/dyndrest.yml \
   --volume ${PWD}/src/test/resources/logback.xml:/opt/dyndrest/logback.xml \
