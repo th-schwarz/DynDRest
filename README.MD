@@ -149,5 +149,5 @@ The following settngs are required:
 * **DynDNS Provider**: User-defined
 * **Domain name**: The hostname for which the IPs should be updated.
 * **Username / Password**: The credentials for basic-auth.
-* **Update-URL**: {baseUrl}/update/\<domain\>/?apitoken=[yourApitoken]&ipv4=\<ipaddr\>&ipv6=\<ip6addr\>
+* **Update-URL**: [your_url:port]/update/\<domain\>/?apitoken=[yourApitoken]&ipv4=\<ipaddr\>&ipv6=\<ip6addr\>
   </br> If both IP parameters are omitted, an attempt is made to fetch the remote IP.
