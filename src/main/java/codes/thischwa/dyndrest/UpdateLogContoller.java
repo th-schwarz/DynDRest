@@ -18,9 +18,9 @@ public class UpdateLogContoller {
 
 	private final AppConfig config;
 
-	@Value("${spring.security.user.name}") private String user;
+	@Value("${spring.security.user.name}") private String basicAuthUser;
 
-	@Value("${spring.security.user.password}") private String password;
+	@Value("${spring.security.user.password}") private String basicAuthPassword;
 
 	public UpdateLogContoller(AppConfig config) {
 		this.config = config;
@@ -36,8 +36,8 @@ public class UpdateLogContoller {
 		String baseUrl = NetUtil.getBaseUrl(config.isUpdateLogRestForceHttps());
 
 		model.addAttribute("server_url", baseUrl + "/info/update-log");
-		if(user != null && password != null) {
-			String basicAuth = NetUtil.buildBasicAuth(user, password);
+		if(basicAuthUser != null && basicAuthPassword != null) {
+			String basicAuth = NetUtil.buildBasicAuth(basicAuthUser, basicAuthPassword);
 			model.addAttribute("header_basicauth", basicAuth);
 			model.addAttribute("page_size", config.getUpdateLogPageSize());
 		}
