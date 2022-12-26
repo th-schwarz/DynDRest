@@ -37,9 +37,9 @@ public class DomainRobotProvider extends GenericProvider {
 
 		// set the IPs in the zone object
 		Zone zone = zoneInfo(host);
-		if(!zcw.hasIPsChanged(zone, sld, ipSetting.getIpv4(), ipSetting.getIpv6()))
+		if(!zcw.hasIPsChanged(zone, sld, ipSetting))
 			return;
-		zcw.processIpSetting(zone, sld, ipSetting);
+		zcw.process(zone, sld, ipSetting);
 
 		// processing the update
 		zcw.update(zone);

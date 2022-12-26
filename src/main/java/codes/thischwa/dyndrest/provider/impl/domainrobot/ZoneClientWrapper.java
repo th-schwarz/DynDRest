@@ -13,11 +13,19 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
 
+/**
+ *  Encapsulate the {@link ZoneClient} and adds same useful util methods.
+ */
 class ZoneClientWrapper {
+
+	enum ResouceRecordTypeIP {
+		A, AAAA
+	}
 
 	private Map<String, String> customHeaders;
 
 	private long defaultTtl;
+
 	private ZoneClient zc;
 
 	// just for testing
@@ -42,15 +50,17 @@ class ZoneClientWrapper {
 		return host.substring(host.indexOf(".") + 1);
 	}
 
-	boolean hasIPsChanged(Zone zone, String sld, Inet4Address ipv4, Inet6Address ipv6) {
+	boolean hasIPsChanged(Zone zone, String sld, IpSetting ipSetting) {
+		if(ipSetting.isNotSet())
+			return false;
 		ResourceRecord rrv4 = searchResourceRecord(zone, sld, ResouceRecordTypeIP.A);
 		ResourceRecord rrv6 = searchResourceRecord(zone, sld, ResouceRecordTypeIP.AAAA);
-		boolean ipv4Changed = !hasIP(rrv4, ipv4);
-		boolean ipv6Changed = !hasIP(rrv6, ipv6);
+		boolean ipv4Changed = !hasIPChanged(rrv4, ipSetting.getIpv4());
+		boolean ipv6Changed = !hasIPChanged(rrv6, ipSetting.getIpv6());
 		return ipv4Changed || ipv6Changed;
 	}
 
-	boolean hasIP(ResourceRecord rr, InetAddress ip) {
+	private boolean hasIPChanged(ResourceRecord rr, InetAddress ip) {
 		if(rr == null || ip == null)
 			return false;
 		try {
@@ -61,7 +71,7 @@ class ZoneClientWrapper {
 		}
 	}
 
-	void update(Zone zone) throws ProviderException {
+	 void update(Zone zone) throws ProviderException {
 		try {
 			zc.update(zone, customHeaders);
 		} catch (DomainrobotApiException e) {
@@ -77,6 +87,7 @@ class ZoneClientWrapper {
 	 * @param zone              the zone to process the info
 	 * @param primaryNameServer the primary NS of the zone
 	 * @return the complete zone object from the domainrobot sdk
+	 *
 	 * @throws ProviderException if an exception happens while processing the zone-info
 	 */
 	Zone info(String zone, String primaryNameServer) throws ProviderException {
@@ -89,49 +100,42 @@ class ZoneClientWrapper {
 		}
 	}
 
-	void processIPv4(Zone zone, String sld, Inet4Address ip) {
+	/**
+	 * Processes the ip settings for the desired zone and subtld,
+	 * The corresponding resource record will be updated or removed if null.
+	 *
+	 * @param zone      the zone
+	 * @param sld       the sld
+	 * @param ipSetting the ip setting
+	 */
+	void process(Zone zone, String sld, IpSetting ipSetting) {
+		processIPv4(zone, sld, ipSetting.getIpv4());
+		processIPv6(zone, sld, ipSetting.getIpv6());
+	}
+
+	private void processIPv4(Zone zone, String sld, Inet4Address ip) {
 		if(ip != null)
 			addOrUpdateIPv4(zone, sld, ip);
 		else
 			removeIPv4(zone, sld);
 	}
 
-	void processIPv6(Zone zone, String sld, Inet6Address ip) {
+	private void processIPv6(Zone zone, String sld, Inet6Address ip) {
 		if(ip != null)
 			addOrUpdateIPv6(zone, sld, ip);
 		else
 			removeIPv6(zone, sld);
 	}
 
-	void addOrUpdateIPv4(Zone zone, String sld, Inet4Address ip) {
+	private void addOrUpdateIPv4(Zone zone, String sld, Inet4Address ip) {
 		addOrUpdateIP(zone, sld, ip, ResouceRecordTypeIP.A);
 	}
 
-	void addOrUpdateIPv6(Zone zone, String sld, Inet6Address ip) {
+	private void addOrUpdateIPv6(Zone zone, String sld, Inet6Address ip) {
 		addOrUpdateIP(zone, sld, ip, ResouceRecordTypeIP.AAAA);
 	}
 
-	void removeIPv4(Zone zone, String sld) {
-		removeIP(zone, sld, ResouceRecordTypeIP.A);
-	}
-
-	void removeIPv6(Zone zone, String sld) {
-		removeIP(zone, sld, ResouceRecordTypeIP.AAAA);
-	}
-
-	void processIpSetting(Zone zone, String sld, IpSetting ipSetting) {
-		processIPv4(zone, sld, ipSetting.getIpv4());
-		processIPv6(zone, sld, ipSetting.getIpv6());
-	}
-
-	void removeIP(Zone zone, String sld, ResouceRecordTypeIP type) {
-		ResourceRecord rr = searchResourceRecord(zone, sld, type);
-		if(rr != null) {
-			zone.getResourceRecords().remove(rr);
-		}
-	}
-
-	void addOrUpdateIP(Zone zone, String sld, InetAddress ip, ResouceRecordTypeIP type) {
+	private void addOrUpdateIP(Zone zone, String sld, InetAddress ip, ResouceRecordTypeIP type) {
 		ResourceRecord rr = searchResourceRecord(zone, sld, type);
 		if(rr != null) {
 			rr.setValue(ip.getHostAddress());
@@ -146,7 +150,19 @@ class ZoneClientWrapper {
 		}
 	}
 
-	enum ResouceRecordTypeIP {
-		A, AAAA
+	void removeIPv4(Zone zone, String sld) {
+		removeIP(zone, sld, ResouceRecordTypeIP.A);
+	}
+
+	void removeIPv6(Zone zone, String sld) {
+		removeIP(zone, sld, ResouceRecordTypeIP.AAAA);
+	}
+
+	void removeIP(Zone zone, String sld, ResouceRecordTypeIP type) {
+		ResourceRecord rr = searchResourceRecord(zone, sld, type);
+		if(rr != null) {
+			zone.getResourceRecords().remove(rr);
+			zone.getResourceRecords().remove(rr);
+		}
 	}
 }
