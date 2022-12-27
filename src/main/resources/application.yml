@@ -37,7 +37,7 @@ spring:
     import: optional:file:./dyndrest.yml
 
 # must be set by the individual properties file
-## spring security
+# spring security
 #  security:
 #    user:
 #      name: dyndns
