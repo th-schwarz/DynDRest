@@ -65,7 +65,7 @@ Side note: If the names of the configuration files are kept as above, they will 
 
 **dyndrest.yml** defines the individual properties and will be merged with the default properties in the classpath, therefore the file can be kept as small as possible. A minimal configuration example can be found further below. If the file is inside the working directory, it is loaded automatically. The complete configuration setings can be found [here](https://github.com/th-schwarz/DynDRest/wiki/DynDRest-Configuration). <br>
 Important: The basic-auth, the api-tokens and the credentials for AutoDNS should be defined in this file!<br>
-The configuration of Logback can be split into two files, one for the application logging and one for a the well-formatted zone update log. The second one is the one on which the log view is based. <br>
+The configuration of Logback can be split into two files, one for the application logging (**logback.xml**) and one for a the well-formatted zone update log (**logback-update.xml**). The second one is the one on which the log view is based. <br>
 For further information have look at the [Logback Configuration](https://github.com/th-schwarz/DynDRest/wiki/Logback-Configuration) wiki article.
 
 ### Start
