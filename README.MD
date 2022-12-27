@@ -15,7 +15,7 @@ Dynamic DNS Rest service
 Give it a try!   [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/th-schwarz/DynDRest?include_prereleases)](https://github.com/th-schwarz/DynDRest/releases)
 
 
-DynDRest is a simple REST-service for dynamic DNS and is a more general variant of [DDAuto](https://github.com/th-schwarz/DDAuto). The basic idea is to have multiple implementations for different dns providers. [AutoDNS](https://www.internetx.com/en/domains/autodns) will be one of them.
+DynDRest is a simple REST-service for dynamic DNS and is a more general variant of [DDAuto](https://github.com/th-schwarz/DDAuto). The basic idea is to have multiple implementations of different dns providers. [AutoDNS](https://www.internetx.com/en/domains/autodns) will be one of them.
 
 The restful-api can be used with many routers, for example the AVM Fritz!Box.
 DynDRest can be executed by `commandline`, `init.d` or `systemd`.
