@@ -32,7 +32,7 @@ DynDRest is kindly supported by <br> <a href="https://jb.gg/OpenSourceSupport"><
 I'm not responsible for any data loss, hardware damage or broken keyboards. This guide comes without any warranty!
 
 
-## Big picture
+## Big Picture
 
 DynDRest is running as a service. A client can access the service via url and basic-auth. Let's assume DynDRest is running on `localhost`, then we can update the IPv4 and IPv6 address of the host _mydyndns.domain.com_ by calling the following curl command:
 ```bash
@@ -42,13 +42,15 @@ curl -u dyndns:test123 -i \
 For each host an api-token must be defined. If the api-token doesn't match the host, the update will be failed. Due to this security feature, DynDRest can be used by different people. They can't update the IPs each other.
 
 
-## Configuration and start
+## Setup & Configuration
 
 DynDRest is a spring boot application, that's why the application is extremely customizable just by configuration! Details of the configuration can be found here: https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#application-properties and https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#actuator.monitoring.customizing-management-server-port
 
 Side note: To avoid the use of the java keystore tool, DynDRest could be run behind a proxy. Corresponding headers are set by default.
 
-Here is the suggested directory/file structure:
+### File Structure
+
+Here is the suggested file structure:
 
 ```bash
 ├── /opt/dyndrest
@@ -64,17 +66,29 @@ Side note: If the names of the configuration files are kept as above, they will 
 **dyndrest.yml** defines the individual properties and will be merged with the default properties in the classpath, therefore the file can be kept as small as possible. A minimal configuration example can be found further below. If the file is inside the working directory, it is loaded automatically. The complete configuration setings can be found [here](https://github.com/th-schwarz/DynDRest/wiki/DynDRest-Configuration). <br>
 Important: The basic-auth, the api-tokens and the credentials for AutoDNS should be defined in this file!<br>
 The configuration of Logback can be split into two files, one for the application logging and one for a the well-formatted zone update log. The second one is the one on which the log view is based. <br>
-For further information have look at [Logback Configuration](https://github.com/th-schwarz/DynDRest/wiki/Logback-Configuration) wiki article.
+For further information have look at the [Logback Configuration](https://github.com/th-schwarz/DynDRest/wiki/Logback-Configuration) wiki article.
+
+### Start
+
+The fully executable jar can be executed in different ways.
+
+#### by Command Line
 
 The start by command line looks like:
 ```bash
-java -jar /opt/dyndrest/dyndrest.jar
+cd /opt/dyndrest/
+java -jar dyndrest.jar
 ```
-DynDRest can also be started easily as a service. For further information, see https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#deployment.installing.nix-services
 
-BTW: This project uses _spring-doc_ to document the routes. The endpoints for this and the _swagger-ui_ are disabled by default.
+#### by systemd Service
 
-## Configuration
+DynDRest can also be started easily as a service. An example can be found at the wiki article [systemd Service Configuration](https://github.com/th-schwarz/DynDRest/wiki/systemd-Service-Configuration).
+
+#### init.d Service
+
+If DynDRest should be started as `init.d` service, information can be found at the documentation of spring boot, [Installation as an init.d Service (System V)](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#deployment.installing.nix-services.init-d).
+
+### Configuration example for the provider 'domainrobot'
 
 This is a minimal configuration example for your individual properties file _dyndrest.yml_ using the provider _domainrobot_:
 ```yaml
@@ -98,6 +112,8 @@ domainrobot:
         - myhost:1234567890abcdef
 ```
 The 'zone' section defines a host ```myhost.dynhost.info``` with the api-token `1234567890abcdef`.
+
+BTW: This project uses _spring-doc_ to document the routes. The endpoints for this and the _swagger-ui_ are disabled by default
 
 ## Routes
 
