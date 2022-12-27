@@ -84,7 +84,7 @@ java -jar dyndrest.jar --logging.config=logback.xml
 
 DynDRest can also be started easily as a systemd service. An example for the desired service configuration can be found at the wiki article [systemd Service Configuration](https://github.com/th-schwarz/DynDRest/wiki/systemd-Service-Configuration).
 
-#### init.d Service
+#### by init.d Service
 
 Another possibility to start DynDRest is as `init.d` service. Further information can be found at the documentation of spring boot, [Installation as an init.d Service (System V)](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#deployment.installing.nix-services.init-d).
 
@@ -136,5 +136,5 @@ The following settngs are required:
 * *DynDNS Provider:* User-defined
 * *Domain name:* The hostname for which the IPs should be updated.
 * *Username / Password:* The credentials for basic-auth.
-* *Update-URL:* [your_url:port]/update/\<domain\>/?apitoken=[yourApitoken]&ipv4=\<ipaddr\>&ipv6=\<ip6addr\> <br>
+* *Update-URL:* [your-host:port]/update/\<domain\>/?apitoken=[yourApitoken]&ipv4=\<ipaddr\>&ipv6=\<ip6addr\> <br>
   If both IP parameters are omitted, an attempt is made to fetch the remote IP.
