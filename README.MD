@@ -46,7 +46,7 @@ For each host an api-token must be defined. If the api-token doesn't match the h
 
 DynDRest is a spring boot application, that's why the application is extremely customizable just by configuration! Details of the configuration can be found here: https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#application-properties and https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#actuator.monitoring.customizing-management-server-port
 
-Side note: To avoid the use of the java keystore tool, DynDRest could be run behind a proxy. Corresponding headers are set by default.
+> Side note: To avoid the use of the java keystore tool, DynDRest could be run behind a proxy. Corresponding headers are set by default.
 
 ### File Structure
 
@@ -61,7 +61,6 @@ Here is the suggested file structure:
 │   ├── logback.xml         (logback configuration for application and update logoging, optional)
 │   ├── logback-update.xml  (extra logback configuration for update logging, optional include) 
 ```
-Side note: If the names of the configuration files are kept as above, they will be found and loaded automatically.
 
 **dyndrest.yml** defines the individual properties and will be merged with the default properties in the classpath, therefore the file can be kept as small as possible. A minimal configuration example can be found further below. If the file is inside the working directory, it is loaded automatically. The complete configuration setings can be found [here](https://github.com/th-schwarz/DynDRest/wiki/DynDRest-Configuration). <br>
 Important: The basic-auth, the api-tokens and the credentials for AutoDNS should be defined in this file!
@@ -114,7 +113,7 @@ domainrobot:
 ```
 The 'zone' section defines a host ```myhost.dynhost.info``` with the api-token `1234567890abcdef`.
 
-BTW: This project uses _spring-doc_ to document the routes. The endpoints for this and the _swagger-ui_ are disabled by default
+> This project uses _spring-doc_ to document the routes. The endpoints for this and the _swagger-ui_ are disabled by default!
 
 ## Routes
 
