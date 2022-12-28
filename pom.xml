@@ -31,7 +31,8 @@
 			src/main/java/codes/thischwa/dyndrest/config/SecurityConfig.java,
 			src/main/java/codes/thischwa/dyndrest/provider/ProviderException.java,
 			src/main/java/codes/thischwa/dyndrest/provider/UpdateHookException.java,
-			src/main/java/codes/thischwa/dyndrest/provider/Provider.java
+			src/main/java/codes/thischwa/dyndrest/provider/Provider.java,
+			src/main/java/codes/thischwa/dyndrest/provider/impl/domainrobot/DomainRobotProvider.java
 		</sonar.coverage.exclusions>
 		<fakerepo.dir>${project.basedir}/fake-repo</fakerepo.dir>
 		<openapi.outputDir>${project.build.directory}</openapi.outputDir>
