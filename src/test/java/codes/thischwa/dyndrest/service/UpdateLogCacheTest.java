@@ -30,14 +30,14 @@ class UpdateLogCacheTest extends GenericIntegrationTest {
 		UpdateItem item1 = cache.getItems().get(0);
 		UpdateItem item2 = cache.getItems().get(1);
 
-		assertTrue(item1.compareTo(item1) == 0);
+		assertEquals(0, item1.compareTo(item1));
 		assertTrue(item1.compareTo(item2) < 0);
 		assertTrue(item2.compareTo(item1) > 0);
 
 		assertNotEquals(item1.hashCode(), item2.hashCode());
 
-		assertFalse(item1.equals(item2));
-		assertFalse(item1.equals("string"));
+		assertNotEquals(item1, item2);
+		assertNotEquals("string", item1);
 	}
 
 	@Test
