@@ -4,12 +4,12 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.5</version>
+		<version>2.7.7</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>codes.thischwa</groupId>
 	<artifactId>dyndrest</artifactId>
-	<version>0.1</version>
+  <version>0.2-SNAPSHOT</version>
 	<name>DynRest</name>
 	<description>A simple REST-service for dynamic DNS.</description>
 	<url>https://github.com/th-schwarz/DynDRest</url>
@@ -19,24 +19,25 @@
 		<java.version>11</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<springdoc.version>1.6.12</springdoc.version>
+		<springdoc.version>1.6.13</springdoc.version>
         <domainrobot.version>0.2.8</domainrobot.version>
+		<dnsjava.version>3.5.2</dnsjava.version>
 		<sonar.organization>th-schwarz</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.coverage.exclusions>
 			src/main/java/codes/thischwa/dyndrest/Starter.java,
 			src/main/java/codes/thischwa/dyndrest/ApiController.java,
-			src/main/java/codes/thischwa/dyndrest/config/AppEventListener.java
-			src/main/java/codes/thischwa/dyndrest/config/SecurityConfig.java
+			src/main/java/codes/thischwa/dyndrest/config/AppEventListener.java,
+			src/main/java/codes/thischwa/dyndrest/config/SecurityConfig.java,
 			src/main/java/codes/thischwa/dyndrest/provider/ProviderException.java,
 			src/main/java/codes/thischwa/dyndrest/provider/UpdateHookException.java,
-			src/main/java/codes/thischwa/dyndrest/provider/Provider.java
+			src/main/java/codes/thischwa/dyndrest/provider/Provider.java,
+			src/main/java/codes/thischwa/dyndrest/provider/impl/domainrobot/DomainRobotProvider.java
 		</sonar.coverage.exclusions>
 		<fakerepo.dir>${project.basedir}/fake-repo</fakerepo.dir>
 		<openapi.outputDir>${project.build.directory}</openapi.outputDir>
 		<openapi.outputFile.extless>openapi</openapi.outputFile.extless>
 		<openapi.outputFile>${openapi.outputFile.extless}.yaml</openapi.outputFile>
-		<fakerepo.dir>${project.basedir}/fake-repo</fakerepo.dir>
 	</properties>
 
 	<repositories>
@@ -68,7 +69,7 @@
 	<scm>
 		<developerConnection>scm:git:git@github.com:th-schwarz/dyndrest</developerConnection>
 		<connection>scm:git:git@github.com:th-schwarz/dyndrest</connection>
-		<tag>HEAD</tag>
+		<tag>v0.2</tag>
 	</scm>
 
 	<dependencies>
@@ -118,7 +119,7 @@
 		<dependency>
 			<groupId>dnsjava</groupId>
 			<artifactId>dnsjava</artifactId>
-			<version>3.5.1</version>
+			<version>${dnsjava.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.domainrobot</groupId>
@@ -130,7 +131,6 @@
 			<artifactId>sdk-client</artifactId>
 			<version>${domainrobot.version}</version>
 		</dependency>
-
 
 		<dependency>
 			<groupId>org.springdoc</groupId>

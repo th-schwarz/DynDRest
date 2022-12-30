@@ -16,20 +16,27 @@ class IpSettingTest {
 		assertEquals(is.ipv4ToString(), is.getIpv4().getHostAddress());
 		assertEquals(is.ipv6ToString(), is.getIpv6().getHostAddress());
 
-		is = new IpSetting(null, "2a03:4000:41:32:0:0:0:1");
+		is = new IpSetting("2a03:4000:41:32:0:0:0:1");
 		assertNull(is.ipv4ToString());
 		assertNull(is.getIpv4());
 		assertEquals(is.ipv6ToString(), is.getIpv6().getHostAddress());
 		assertNull(is.getIpv4());
 		assertEquals(is.ipv6ToString(), is.getIpv6().getHostAddress());
 
-		is = new IpSetting("198.0.0.1", null);
+		is = new IpSetting("198.0.0.1");
 		assertEquals(is.ipv4ToString(), is.getIpv4().getHostAddress());
 
-		is = new IpSetting("198.0.0.1", null);
+		is = new IpSetting("198.0.0.1");
 		assertEquals(is.ipv4ToString(), is.getIpv4().getHostAddress());
 		assertNull(is.ipv6ToString());
 		assertNull(is.getIpv6());
+	}
+
+	@Test
+	final void compareIPv6Test() throws UnknownHostException {
+		IpSetting is1 = new IpSetting("2a03:4000:41:32:0:0:0:1");
+		IpSetting is2 = new IpSetting("2a03:4000:41:32::1");
+		assertEquals(is1, is2);
 	}
 
 	@Test

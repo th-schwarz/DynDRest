@@ -26,6 +26,21 @@ class UpdateLogCacheTest extends GenericIntegrationTest {
 	}
 
 	@Test
+	final void testCompareEqualsHash() {
+		UpdateItem item1 = cache.getItems().get(0);
+		UpdateItem item2 = cache.getItems().get(1);
+
+		assertTrue(item1.compareTo(item1) == 0);
+		assertTrue(item1.compareTo(item2) < 0);
+		assertTrue(item2.compareTo(item1) > 0);
+
+		assertNotEquals(item1.hashCode(), item2.hashCode());
+
+		assertFalse(item1.equals(item2));
+		assertFalse(item1.equals("string"));
+	}
+
+	@Test
 	final void testAddLogEntry() {
 		assertEquals(startCnt, cache.size());
 		cache.addLogEntry("my.dyndns.com", "91.0.0.1", null);
@@ -47,6 +62,8 @@ class UpdateLogCacheTest extends GenericIntegrationTest {
 	final void testItem() {
 		assertEquals("UpdateItem [dateTime=2022-02-01 03:28:11.497, host=ursa.mydyndns.com, ipv4=217.229.130.11, ipv6=n/a]",
 				cache.getItems().get(0).toString());
+		UpdateItem item = new UpdateItem("testDateTime", "testHost", null, null);
+		assertEquals("UpdateItem [dateTime=testDateTime, host=testHost, ipv4=n/a, ipv6=n/a]", item.toString());
 	}
 
 	@Test

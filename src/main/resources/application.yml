@@ -36,8 +36,9 @@ spring:
   config:
     import: optional:file:./dyndrest.yml
 
-## spring security
-  security:
-    user:
-      name: dyndns
-      password: test123
+# must be set by the individual properties file
+# spring security
+#  security:
+#    user:
+#      name: dyndns
+#      password: test123

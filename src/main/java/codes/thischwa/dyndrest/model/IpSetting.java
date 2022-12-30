@@ -44,6 +44,10 @@ public class IpSetting {
 			this.ipv6 = (Inet6Address) ip;
 	}
 
+	public boolean isNotSet() {
+		return ipv4 == null && ipv6 == null;
+	}
+
 	@JsonGetter("ipv4")
 	public String ipv4ToString() {
 		return ipv4 == null ? null : ipv4.getHostAddress();
