@@ -1,5 +1,6 @@
 package codes.thischwa.dyndrest.provider.impl.domainrobot;
 
+import codes.thischwa.dyndrest.GenericIntegrationTest;
 import codes.thischwa.dyndrest.model.IpSetting;
 import org.domainrobot.sdk.client.JsonUtils;
 import org.domainrobot.sdk.models.generated.JsonResponseDataZone;
@@ -8,24 +9,30 @@ import org.domainrobot.sdk.models.generated.Zone;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ZoneClientWrapperTest {
+class ZoneClientWrapperTest extends GenericIntegrationTest {
 
 	private static final int rrCount = 5;
 
-	private final ZoneClientWrapper zcw = new ZoneClientWrapper();
+	@Autowired
+	private DomainRobotConfig domainRobotConfig;
 
 	private Zone zone;
+
+	private ZoneClientWrapper zcw;
 
 	@BeforeEach
 	void setUp() throws Exception {
 		JsonResponseDataZone response = JsonUtils.deserialize(
 				Objects.requireNonNull(this.getClass().getResourceAsStream("zone-info.json")).readAllBytes(), JsonResponseDataZone.class);
 		zone = response.getData().get(0);
+
+		zcw = domainRobotConfig.buildZoneClientWrapper();
 	}
 
 	@Test

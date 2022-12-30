@@ -22,15 +22,11 @@ class ZoneClientWrapper {
 		A, AAAA
 	}
 
-	private Map<String, String> customHeaders;
+	private final Map<String, String> customHeaders;
 
-	private long defaultTtl;
+	private final long defaultTtl;
 
-	private ZoneClient zc;
-
-	// just for testing
-	ZoneClientWrapper() {
-	}
+	private final ZoneClient zc;
 
 	ZoneClientWrapper(ZoneClient zc, Map<String, String> customHeaders, long defaultTtl) {
 		this.zc = zc;

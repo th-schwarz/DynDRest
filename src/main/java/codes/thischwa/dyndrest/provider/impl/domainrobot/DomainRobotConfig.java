@@ -30,8 +30,7 @@ public class DomainRobotConfig {
 
 	private final ZoneHostConfig zoneHostConfig;
 
-	@Value("${domainrobot.default-ttl}")
-	private @Getter @Setter int defaultTtl;
+	@Value("${domainrobot.default-ttl}") private @Getter @Setter int defaultTtl;
 
 	public DomainRobotConfig(AppConfig appConfig, AutoDnsConfig autoDnsConfig, ZoneHostConfig zoneHostConfig) {
 		this.appConfig = appConfig;
@@ -41,9 +40,14 @@ public class DomainRobotConfig {
 
 	@Bean
 	public Provider provider() {
-		final ZoneClientWrapper zcw = new ZoneClientWrapper(new Domainrobot(autoDnsConfig.getUser(), String.valueOf(autoDnsConfig.getContext()), autoDnsConfig.getPassword(),
-			autoDnsConfig.getUrl()).getZone(), customHeaders, defaultTtl);
+		final ZoneClientWrapper zcw = buildZoneClientWrapper();
 		return new DomainRobotProvider(appConfig, zoneHostConfig, zcw);
+	}
+
+	ZoneClientWrapper buildZoneClientWrapper() {
+		return new ZoneClientWrapper(
+				new Domainrobot(autoDnsConfig.getUser(), String.valueOf(autoDnsConfig.getContext()), autoDnsConfig.getPassword(),
+						autoDnsConfig.getUrl()).getZone(), customHeaders, defaultTtl);
 	}
 
 }
