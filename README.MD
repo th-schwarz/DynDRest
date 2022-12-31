@@ -11,9 +11,7 @@ Dynamic DNS Rest service
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=th-schwarz_DynDRest&metric=ncloc)](https://sonarcloud.io/dashboard?id=th-schwarz_DynDRest)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=th-schwarz_DynDRest&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=th-schwarz_DynDRest)
 
-
 Give it a try!   [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/th-schwarz/DynDRest?include_prereleases)](https://github.com/th-schwarz/DynDRest/releases)
-
 
 DynDRest is a simple REST-service for dynamic DNS and is a more general variant of [DDAuto](https://github.com/th-schwarz/DDAuto). The basic idea is to have multiple implementations of different dns providers. [AutoDNS](https://www.internetx.com/en/domains/autodns) will be one of them.
 
@@ -21,8 +19,6 @@ The restful-api can be used with many routers, for example the AVM Fritz!Box.
 DynDRest can be executed by `commandline`, `init.d` or `systemd`.
 
 If you find a bug or certain features are missing, don't hesitate to file an issue on [Github](https://github.com/th-schwarz/DynDRest/issues).
-
-![Project Status](https://img.shields.io/badge/project%20status-BETA-orange)
 
 DynDRest is kindly supported by <br> <a href="https://jb.gg/OpenSourceSupport"><img src="https://resources.jetbrains.com/storage/products/company/brand/logos/IntelliJ_IDEA.png" width="250px" alt="IntelliJ IDEA logo."></a>
 
