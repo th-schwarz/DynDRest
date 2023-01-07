@@ -45,10 +45,10 @@ public class SecurityConfig {
 				// disable security for greeting and open-api endpoint
 				.authorizeRequests().antMatchers("/", "/favicon.ico", "/v3/api-docs*").permitAll().and()
 
-				// log
+				// enable security for the log-view
 				.authorizeRequests().antMatchers("/log").hasAnyRole(ROLE_LOGVIEWER).and()
 
-				// other routes
+				// enable basic-auth for all other routes
 				.authorizeRequests().anyRequest().hasAnyRole(ROLE_USER).and().httpBasic();
 
 		return http.build();
