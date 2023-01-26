@@ -1,3 +1,10 @@
+:version-label: current
+:toc:
+:project_id: dyndrest
+:icons: font
+:source-highlighter: prettify
+:tags: java,dyndns
+
 = DynDRest
 
 :toc:
