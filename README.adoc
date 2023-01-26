@@ -1,4 +1,6 @@
-== DynDRest
+= DynDRest
+
+== Abstract
 
 Dynamic DNS Rest service
 
@@ -39,12 +41,12 @@ DynDRest is kindly supported by
 image::https://resources.jetbrains.com/storage/products/company/brand/logos/IntelliJ_IDEA.png[IntelliJ IDEA logo,250,link="https://jb.gg/OpenSourceSupport"]
 
 
-=== Disclaimer
+== Disclaimer
 
 I’m not responsible for any data loss, hardware damage or broken
 keyboards. This guide comes without any warranty!
 
-=== Big Picture
+== Big Picture
 
 DynDRest is running as a service. A client can access the service via
 url and basic-auth. Let’s assume DynDRest is running on `localhost`,
@@ -62,7 +64,7 @@ match the host, the update will be failed. Due to this security feature,
 DynDRest can be used by different people. They can’t update the IPs each
 other.
 
-=== Setup & Configuration
+== Setup & Configuration
 
 DynDRest is a spring boot application, that’s why the application is
 extremely customizable just by configuration! Details of the
@@ -71,12 +73,12 @@ https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#applicatio
 and
 https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#actuator.monitoring.customizing-management-server-port
 
-____
+====
 Side note: To avoid the use of the java keystore tool, DynDRest could be
 run behind a proxy. Corresponding headers are set by default.
-____
+====
 
-==== File Structure
+=== File Structure
 
 Here is the suggested file structure:
 
@@ -107,35 +109,7 @@ which the log view is based. For further information have look at the
 https://github.com/th-schwarz/DynDRest/wiki/Logback-Configuration[Logback
 Configuration] wiki article.
 
-==== Start
-
-The fully executable jar can be executed in different ways.
-
-===== by Command Line
-
-The start by command line looks like:
-
-[source,bash]
-----
-cd /opt/dyndrest/
-java -jar dyndrest.jar --logging.config=logback.xml
-----
-
-===== by systemd Service
-
-DynDRest can also be started easily as a systemd service. An example for
-the desired service configuration can be found at the wiki article
-https://github.com/th-schwarz/DynDRest/wiki/systemd-Service-Configuration[systemd
-Service Configuration].
-
-===== by init.d Service
-
-Another possibility to start DynDRest is as `init.d` service. Further
-information can be found at the documentation of spring boot,
-https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#deployment.installing.nix-services.init-d[Installation
-as an init.d Service (System V)].
-
-==== Configuration example for the provider `domainrobot'
+=== Configuration example for the provider `domainrobot'
 
 This is a minimal configuration example for your individual properties
 file _dyndrest.yml_ using the provider _domainrobot_:
@@ -162,15 +136,42 @@ domainrobot:
         - myhost:1234567890abcdef
 ----
 
-The `zone' section defines a host `myhost.dynhost.info` with the
+The `zone` section defines a host `myhost.dynhost.info` with the
 api-token `1234567890abcdef`.
 
-____
-This project uses _spring-doc_ to document the routes. The endpoints for
-this and the _swagger-ui_ are disabled by default!
-____
+====
+This project uses _spring-doc_ to document the routes. The endpoints for this and the _swagger-ui_ are disabled by default!
+====
 
-=== Routes
+== Start
+
+The fully executable jar can be executed in different ways.
+
+=== by Command Line
+
+The start by command line looks like:
+
+[source,bash]
+----
+cd /opt/dyndrest/
+java -jar dyndrest.jar --logging.config=logback.xml
+----
+
+=== by systemd Service
+
+DynDRest can also be started easily as a systemd service. An example for
+the desired service configuration can be found at the wiki article
+https://github.com/th-schwarz/DynDRest/wiki/systemd-Service-Configuration[systemd
+Service Configuration].
+
+=== by init.d Service
+
+Another possibility to start DynDRest is as `init.d` service. Further
+information can be found at the documentation of spring boot,
+https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#deployment.installing.nix-services.init-d[Installation
+as an init.d Service (System V)].
+
+== Routes
 
 All routes are secured by basic-auth. A detailed description of the
 routes can be found at the
@@ -186,13 +187,13 @@ basic-auth and can be configured by setting the two properties
 It is enabled by default but it can be disabled by setting the property
 `dyndrest.update-log-page-enabled=false`.
 
-=== Suggested AutoDNS setup
+== Suggested AutoDNS setup
 
 For security reasons, it makes sense to create a separate owner for the
 zone updated by DynDRest. This owner just needs the permission for
 zone-info and zone-updates!
 
-=== Setup a router for dynamic DNS
+== Setup a router for dynamic DNS
 
 As an example, let’s have a look at the setup of dynamic DNS in the
 https://service.avm.de/help/en/FRITZ-Box-7530/019p2/hilfe_dyndns[Fritz!Box
