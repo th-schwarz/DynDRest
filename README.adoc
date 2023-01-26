@@ -152,6 +152,12 @@ api-token `1234567890abcdef`.
 This project uses _spring-doc_ to document the routes. The endpoints for this and the _swagger-ui_ are disabled by default!
 ====
 
+==== Suggested AutoDNS setup
+
+For security reasons, it makes sense to create a separate owner for the
+zone updated by DynDRest. This owner just needs the permission for
+zone-info and zone-updates!
+
 == Start
 
 The fully executable jar can be executed in different ways.
@@ -195,12 +201,6 @@ basic-auth and can be configured by setting the two properties
 `dyndrest.update-log-user-name` and `dyndrest.update-log-user-password`.
 It is enabled by default but it can be disabled by setting the property
 `dyndrest.update-log-page-enabled=false`.
-
-== Suggested AutoDNS setup
-
-For security reasons, it makes sense to create a separate owner for the
-zone updated by DynDRest. This owner just needs the permission for
-zone-info and zone-updates!
 
 == Setup a router for dynamic DNS
 
