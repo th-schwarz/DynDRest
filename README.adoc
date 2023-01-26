@@ -1,0 +1,205 @@
+== DynDRest
+
+Dynamic DNS Rest service
+
+image:https://github.com/th-schwarz/DynDRest/actions/workflows/maven.yml/badge.svg[Build
+Status]
+https://github.com/th-schwarz/DynDRest/blob/develop/LICENSE[image:https://img.shields.io/github/license/th-schwarz/DynDRest[GitHub
+license]]
+
+https://sonarcloud.io/dashboard?id=th-schwarz_DynDRest[image:https://sonarcloud.io/api/project_badges/measure?project=th-schwarz_DynDRest&metric=alert_status[Quality
+Gate Status]]
+https://sonarcloud.io/dashboard?id=th-schwarz_DynDRest[image:https://sonarcloud.io/api/project_badges/measure?project=th-schwarz_DynDRest&metric=security_rating[Security
+Rating]]
+https://sonarcloud.io/summary/new_code?id=th-schwarz_DynDRest[image:https://sonarcloud.io/api/project_badges/measure?project=th-schwarz_DynDRest&metric=coverage[Coverage]]
+https://sonarcloud.io/dashboard?id=th-schwarz_DynDRest[image:https://sonarcloud.io/api/project_badges/measure?project=th-schwarz_DynDRest&metric=ncloc[Lines
+of Code]]
+https://sonarcloud.io/summary/new_code?id=th-schwarz_DynDRest[image:https://sonarcloud.io/api/project_badges/measure?project=th-schwarz_DynDRest&metric=code_smells[Code
+Smells]]
+
+Give it a try!
+https://github.com/th-schwarz/DynDRest/releases[image:https://img.shields.io/github/v/release/th-schwarz/DynDRest?include_prereleases[GitHub
+release (latest by date including pre-releases)]]
+
+DynDRest is a simple REST-service for dynamic DNS and is a more general
+variant of https://github.com/th-schwarz/DDAuto[DDAuto]. The basic idea
+is to have multiple implementations of different dns providers.
+https://www.internetx.com/en/domains/autodns[AutoDNS] will be one of
+them.
+
+The restful-api can be used with many routers, for example the AVM
+Fritz!Box. DynDRest can be executed by `commandline`, `init.d` or
+`systemd`.
+
+If you find a bug or certain features are missing, don’t hesitate to
+file an issue on https://github.com/th-schwarz/DynDRest/issues[Github].
+
+DynDRest is kindly supported by
+
+image::https://resources.jetbrains.com/storage/products/company/brand/logos/IntelliJ_IDEA.png[IntelliJ IDEA logo,250,link="https://jb.gg/OpenSourceSupport"]
+
+
+=== Disclaimer
+
+I’m not responsible for any data loss, hardware damage or broken
+keyboards. This guide comes without any warranty!
+
+=== Big Picture
+
+DynDRest is running as a service. A client can access the service via
+url and basic-auth. Let’s assume DynDRest is running on `localhost`,
+then we can update the IPv4 and IPv6 address of the host
+_mydyndns.domain.com_ by calling the following curl command:
+
+[source,bash]
+----
+curl -u dyndns:test123 -i \
+   "http://localhost:8081/update/mydyndns.domain.com/?apitoken=1234567890abcdf&ipv4=127.1.2.4&ipv6=2a03:4000:41:32::2"
+----
+
+For each host an api-token must be defined. If the api-token doesn’t
+match the host, the update will be failed. Due to this security feature,
+DynDRest can be used by different people. They can’t update the IPs each
+other.
+
+=== Setup & Configuration
+
+DynDRest is a spring boot application, that’s why the application is
+extremely customizable just by configuration! Details of the
+configuration can be found here:
+https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#application-properties
+and
+https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#actuator.monitoring.customizing-management-server-port
+
+____
+Side note: To avoid the use of the java keystore tool, DynDRest could be
+run behind a proxy. Corresponding headers are set by default.
+____
+
+==== File Structure
+
+Here is the suggested file structure:
+
+[source,bash]
+----
+├── /opt/dyndrest
+│   ├── dyndrest.yml
+│   ├── dyndrest-0.1.0.jar
+│   ├── dyndrest.jar -> dyndrest-0.1.0.jar
+│   ├── dyndrest-update.log   (log of the updates)
+│   ├── logback.xml         (logback configuration for application and update logoging, optional)
+│   ├── logback-update.xml  (extra logback configuration for update logging, optional include)
+----
+
+*dyndrest.yml* defines the individual properties and will be merged with
+the default properties in the classpath, therefore the file can be kept
+as small as possible. A minimal configuration example can be found
+further below. If the file is inside the working directory, it is loaded
+automatically. The complete configuration setings can be found
+https://github.com/th-schwarz/DynDRest/wiki/DynDRest-Configuration[here].
+Important: The basic-auth, the api-tokens and the credentials for
+AutoDNS should be defined in this file!
+
+The configuration of Logback can be split into two files, one for the
+application logging (*logback.xml*) and one for a the well-formatted
+zone update log (*logback-update.xml*). The second one is the one on
+which the log view is based. For further information have look at the
+https://github.com/th-schwarz/DynDRest/wiki/Logback-Configuration[Logback
+Configuration] wiki article.
+
+==== Start
+
+The fully executable jar can be executed in different ways.
+
+===== by Command Line
+
+The start by command line looks like:
+
+[source,bash]
+----
+cd /opt/dyndrest/
+java -jar dyndrest.jar --logging.config=logback.xml
+----
+
+===== by systemd Service
+
+DynDRest can also be started easily as a systemd service. An example for
+the desired service configuration can be found at the wiki article
+https://github.com/th-schwarz/DynDRest/wiki/systemd-Service-Configuration[systemd
+Service Configuration].
+
+===== by init.d Service
+
+Another possibility to start DynDRest is as `init.d` service. Further
+information can be found at the documentation of spring boot,
+https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#deployment.installing.nix-services.init-d[Installation
+as an init.d Service (System V)].
+
+==== Configuration example for the provider `domainrobot'
+
+This is a minimal configuration example for your individual properties
+file _dyndrest.yml_ using the provider _domainrobot_:
+
+[source,yaml]
+----
+spring:
+  security:
+    user:
+      name: dyndns
+      password: test123
+
+dyndrest:
+  provider: domainrobot
+
+domainrobot:
+  autodns:
+    password: pwd_t
+    user: user_t
+  zones:
+    - name: dynhost.info
+      ns: ns.domain.info
+      hosts:
+        - myhost:1234567890abcdef
+----
+
+The `zone' section defines a host `myhost.dynhost.info` with the
+api-token `1234567890abcdef`.
+
+____
+This project uses _spring-doc_ to document the routes. The endpoints for
+this and the _swagger-ui_ are disabled by default!
+____
+
+=== Routes
+
+All routes are secured by basic-auth. A detailed description of the
+routes can be found at the
+https://htmlpreview.github.io/?https://github.com/th-schwarz/DynDRest/blob/develop/docs/index.html[OAS3
+documentation].
+
+There are two additional routes which deliver web pages: * [/]: A simple
+greeting page which is enabled by default. It can be disabled by setting
+the property `dyndrest.greeting-enabled=false`. * [/log]: Delivers a
+simple web page to view the zone update logs and is secured by
+basic-auth and can be configured by setting the two properties
+`dyndrest.update-log-user-name` and `dyndrest.update-log-user-password`.
+It is enabled by default but it can be disabled by setting the property
+`dyndrest.update-log-page-enabled=false`.
+
+=== Suggested AutoDNS setup
+
+For security reasons, it makes sense to create a separate owner for the
+zone updated by DynDRest. This owner just needs the permission for
+zone-info and zone-updates!
+
+=== Setup a router for dynamic DNS
+
+As an example, let’s have a look at the setup of dynamic DNS in the
+https://service.avm.de/help/en/FRITZ-Box-7530/019p2/hilfe_dyndns[Fritz!Box
+7590]. The following settngs are required: * _DynDNS Provider:_
+User-defined * _Domain name:_ The hostname for which the IPs should be
+updated. * _Username / Password:_ The credentials for basic-auth. *
+_Update-URL:_
+[your-host:port]/update/<domain>/?apitoken=[yourApitoken]&ipv4=<ipaddr>&ipv6=<ip6addr>
+If both IP parameters are omitted, an attempt is made to fetch the
+remote IP.
