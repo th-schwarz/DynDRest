@@ -1,5 +1,7 @@
 = DynDRest
 
+:toc:
+
 == Abstract
 
 Dynamic DNS Rest service
