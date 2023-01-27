@@ -7,11 +7,9 @@
 
 = DynDRest
 
-:toc:
-
-== Abstract
-
 Dynamic DNS Rest service
+
+:toc:
 
 image:https://github.com/th-schwarz/DynDRest/actions/workflows/maven.yml/badge.svg[Build
 Status]
@@ -31,6 +29,8 @@ Smells]]
 Give it a try!
 https://github.com/th-schwarz/DynDRest/releases[image:https://img.shields.io/github/v/release/th-schwarz/DynDRest?include_prereleases[GitHub
 release (latest by date including pre-releases)]]
+
+== Abstract
 
 DynDRest is a simple REST-service for dynamic DNS and is a more general
 variant of https://github.com/th-schwarz/DDAuto[DDAuto]. The basic idea
