@@ -118,7 +118,7 @@ which the log view is based. For further information have look at the
 https://github.com/th-schwarz/DynDRest/wiki/Logback-Configuration[Logback
 Configuration] wiki article.
 
-=== Configuration example for the provider `domainrobot'
+=== Configuration example for the provider 'domainrobot'
 
 This is a minimal configuration example for your individual properties
 file _dyndrest.yml_ using the provider _domainrobot_:
