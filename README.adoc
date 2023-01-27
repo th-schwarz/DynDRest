@@ -7,9 +7,9 @@
 
 = DynDRest
 
-Dynamic DNS Rest service
-
 :toc:
+
+A Simple Dynamic DNS Rest Service
 
 image:https://github.com/th-schwarz/DynDRest/actions/workflows/maven.yml/badge.svg[Build
 Status]
