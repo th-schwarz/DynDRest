@@ -253,7 +253,7 @@
 						<configuration>
 							<inputSpec>${openapi.outputDir}/${openapi.outputFile}</inputSpec>
 							<language>html2</language>
-							<output>${project.basedir}/docs</output>
+							<output>${project.basedir}/docs/openapi</output>
 						</configuration>
 					</execution>
 				</executions>

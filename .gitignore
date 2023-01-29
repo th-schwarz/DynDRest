@@ -9,8 +9,8 @@ pom.xml.*
 /info.txt
 /logback.xml
 /logback-update.xml
-/docs/.swagger-codegen/
-/docs/.swagger-codegen-ignore
 /dyndrest.yml
 /dyndrest-update*
 /domainrobot.yml
+/docs/openapi/.swagger-codegen/
+/docs/openapi/.swagger-codegen-ignore
