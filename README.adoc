@@ -161,7 +161,7 @@ java -jar dyndrest.jar --logging.config=logback.xml
 === by systemd Service
 
 DynDRest can also be started easily as a systemd service. An example for
-the desired service configuration can be found at the wiki article
+the desired service configuration can be found at the documentation
 link:docs/systemd-configuration.adoc[systemd
 Service Configuration].
 
