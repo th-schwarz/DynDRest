@@ -76,8 +76,7 @@ extremely customizable just by configuration! Details of the
 configuration can be found here in https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#application-properties[Appendix A: Common Application Properties] of the spring boot reference documentation.
 
 ====
-Side note: To avoid the use of the java keystore tool, DynDRest could be
-run behind a proxy. Corresponding headers are set by default.
+To avoid the use of the java keystore tool, DynDRest could be run behind a proxy. Corresponding headers are set by default.
 ====
 
 === File Structure
