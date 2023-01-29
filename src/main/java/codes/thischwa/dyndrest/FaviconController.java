@@ -5,6 +5,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+/**
+ * Controller for favicon.ico, just for reducing 404 errors in the logs.
+ */
 @Controller
 public class FaviconController {
 
@@ -12,6 +15,5 @@ public class FaviconController {
 	@GetMapping("favicon.ico")
 	@ResponseBody
 	void returnNoFavicon() {
-		// just for reducing 404 errors in the logs
 	}
 }
