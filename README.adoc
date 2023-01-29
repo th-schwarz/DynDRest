@@ -1,6 +1,7 @@
 :toc:
 :toc-title:
-:source-highlighter: prettify
+:source-highlighter: highlightjs
+:highlightjs-languages: yaml,console
 
 = DynDRest
 
@@ -57,7 +58,7 @@ url and basic-auth. Let’s assume DynDRest is running on `localhost`,
 then we can update the IPv4 and IPv6 address of the host
 _mydyndns.domain.com_ by calling the following curl command:
 
-[source,bash]
+[source,console]
 ----
 curl -u dyndns:test123 -i \
    "http://localhost:8081/update/mydyndns.domain.com/?apitoken=1234567890abcdf&ipv4=127.1.2.4&ipv6=2a03:4000:41:32::2"
@@ -98,8 +99,7 @@ Here is the suggested file structure:
 the default properties in the classpath, therefore the file can be kept
 as small as possible. A minimal configuration example can be found
 further below. If the file is inside the working directory, it is loaded
-automatically. The complete configuration setings can be found
-https://github.com/th-schwarz/DynDRest/wiki/DynDRest-Configuration[here].
+automatically. The complete configuration setings can be found link:docs/dyndrest-configuration.adoc[here].
 Important: The basic-auth, the api-tokens and the credentials for
 AutoDNS should be defined in this file!
 
@@ -107,13 +107,12 @@ The configuration of Logback can be split into two files, one for the
 application logging (*logback.xml*) and one for a the well-formatted
 zone update log (*logback-update.xml*). The second one is the one on
 which the log view is based. For further information have look at the
-https://github.com/th-schwarz/DynDRest/wiki/Logback-Configuration[Logback
-Configuration] wiki article.
+link:docs/logback-configuration.adoc[Logback Configuration] documentation.
 
 === Configuration example for the provider 'domainrobot'
 
 This is a minimal configuration example for your individual properties
-file _dyndrest.yml_ using the provider _domainrobot_:
+file `dyndrest.yml` using the provider _domainrobot_:
 
 [source,yaml]
 ----
@@ -168,7 +167,7 @@ java -jar dyndrest.jar --logging.config=logback.xml
 
 DynDRest can also be started easily as a systemd service. An example for
 the desired service configuration can be found at the wiki article
-https://github.com/th-schwarz/DynDRest/wiki/systemd-Service-Configuration[systemd
+link:docs/systemd-configuration.adoc[systemd
 Service Configuration].
 
 === by init.d Service

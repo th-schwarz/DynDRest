@@ -1,0 +1,69 @@
+:source-highlighter: highlightjs
+:highlightjs-languages: yaml
+
+= DynDRest Configuration
+
+All configuration properties with default settings:
+
+[source,yaml]
+----
+## server settings
+server:
+  address: 127.0.0.1
+  forward-headers-strategy: NATIVE
+  port: 8081
+  servlet:
+    context-path: /
+  shutdown: graceful
+
+## dyndrest config
+dyndrest:
+  greeting-enabled: true
+  host-validation-enabled: true
+  update-log-page-enabled: false
+  update-log-page-size: 30
+  update-log-user-name: log-dev
+  update-log-user-password: l0g-dev
+  update-log-pattern: (.*)\s+-\s+([a-zA-Z\.-]*)\s+(\S*)\s+(\S*)
+  update-log-date-pattern: yyyy-MM-dd HH:mm:SSS
+  update-log-file-pattern: ./dyndrest-update*
+
+## disable springdoc endpoints and swagger-ui by default
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+domainrobot:
+  default-ttl: 60
+  ## credentials for the domainrobot sdk
+  autodns:
+    context: 4
+    url: https://api.autodns.com/v1
+
+# ---------------------- non-default section -------------------
+    password: pwd_t
+    user: user_t
+  zones:
+    - name: dynhost0.info
+      ns: ns0.domain.info
+      hosts:
+        - my0:1234567890abcdef
+        - test0:1234567890abcdx
+    - name: dynhost1.info
+      ns: ns1.domain.info
+      hosts:
+        - my1:1234567890abcdef
+        - test1:1234567890abcdx
+
+## spring security
+  security:
+    user:
+      name: dyndns
+      password: test123
+----
+
+====
+Important: Keep in mind, you just have to set those properties you want to override! Your individual configuration is defined in `dyndrest.yml` inside the application directory. To load an other file you could set the following property on start: `spring.config.import: optional:file:/yourPath/yourFile`
+====
