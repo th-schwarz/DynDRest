@@ -64,7 +64,4 @@ domainrobot:
       password: test123
 ----
 
-[Note]
-====
-Important: Keep in mind, you just have to set those properties you want to override! Your individual configuration is defined in `dyndrest.yml` inside the application directory. To load an other file you could set the following property on start: `spring.config.import: optional:file:/yourPath/yourFile`
-====
+IMPORTANT: Keep in mind, you just have to set those properties you want to override! Your individual configuration is defined in `dyndrest.yml` inside the application directory. To load an other file you could set the following property on start: `spring.config.import: optional:file:/yourPath/yourFile`
