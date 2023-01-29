@@ -77,10 +77,7 @@ other.
 
 DynDRest is a spring boot application, that’s why the application is
 extremely customizable just by configuration! Details of the
-configuration can be found here:
-https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#application-properties
-and
-https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#actuator.monitoring.customizing-management-server-port
+configuration can be found here in https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#application-properties[Appendix A: Common Application Properties] of the spring boot reference documentation.
 
 ====
 Side note: To avoid the use of the java keystore tool, DynDRest could be
@@ -193,9 +190,12 @@ routes can be found at the
 https://htmlpreview.github.io/?https://github.com/th-schwarz/DynDRest/blob/develop/docs/index.html[OAS3
 documentation].
 
-There are two additional routes which deliver web pages: * [/]: A simple
+There are two additional routes which deliver web pages:
+
+* [/]: A simple
 greeting page which is enabled by default. It can be disabled by setting
-the property `dyndrest.greeting-enabled=false`. * [/log]: Delivers a
+the property `dyndrest.greeting-enabled=false`.
+* [/log]: Delivers a
 simple web page to view the zone update logs and is secured by
 basic-auth and can be configured by setting the two properties
 `dyndrest.update-log-user-name` and `dyndrest.update-log-user-password`.
@@ -206,10 +206,14 @@ It is enabled by default but it can be disabled by setting the property
 
 As an example, let’s have a look at the setup of dynamic DNS in the
 https://service.avm.de/help/en/FRITZ-Box-7530/019p2/hilfe_dyndns[Fritz!Box
-7590]. The following settngs are required: * _DynDNS Provider:_
-User-defined * _Domain name:_ The hostname for which the IPs should be
-updated. * _Username / Password:_ The credentials for basic-auth. *
-_Update-URL:_
+7590]. The following settngs are required:
+
+* _DynDNS Provider:_
+User-defined
+* _Domain name:_ The hostname for which the IPs should be
+updated.
+* _Username / Password:_ The credentials for basic-auth.
+* _Update-URL:_
 [your-host:port]/update/<domain>/?apitoken=[yourApitoken]&ipv4=<ipaddr>&ipv6=<ip6addr>
 If both IP parameters are omitted, an attempt is made to fetch the
 remote IP.
