@@ -1,13 +1,8 @@
-:version-label: current
 :toc:
-:project_id: dyndrest
-:icons: font
+:toc-title:
 :source-highlighter: prettify
-:tags: java,dyndns
 
 = DynDRest
-
-:toc:
 
 A Simple Dynamic DNS Rest Service
 
