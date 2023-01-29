@@ -3,9 +3,7 @@
 :source-highlighter: highlightjs
 :highlightjs-languages: yaml,console
 
-= DynDRest
-
-A Simple Dynamic DNS Rest Service
+= DynDRest :: A Simple Dynamic DNS Rest Service
 
 image:https://github.com/th-schwarz/DynDRest/actions/workflows/maven.yml/badge.svg[Build
 Status]
