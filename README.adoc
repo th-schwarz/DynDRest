@@ -75,9 +75,7 @@ DynDRest is a spring boot application, that’s why the application is
 extremely customizable just by configuration! Details of the
 configuration can be found here in https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#application-properties[Appendix A: Common Application Properties] of the spring boot reference documentation.
 
-====
-To avoid the use of the java keystore tool, DynDRest could be run behind a proxy. Corresponding headers are set by default.
-====
+NOTE: To avoid the use of the java keystore tool, DynDRest could be run behind a proxy. Corresponding headers are set by default.
 
 === File Structure
 
@@ -138,9 +136,7 @@ domainrobot:
 The `zone` section defines a host `myhost.dynhost.info` with the
 api-token `1234567890abcdef`.
 
-====
-This project uses _spring-doc_ to document the routes. The endpoints for this and the _swagger-ui_ are disabled by default!
-====
+NOTE: This project uses _spring-doc_ to document the routes. The endpoints for this and the _swagger-ui_ are disabled by default!
 
 ==== Suggested AutoDNS setup
 
