@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.UnknownHostException;
 
 @RestController
@@ -34,8 +36,8 @@ public class ApiController implements ApiRoutes {
 	}
 
 	@Override
-	public void update(String host, String apitoken, String ipv4Str, String ipv6Str, HttpServletRequest req) {
-		log.debug("entered #update: host={}, apitoken={}, ipv4={}, ipv6={}", host, apitoken, ipv4Str, ipv6Str);
+	public void update(String host, String apitoken, Inet4Address ipv4, Inet6Address ipv6, HttpServletRequest req) {
+		log.debug("entered #update: host={}, apitoken={}, ipv4={}, ipv6={}", host, apitoken, ipv4, ipv6);
 
 		// validation
 		if(!provider.hostExists(host))
@@ -44,15 +46,8 @@ public class ApiController implements ApiRoutes {
 			log.warn("Unknown apitoken {} for host {}.", apitoken, host);
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 		}
-		IpSetting reqIpSetting;
-		try {
-			reqIpSetting = new IpSetting(ipv4Str, ipv6Str);
-		} catch (UnknownHostException e) {
-			log.warn("IP setting is invalid! ipv4={}, ipv6={}", ipv4Str, ipv6Str);
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-		}
-
-		if(ipv4Str == null && ipv6Str == null) {
+		IpSetting reqIpSetting = new IpSetting(ipv4, ipv6);
+		if(ipv4 == null && ipv6 == null) {
 			log.debug("Both IP parameters are null, try to fetch the remote IP.");
 			String remoteIP = req.getRemoteAddr();
 			if(remoteIP == null || !NetUtil.isIP(remoteIP)) {
@@ -75,7 +70,7 @@ public class ApiController implements ApiRoutes {
 				log.debug("IPs haven't changed for {}, no update required!", host);
 			} else {
 				provider.processUpdate(host, reqIpSetting);
-				log.info("Updated host {} successful with IP settings: {}", host, reqIpSetting);
+				log.info("Updated host {} successful with: {}", host, reqIpSetting);
 				updateLogger.log(host, reqIpSetting);
 			}
 		} catch (ProviderException e) {

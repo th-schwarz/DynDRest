@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 
 //@formatter:off
 @OpenAPIDefinition(
@@ -53,7 +55,7 @@ interface ApiRoutes {
 			@Parameter(description = "The host, for which the IPs must be updated.", content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE, examples = {
 					@ExampleObject(value = "mydyndns.domain.com") })) @PathVariable String host,
 			@Parameter(description = "The 'apitoken' which belongs to the 'host'.", content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE)) @RequestParam String apitoken,
-			@RequestParam(name = "ipv4", required = false) String ipv4Str, @RequestParam(name = "ipv6", required = false) String ipv6Str,
+			@RequestParam(name = "ipv4", required = false) Inet4Address ipv4Str, @RequestParam(name = "ipv6", required = false) Inet6Address ipv6Str,
 			HttpServletRequest req);
 
 	@Operation(summary = "Determine the IP settings of the 'host' and returns it in a JSON object.")

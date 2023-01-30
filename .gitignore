@@ -6,11 +6,12 @@ pom.xml.*
 /.factorypath
 /.springBeans
 /.idea
+
+# local files
 /info.txt
 /logback.xml
 /logback-update.xml
 /dyndrest.yml
-/dyndrest-update*
+/dyndrest-update**
 /domainrobot.yml
-/docs/openapi/.swagger-codegen/
-/docs/openapi/.swagger-codegen-ignore
+/docs/openapi/.swagger-codegen**

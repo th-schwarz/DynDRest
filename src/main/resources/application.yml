@@ -26,7 +26,7 @@ springdoc:
 
 domainrobot:
   default-ttl: 60
-  ## credentials for the domainrobot sdk
+  ## base properties for the domainrobot sdk
   autodns:
     context: 4
     url: https://api.autodns.com/v1
@@ -35,10 +35,3 @@ domainrobot:
 spring:
   config:
     import: optional:file:./dyndrest.yml
-
-# must be set by the individual properties file
-# spring security
-#  security:
-#    user:
-#      name: dyndns
-#      password: test123
