@@ -16,30 +16,35 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addFormatters(FormatterRegistry registry) {
-		registry.addConverter(new Converter<String, Inet4Address>() {
-			@Override
-			public Inet4Address convert(String from) {
-				if(ObjectUtils.isEmpty(from))
-					return null;
-				try {
-					return (Inet4Address) InetAddress.getByName(from);
-				} catch (UnknownHostException e) {
-					throw new IllegalArgumentException(e);
-				}
-			}
-		});
+		// can't be implemented in a generic way, otherwise application context won't be initialized!
+		registry.addConverter(new Inet4AdrConverter());
+		registry.addConverter(new Inet6AdrConverter());
+	}
 
-		registry.addConverter(new Converter<String, Inet6Address>() {
-			@Override
-			public Inet6Address convert(String from) {
-				if(ObjectUtils.isEmpty(from))
-					return null;
-				try {
-					return (Inet6Address) InetAddress.getByName(from);
-				} catch (UnknownHostException e) {
-					throw new IllegalArgumentException(e);
-				}
+	private static class Inet4AdrConverter implements Converter<String, Inet4Address> {
+
+		@Override
+		public Inet4Address convert(String source) {
+			if(ObjectUtils.isEmpty(source))
+				return null;
+			try {
+				return (Inet4Address) InetAddress.getByName(source);
+			} catch (UnknownHostException e) {
+				throw new IllegalArgumentException(e);
 			}
-		});
+		}
+	}
+	private static class Inet6AdrConverter implements Converter<String, Inet6Address> {
+
+		@Override
+		public Inet6Address convert(String source) {
+			if(ObjectUtils.isEmpty(source))
+				return null;
+			try {
+				return (Inet6Address) InetAddress.getByName(source);
+			} catch (UnknownHostException e) {
+				throw new IllegalArgumentException(e);
+			}
+		}
 	}
 }
