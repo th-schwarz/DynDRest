@@ -16,23 +16,29 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addFormatters(FormatterRegistry registry) {
-		registry.addConverter((Converter<String, Inet4Address>) from -> {
-			if(ObjectUtils.isEmpty(from))
-				return null;
-			try {
-				return (Inet4Address) InetAddress.getByName(from);
-			} catch (UnknownHostException e) {
-				throw new IllegalArgumentException(e);
+		registry.addConverter(new Converter<String, Inet4Address>() {
+			@Override
+			public Inet4Address convert(String from) {
+				if(ObjectUtils.isEmpty(from))
+					return null;
+				try {
+					return (Inet4Address) InetAddress.getByName(from);
+				} catch (UnknownHostException e) {
+					throw new IllegalArgumentException(e);
+				}
 			}
 		});
 
-		registry.addConverter((Converter<String, Inet6Address>) from -> {
-			if(ObjectUtils.isEmpty(from))
-				return null;
-			try {
-				return (Inet6Address) InetAddress.getByName(from);
-			} catch (UnknownHostException e) {
-				throw new IllegalArgumentException(e);
+		registry.addConverter(new Converter<String, Inet6Address>() {
+			@Override
+			public Inet6Address convert(String from) {
+				if(ObjectUtils.isEmpty(from))
+					return null;
+				try {
+					return (Inet6Address) InetAddress.getByName(from);
+				} catch (UnknownHostException e) {
+					throw new IllegalArgumentException(e);
+				}
 			}
 		});
 	}
