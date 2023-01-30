@@ -47,7 +47,7 @@ public class ApiController implements ApiRoutes {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 		}
 		IpSetting reqIpSetting = new IpSetting(ipv4, ipv6);
-		if(ipv4 == null && ipv6 == null) {
+		if(reqIpSetting.isNotSet()) {
 			log.debug("Both IP parameters are null, try to fetch the remote IP.");
 			String remoteIP = req.getRemoteAddr();
 			if(remoteIP == null || !NetUtil.isIP(remoteIP)) {
