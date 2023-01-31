@@ -6,8 +6,6 @@ import org.springframework.format.FormatterRegistry;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.net.Inet4Address;
-import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -16,32 +14,17 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addFormatters(FormatterRegistry registry) {
-		// can't be implemented in a generic way, otherwise application context won't be initialized!
-		registry.addConverter(new Inet4AdrConverter());
-		registry.addConverter(new Inet6AdrConverter());
+		registry.addConverter(new InetAdrConverter());
 	}
 
-	private static class Inet4AdrConverter implements Converter<String, Inet4Address> {
+	private static class InetAdrConverter implements Converter<String, InetAddress> {
 
 		@Override
-		public Inet4Address convert(String source) {
+		public InetAddress convert(String source) {
 			if(ObjectUtils.isEmpty(source))
 				return null;
 			try {
-				return (Inet4Address) InetAddress.getByName(source);
-			} catch (UnknownHostException e) {
-				throw new IllegalArgumentException(e);
-			}
-		}
-	}
-	private static class Inet6AdrConverter implements Converter<String, Inet6Address> {
-
-		@Override
-		public Inet6Address convert(String source) {
-			if(ObjectUtils.isEmpty(source))
-				return null;
-			try {
-				return (Inet6Address) InetAddress.getByName(source);
+				return InetAddress.getByName(source);
 			} catch (UnknownHostException e) {
 				throw new IllegalArgumentException(e);
 			}

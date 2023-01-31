@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.Inet4Address;
-import java.net.Inet6Address;
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 @RestController
@@ -36,7 +35,7 @@ public class ApiController implements ApiRoutes {
 	}
 
 	@Override
-	public void update(String host, String apitoken, Inet4Address ipv4, Inet6Address ipv6, HttpServletRequest req) {
+	public void update(String host, String apitoken, InetAddress ipv4, InetAddress ipv6, HttpServletRequest req) {
 		log.debug("entered #update: host={}, apitoken={}, ipv4={}, ipv6={}", host, apitoken, ipv4, ipv6);
 
 		// validation

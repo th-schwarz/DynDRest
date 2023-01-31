@@ -31,17 +31,19 @@ public class IpSetting {
 			ipv6 = (Inet6Address) InetAddress.getByName(ipv6Str);
 	}
 
-	public IpSetting(Inet4Address ipv4, Inet6Address ipv6) {
-		this.ipv4 = ipv4;
-		this.ipv6 = ipv6;
-	}
-
 	public IpSetting(String ipStr) throws UnknownHostException {
 		InetAddress ip = InetAddress.getByName(ipStr);
 		if(ip instanceof Inet4Address)
 			this.ipv4 = (Inet4Address) ip;
 		else
 			this.ipv6 = (Inet6Address) ip;
+	}
+
+	public IpSetting(InetAddress ipv4, InetAddress ipv6) {
+		if(ipv4 instanceof Inet4Address)
+			this.ipv4 = (Inet4Address) ipv4;
+		if(ipv6 instanceof Inet6Address)
+			this.ipv6 = (Inet6Address) ipv6;
 	}
 
 	public boolean isNotSet() {
