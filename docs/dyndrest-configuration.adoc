@@ -18,6 +18,7 @@ server:
 
 ## dyndrest config
 dyndrest:
+  provider: domainrobot
   greeting-enabled: true
   host-validation-enabled: true
   update-log-page-enabled: false
