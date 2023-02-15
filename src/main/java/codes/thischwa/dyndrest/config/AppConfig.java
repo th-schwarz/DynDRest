@@ -5,14 +5,12 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 /**
  * The base configuration of the application.
  */
 @Configuration
-@EnableConfigurationProperties
 @ConfigurationProperties(prefix = "dyndrest")
 @Slf4j
 @Getter

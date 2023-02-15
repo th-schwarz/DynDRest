@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import javax.validation.constraints.NotBlank;
@@ -14,7 +13,6 @@ import javax.validation.constraints.NotBlank;
  */
 @ConditionalOnProperty(name = "dyndrest.provider", havingValue = "domainrobot")
 @Configuration
-@EnableConfigurationProperties
 @ConfigurationProperties(prefix = "domainrobot.autodns")
 @Getter
 @Setter
