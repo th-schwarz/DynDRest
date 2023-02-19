@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import javax.validation.Valid;
@@ -19,7 +18,6 @@ import java.util.Set;
 
 @ConditionalOnProperty(name = "dyndrest.provider", havingValue = "domainrobot")
 @Configuration
-@EnableConfigurationProperties
 @ConfigurationProperties(prefix = "domainrobot")
 @Slf4j
 public class ZoneHostConfig implements InitializingBean {
