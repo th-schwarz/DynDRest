@@ -1,51 +1,37 @@
 package codes.thischwa.dyndrest.provider.impl.domainrobot;
 
-import codes.thischwa.dyndrest.config.AppConfig;
-import codes.thischwa.dyndrest.provider.Provider;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-import org.domainrobot.sdk.client.Domainrobot;
-import org.domainrobot.sdk.models.DomainRobotHeaders;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Bean;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import java.util.List;
 
 @ConditionalOnProperty(name = "dyndrest.provider", havingValue = "domainrobot")
 @Configuration
-@Slf4j
-public class DomainRobotConfig {
+@ConfigurationProperties(prefix = "domainrobot")
+class DomainRobotConfig {
 
-	private static final Map<String, String> customHeaders = new HashMap<>(Map.of(DomainRobotHeaders.DOMAINROBOT_HEADER_WEBSOCKET, "NONE"));
+	private @Getter @Setter int defaultTtl;
 
-	private final AppConfig appConfig;
+	@NotEmpty(message = "The zones of the AutoDNS configuration shouldn't be empty.") private @Getter @Setter List<Zone> zones;
 
-	private final AutoDnsConfig autoDnsConfig;
+	static class Zone {
 
-	private final ZoneHostConfig zoneHostConfig;
+		@NotBlank(message = "The name of the zone shouldn't be empty.") private @Getter @Setter String name;
 
-	@Value("${domainrobot.default-ttl}") private @Getter @Setter int defaultTtl;
+		@NotBlank(message = "The primary name server of the zone shouldn't be empty.") private @Getter @Setter String ns;
 
-	public DomainRobotConfig(AppConfig appConfig, AutoDnsConfig autoDnsConfig, ZoneHostConfig zoneHostConfig) {
-		this.appConfig = appConfig;
-		this.autoDnsConfig = autoDnsConfig;
-		this.zoneHostConfig = zoneHostConfig;
+		// is validated by DDAutoContext#readData
+		private @Getter List<String> hosts;
+
+		public void setHosts(@Valid List<String> host) {
+			this.hosts = host;
+		}
+
 	}
-
-	@Bean
-	public Provider provider() {
-		final ZoneClientWrapper zcw = buildZoneClientWrapper();
-		return new DomainRobotProvider(appConfig, zoneHostConfig, zcw);
-	}
-
-	ZoneClientWrapper buildZoneClientWrapper() {
-		return new ZoneClientWrapper(
-				new Domainrobot(autoDnsConfig.getUser(), String.valueOf(autoDnsConfig.getContext()), autoDnsConfig.getPassword(),
-						autoDnsConfig.getUrl()).getZone(), customHeaders, defaultTtl);
-	}
-
 }

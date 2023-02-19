@@ -20,7 +20,7 @@ class ZoneClientWrapperTest extends GenericIntegrationTest {
 	private static final int rrCount = 5;
 
 	@Autowired
-	private DomainRobotConfig domainRobotConfig;
+	private DomainRobotConfigurator domainRobotConfigurator;
 
 	private Zone zone;
 
@@ -32,7 +32,7 @@ class ZoneClientWrapperTest extends GenericIntegrationTest {
 				Objects.requireNonNull(this.getClass().getResourceAsStream("zone-info.json")).readAllBytes(), JsonResponseDataZone.class);
 		zone = response.getData().get(0);
 
-		zcw = domainRobotConfig.buildZoneClientWrapper();
+		zcw = domainRobotConfigurator.buildZoneClientWrapper();
 	}
 
 	@Test

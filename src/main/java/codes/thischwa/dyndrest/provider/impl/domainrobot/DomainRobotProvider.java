@@ -6,28 +6,29 @@ import codes.thischwa.dyndrest.provider.GenericProvider;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import lombok.extern.slf4j.Slf4j;
 import org.domainrobot.sdk.models.generated.Zone;
+import org.springframework.beans.factory.InitializingBean;
 
 import java.util.Set;
 
 @Slf4j
-public class DomainRobotProvider extends GenericProvider {
+class DomainRobotProvider extends GenericProvider implements InitializingBean {
 
 	private final AppConfig appConfig;
 
-	private final ZoneHostConfig zoneHostConfig;
+	private final DomainRobotConfigurator domainRobotConfigurator;
 
 	private final ZoneClientWrapper zcw;
 
-	DomainRobotProvider(AppConfig appConfig, ZoneHostConfig zoneHostConfig, ZoneClientWrapper zcw) {
+	DomainRobotProvider(AppConfig appConfig, DomainRobotConfigurator domainRobotConfigurator, ZoneClientWrapper zcw) {
 		this.appConfig = appConfig;
-		this.zoneHostConfig = zoneHostConfig;
+		this.domainRobotConfigurator = domainRobotConfigurator;
 		this.zcw = zcw;
 	}
 
 	@Override
 	public void validateHostConfiguration() throws IllegalArgumentException {
 		if(appConfig.isHostValidationEnabled()) {
-			zoneHostConfig.getConfiguredZones().forEach(this::checkZone);
+			domainRobotConfigurator.getConfiguredZones().forEach(this::checkZone);
 		}
 	}
 
@@ -47,7 +48,7 @@ public class DomainRobotProvider extends GenericProvider {
 
 	private void checkZone(String zoneStr) throws IllegalArgumentException {
 		try {
-			Zone zone = zcw.info(zoneStr, zoneHostConfig.getPrimaryNameServer(zoneStr));
+			Zone zone = zcw.info(zoneStr, domainRobotConfigurator.getPrimaryNameServer(zoneStr));
 			log.info("*** Zone confirmed: {}", zone.getOrigin());
 		} catch (ProviderException e) {
 			log.error("Error while getting zone info of " + zoneStr, e);
@@ -57,19 +58,24 @@ public class DomainRobotProvider extends GenericProvider {
 
 	@Override
 	public Set<String> getConfiguredHosts() {
-		return zoneHostConfig.getConfiguredHosts();
+		return domainRobotConfigurator.getConfiguredHosts();
 	}
 
 	@Override
 	public String getApitoken(String host) {
-		return zoneHostConfig.getApitoken(host);
+		return domainRobotConfigurator.getApitoken(host);
 	}
 
 	Zone zoneInfo(String host) throws ProviderException, IllegalArgumentException {
-		if(!zoneHostConfig.hostExists(host))
+		if(!domainRobotConfigurator.hostExists(host))
 			throw new IllegalArgumentException("Host isn't configured: " + host);
 		String zone = zcw.deriveZone(host);
-		String primaryNameServer = zoneHostConfig.getPrimaryNameServer(zone);
+		String primaryNameServer = domainRobotConfigurator.getPrimaryNameServer(zone);
 		return zcw.info(zone, primaryNameServer);
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		validateHostConfiguration();
 	}
 }

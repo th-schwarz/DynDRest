@@ -1,26 +1,26 @@
 package codes.thischwa.dyndrest.provider.impl.domainrobot;
 
-import lombok.Getter;
-import lombok.Setter;
+import codes.thischwa.dyndrest.config.AppConfig;
+import codes.thischwa.dyndrest.provider.Provider;
 import lombok.extern.slf4j.Slf4j;
+import org.domainrobot.sdk.client.Domainrobot;
+import org.domainrobot.sdk.models.DomainRobotHeaders;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 @ConditionalOnProperty(name = "dyndrest.provider", havingValue = "domainrobot")
-@Configuration
-@ConfigurationProperties(prefix = "domainrobot")
+@Component
 @Slf4j
-public class ZoneHostConfig implements InitializingBean {
+public class DomainRobotConfigurator implements InitializingBean {
+
+	private static final Map<String, String> customHeaders = new HashMap<>(Map.of(DomainRobotHeaders.DOMAINROBOT_HEADER_WEBSOCKET, "NONE"));
 
 	// <zone, ns>
 	private Map<String, String> zoneData = null;
@@ -28,7 +28,37 @@ public class ZoneHostConfig implements InitializingBean {
 	// <fqdn, apitoken>
 	private Map<String, String> apitokenData = null;
 
-	@NotEmpty(message = "The zones of the AutoDNS configuration shouldn't be empty.") private @Getter @Setter List<Zone> zones;
+	private final AppConfig appConfig;
+
+	private final AutoDnsConfig autoDnsConfig;
+
+	private final DomainRobotConfig domainRobotConfig;
+
+	public DomainRobotConfigurator(AppConfig appConfig, AutoDnsConfig autoDnsConfig, DomainRobotConfig domainRobotConfig) {
+		this.appConfig = appConfig;
+		this.autoDnsConfig = autoDnsConfig;
+		this.domainRobotConfig = domainRobotConfig;
+	}
+	
+	@Bean
+	Provider provider() {
+		final ZoneClientWrapper zcw = buildZoneClientWrapper();
+		return new DomainRobotProvider(appConfig, this, zcw);
+	}
+
+	ZoneClientWrapper buildZoneClientWrapper() {
+		return new ZoneClientWrapper(
+				new Domainrobot(autoDnsConfig.getUser(), String.valueOf(autoDnsConfig.getContext()), autoDnsConfig.getPassword(),
+						autoDnsConfig.getUrl()).getZone(), customHeaders, domainRobotConfig.getDefaultTtl());
+	}
+
+	@Override
+	public void afterPropertiesSet() {
+		readAndValidate();
+		log.info("*** Api-token and zone data are read and validated successful!");
+	}
+
+	public int getDefaultTtl() {return domainRobotConfig.getDefaultTtl();}
 
 	public Set<String> getConfiguredHosts() {
 		return apitokenData.keySet();
@@ -54,11 +84,6 @@ public class ZoneHostConfig implements InitializingBean {
 		return zoneData.get(zone);
 	}
 
-	@Override
-	public void afterPropertiesSet() {
-		readAndValidate();
-		log.info("*** Api-token and zone data are read and validated successful!");
-	}
 
 	void readAndValidate() {
 		read();
@@ -68,9 +93,9 @@ public class ZoneHostConfig implements InitializingBean {
 	void read() throws IllegalArgumentException {
 		apitokenData = new HashMap<>();
 		zoneData = new HashMap<>();
-		zones.forEach(this::readZoneConfig);
+		domainRobotConfig.getZones().forEach(this::readZoneConfig);
 	}
-	private void readZoneConfig(ZoneHostConfig.Zone zone) {
+	private void readZoneConfig(DomainRobotConfig.Zone zone) {
 		zoneData.put(zone.getName(), zone.getNs());
 		List<String> hostRawData = zone.getHosts();
 		if(hostRawData == null || hostRawData.isEmpty())
@@ -78,7 +103,7 @@ public class ZoneHostConfig implements InitializingBean {
 		hostRawData.forEach(hostRaw -> readHostString(hostRaw, zone));
 	}
 
-	private void readHostString(String hostRaw, Zone zone) {
+	private void readHostString(String hostRaw, DomainRobotConfig.Zone zone) {
 		String[] parts = hostRaw.split(":");
 		if(parts.length != 2)
 			throw new IllegalArgumentException(
@@ -95,18 +120,4 @@ public class ZoneHostConfig implements InitializingBean {
 		apitokenData.keySet().forEach(host -> log.info(" - {}", host));
 	}
 
-	public static class Zone {
-
-		@NotBlank(message = "The name of the zone shouldn't be empty.") private @Getter @Setter String name;
-
-		@NotBlank(message = "The primary name server of the zone shouldn't be empty.") private @Getter @Setter String ns;
-
-		// is validated by DDAutoContext#readData
-		private @Getter List<String> hosts;
-
-		public void setHosts(@Valid List<String> host) {
-			this.hosts = host;
-		}
-
-	}
 }

@@ -8,15 +8,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class AppConfigTest extends GenericIntegrationTest {
 
-	@Autowired private AppConfig config;
+	@Autowired private AppConfig appConfig;
 
 	@Test
 	final void test() {
-		assertEquals("domainrobot", config.getProvider());
-		assertFalse(config.isHostValidationEnabled());
-		assertTrue(config.isUpdateLogPageEnabled());
-		assertEquals("log-dev", config.getUpdateLogUserName());
-		assertEquals("l0g-dev", config.getUpdateLogUserPassword());
+		assertEquals("domainrobot", appConfig.getProvider());
+		assertFalse(appConfig.isHostValidationEnabled());
+		assertTrue(appConfig.isUpdateLogPageEnabled());
+		assertEquals("log-dev", appConfig.getUpdateLogUserName());
+		assertEquals("l0g-dev", appConfig.getUpdateLogUserPassword());
 	}
 
 }

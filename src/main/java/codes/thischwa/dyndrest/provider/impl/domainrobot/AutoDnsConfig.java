@@ -16,7 +16,7 @@ import javax.validation.constraints.NotBlank;
 @ConfigurationProperties(prefix = "domainrobot.autodns")
 @Getter
 @Setter
-public class AutoDnsConfig {
+class AutoDnsConfig {
 
 	private String url;
 
