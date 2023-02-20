@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 @Controller
 @ConditionalOnProperty(name = "dyndrest.update-log-page-enabled")
-public class UpdateLogContoller {
+public class UpdateLogController {
 
 	private final AppConfig config;
 
@@ -22,7 +22,7 @@ public class UpdateLogContoller {
 
 	@Value("${spring.security.user.password}") private String basicAuthPassword;
 
-	public UpdateLogContoller(AppConfig config) {
+	public UpdateLogController(AppConfig config) {
 		this.config = config;
 	}
 
