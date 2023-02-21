@@ -120,4 +120,8 @@ public class DomainRobotConfigurator implements InitializingBean {
 		apitokenData.keySet().forEach(host -> log.info(" - {}", host));
 	}
 
+	// just for testing
+	DomainRobotConfig getDomainRobotConfig() {
+		return domainRobotConfig;
+	}
 }

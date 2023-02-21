@@ -5,6 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -48,21 +51,21 @@ class DomainRobotConfiguratorTest extends GenericIntegrationTest {
 		config.validate();
 	}
 
-/*	@Test
+	@Test
 	final void testWrongHostFormat() {
 		String wrongHost = "wrong-formatted.host";
-		DomainRobotConfig.Zone z = config.getZones().get(0);
+		DomainRobotConfig.Zone z = config.getDomainRobotConfig().getZones().get(0);
 		z.getHosts().add(wrongHost);
-		assertThrows(IllegalArgumentException.class, zoneHostService::read);
+		assertThrows(IllegalArgumentException.class, config::read);
 		z.getHosts().remove(wrongHost);
 	}
 
 	@Test
 	final void testEmptyHosts() {
-		DomainRobotConfig.Zone z = config.getZones().get(1);
+		DomainRobotConfig.Zone z = config.getDomainRobotConfig().getZones().get(1);
 		List<String> hosts = new ArrayList<>(z.getHosts());
 		z.getHosts().clear();
-		assertThrows(IllegalArgumentException.class, zoneHostService::read);
+		assertThrows(IllegalArgumentException.class, config::read);
 		z.setHosts(hosts);
-	}*/
+	}
 }
