@@ -8,15 +8,22 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class AppConfigTest extends GenericIntegrationTest {
 
-	@Autowired private AppConfig appConfig;
+	@Autowired
+	private AppConfig config;
 
 	@Test
 	final void test() {
-		assertEquals("domainrobot", appConfig.getProvider());
-		assertFalse(appConfig.isHostValidationEnabled());
-		assertTrue(appConfig.isUpdateLogPageEnabled());
-		assertEquals("log-dev", appConfig.getUpdateLogUserName());
-		assertEquals("l0g-dev", appConfig.getUpdateLogUserPassword());
-	}
+		assertFalse(config.isHostValidationEnabled());
+		assertTrue(config.isGreetingEnabled());
 
+		assertEquals("domainrobot", config.getProvider());
+
+		assertEquals("file:target/test-classes/test-files/dyndrest-update*", config.getUpdateLogFilePattern());
+		assertEquals("(.*)\\s+-\\s+([a-zA-Z\\.-]*)\\s+(\\S*)\\s+(\\S*)", config.getUpdateLogPattern());
+		assertEquals("yyyy-MM-dd HH:mm:SSS", config.getUpdateLogDatePattern());
+		assertTrue(config.isUpdateLogPageEnabled());
+		assertEquals(4, config.getUpdateLogPageSize());
+		assertEquals("log-dev", config.getUpdateLogUserName());
+		assertEquals("l0g-dev", config.getUpdateLogUserPassword());
+	}
 }
