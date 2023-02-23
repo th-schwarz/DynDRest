@@ -3,6 +3,7 @@ package codes.thischwa.dyndrest.util;
 import codes.thischwa.dyndrest.model.IpSetting;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.xbill.DNS.*;
+import org.xbill.DNS.Record;
 
 import java.io.IOException;
 import java.net.Inet4Address;
@@ -71,9 +72,9 @@ public interface NetUtil {
 		return ipSetting;
 	}
 
-	private static Record lookup(String hostName, int type) throws IOException {
+	private static org.xbill.DNS.Record lookup(String hostName, int type) throws IOException {
 		try {
-			Record[] records = new Lookup(hostName, type).run();
+			org.xbill.DNS.Record[] records = new Lookup(hostName, type).run();
 			return (records == null || records.length == 0) ? null : records[0];
 		} catch (TextParseException e) {
 			throw new IOException(String.format("Couldn't lookup %s", hostName), e);
