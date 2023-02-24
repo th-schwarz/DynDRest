@@ -230,8 +230,8 @@
                 </executions>
             </plugin>
 
-            <plugin>
-                <!-- generates the openapi docu -->
+       <!--     <plugin>
+                &lt;!&ndash; generates the openapi docu &ndash;&gt;
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-maven-plugin</artifactId>
                 <version>1.4</version>
@@ -251,7 +251,7 @@
             </plugin>
 
             <plugin>
-                <!-- converts the openapi docu to html -->
+                &lt;!&ndash; converts the openapi docu to html &ndash;&gt;
                 <groupId>io.swagger.codegen.v3</groupId>
                 <artifactId>swagger-codegen-maven-plugin</artifactId>
                 <version>3.0.36</version>
@@ -269,7 +269,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
         </plugins>
     </build>
 
