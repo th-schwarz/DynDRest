@@ -208,7 +208,7 @@
                     <executable>true</executable>
                     <includeSystemScope>true</includeSystemScope>
                     <commandlineArguments>--swagger.enabled=true --springdoc.writer-with-default-pretty-printer=true
-                        --springdoc.api-docs.enabled=true --zone.validation.enabled=false --server.port=8080
+                        --springdoc.api-docs.enabled=true --dyndrest.host-validation-enabled=false --server.port=8080
                     </commandlineArguments>
                     <jvmArguments>-Dspring.application.admin.enabled=true
                         -Dspring.config.import=file:target/test-classes/application.yml
