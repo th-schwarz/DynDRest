@@ -230,8 +230,36 @@
                 </executions>
             </plugin>
 
-       <!--     <plugin>
-                &lt;!&ndash; generates the openapi docu &ndash;&gt;
+            <plugin>
+                <!-- starts spring boot for generating the openapi docu -->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <executable>true</executable>
+                    <includeSystemScope>true</includeSystemScope>
+                    <commandlineArguments>--swagger.enabled=true --springdoc.writer-with-default-pretty-printer=true
+                        --springdoc.api-docs.enabled=true --dyndrest.host-validation-enable=false --server.port=8080</commandlineArguments>
+                    <jvmArguments>-Dspring.application.admin.enabled=true
+                        -Dspring.config.import=file:target/test-classes/application.yml</jvmArguments>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>pre-integration-test</id>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>post-integration-test</id>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <!-- generates the openapi docu -->
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-maven-plugin</artifactId>
                 <version>1.4</version>
@@ -251,7 +279,7 @@
             </plugin>
 
             <plugin>
-                &lt;!&ndash; converts the openapi docu to html &ndash;&gt;
+                <!-- converts the openapi docu to html -->
                 <groupId>io.swagger.codegen.v3</groupId>
                 <artifactId>swagger-codegen-maven-plugin</artifactId>
                 <version>3.0.36</version>
@@ -269,7 +297,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>-->
+            </plugin>
         </plugins>
     </build>
 
