@@ -24,7 +24,7 @@
 		<dnsjava.version>3.5.2</dnsjava.version>
 		<sonar.organization>th-schwarz</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-		<sonar.coverage.exclusions>
+<!--		<sonar.coverage.exclusions>
 			src/main/java/codes/thischwa/dyndrest/Starter.java,
 			src/main/java/codes/thischwa/dyndrest/ApiController.java,
 			src/main/java/codes/thischwa/dyndrest/config/AppEventListener.java,
@@ -33,7 +33,7 @@
 			src/main/java/codes/thischwa/dyndrest/provider/UpdateHookException.java,
 			src/main/java/codes/thischwa/dyndrest/provider/Provider.java,
 			src/main/java/codes/thischwa/dyndrest/provider/impl/domainrobot/DomainRobotProvider.java
-		</sonar.coverage.exclusions>
+		</sonar.coverage.exclusions>-->
 		<fakerepo.dir>${project.basedir}/fake-repo</fakerepo.dir>
 		<openapi.outputDir>${project.build.directory}</openapi.outputDir>
 		<openapi.outputFile.extless>openapi</openapi.outputFile.extless>
@@ -89,7 +89,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-jetty</artifactId>
+			<artifactId>spring-boot-starter-undertow</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
