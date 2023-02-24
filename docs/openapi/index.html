@@ -764,8 +764,8 @@
             <li class="nav-fixed nav-header active" data-group="_"><a href="#api-_">API Summary</a></li>
 
                   <li class="nav-header" data-group="ApiController"><a href="#api-ApiController">API Methods - ApiController</a></li>
-                    <li data-group="ApiController" data-name="getLogs" class="">
-                      <a href="#api-ApiController-getLogs">getLogs</a>
+                    <li data-group="ApiController" data-name="deliverLogs" class="">
+                      <a href="#api-ApiController-deliverLogs">deliverLogs</a>
                     </li>
                     <li data-group="ApiController" data-name="info" class="">
                       <a href="#api-ApiController-info">info</a>
@@ -794,11 +794,11 @@
         <div id="sections">
                 <section id="api-ApiController">
                   <h1>ApiController</h1>
-                    <div id="api-ApiController-getLogs">
-                      <article id="api-ApiController-getLogs-0" data-group="User" data-name="getLogs" data-version="0">
+                    <div id="api-ApiController-deliverLogs">
+                      <article id="api-ApiController-deliverLogs-0" data-group="User" data-name="deliverLogs" data-version="0">
                         <div class="pull-left">
-                          <h1>getLogs</h1>
-                          <p>Update log.</p>
+                          <h1>deliverLogs</h1>
+                          <p>Delivers pageable update logs.</p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -811,26 +811,26 @@
                           <h3>Usage and SDK Samples</h3>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-ApiController-getLogs-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-ApiController-getLogs-0-java">Java</a></li>
-                          <li class=""><a href="#examples-ApiController-getLogs-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-ApiController-getLogs-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-ApiController-getLogs-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-ApiController-getLogs-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-ApiController-getLogs-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-ApiController-getLogs-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-ApiController-getLogs-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-ApiController-getLogs-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-ApiController-getLogs-0-python">Python</a></li>
+                          <li class="active"><a href="#examples-ApiController-deliverLogs-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-ApiController-deliverLogs-0-java">Java</a></li>
+                          <li class=""><a href="#examples-ApiController-deliverLogs-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-ApiController-deliverLogs-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-ApiController-deliverLogs-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-ApiController-deliverLogs-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-ApiController-deliverLogs-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-ApiController-deliverLogs-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-ApiController-deliverLogs-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-ApiController-deliverLogs-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-ApiController-deliverLogs-0-python">Python</a></li>
                         </ul>
 
                         <div class="tab-content">
-                          <div class="tab-pane active" id="examples-ApiController-getLogs-0-curl">
+                          <div class="tab-pane active" id="examples-ApiController-deliverLogs-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
 -H "Accept: application/json"\
 "http://localhost:8080/info/update-log?page=&search="</code></pre>
                           </div>
-                          <div class="tab-pane" id="examples-ApiController-getLogs-0-java">
+                          <div class="tab-pane" id="examples-ApiController-deliverLogs-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
 import io.swagger.client.auth.*;
 import io.swagger.client.model.*;
@@ -847,17 +847,17 @@ public class ApiControllerApiExample {
           = ; //  | Page number to fetch. If it is not committed, it will be '1'.
           = ; //  | String to search for. It belongs to 'host' and 'timestamp'.
         try {
-            UpdateLogPage result = apiInstance.getLogs(, );
+            UpdateLogPage result = apiInstance.deliverLogs(, );
             System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling ApiControllerApi#getLogs");
+            System.err.println("Exception when calling ApiControllerApi#deliverLogs");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
 
-                          <div class="tab-pane" id="examples-ApiController-getLogs-0-android">
+                          <div class="tab-pane" id="examples-ApiController-deliverLogs-0-android">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.ApiControllerApi;
 
 public class ApiControllerApiExample {
@@ -867,27 +867,27 @@ public class ApiControllerApiExample {
           = ; //  | Page number to fetch. If it is not committed, it will be '1'.
           = ; //  | String to search for. It belongs to 'host' and 'timestamp'.
         try {
-            UpdateLogPage result = apiInstance.getLogs(, );
+            UpdateLogPage result = apiInstance.deliverLogs(, );
             System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling ApiControllerApi#getLogs");
+            System.err.println("Exception when calling ApiControllerApi#deliverLogs");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
   <!--
-  <div class="tab-pane" id="examples-ApiController-getLogs-0-groovy">
+  <div class="tab-pane" id="examples-ApiController-deliverLogs-0-groovy">
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
-                            <div class="tab-pane" id="examples-ApiController-getLogs-0-objc">
+                            <div class="tab-pane" id="examples-ApiController-deliverLogs-0-objc">
                               <pre class="prettyprint"><code class="language-cpp"> * = ; // Page number to fetch. If it is not committed, it will be '1'.
  * = ; // String to search for. It belongs to 'host' and 'timestamp'. (optional)
 
 ApiControllerApi *apiInstance = [[ApiControllerApi alloc] init];
 
-// Update log.
-[apiInstance getLogsWith:
+// Delivers pageable update logs.
+[apiInstance deliverLogsWith:
     :
               completionHandler: ^(UpdateLogPage output, NSError* error) {
                             if (output) {
@@ -900,7 +900,7 @@ ApiControllerApi *apiInstance = [[ApiControllerApi alloc] init];
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-ApiController-getLogs-0-javascript">
+                            <div class="tab-pane" id="examples-ApiController-deliverLogs-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var ADynamicDnsRestService = require('a_dynamic_dns_rest_service');
 
 var api = new ADynamicDnsRestService.ApiControllerApi()
@@ -915,14 +915,14 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.getLogs(, opts, callback);
+api.deliverLogs(, opts, callback);
 </code></pre>
                             </div>
 
-                            <!--<div class="tab-pane" id="examples-ApiController-getLogs-0-angular">
+                            <!--<div class="tab-pane" id="examples-ApiController-deliverLogs-0-angular">
               <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
             </div>-->
-                            <div class="tab-pane" id="examples-ApiController-getLogs-0-csharp">
+                            <div class="tab-pane" id="examples-ApiController-deliverLogs-0-csharp">
                               <pre class="prettyprint"><code class="language-cs">using System;
 using System.Diagnostics;
 using IO.Swagger.Api;
@@ -931,7 +931,7 @@ using IO.Swagger.Model;
 
 namespace Example
 {
-    public class getLogsExample
+    public class deliverLogsExample
     {
         public void main()
         {
@@ -942,13 +942,13 @@ namespace Example
 
             try
             {
-                // Update log.
-                UpdateLogPage result = apiInstance.getLogs(, );
+                // Delivers pageable update logs.
+                UpdateLogPage result = apiInstance.deliverLogs(, );
                 Debug.WriteLine(result);
             }
             catch (Exception e)
             {
-                Debug.Print("Exception when calling ApiControllerApi.getLogs: " + e.Message );
+                Debug.Print("Exception when calling ApiControllerApi.deliverLogs: " + e.Message );
             }
         }
     }
@@ -956,7 +956,7 @@ namespace Example
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-ApiController-getLogs-0-php">
+                            <div class="tab-pane" id="examples-ApiController-deliverLogs-0-php">
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
@@ -965,15 +965,15 @@ $ = ; //  | Page number to fetch. If it is not committed, it will be '1'.
 $ = ; //  | String to search for. It belongs to 'host' and 'timestamp'.
 
 try {
-    $result = $api_instance->getLogs($, $);
+    $result = $api_instance->deliverLogs($, $);
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling ApiControllerApi->getLogs: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling ApiControllerApi->deliverLogs: ', $e->getMessage(), PHP_EOL;
 }
 ?></code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-ApiController-getLogs-0-perl">
+                            <div class="tab-pane" id="examples-ApiController-deliverLogs-0-perl">
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::ApiControllerApi;
@@ -983,15 +983,15 @@ my $ = ; #  | Page number to fetch. If it is not committed, it will be '1'.
 my $ = ; #  | String to search for. It belongs to 'host' and 'timestamp'.
 
 eval { 
-    my $result = $api_instance->getLogs( => $,  => $);
+    my $result = $api_instance->deliverLogs( => $,  => $);
     print Dumper($result);
 };
 if ($@) {
-    warn "Exception when calling ApiControllerApi->getLogs: $@\n";
+    warn "Exception when calling ApiControllerApi->deliverLogs: $@\n";
 }</code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-ApiController-getLogs-0-python">
+                            <div class="tab-pane" id="examples-ApiController-deliverLogs-0-python">
                               <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
 import time
 import swagger_client
@@ -1004,11 +1004,11 @@ api_instance = swagger_client.ApiControllerApi()
  =  #  | String to search for. It belongs to 'host' and 'timestamp'. (optional)
 
 try: 
-    # Update log.
-    api_response = api_instance.get_logs(, =)
+    # Delivers pageable update logs.
+    api_response = api_instance.deliver_logs(, =)
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling ApiControllerApi->getLogs: %s\n" % e)</code></pre>
+    print("Exception when calling ApiControllerApi->deliverLogs: %s\n" % e)</code></pre>
                             </div>
                           </div>
 
@@ -1028,7 +1028,7 @@ except ApiException as e:
                                 <td>
                                 
                                 
-                                    <div id="d2e199_getLogs_">
+                                    <div id="d2e199_deliverLogs_">
                                         <div class="json-schema-view">
                                             <div class="primitive">
                                                 <span class="type">
@@ -1050,7 +1050,7 @@ except ApiException as e:
                                 <td>
                                 
                                 
-                                    <div id="d2e199_getLogs_">
+                                    <div id="d2e199_deliverLogs_">
                                         <div class="json-schema-view">
                                             <div class="primitive">
                                                 <span class="type">
@@ -1072,14 +1072,14 @@ except ApiException as e:
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-getLogs-200-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-deliverLogs-200-schema">Schema</a>
                                 </li>
 
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-getLogs-200-schema">
-                                  <div id='responses-getLogs-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                <div class="tab-pane active" id="responses-deliverLogs-200-schema">
+                                  <div id='responses-deliverLogs-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
@@ -1105,14 +1105,14 @@ except ApiException as e:
 
                                         //console.log(JSON.stringify(schema));
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-getLogs-200-schema-data').val(stringify(schema));
-                                        var result = $('#responses-getLogs-200-schema-200');
+                                        $('#responses-deliverLogs-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-deliverLogs-200-schema-200');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-getLogs-200-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-deliverLogs-200-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
 
@@ -1123,7 +1123,7 @@ except ApiException as e:
                       <article id="api-ApiController-info-0" data-group="User" data-name="info" data-version="0">
                         <div class="pull-left">
                           <h1>info</h1>
-                          <p>Determine the IP settings of the &#x27;host&#x27; and returns it in a JSON object.</p>
+                          <p>Determines the IP settings of the &#x27;host&#x27; and returns it in a JSON object.</p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -1211,7 +1211,7 @@ public class ApiControllerApiExample {
 
 ApiControllerApi *apiInstance = [[ApiControllerApi alloc] init];
 
-// Determine the IP settings of the 'host' and returns it in a JSON object.
+// Determines the IP settings of the 'host' and returns it in a JSON object.
 [apiInstance infoWith:
     :
               completionHandler: ^(IpSetting output, NSError* error) {
@@ -1266,7 +1266,7 @@ namespace Example
 
             try
             {
-                // Determine the IP settings of the 'host' and returns it in a JSON object.
+                // Determines the IP settings of the 'host' and returns it in a JSON object.
                 IpSetting result = apiInstance.info(, );
                 Debug.WriteLine(result);
             }
@@ -1328,7 +1328,7 @@ api_instance = swagger_client.ApiControllerApi()
  =  #  | The 'apitoken' which belongs to the 'host'.
 
 try: 
-    # Determine the IP settings of the 'host' and returns it in a JSON object.
+    # Determines the IP settings of the 'host' and returns it in a JSON object.
     api_response = api_instance.info(, )
     pprint(api_response)
 except ApiException as e:

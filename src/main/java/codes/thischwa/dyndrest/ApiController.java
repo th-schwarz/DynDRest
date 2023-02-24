@@ -100,7 +100,7 @@ public class ApiController implements ApiRoutes {
 	}
 
 	@Override
-	public ResponseEntity<UpdateLogPage> getLogs(@RequestParam Integer page, @RequestParam(required = false) String search) {
+	public ResponseEntity<UpdateLogPage> deliverLogs(@RequestParam Integer page, @RequestParam(required = false) String search) {
 		if(page != null) // grid.js: pagination starts with 0
 			page++;
 		return ResponseEntity.ok(updateLogCache.getResponsePage(page, search));
