@@ -23,7 +23,7 @@
         <springdoc.version>1.6.13</springdoc.version>
         <domainrobot.version>0.2.8</domainrobot.version>
         <dnsjava.version>3.5.2</dnsjava.version>
-        <sonar.organization>th-schwarz</sonar.organization>
+      <!--  <sonar.organization>th-schwarz</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.coverage.exclusions>
             src/main/java/codes/thischwa/dyndrest/Starter.java,
@@ -34,7 +34,7 @@
             src/main/java/codes/thischwa/dyndrest/provider/UpdateHookException.java,
             src/main/java/codes/thischwa/dyndrest/provider/Provider.java,
             src/main/java/codes/thischwa/dyndrest/provider/impl/domainrobot/DomainRobotProvider.java
-        </sonar.coverage.exclusions>
+        </sonar.coverage.exclusions>-->
         <fakerepo.dir>${project.basedir}/fake-repo</fakerepo.dir>
         <openapi.outputDir>${project.build.directory}</openapi.outputDir>
         <openapi.outputFile.extless>openapi</openapi.outputFile.extless>
