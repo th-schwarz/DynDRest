@@ -13,13 +13,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 
 //@formatter:off
@@ -57,7 +57,7 @@ interface ApiRoutes {
 			@RequestParam(name = "ipv4", required = false) InetAddress ipv4, @RequestParam(name = "ipv6", required = false) InetAddress ipv6,
 			HttpServletRequest req);
 
-	@Operation(summary = "Determine the IP settings of the 'host' and returns it in a JSON object.")
+	@Operation(summary = "Determines the IP settings of the 'host' and returns it in a JSON object.")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "A JSON object with the IP settings of the 'host'"),
 			@ApiResponse(responseCode = "400", description = "If the 'apitoken' doesn't belong to the host, IP addresses aren't valid or the remote IP couldn't determine."),
 			@ApiResponse(responseCode = "404", description = "If the 'host' isn't configured."),
@@ -68,10 +68,10 @@ interface ApiRoutes {
 					@ExampleObject(value = "mydyndns.domain.com") })) @PathVariable String host,
 			@Parameter(description = "The 'apitoken' which belongs to the 'host'.", content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE)) @RequestParam String apitoken);
 
-	@Operation(summary = "Update log.")
+	@Operation(summary = "Delivers pageable update logs.")
 	@ApiResponse(responseCode = "200", description = "Order list of update logs.")
 	@GetMapping(value = "info/update-log", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<UpdateLogPage> getLogs(
+	ResponseEntity<UpdateLogPage> deliverLogs(
 			@Parameter(description = "Page number to fetch. If it is not committed, it will be '1'.", content = @Content(mediaType = "int")) @RequestParam(required = false) Integer page,
 			@Parameter(description = "String to search for. It belongs to 'host' and 'timestamp'.", content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE)) @RequestParam(required = false) String search);
 }
