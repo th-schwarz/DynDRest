@@ -95,6 +95,7 @@ public class DomainRobotConfigurator implements InitializingBean {
 		zoneData = new HashMap<>();
 		domainRobotConfig.getZones().forEach(this::readZoneConfig);
 	}
+
 	private void readZoneConfig(DomainRobotConfig.Zone zone) {
 		zoneData.put(zone.getName(), zone.getNs());
 		List<String> hostRawData = zone.getHosts();
