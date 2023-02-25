@@ -108,11 +108,11 @@ public class UpdateLogCache implements InitializingBean {
 		List<UpdateItem> items = (search == null || search.isEmpty()) ?
 				new ArrayList<>(updateItems) :
 				updateItems.stream().filter(i -> i.getHost().contains(search) || i.getDateTime().contains(search))
-						.collect(Collectors.toList());
+						.toList();
 
 		// respect ordering of dateTime, must be desc!
 		items = items.stream().sorted(Comparator.comparing(UpdateItem::getDateTime, Comparator.reverseOrder()))
-				.collect(Collectors.toList());
+				.toList();
 
 		int currentIdx = (conf.getUpdateLogPageSize() * page) - conf.getUpdateLogPageSize();
 		List<UpdateItem> pageItems = new ArrayList<>();
