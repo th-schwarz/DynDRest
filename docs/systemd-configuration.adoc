@@ -31,21 +31,22 @@ Don't forget to customize user, group, the path to the jar file and the path to 
 ----
 ● dyndrest.service - DynDRest - A simple REST-service for dynamic DNS.
      Loaded: loaded (/etc/systemd/system/dyndrest.service; enabled; vendor preset: enabled)
-     Active: active (running) since Sun 2023-01-01 18:04:43 CET; 18h ago
-   Main PID: 3647291 (dyndrest.jar)
-      Tasks: 40 (limit: 65000)
-     Memory: 263.8M
+     Active: active (running) since Sat 2023-02-25 18:52:20 CET; 21min ago
+   Main PID: 399617 (dyndrest.jar)
+      Tasks: 36 (limit: 65000)
+     Memory: 261.3M
      CGroup: /system.slice/dyndrest.service
-             ├─3647291 /bin/bash /opt/dyndrest/dyndrest.jar --logging.config=/opt/dyndrest/logback.xml
-             └─3647325 /usr/bin/java -Dsun.misc.URLClassPath.disableJarChecking=true -jar /opt/dyndrest/dyndrest-0.2.jar --logging.config=/>
+             ├─399617 /bin/bash /opt/dyndrest/dyndrest.jar --logging.config=/opt/dyndrest/logback.xml
+             └─399652 /usr/bin/java -Dsun.misc.URLClassPath.disableJarChecking=true -jar /opt/dyndrest/dyndrest-0.3.jar --logging.config=/opt/dyndrest/logback.xml
 
-Jan 01 18:04:43 systemd[1]: Started DynDRest - A simple REST-service for dynamic DNS..
-Jan 01 18:04:45 dyndrest.jar[3647325]:   ____              ____  ____           _
-Jan 01 18:04:45 dyndrest.jar[3647325]:  |  _ \ _   _ _ __ |  _ \|  _ \ ___  ___| |_
-Jan 01 18:04:45 dyndrest.jar[3647325]:  | | | | | | | '_ \| | | | |_) / _ \/ __| __|
-Jan 01 18:04:45 dyndrest.jar[3647325]:  | |_| | |_| | | | | |_| |  _ <  __/\__ \ |_
-Jan 01 18:04:45 dyndrest.jar[3647325]:  |____/ \__, |_| |_|____/|_| \_\___||___/\__|
-Jan 01 18:04:45 dyndrest.jar[3647325]:         |___/
-Jan 01 18:04:45 dyndrest.jar[3647325]: Version: 0.2
-Jan 01 18:04:45 dyndrest.jar[3647325]: :: Spring Boot (v2.7.7) ::
+systemd[1]: Started DynDRest - A simple REST-service for dynamic DNS..
+dyndrest.jar[399652]:   ____              ____  ____           _
+dyndrest.jar[399652]:  |  _ \ _   _ _ __ |  _ \|  _ \ ___  ___| |_
+dyndrest.jar[399652]:  | | | | | | | '_ \| | | | |_) / _ \/ __| __|
+dyndrest.jar[399652]:  | |_| | |_| | | | | |_| |  _ <  __/\__ \ |_
+dyndrest.jar[399652]:  |____/ \__, |_| |_|____/|_| \_\___||___/\__|
+dyndrest.jar[399652]:         |___/
+dyndrest.jar[399652]: Version: 0.3-SNAPSHOT
+dyndrest.jar[399652]: :: Spring Boot (v3.0.3) ::
+dyndrest.jar[399652]: running on java 17.0.5
 ----
