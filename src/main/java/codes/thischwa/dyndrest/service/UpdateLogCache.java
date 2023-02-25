@@ -93,7 +93,7 @@ public class UpdateLogCache implements InitializingBean {
 		logs.setPageSize(conf.getUpdateLogPageSize());
 		logs.setTotal(updateItems.size());
 		logs.setItems(updateItems.stream().sorted(Comparator.comparing(UpdateItem::getDateTime, Comparator.reverseOrder()))
-				.collect(Collectors.toList()));
+				.toList());
 		return logs;
 	}
 

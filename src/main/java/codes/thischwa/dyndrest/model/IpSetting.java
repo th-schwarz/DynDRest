@@ -33,17 +33,17 @@ public class IpSetting {
 
 	public IpSetting(String ipStr) throws UnknownHostException {
 		InetAddress ip = InetAddress.getByName(ipStr);
-		if(ip instanceof Inet4Address)
-			this.ipv4 = (Inet4Address) ip;
+		if(ip instanceof Inet4Address ipTmp)
+			this.ipv4 = ipTmp;
 		else
 			this.ipv6 = (Inet6Address) ip;
 	}
 
 	public IpSetting(InetAddress ipv4, InetAddress ipv6) {
-		if(ipv4 instanceof Inet4Address)
-			this.ipv4 = (Inet4Address) ipv4;
-		if(ipv6 instanceof Inet6Address)
-			this.ipv6 = (Inet6Address) ipv6;
+		if(ipv4 instanceof Inet4Address ip)
+			this.ipv4 = ip;
+		if(ipv6 instanceof Inet6Address ip)
+			this.ipv6 = ip;
 	}
 
 	public boolean isNotSet() {
