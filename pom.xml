@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.8</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<version>3.0.3</version>
+		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>codes.thischwa</groupId>
 	<artifactId>dyndrest</artifactId>
@@ -16,24 +17,16 @@
 	<inceptionYear>2022</inceptionYear>
 
 	<properties>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<springdoc.version>1.6.13</springdoc.version>
-        <domainrobot.version>0.2.8</domainrobot.version>
+
+		<springdoc.version>2.0.2</springdoc.version>
+		<domainrobot.version>0.2.8</domainrobot.version>
 		<dnsjava.version>3.5.2</dnsjava.version>
+
 		<sonar.organization>th-schwarz</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-<!--		<sonar.coverage.exclusions>
-			src/main/java/codes/thischwa/dyndrest/Starter.java,
-			src/main/java/codes/thischwa/dyndrest/ApiController.java,
-			src/main/java/codes/thischwa/dyndrest/config/AppEventListener.java,
-			src/main/java/codes/thischwa/dyndrest/config/SecurityConfig.java,
-			src/main/java/codes/thischwa/dyndrest/provider/ProviderException.java,
-			src/main/java/codes/thischwa/dyndrest/provider/UpdateHookException.java,
-			src/main/java/codes/thischwa/dyndrest/provider/Provider.java,
-			src/main/java/codes/thischwa/dyndrest/provider/impl/domainrobot/DomainRobotProvider.java
-		</sonar.coverage.exclusions>-->
 		<fakerepo.dir>${project.basedir}/fake-repo</fakerepo.dir>
 		<openapi.outputDir>${project.build.directory}</openapi.outputDir>
 		<openapi.outputFile.extless>openapi</openapi.outputFile.extless>
@@ -41,6 +34,15 @@
 	</properties>
 
 	<repositories>
+		<repository>
+			<id>central</id>
+			<name>Maven Central</name>
+			<layout>default</layout>
+			<url>https://repo1.maven.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
 		<repository>
 			<!-- DO NOT set id to "local" because it is reserved by Maven -->
 			<!-- This is a fake maven repo. -->
@@ -134,7 +136,7 @@
 
 		<dependency>
 			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-webmvc-core</artifactId>
+			<artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
 			<version>${springdoc.version}</version>
 		</dependency>
 
@@ -190,6 +192,7 @@
 					</execution>
 				</executions>
 			</plugin>
+
 			<plugin>
 				<!-- starts spring boot for generating the openapi docu -->
 				<groupId>org.springframework.boot</groupId>
@@ -198,9 +201,9 @@
 					<executable>true</executable>
 					<includeSystemScope>true</includeSystemScope>
 					<commandlineArguments>--swagger.enabled=true --springdoc.writer-with-default-pretty-printer=true
-                        --springdoc.api-docs.enabled=true --zone.validation.enabled=false --server.port=8080</commandlineArguments>
+						--springdoc.api-docs.enabled=true --dyndrest.host-validation-enable=false --server.port=8080</commandlineArguments>
 					<jvmArguments>-Dspring.application.admin.enabled=true
-                        -Dspring.config.import=file:target/test-classes/application.yml</jvmArguments>
+						-Dspring.config.import=file:target/test-classes/application.yml</jvmArguments>
 				</configuration>
 				<executions>
 					<execution>
@@ -217,7 +220,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
 			<plugin>
 				<!-- generates the openapi docu -->
 				<groupId>org.springdoc</groupId>
@@ -237,7 +239,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
 			<plugin>
 				<!-- converts the openapi docu to html -->
 				<groupId>io.swagger.codegen.v3</groupId>
