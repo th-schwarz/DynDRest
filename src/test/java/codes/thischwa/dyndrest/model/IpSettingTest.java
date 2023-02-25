@@ -50,6 +50,10 @@ class IpSettingTest {
 		is = new IpSetting(ipv4, ipv6);
 		assertEquals(is.ipv4ToString(), is.getIpv4().getHostAddress());
 		assertEquals(is.ipv6ToString(), is.getIpv6().getHostAddress());
+
+		is = new IpSetting(ipv6, ipv4);
+		assertNull(is.getIpv4());
+		assertNull(is.getIpv6());
 	}
 
 	@Test
