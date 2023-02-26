@@ -48,8 +48,8 @@ public class DomainRobotConfigurator implements InitializingBean {
 
 	ZoneClientWrapper buildZoneClientWrapper() {
 		return new ZoneClientWrapper(
-				new Domainrobot(autoDnsConfig.getUser(), String.valueOf(autoDnsConfig.getContext()), autoDnsConfig.getPassword(),
-						autoDnsConfig.getUrl()).getZone(), customHeaders, domainRobotConfig.getDefaultTtl());
+				new Domainrobot(autoDnsConfig.user(), String.valueOf(autoDnsConfig.context()), autoDnsConfig.password(),
+						autoDnsConfig.url()).getZone(), customHeaders, domainRobotConfig.getDefaultTtl());
 	}
 
 	@Override
