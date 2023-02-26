@@ -24,7 +24,7 @@ Give it a try!
 https://github.com/th-schwarz/DynDRest/releases[image:https://img.shields.io/github/v/release/th-schwarz/DynDRest?include_prereleases[GitHub
 release (latest by date including pre-releases)]]
 
-== Abstract
+== Preface
 
 DynDRest is a simple REST-service for dynamic DNS and is a more general
 variant of https://github.com/th-schwarz/DDAuto[DDAuto]. The basic idea
@@ -94,7 +94,7 @@ Here is the suggested file structure:
 the default properties in the classpath, therefore the file can be kept
 as small as possible. A minimal configuration example can be found
 further below. If the file is inside the working directory, it is loaded
-automatically. The complete configuration setings can be found link:docs/dyndrest-configuration.adoc[here].
+automatically. The complete configuration setings can be found link:docs/dyndrest-configuration.adoc[here]. +
 Important: The basic-auth, the api-tokens and the credentials for
 AutoDNS should be defined in this file!
 
