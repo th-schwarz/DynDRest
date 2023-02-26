@@ -32,8 +32,8 @@ public class SecurityConfig {
 	public UserDetailsService userDetailsService() {
 		InMemoryUserDetailsManager userManager = new InMemoryUserDetailsManager();
 		userManager.createUser(build(userName, password, ROLE_USER));
-		if(appConfig.getUpdateLogUserName() != null && appConfig.getUpdateLogUserPassword() != null) {
-			userManager.createUser(build(appConfig.getUpdateLogUserName(), appConfig.getUpdateLogUserPassword(), ROLE_LOGVIEWER));
+		if(appConfig.updateLogUserName() != null && appConfig.updateLogUserPassword() != null) {
+			userManager.createUser(build(appConfig.updateLogUserName(), appConfig.updateLogUserPassword(), ROLE_LOGVIEWER));
 		}
 		return userManager;
 	}

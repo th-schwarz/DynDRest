@@ -40,7 +40,7 @@ public class UpdateLogCache implements InitializingBean {
 	}
 
 	public boolean isEnabled() {
-		return conf.isUpdateLogPageEnabled() && conf.getUpdateLogFilePattern() != null;
+		return conf.updateLogPageEnabled() && conf.updateLogFilePattern() != null;
 	}
 
 	public int size() {
@@ -54,12 +54,12 @@ public class UpdateLogCache implements InitializingBean {
 			return;
 		}
 
-		dateTimeFormatter = DateTimeFormatter.ofPattern(conf.getUpdateLogDatePattern());
+		dateTimeFormatter = DateTimeFormatter.ofPattern(conf.updateLogDatePattern());
 
 		// build location pattern, if no url type is found 'file:' will be assumed
-		String locPattern = (conf.getUpdateLogFilePattern().contains(":")) ?
-				conf.getUpdateLogFilePattern() :
-				"file:" + conf.getUpdateLogFilePattern();
+		String locPattern = (conf.updateLogFilePattern().contains(":")) ?
+				conf.updateLogFilePattern() :
+				"file:" + conf.updateLogFilePattern();
 		log.info("Using the following log file pattern: {}", locPattern);
 
 		List<String> logEntries = new ArrayList<>();
@@ -72,7 +72,7 @@ public class UpdateLogCache implements InitializingBean {
 				.forEach(r -> readResource(r, logEntries));
 
 		// ordering and parsing, must be asc because new items will be added at the end
-		Pattern pattern = Pattern.compile(conf.getUpdateLogPattern());
+		Pattern pattern = Pattern.compile(conf.updateLogPattern());
 		updateItems = logEntries.stream().map(i -> parseLogEntry(i, pattern)).filter(Objects::nonNull)
 				.sorted(Comparator.comparing(UpdateItem::getDateTime)).collect(Collectors.toCollection(CopyOnWriteArrayList::new));
 		log.info("{} log entries successful read and parsed.", updateItems.size());
@@ -90,7 +90,7 @@ public class UpdateLogCache implements InitializingBean {
 
 	public UpdateLogPage getResponseAll() {
 		UpdateLogPage logs = new UpdateLogPage();
-		logs.setPageSize(conf.getUpdateLogPageSize());
+		logs.setPageSize(conf.updateLogPageSize());
 		logs.setTotal(updateItems.size());
 		logs.setItems(updateItems.stream().sorted(Comparator.comparing(UpdateItem::getDateTime, Comparator.reverseOrder()))
 				.toList());
@@ -114,18 +114,18 @@ public class UpdateLogCache implements InitializingBean {
 		items = items.stream().sorted(Comparator.comparing(UpdateItem::getDateTime, Comparator.reverseOrder()))
 				.toList();
 
-		int currentIdx = (conf.getUpdateLogPageSize() * page) - conf.getUpdateLogPageSize();
+		int currentIdx = (conf.updateLogPageSize() * page) - conf.updateLogPageSize();
 		List<UpdateItem> pageItems = new ArrayList<>();
-		int nextIdx = currentIdx + conf.getUpdateLogPageSize();
+		int nextIdx = currentIdx + conf.updateLogPageSize();
 		for(int i = currentIdx; i < nextIdx; i++) {
 			if(i >= items.size())
 				break;
 			pageItems.add(items.get(i));
 		}
 
-		lp.setPageSize(conf.getUpdateLogPageSize());
+		lp.setPageSize(conf.updateLogPageSize());
 		lp.setItems(pageItems);
-		lp.setTotalPage(((updateItems.size() - 1) / conf.getUpdateLogPageSize()) + 1);
+		lp.setTotalPage(((updateItems.size() - 1) / conf.updateLogPageSize()) + 1);
 		lp.setTotal(items.size());
 		return lp;
 	}

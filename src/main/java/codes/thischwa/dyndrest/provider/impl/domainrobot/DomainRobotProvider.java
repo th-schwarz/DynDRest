@@ -27,7 +27,7 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
 
 	@Override
 	public void validateHostConfiguration() throws IllegalArgumentException {
-		if(appConfig.isHostValidationEnabled()) {
+		if(appConfig.hostValidationEnabled()) {
 			domainRobotConfigurator.getConfiguredZones().forEach(this::checkZone);
 		}
 	}

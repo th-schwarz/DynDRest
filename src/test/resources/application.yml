@@ -30,8 +30,8 @@ domainrobot:
   autodns:
     url: https://api.autodns.com/v1
     context: 4
-    password: pwd_t
     user: user_t
+    password: pwd_t
   zones:
     - name: dynhost0.info
       ns: ns0.domain.info

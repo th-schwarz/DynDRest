@@ -33,13 +33,13 @@ public class UpdateLogController {
 	 */
 	@GetMapping(value = "/log", produces = MediaType.TEXT_HTML_VALUE)
 	public String log(Model model) {
-		String baseUrl = NetUtil.getBaseUrl(config.isUpdateLogRestForceHttps());
+		String baseUrl = NetUtil.getBaseUrl(config.updateLogRestForceHttps());
 
 		model.addAttribute("server_url", baseUrl + "/info/update-log");
 		if(basicAuthUser != null && basicAuthPassword != null) {
 			String basicAuth = NetUtil.buildBasicAuth(basicAuthUser, basicAuthPassword);
 			model.addAttribute("header_basicauth", basicAuth);
-			model.addAttribute("page_size", config.getUpdateLogPageSize());
+			model.addAttribute("page_size", config.updateLogPageSize());
 		}
 		return "log-view";
 	}
