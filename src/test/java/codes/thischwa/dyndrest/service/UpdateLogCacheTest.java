@@ -47,15 +47,15 @@ class UpdateLogCacheTest extends GenericIntegrationTest {
 		assertEquals(startCnt + 1, cache.size());
 
 		UpdateItem item = cache.getItems().remove(startCnt);
-		assertEquals("my.dyndns.com", item.getHost());
-		assertEquals("91.0.0.1", item.getIpv4());
-		assertEquals("n/a", item.getIpv6());
+		assertEquals("my.dyndns.com", item.host());
+		assertEquals("91.0.0.1", item.ipv4());
+		assertEquals("n/a", item.ipv6());
 
 		cache.addLogEntry("my.dyndns.com", "91.0.0.1", "2003:cc:2fff:1131:2e91:abff:febf:d839");
 		item = cache.getItems().remove(startCnt);
-		assertEquals("my.dyndns.com", item.getHost());
-		assertEquals("91.0.0.1", item.getIpv4());
-		assertEquals("2003:cc:2fff:1131:2e91:abff:febf:d839", item.getIpv6());
+		assertEquals("my.dyndns.com", item.host());
+		assertEquals("91.0.0.1", item.ipv4());
+		assertEquals("2003:cc:2fff:1131:2e91:abff:febf:d839", item.ipv6());
 	}
 
 	@Test
@@ -73,10 +73,10 @@ class UpdateLogCacheTest extends GenericIntegrationTest {
 
 		UpdateItem item = cache.parseLogEntry(
 				"2022-02-23 19:51:19.924 -   test.mein-virtuelles-blech.de        127.1.2.27  2a03:4000:41:32::2", logEntryPattern);
-		assertEquals("2022-02-23 19:51:19.924", item.getDateTime());
-		assertEquals("test.mein-virtuelles-blech.de", item.getHost());
-		assertEquals("127.1.2.27", item.getIpv4());
-		assertEquals("2a03:4000:41:32::2", item.getIpv6());
+		assertEquals("2022-02-23 19:51:19.924", item.dateTime());
+		assertEquals("test.mein-virtuelles-blech.de", item.host());
+		assertEquals("127.1.2.27", item.ipv4());
+		assertEquals("2a03:4000:41:32::2", item.ipv6());
 	}
 
 	@Test

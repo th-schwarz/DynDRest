@@ -1,19 +1,8 @@
 package codes.thischwa.dyndrest.model;
 
-import lombok.Getter;
-
 import java.util.Objects;
 
-@Getter
-public class UpdateItem implements Comparable<UpdateItem> {
-
-	private final String dateTime;
-
-	private final String host;
-
-	private final String ipv4;
-
-	private final String ipv6;
+public record UpdateItem(String dateTime, String host, String ipv4, String ipv6) implements Comparable<UpdateItem> {
 
 	public UpdateItem(String dateTime, String host, String ipv4, String ipv6) {
 		this.dateTime = dateTime;
@@ -29,21 +18,15 @@ public class UpdateItem implements Comparable<UpdateItem> {
 
 	@Override
 	public int compareTo(UpdateItem o2) {
-		return dateTime.compareTo(o2.getDateTime());
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(dateTime, host, ipv4, ipv6);
+		return dateTime.compareTo(o2.dateTime());
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if(this == obj)
 			return true;
-		if(!(obj instanceof UpdateItem))
+		if(!(obj instanceof UpdateItem other))
 			return false;
-		UpdateItem other = (UpdateItem) obj;
 		return Objects.equals(dateTime, other.dateTime) && Objects.equals(host, other.host) && Objects.equals(ipv4, other.ipv4)
 				&& Objects.equals(ipv6, other.ipv6);
 	}

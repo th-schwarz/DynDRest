@@ -19,10 +19,10 @@ class UpdateLogCachePaginationTest extends GenericIntegrationTest {
 		assertEquals(10, lp.getTotalPage());
 		assertEquals(38, lp.getTotal());
 		assertEquals(4, lp.getItems().size());
-		assertEquals("2022-02-17 03:39:37.606", lp.getItems().get(0).getDateTime());
-		assertEquals("master.mydyndns.com", lp.getItems().get(0).getHost());
-		assertEquals("2022-02-15 03:11:00.224", lp.getItems().get(3).getDateTime());
-		assertEquals("ursa.mydyndns.com", lp.getItems().get(3).getHost());
+		assertEquals("2022-02-17 03:39:37.606", lp.getItems().get(0).dateTime());
+		assertEquals("master.mydyndns.com", lp.getItems().get(0).host());
+		assertEquals("2022-02-15 03:11:00.224", lp.getItems().get(3).dateTime());
+		assertEquals("ursa.mydyndns.com", lp.getItems().get(3).host());
 	}
 
 	@Test
@@ -33,10 +33,10 @@ class UpdateLogCachePaginationTest extends GenericIntegrationTest {
 		assertEquals(10, lp.getTotalPage());
 		assertEquals(38, lp.getTotal());
 		assertEquals(4, lp.getItems().size());
-		assertEquals("2022-02-17 03:39:37.606", lp.getItems().get(0).getDateTime());
-		assertEquals("master.mydyndns.com", lp.getItems().get(0).getHost());
-		assertEquals("2022-02-15 03:11:00.224", lp.getItems().get(3).getDateTime());
-		assertEquals("ursa.mydyndns.com", lp.getItems().get(3).getHost());
+		assertEquals("2022-02-17 03:39:37.606", lp.getItems().get(0).dateTime());
+		assertEquals("master.mydyndns.com", lp.getItems().get(0).host());
+		assertEquals("2022-02-15 03:11:00.224", lp.getItems().get(3).dateTime());
+		assertEquals("ursa.mydyndns.com", lp.getItems().get(3).host());
 	}
 
 	@Test
@@ -47,10 +47,10 @@ class UpdateLogCachePaginationTest extends GenericIntegrationTest {
 		assertEquals(10, lp.getTotalPage());
 		assertEquals(22, lp.getTotal());
 		assertEquals(4, lp.getItems().size());
-		assertEquals("2022-02-17 03:39:37.606", lp.getItems().get(0).getDateTime());
-		assertEquals("master.mydyndns.com", lp.getItems().get(0).getHost());
-		assertEquals("2022-02-13 03:44:13.713", lp.getItems().get(3).getDateTime());
-		assertEquals("master.mydyndns.com", lp.getItems().get(3).getHost());
+		assertEquals("2022-02-17 03:39:37.606", lp.getItems().get(0).dateTime());
+		assertEquals("master.mydyndns.com", lp.getItems().get(0).host());
+		assertEquals("2022-02-13 03:44:13.713", lp.getItems().get(3).dateTime());
+		assertEquals("master.mydyndns.com", lp.getItems().get(3).host());
 	}
 
 	@Test
@@ -61,8 +61,8 @@ class UpdateLogCachePaginationTest extends GenericIntegrationTest {
 		assertEquals(10, lp.getTotalPage());
 		assertEquals(38, lp.getTotal());
 		assertEquals(4, lp.getItems().size());
-		assertEquals("2022-02-14 03:43:19.560", lp.getItems().get(0).getDateTime());
-		assertEquals("2022-02-13 03:13:16.931", lp.getItems().get(3).getDateTime());
+		assertEquals("2022-02-14 03:43:19.560", lp.getItems().get(0).dateTime());
+		assertEquals("2022-02-13 03:13:16.931", lp.getItems().get(3).dateTime());
 	}
 
 	@Test
@@ -73,7 +73,7 @@ class UpdateLogCachePaginationTest extends GenericIntegrationTest {
 		assertEquals(10, lp.getTotalPage());
 		assertEquals(38, lp.getTotal());
 		assertEquals(2, lp.getItems().size());
-		assertEquals("2022-02-01 03:33:17.476", lp.getItems().get(0).getDateTime());
-		assertEquals("2022-02-01 03:28:11.497", lp.getItems().get(1).getDateTime());
+		assertEquals("2022-02-01 03:33:17.476", lp.getItems().get(0).dateTime());
+		assertEquals("2022-02-01 03:28:11.497", lp.getItems().get(1).dateTime());
 	}
 }

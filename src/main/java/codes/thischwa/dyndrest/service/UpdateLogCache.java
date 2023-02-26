@@ -74,7 +74,7 @@ public class UpdateLogCache implements InitializingBean {
 		// ordering and parsing, must be asc because new items will be added at the end
 		Pattern pattern = Pattern.compile(conf.updateLogPattern());
 		updateItems = logEntries.stream().map(i -> parseLogEntry(i, pattern)).filter(Objects::nonNull)
-				.sorted(Comparator.comparing(UpdateItem::getDateTime)).collect(Collectors.toCollection(CopyOnWriteArrayList::new));
+				.sorted(Comparator.comparing(UpdateItem::dateTime)).collect(Collectors.toCollection(CopyOnWriteArrayList::new));
 		log.info("{} log entries successful read and parsed.", updateItems.size());
 	}
 
@@ -92,7 +92,7 @@ public class UpdateLogCache implements InitializingBean {
 		UpdateLogPage logs = new UpdateLogPage();
 		logs.setPageSize(conf.updateLogPageSize());
 		logs.setTotal(updateItems.size());
-		logs.setItems(updateItems.stream().sorted(Comparator.comparing(UpdateItem::getDateTime, Comparator.reverseOrder()))
+		logs.setItems(updateItems.stream().sorted(Comparator.comparing(UpdateItem::dateTime, Comparator.reverseOrder()))
 				.toList());
 		return logs;
 	}
@@ -107,11 +107,11 @@ public class UpdateLogCache implements InitializingBean {
 		// searching in host and timestamp
 		List<UpdateItem> items = (search == null || search.isEmpty()) ?
 				new ArrayList<>(updateItems) :
-				updateItems.stream().filter(i -> i.getHost().contains(search) || i.getDateTime().contains(search))
+				updateItems.stream().filter(i -> i.host().contains(search) || i.dateTime().contains(search))
 						.toList();
 
 		// respect ordering of dateTime, must be desc!
-		items = items.stream().sorted(Comparator.comparing(UpdateItem::getDateTime, Comparator.reverseOrder()))
+		items = items.stream().sorted(Comparator.comparing(UpdateItem::dateTime, Comparator.reverseOrder()))
 				.toList();
 
 		int currentIdx = (conf.updateLogPageSize() * page) - conf.updateLogPageSize();
