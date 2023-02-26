@@ -30,7 +30,8 @@ DynDRest is a simple REST-service for dynamic DNS and is a more general
 variant of https://github.com/th-schwarz/DDAuto[DDAuto]. The basic idea
 is to have multiple implementations of different dns providers.
 https://www.internetx.com/en/domains/autodns[AutoDNS] will be one of
-them.
+them. +
+DynDRest is based on spring boot 3, that's why Java 17 or later is required!
 
 The restful-api can be used with many routers, for example the AVM
 Fritz!Box. DynDRest can be executed by `commandline`, `init.d` or
@@ -42,7 +43,6 @@ file an issue on https://github.com/th-schwarz/DynDRest/issues[Github].
 DynDRest is kindly supported by
 
 image::https://resources.jetbrains.com/storage/products/company/brand/logos/IntelliJ_IDEA.png[IntelliJ IDEA logo,250,link="https://jb.gg/OpenSourceSupport"]
-
 
 == Disclaimer
 
