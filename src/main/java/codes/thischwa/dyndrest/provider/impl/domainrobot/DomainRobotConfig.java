@@ -1,8 +1,6 @@
 package codes.thischwa.dyndrest.provider.impl.domainrobot;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -18,7 +16,7 @@ class DomainRobotConfig {
 
 	private @Getter @Setter int defaultTtl;
 
-	@NotEmpty(message = "The zones of the AutoDNS configuration shouldn't be empty.") private @Getter @Setter List<Zone> zones;
+	private @Getter @Setter List<Zone> zones;
 
 	static class Zone {
 
@@ -29,7 +27,7 @@ class DomainRobotConfig {
 		// is validated by DDAutoContext#readData
 		private @Getter List<String> hosts;
 
-		public void setHosts(@Valid List<String> host) {
+		public void setHosts(List<String> host) {
 			this.hosts = host;
 		}
 
