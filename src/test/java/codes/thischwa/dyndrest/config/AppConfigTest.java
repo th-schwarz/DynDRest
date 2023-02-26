@@ -13,17 +13,17 @@ class AppConfigTest extends GenericIntegrationTest {
 
 	@Test
 	final void test() {
-		assertFalse(config.isHostValidationEnabled());
-		assertTrue(config.isGreetingEnabled());
+		assertFalse(config.hostValidationEnabled());
+		assertTrue(config.greetingEnabled());
 
-		assertEquals("domainrobot", config.getProvider());
+		assertEquals("domainrobot", config.provider());
 
-		assertEquals("file:target/test-classes/test-files/dyndrest-update*", config.getUpdateLogFilePattern());
-		assertEquals("(.*)\\s+-\\s+([a-zA-Z\\.-]*)\\s+(\\S*)\\s+(\\S*)", config.getUpdateLogPattern());
-		assertEquals("yyyy-MM-dd HH:mm:SSS", config.getUpdateLogDatePattern());
-		assertTrue(config.isUpdateLogPageEnabled());
-		assertEquals(4, config.getUpdateLogPageSize());
-		assertEquals("log-dev", config.getUpdateLogUserName());
-		assertEquals("l0g-dev", config.getUpdateLogUserPassword());
+		assertEquals("file:target/test-classes/test-files/dyndrest-update*", config.updateLogFilePattern());
+		assertEquals("(.*)\\s+-\\s+([a-zA-Z\\.-]*)\\s+(\\S*)\\s+(\\S*)", config.updateLogPattern());
+		assertEquals("yyyy-MM-dd HH:mm:SSS", config.updateLogDatePattern());
+		assertTrue(config.updateLogPageEnabled());
+		assertEquals(4, config.updateLogPageSize());
+		assertEquals("log-dev", config.updateLogUserName());
+		assertEquals("l0g-dev", config.updateLogUserPassword());
 	}
 }
