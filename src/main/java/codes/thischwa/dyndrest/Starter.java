@@ -34,7 +34,6 @@ public class Starter {
 
 		@Override
 		public void onApplicationEvent(final ApplicationReadyEvent event) {
-			System.out.println("Application started!");
 			log.info("*** Settings for DynDRest:");
 			log.info("  * provider: {}", config.provider());
 			log.info("  * greeting-enabled: {}", config.greetingEnabled());
