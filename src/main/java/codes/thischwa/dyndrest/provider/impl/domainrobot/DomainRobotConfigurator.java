@@ -49,7 +49,7 @@ public class DomainRobotConfigurator implements InitializingBean {
 	ZoneClientWrapper buildZoneClientWrapper() {
 		return new ZoneClientWrapper(
 				new Domainrobot(autoDnsConfig.user(), String.valueOf(autoDnsConfig.context()), autoDnsConfig.password(),
-						autoDnsConfig.url()).getZone(), customHeaders, domainRobotConfig.getDefaultTtl());
+						autoDnsConfig.url()).getZone(), customHeaders, domainRobotConfig.defaultTtl());
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class DomainRobotConfigurator implements InitializingBean {
 		log.info("*** Api-token and zone data are read and validated successful!");
 	}
 
-	public int getDefaultTtl() {return domainRobotConfig.getDefaultTtl();}
+	public int getDefaultTtl() {return domainRobotConfig.defaultTtl();}
 
 	public Set<String> getConfiguredHosts() {
 		return apitokenData.keySet();
@@ -93,14 +93,14 @@ public class DomainRobotConfigurator implements InitializingBean {
 	void read() throws IllegalArgumentException {
 		apitokenData = new HashMap<>();
 		zoneData = new HashMap<>();
-		domainRobotConfig.getZones().forEach(this::readZoneConfig);
+		domainRobotConfig.zones().forEach(this::readZoneConfig);
 	}
 
 	private void readZoneConfig(DomainRobotConfig.Zone zone) {
-		zoneData.put(zone.getName(), zone.getNs());
-		List<String> hostRawData = zone.getHosts();
+		zoneData.put(zone.name(), zone.ns());
+		List<String> hostRawData = zone.hosts();
 		if(hostRawData == null || hostRawData.isEmpty())
-			throw new IllegalArgumentException("Missing host data for: " + zone.getName());
+			throw new IllegalArgumentException("Missing host data for: " + zone.name());
 		hostRawData.forEach(hostRaw -> readHostString(hostRaw, zone));
 	}
 
@@ -110,7 +110,7 @@ public class DomainRobotConfigurator implements InitializingBean {
 			throw new IllegalArgumentException(
 					"The host entry must be in the following format: [sld|:[apitoken], but it was: " + hostRaw);
 		// build the fqdn hostname
-		String host = String.format("%s.%s", parts[0], zone.getName());
+		String host = String.format("%s.%s", parts[0], zone.name());
 		apitokenData.put(host, parts[1]);
 	}
 

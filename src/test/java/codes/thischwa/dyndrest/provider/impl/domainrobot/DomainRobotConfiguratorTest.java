@@ -54,18 +54,18 @@ class DomainRobotConfiguratorTest extends GenericIntegrationTest {
 	@Test
 	final void testWrongHostFormat() {
 		String wrongHost = "wrong-formatted.host";
-		DomainRobotConfig.Zone z = config.getDomainRobotConfig().getZones().get(0);
-		z.getHosts().add(wrongHost);
+		DomainRobotConfig.Zone z = config.getDomainRobotConfig().zones().get(0);
+		z.hosts().add(wrongHost);
 		assertThrows(IllegalArgumentException.class, config::read);
-		z.getHosts().remove(wrongHost);
+		z.hosts().remove(wrongHost);
 	}
 
 	@Test
 	final void testEmptyHosts() {
-		DomainRobotConfig.Zone z = config.getDomainRobotConfig().getZones().get(1);
-		List<String> hosts = new ArrayList<>(z.getHosts());
-		z.getHosts().clear();
+		DomainRobotConfig.Zone z = config.getDomainRobotConfig().zones().get(1);
+		List<String> hosts = new ArrayList<>(z.hosts());
+		z.hosts().clear();
 		assertThrows(IllegalArgumentException.class, config::read);
-		z.setHosts(hosts);
+		z.hosts().addAll(hosts);
 	}
 }

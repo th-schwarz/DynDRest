@@ -14,17 +14,17 @@ class DomainRobotConfigTest extends GenericIntegrationTest {
 
 	@Test
 	final void testCountZones() {
-		assertEquals(configuredEntries, config.getZones().size());
+		assertEquals(configuredEntries, config.zones().size());
 	}
 
 	@Test
 	final void testZoneDetails() {
-		DomainRobotConfig.Zone zone = config.getZones().get(0);
-		assertEquals("dynhost0.info", zone.getName());
-		assertEquals("ns0.domain.info", zone.getNs());
+		DomainRobotConfig.Zone zone = config.zones().get(0);
+		assertEquals("dynhost0.info", zone.name());
+		assertEquals("ns0.domain.info", zone.ns());
 
-		assertEquals("my0:1234567890abcdef", zone.getHosts().get(0));
-		assertEquals("test0:1234567890abcdx", zone.getHosts().get(1));
+		assertEquals("my0:1234567890abcdef", zone.hosts().get(0));
+		assertEquals("test0:1234567890abcdx", zone.hosts().get(1));
 	}
 
 }

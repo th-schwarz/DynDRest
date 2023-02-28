@@ -37,43 +37,51 @@ class DomainRobotConfigValidationTest extends GenericIntegrationTest {
 		validatorFactory.close();
 	}
 
-	static DomainRobotConfig.Zone buildZone() {
-		DomainRobotConfig.Zone z = new DomainRobotConfig.Zone();
-		z.setName("test.dyndns.org");
-		z.setNs("ns.dyndns.org");
-		z.setHosts(Arrays.asList("test1", "test2"));
-		return z;
-	}
-
 	@Test
 	final void testCountZones() {
-		assertEquals(configuredEntries, config.getZones().size());
+		assertEquals(configuredEntries, config.zones().size());
 	}
 
 	@Test
 	final void testZoneDetails() {
-		DomainRobotConfig.Zone zone = config.getZones().get(0);
-		assertEquals("dynhost0.info", zone.getName());
-		assertEquals("ns0.domain.info", zone.getNs());
+		DomainRobotConfig.Zone zone = config.zones().get(0);
+		assertEquals("dynhost0.info", zone.name());
+		assertEquals("ns0.domain.info", zone.ns());
 
-		assertEquals("my0:1234567890abcdef", zone.getHosts().get(0));
-		assertEquals("test0:1234567890abcdx", zone.getHosts().get(1));
+		assertEquals("my0:1234567890abcdef", zone.hosts().get(0));
+		assertEquals("test0:1234567890abcdx", zone.hosts().get(1));
 	}
 
 	@Test
 	final void testZones() {
 		Set<ConstraintViolation<DomainRobotConfig>> violations = validator.validate(config);
 		assertTrue(violations.isEmpty());
-		assertEquals(2, config.getZones().size());
+		assertEquals(2, config.zones().size());
 	}
 
 	@Test
 	final void testZone_failName() {
-		DomainRobotConfig.Zone z = buildZone();
-		z.setName(null);
+		DomainRobotConfig.Zone z = new DomainRobotConfig.Zone(null,"ns.dyndns.org", Arrays.asList("test1", "test2"));
 		Set<ConstraintViolation<DomainRobotConfig.Zone>> violations = validator.validate(z);
 		assertEquals(1, violations.size());
 		assertEquals("The name of the zone shouldn't be empty.", violations.iterator().next().getMessage());
 	}
+
+	@Test
+	final void testZone_failNs() {
+		DomainRobotConfig.Zone z = new DomainRobotConfig.Zone("test.dyndns.org",null, Arrays.asList("test1", "test2"));
+		Set<ConstraintViolation<DomainRobotConfig.Zone>> violations = validator.validate(z);
+		assertEquals(1, violations.size());
+		assertEquals("The primary name server of the zone shouldn't be empty.", violations.iterator().next().getMessage());
+	}
+
+	@Test
+	final void testZone_failHosts() {
+		DomainRobotConfig.Zone z = new DomainRobotConfig.Zone("test.dyndns.org","ns.dyndns.org", null);
+		Set<ConstraintViolation<DomainRobotConfig.Zone>> violations = validator.validate(z);
+		assertEquals(1, violations.size());
+		assertEquals("The hosts of the zone shouldn't be empty.", violations.iterator().next().getMessage());
+	}
+
 
 }
