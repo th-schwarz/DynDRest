@@ -11,7 +11,7 @@
 	<groupId>codes.thischwa</groupId>
 	<artifactId>dyndrest</artifactId>
 	<version>0.3-SNAPSHOT</version>
-	<name>DynRest</name>
+	<name>DynDRest</name>
 	<description>A simple REST-service for dynamic DNS.</description>
 	<url>https://github.com/th-schwarz/DynDRest</url>
 	<inceptionYear>2022</inceptionYear>
