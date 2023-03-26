@@ -17,22 +17,22 @@ class NetUtilTest {
 
 	@Test
 	final void testIsIp() {
-		assertTrue(NetUtil.isIP("188.68.45.198"));
-		assertFalse(NetUtil.isIP("188.68.45.265"));
+		assertTrue(NetUtil.isIp("188.68.45.198"));
+		assertFalse(NetUtil.isIp("188.68.45.265"));
 
-		assertTrue(NetUtil.isIP("2a03:4000:41:32:0:0:0:2"));
-		assertFalse(NetUtil.isIP("2a03:4000:41:32:0:0:0:2h"));
+		assertTrue(NetUtil.isIp("2a03:4000:41:32:0:0:0:2"));
+		assertFalse(NetUtil.isIp("2a03:4000:41:32:0:0:0:2h"));
 	}
 
 	@Test
 	final void testIsIpv4() {
-		assertTrue(NetUtil.isIPv4("188.68.45.198"));
-		assertFalse(NetUtil.isIPv4("188.68.45.265"));
+		assertTrue(NetUtil.isIpv4("188.68.45.198"));
+		assertFalse(NetUtil.isIpv4("188.68.45.265"));
 	}
 
 	@Test
 	final void testIsIpv6() {
-		assertTrue(NetUtil.isIPv6("2a03:4000:41:32:0:0:0:2"));
-		assertFalse(NetUtil.isIPv6("2a03:4000:41:32:0:0:0:2h"));
+		assertTrue(NetUtil.isIpv6("2a03:4000:41:32:0:0:0:2"));
+		assertFalse(NetUtil.isIpv6("2a03:4000:41:32:0:0:0:2h"));
 	}
 }

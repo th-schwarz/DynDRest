@@ -16,32 +16,35 @@ import org.springframework.web.bind.annotation.GetMapping;
 @ConditionalOnProperty(name = "dyndrest.update-log-page-enabled")
 public class UpdateLogController {
 
-	private final AppConfig config;
+  private final AppConfig config;
 
-	@Value("${spring.security.user.name}") private String basicAuthUser;
+  @Value("${spring.security.user.name}")
+  private String basicAuthUser;
 
-	@Value("${spring.security.user.password}") private String basicAuthPassword;
+  @Value("${spring.security.user.password}")
+  private String basicAuthPassword;
 
-	public UpdateLogController(AppConfig config) {
-		this.config = config;
-	}
+  public UpdateLogController(AppConfig config) {
+    this.config = config;
+  }
 
-	/**
-	 * Delivers page to show the zone update logs.
-	 * @param model optional model for processing
-	 * @return the zone update logs page
-	 */
-	@GetMapping(value = "/log", produces = MediaType.TEXT_HTML_VALUE)
-	public String log(Model model) {
-		String baseUrl = NetUtil.getBaseUrl(config.updateLogRestForceHttps());
+  /**
+   * Delivers page to show the zone update logs.
+   *
+   * @param model optional model for processing
+   * @return the zone update logs page
+   */
+  @GetMapping(value = "/log", produces = MediaType.TEXT_HTML_VALUE)
+  public String log(Model model) {
+    String baseUrl = NetUtil.getBaseUrl(config.updateLogRestForceHttps());
 
-		model.addAttribute("server_url", baseUrl + "/info/update-log");
-		if(basicAuthUser != null && basicAuthPassword != null) {
-			String basicAuth = NetUtil.buildBasicAuth(basicAuthUser, basicAuthPassword);
-			model.addAttribute("header_basicauth", basicAuth);
-			model.addAttribute("page_size", config.updateLogPageSize());
-		}
-		return "log-view";
-	}
+    model.addAttribute("server_url", baseUrl + "/info/update-log");
+    if (basicAuthUser != null && basicAuthPassword != null) {
+      String basicAuth = NetUtil.buildBasicAuth(basicAuthUser, basicAuthPassword);
+      model.addAttribute("header_basicauth", basicAuth);
+      model.addAttribute("page_size", config.updateLogPageSize());
+    }
+    return "log-view";
+  }
 
 }

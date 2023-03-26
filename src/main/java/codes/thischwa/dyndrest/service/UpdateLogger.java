@@ -7,5 +7,5 @@ import codes.thischwa.dyndrest.model.IpSetting;
  */
 public interface UpdateLogger {
 
-	void log(String host, IpSetting ipSetting);
+  void log(String host, IpSetting ipSetting);
 }

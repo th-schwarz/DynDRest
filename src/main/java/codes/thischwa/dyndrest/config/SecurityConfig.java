@@ -17,42 +17,48 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-	static final String ROLE_LOGVIEWER = "LOGVIEWER";
-	static final String ROLE_USER = "USER";
-	private final AppConfig appConfig;
-	private final PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-	@Value("${spring.security.user.name}") private String userName;
-	@Value("${spring.security.user.password}") private String password;
+  static final String ROLE_LOGVIEWER = "LOGVIEWER";
+  static final String ROLE_USER = "USER";
+  private final AppConfig appConfig;
+  private final PasswordEncoder encoder =
+      PasswordEncoderFactories.createDelegatingPasswordEncoder();
+  @Value("${spring.security.user.name}")
+  private String userName;
+  @Value("${spring.security.user.password}")
+  private String password;
 
-	public SecurityConfig(AppConfig appConfig) {
-		this.appConfig = appConfig;
-	}
+  public SecurityConfig(AppConfig appConfig) {
+    this.appConfig = appConfig;
+  }
 
-	@Bean
-	public UserDetailsService userDetailsService() {
-		InMemoryUserDetailsManager userManager = new InMemoryUserDetailsManager();
-		userManager.createUser(build(userName, password, ROLE_USER));
-		if(appConfig.updateLogUserName() != null && appConfig.updateLogUserPassword() != null) {
-			userManager.createUser(build(appConfig.updateLogUserName(), appConfig.updateLogUserPassword(), ROLE_LOGVIEWER));
-		}
-		return userManager;
-	}
+  @Bean
+  public UserDetailsService userDetailsService() {
+    InMemoryUserDetailsManager userManager = new InMemoryUserDetailsManager();
+    userManager.createUser(build(userName, password, ROLE_USER));
+    if (appConfig.updateLogUserName() != null && appConfig.updateLogUserPassword() != null) {
+      userManager.createUser(
+          build(appConfig.updateLogUserName(), appConfig.updateLogUserPassword(), ROLE_LOGVIEWER));
+    }
+    return userManager;
+  }
 
-	private UserDetails build(String user, String password, String role) {
-		return User.builder().passwordEncoder(encoder::encode).username(user).password(password).roles(role).build();
-	}
+  private UserDetails build(String user, String password, String role) {
+    return User.builder().passwordEncoder(encoder::encode).username(user).password(password)
+        .roles(role).build();
+  }
 
-	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.authorizeHttpRequests().requestMatchers("/", "/favicon.ico", "/v3/api-docs*").permitAll().and()
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.authorizeHttpRequests().requestMatchers("/", "/favicon.ico", "/v3/api-docs*").permitAll()
+        .and()
 
-		// enable security for the log-view
-		.authorizeHttpRequests().requestMatchers("/log").hasAnyRole(ROLE_LOGVIEWER).and()
+        // enable security for the log-view
+        .authorizeHttpRequests().requestMatchers("/log").hasAnyRole(ROLE_LOGVIEWER).and()
 
-		// enable basic-auth for all other routes
-		.authorizeHttpRequests().anyRequest().hasAnyRole(ROLE_USER).and().httpBasic();
+        // enable basic-auth for all other routes
+        .authorizeHttpRequests().anyRequest().hasAnyRole(ROLE_USER).and().httpBasic();
 
-		return http.build();
-	}
+    return http.build();
+  }
 
 }

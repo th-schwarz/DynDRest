@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 @ConditionalOnProperty(name = "dyndrest.greeting-enabled", matchIfMissing = true)
 public class GreetingController {
 
-	/**
-	 * Delivers a welcome page.
-	 *
-	 * @return the welcome page
-	 */
-	@GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
-	public String greeting() {
-		return "about";
-	}
+  /**
+   * Delivers a welcome page.
+   *
+   * @return the welcome page
+   */
+  @GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
+  public String greeting() {
+    return "about";
+  }
 }

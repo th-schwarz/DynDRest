@@ -1,20 +1,21 @@
 package codes.thischwa.dyndrest.model;
 
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
+@Getter
+@Setter
 public class UpdateLogPage {
 
-	private @Getter @Setter int total;
+  private int total;
 
-	private @Getter @Setter int totalPage;
+  private int totalPage;
 
-	private @Getter @Setter int page;
+  private int page;
 
-	private @Getter @Setter int pageSize;
+  private int pageSize;
 
-	private @Getter @Setter List<UpdateItem> items;
+  private List<UpdateItem> items;
 
 }

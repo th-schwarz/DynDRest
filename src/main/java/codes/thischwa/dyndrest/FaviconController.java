@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class FaviconController {
 
-	@Operation(hidden = true)
-	@GetMapping("favicon.ico")
-	@ResponseBody
-	void returnNoFavicon() {
-		// see class comment
-	}
+  @Operation(hidden = true)
+  @GetMapping("favicon.ico")
+  @ResponseBody
+  void returnNoFavicon() {
+    // see class comment
+  }
 }
