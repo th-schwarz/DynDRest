@@ -217,89 +217,101 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <plugin>
-                <!-- starts spring boot for generating the openapi docu -->
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <executable>true</executable>
-                    <includeSystemScope>true</includeSystemScope>
-                    <commandlineArguments>--swagger.enabled=true --springdoc.writer-with-default-pretty-printer=true
-                        --springdoc.api-docs.enabled=true --dyndrest.host-validation-enable=false --server.port=8080
-                    </commandlineArguments>
-                    <jvmArguments>-Dspring.application.admin.enabled=true
-                        -Dspring.config.import=file:target/test-classes/application.yml
-                    </jvmArguments>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>pre-integration-test</id>
-                        <goals>
-                            <goal>start</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>post-integration-test</id>
-                        <goals>
-                            <goal>stop</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <!-- generates the openapi docu -->
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-maven-plugin</artifactId>
-                <version>1.4</version>
-                <configuration>
-                    <apiDocsUrl>http://localhost:8080/v3/api-docs.yaml</apiDocsUrl>
-                    <outputFileName>${openapi.outputFile}</outputFileName>
-                </configuration>
-             <!--   <executions>
-                    <execution>
-                        <id>generate-openapi</id>
-                        <phase>integration-test</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>-->
-            </plugin>
-            <plugin>
-                <!-- converts the openapi docu to html -->
-                <groupId>io.swagger.codegen.v3</groupId>
-                <artifactId>swagger-codegen-maven-plugin</artifactId>
-                <version>3.0.36</version>
-             <!--   <executions>
-                    <execution>
-                        <id>export-to-html-doc</id>
-                        <phase>integration-test</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <inputSpec>${openapi.outputDir}/${openapi.outputFile}</inputSpec>
-                            <language>html2</language>
-                            <output>${project.basedir}/docs/openapi</output>
-                        </configuration>
-                    </execution>
-                </executions>-->
-            </plugin>
         </plugins>
     </build>
 
-    <developers>
-        <developer>
-            <id>th-schwarz</id>
-            <name>Thilo Schwarz</name>
-            <email>osp AT thischwa.codes</email>
-            <url>https://www.thischwa.codes</url>
-            <roles>
-                <role>Head Project Manager</role>
-                <role>Developer</role>
-            </roles>
-            <timezone>+1</timezone>
-        </developer>
-    </developers>
+
+  <profiles>
+    <profile>
+      <id>opendoc</id>
+      <build>
+        <plugins>
+          <plugin>
+            <!-- starts spring boot for generating the openapi docu -->
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration>
+              <commandlineArguments>--swagger.enabled=true
+                --springdoc.writer-with-default-pretty-printer=true
+                --springdoc.api-docs.enabled=true --dyndrest.host-validation-enable=false
+                --server.port=8080
+              </commandlineArguments>
+              <executable>true</executable>
+              <includeSystemScope>true</includeSystemScope>
+              <jvmArguments>-Dspring.application.admin.enabled=true
+                -Dspring.config.import=file:target/test-classes/application.yml
+              </jvmArguments>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+                <id>pre-integration-test</id>
+              </execution>
+              <execution>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+                <id>post-integration-test</id>
+              </execution>
+            </executions>
+            <groupId>org.springframework.boot</groupId>
+          </plugin>
+          <plugin>
+            <!-- generates the openapi docu -->
+            <artifactId>springdoc-openapi-maven-plugin</artifactId>
+            <configuration>
+              <apiDocsUrl>http://localhost:8080/v3/api-docs.yaml</apiDocsUrl>
+              <outputFileName>${openapi.outputFile}</outputFileName>
+            </configuration>
+            <groupId>org.springdoc</groupId>
+            <version>1.4</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>generate</goal>
+                </goals>
+                <id>generate-openapi</id>
+                <phase>integration-test</phase>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <!-- converts the openapi docu to html -->
+            <artifactId>swagger-codegen-maven-plugin</artifactId>
+            <groupId>io.swagger.codegen.v3</groupId>
+            <version>3.0.36</version>
+            <executions>
+              <execution>
+                <configuration>
+                  <inputSpec>${openapi.outputDir}/${openapi.outputFile}</inputSpec>
+                  <language>html2</language>
+                  <output>${project.basedir}/docs/openapi</output>
+                </configuration>
+                <goals>
+                  <goal>generate</goal>
+                </goals>
+                <id>export-to-html-doc</id>
+                <phase>integration-test</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+  <developers>
+    <developer>
+      <email>osp AT thischwa.codes</email>
+      <id>th-schwarz</id>
+      <name>Thilo Schwarz</name>
+      <roles>
+        <role>Head Project Manager</role>
+        <role>Developer</role>
+      </roles>
+      <timezone>+1</timezone>
+      <url>https://www.thischwa.codes</url>
+    </developer>
+  </developers>
 </project>
