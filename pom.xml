@@ -1,225 +1,224 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.5</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
-    <groupId>codes.thischwa</groupId>
-    <artifactId>dyndrest</artifactId>
-    <version>0.3-SNAPSHOT</version>
-    <name>DynDRest</name>
-    <description>A simple REST-service for dynamic DNS.</description>
-    <url>https://github.com/th-schwarz/DynDRest</url>
-    <inceptionYear>2022</inceptionYear>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.0.5</version>
+    <relativePath/> <!-- lookup parent from repository -->
+  </parent>
+  <groupId>codes.thischwa</groupId>
+  <artifactId>dyndrest</artifactId>
+  <version>0.3-SNAPSHOT</version>
+  <name>DynDRest</name>
+  <description>A simple REST-service for dynamic DNS.</description>
+  <url>https://github.com/th-schwarz/DynDRest</url>
+  <inceptionYear>2022</inceptionYear>
 
-    <properties>
-        <java.version>17</java.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  <properties>
+    <java.version>17</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <springdoc.version>2.0.4</springdoc.version>
-        <domainrobot.version>0.2.8</domainrobot.version>
-        <dnsjava.version>3.5.2</dnsjava.version>
+    <springdoc.version>2.0.4</springdoc.version>
+    <domainrobot.version>0.2.8</domainrobot.version>
+    <dnsjava.version>3.5.2</dnsjava.version>
 
-        <sonar.organization>th-schwarz</sonar.organization>
-        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <sonar.organization>th-schwarz</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
-        <openapi.outputDir>${project.build.directory}</openapi.outputDir>
-        <openapi.outputFile.extless>openapi</openapi.outputFile.extless>
-        <openapi.outputFile>${openapi.outputFile.extless}.yaml</openapi.outputFile>
+    <openapi.outputDir>${project.build.directory}</openapi.outputDir>
+    <openapi.outputFile.extless>openapi</openapi.outputFile.extless>
+    <openapi.outputFile>${openapi.outputFile.extless}.yaml</openapi.outputFile>
 
-        <fakerepo.dir>${project.basedir}/fake-repo</fakerepo.dir>
+    <fakerepo.dir>${project.basedir}/fake-repo</fakerepo.dir>
 
-        <!-- checkstyle 9.3 -->
-        <checkstyle.plugin.version>3.2.1</checkstyle.plugin.version>
-        <checkstyle.config.location>google_checks.xml</checkstyle.config.location>
-<!--        <checkstyle.violationSeverity>warning</checkstyle.violationSeverity>-->
-        <checkstyle.consoleOutput>true</checkstyle.consoleOutput>
-        <linkXRef>false</linkXRef>
-    </properties>
+    <!-- checkstyle 9.3 -->
+    <checkstyle.plugin.version>3.2.1</checkstyle.plugin.version>
+    <checkstyle.config.location>google_checks.xml</checkstyle.config.location>
+    <!--        <checkstyle.violationSeverity>warning</checkstyle.violationSeverity>-->
+    <checkstyle.consoleOutput>true</checkstyle.consoleOutput>
+    <linkXRef>false</linkXRef>
+  </properties>
 
-    <repositories>
-        <repository>
-            <id>central</id>
-            <name>Maven Central</name>
-            <layout>default</layout>
-            <url>https://repo1.maven.org/maven2</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <!-- DO NOT set id to "local" because it is reserved by Maven -->
-            <!-- This is a fake maven repo. -->
-            <id>fake-repo</id>
-            <name>Just a fake repository.</name>
-            <url>file://${fakerepo.dir}</url>
-        </repository>
-    </repositories>
+  <repositories>
+    <repository>
+      <id>central</id>
+      <name>Maven Central</name>
+      <layout>default</layout>
+      <url>https://repo1.maven.org/maven2</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <!-- DO NOT set id to "local" because it is reserved by Maven -->
+      <!-- This is a fake maven repo. -->
+      <id>fake-repo</id>
+      <name>Just a fake repository.</name>
+      <url>file://${fakerepo.dir}</url>
+    </repository>
+  </repositories>
 
-    <distributionManagement>
-        <repository>
-            <id>myrepo</id>
-            <url>https://myrepo.thischwa.codes/repository/dyndrest/</url>
-        </repository>
-        <snapshotRepository>
-            <id>myrepo</id>
-            <url>https://myrepo.thischwa.codes/repository/dyndrest/</url>
-        </snapshotRepository>
-    </distributionManagement>
+  <distributionManagement>
+    <repository>
+      <id>myrepo</id>
+      <url>https://myrepo.thischwa.codes/repository/dyndrest/</url>
+    </repository>
+    <snapshotRepository>
+      <id>myrepo</id>
+      <url>https://myrepo.thischwa.codes/repository/dyndrest/</url>
+    </snapshotRepository>
+  </distributionManagement>
 
-    <issueManagement>
-        <url>https://github.com/th-schwarz/DynDRest/issues</url>
-        <system>GitHub Issues</system>
-    </issueManagement>
+  <issueManagement>
+    <url>https://github.com/th-schwarz/DynDRest/issues</url>
+    <system>GitHub Issues</system>
+  </issueManagement>
 
-    <scm>
-        <developerConnection>scm:git:git@github.com:th-schwarz/dyndrest</developerConnection>
-        <connection>scm:git:git@github.com:th-schwarz/dyndrest</connection>
-        <tag>HEAD</tag>
-    </scm>
+  <scm>
+    <developerConnection>scm:git:git@github.com:th-schwarz/dyndrest</developerConnection>
+    <connection>scm:git:git@github.com:th-schwarz/dyndrest</connection>
+    <tag>HEAD</tag>
+  </scm>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-tomcat</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.logging.log4j</groupId>
-                    <artifactId>log4j-to-slf4j</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-undertow</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-tomcat</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-to-slf4j</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-undertow</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-thymeleaf</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>dnsjava</groupId>
-            <artifactId>dnsjava</artifactId>
-            <version>${dnsjava.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.domainrobot</groupId>
-            <artifactId>sdk-model</artifactId>
-            <version>${domainrobot.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.domainrobot</groupId>
-            <artifactId>sdk-client</artifactId>
-            <version>${domainrobot.version}</version>
-        </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>dnsjava</groupId>
+      <artifactId>dnsjava</artifactId>
+      <version>${dnsjava.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.domainrobot</groupId>
+      <artifactId>sdk-model</artifactId>
+      <version>${domainrobot.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.domainrobot</groupId>
+      <artifactId>sdk-client</artifactId>
+      <version>${domainrobot.version}</version>
+    </dependency>
 
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
-            <version>${springdoc.version}</version>
-        </dependency>
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
+      <version>${springdoc.version}</version>
+    </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.junit.vintage</groupId>
+          <artifactId>junit-vintage-engine</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <!-- checkstyle -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${checkstyle.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>checkstyle-validate</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+  <build>
+    <plugins>
+      <plugin>
+        <!-- checkstyle -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${checkstyle.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>checkstyle-validate</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <configuration>
-                    <tagNameFormat>v@{project.version}</tagNameFormat>
-                </configuration>
-            </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <configuration>
+          <tagNameFormat>v@{project.version}</tagNameFormat>
+        </configuration>
+      </plugin>
 
-            <plugin>
-                <!-- generates the code coverage report for sonar cube -->
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.7</version>
-                <executions>
-                    <execution>
-                        <id>prepare-agent</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>report-code-coverage</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                        <configuration>
-                            <formats>XML</formats>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
+      <plugin>
+        <!-- generates the code coverage report for sonar cube -->
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.7</version>
+        <executions>
+          <execution>
+            <id>prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>report-code-coverage</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <configuration>
+              <formats>XML</formats>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
   <profiles>
     <profile>
