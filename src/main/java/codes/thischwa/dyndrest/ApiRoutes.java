@@ -42,8 +42,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 )
 //@formatter:on
 
-
 interface ApiRoutes {
+
   @Operation(summary = "Updates the desired IP addresses of the 'host', if the 'apitoken' belongs to the host. If both parameters for IP addresses aren't set, an attempt is made to fetch the remote IP.")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Updates the desired IP addresses of the 'host', if the 'apitoken' belongs to the host. If both parameters for IP addresses aren't set, an attempt is made to fetch the remote IP.", content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE, examples = {
@@ -54,11 +54,9 @@ interface ApiRoutes {
   void update(
       @Parameter(description = "The host, for which the IPs must be updated.", content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE, examples = {
           @ExampleObject(value = "mydyndns.domain.com")})) @PathVariable String host,
-      @Parameter(description = "The 'apitoken' which belongs to the 'host'.", content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE))
-      @RequestParam String apitoken,
+      @Parameter(description = "The 'apitoken' which belongs to the 'host'.", content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE)) @RequestParam String apitoken,
       @RequestParam(name = "ipv4", required = false) InetAddress ipv4,
-      @RequestParam(name = "ipv6", required = false) InetAddress ipv6,
-      HttpServletRequest req);
+      @RequestParam(name = "ipv6", required = false) InetAddress ipv6, HttpServletRequest req);
 
   @Operation(summary = "Determines the IP settings of the 'host' and returns it in a JSON object.")
   @ApiResponses(value = {
@@ -70,15 +68,12 @@ interface ApiRoutes {
   ResponseEntity<IpSetting> info(
       @Parameter(description = "The host, for which the IPs must be determined.", content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE, examples = {
           @ExampleObject(value = "mydyndns.domain.com")})) @PathVariable String host,
-      @Parameter(description = "The 'apitoken' which belongs to the 'host'.", content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE))
-      @RequestParam String apitoken);
+      @Parameter(description = "The 'apitoken' which belongs to the 'host'.", content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE)) @RequestParam String apitoken);
 
   @Operation(summary = "Delivers pageable update logs.")
   @ApiResponse(responseCode = "200", description = "Order list of update logs.")
   @GetMapping(value = "info/update-log", produces = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<UpdateLogPage> deliverLogs(
-      @Parameter(description = "Page number to fetch. If it is not committed, it will be '1'.", content = @Content(mediaType = "int"))
-      @RequestParam(required = false) Integer page,
-      @Parameter(description = "String to search for. It belongs to 'host' and 'timestamp'.", content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE))
-      @RequestParam(required = false) String search);
+      @Parameter(description = "Page number to fetch. If it is not committed, it will be '1'.", content = @Content(mediaType = "int")) @RequestParam(required = false) Integer page,
+      @Parameter(description = "String to search for. It belongs to 'host' and 'timestamp'.", content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE)) @RequestParam(required = false) String search);
 }

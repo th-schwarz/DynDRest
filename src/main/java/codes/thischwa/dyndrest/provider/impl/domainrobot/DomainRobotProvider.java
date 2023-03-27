@@ -38,7 +38,7 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
 
     // set the IPs in the zone object
     Zone zone = zoneInfo(host);
-    if (!zcw.hasIPsChanged(zone, sld, ipSetting)) {
+    if (!zcw.hasIpsChanged(zone, sld, ipSetting)) {
       return;
     }
     zcw.process(zone, sld, ipSetting);
@@ -77,7 +77,7 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
   }
 
   @Override
-  public void afterPropertiesSet() throws Exception {
+  public void afterPropertiesSet() throws IllegalArgumentException {
     validateHostConfiguration();
   }
 }

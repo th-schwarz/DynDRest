@@ -27,7 +27,7 @@ class ZoneClientWrapper {
     this.defaultTtl = defaultTtl;
   }
 
-  ResourceRecord searchResourceRecord(Zone zone, String name, ResouceRecordTypeIP type) {
+  ResourceRecord searchResourceRecord(Zone zone, String name, ResouceRecordTypeIp type) {
     return zone.getResourceRecords().stream()
         .filter(rr -> rr.getType().equals(type.toString()) && rr.getName().equals(name))
         .findFirst().orElse(null);
@@ -41,18 +41,18 @@ class ZoneClientWrapper {
     return host.substring(host.indexOf(".") + 1);
   }
 
-  boolean hasIPsChanged(Zone zone, String sld, IpSetting ipSetting) {
+  boolean hasIpsChanged(Zone zone, String sld, IpSetting ipSetting) {
     if (ipSetting.isNotSet()) {
       return false;
     }
-    ResourceRecord rrv4 = searchResourceRecord(zone, sld, ResouceRecordTypeIP.A);
-    ResourceRecord rrv6 = searchResourceRecord(zone, sld, ResouceRecordTypeIP.AAAA);
-    boolean ipv4Changed = !hasIPChanged(rrv4, ipSetting.getIpv4());
-    boolean ipv6Changed = !hasIPChanged(rrv6, ipSetting.getIpv6());
+    ResourceRecord rrv4 = searchResourceRecord(zone, sld, ResouceRecordTypeIp.A);
+    ResourceRecord rrv6 = searchResourceRecord(zone, sld, ResouceRecordTypeIp.AAAA);
+    boolean ipv4Changed = !hasIpChanged(rrv4, ipSetting.getIpv4());
+    boolean ipv6Changed = !hasIpChanged(rrv6, ipSetting.getIpv6());
     return ipv4Changed || ipv6Changed;
   }
 
-  private boolean hasIPChanged(ResourceRecord rr, InetAddress ip) {
+  private boolean hasIpChanged(ResourceRecord rr, InetAddress ip) {
     if (rr == null || ip == null) {
       return false;
     }
@@ -101,35 +101,35 @@ class ZoneClientWrapper {
    * @param ipSetting the ip setting
    */
   void process(Zone zone, String sld, IpSetting ipSetting) {
-    processIPv4(zone, sld, ipSetting.getIpv4());
-    processIPv6(zone, sld, ipSetting.getIpv6());
+    processIpv4(zone, sld, ipSetting.getIpv4());
+    processIpv6(zone, sld, ipSetting.getIpv6());
   }
 
-  private void processIPv4(Zone zone, String sld, Inet4Address ip) {
+  private void processIpv4(Zone zone, String sld, Inet4Address ip) {
     if (ip != null) {
-      addOrUpdateIPv4(zone, sld, ip);
+      addOrUpdateIpv4(zone, sld, ip);
     } else {
-      removeIPv4(zone, sld);
+      removeIpv4(zone, sld);
     }
   }
 
-  private void processIPv6(Zone zone, String sld, Inet6Address ip) {
+  private void processIpv6(Zone zone, String sld, Inet6Address ip) {
     if (ip != null) {
-      addOrUpdateIPv6(zone, sld, ip);
+      addOrUpdateIpv6(zone, sld, ip);
     } else {
-      removeIPv6(zone, sld);
+      removeIp6(zone, sld);
     }
   }
 
-  private void addOrUpdateIPv4(Zone zone, String sld, Inet4Address ip) {
-    addOrUpdateIP(zone, sld, ip, ResouceRecordTypeIP.A);
+  private void addOrUpdateIpv4(Zone zone, String sld, Inet4Address ip) {
+    addOrUpdateIp(zone, sld, ip, ResouceRecordTypeIp.A);
   }
 
-  private void addOrUpdateIPv6(Zone zone, String sld, Inet6Address ip) {
-    addOrUpdateIP(zone, sld, ip, ResouceRecordTypeIP.AAAA);
+  private void addOrUpdateIpv6(Zone zone, String sld, Inet6Address ip) {
+    addOrUpdateIp(zone, sld, ip, ResouceRecordTypeIp.AAAA);
   }
 
-  private void addOrUpdateIP(Zone zone, String sld, InetAddress ip, ResouceRecordTypeIP type) {
+  private void addOrUpdateIp(Zone zone, String sld, InetAddress ip, ResouceRecordTypeIp type) {
     ResourceRecord rr = searchResourceRecord(zone, sld, type);
     if (rr != null) {
       rr.setValue(ip.getHostAddress());
@@ -144,15 +144,15 @@ class ZoneClientWrapper {
     }
   }
 
-  void removeIPv4(Zone zone, String sld) {
-    removeIP(zone, sld, ResouceRecordTypeIP.A);
+  void removeIpv4(Zone zone, String sld) {
+    removeIp(zone, sld, ResouceRecordTypeIp.A);
   }
 
-  void removeIPv6(Zone zone, String sld) {
-    removeIP(zone, sld, ResouceRecordTypeIP.AAAA);
+  void removeIp6(Zone zone, String sld) {
+    removeIp(zone, sld, ResouceRecordTypeIp.AAAA);
   }
 
-  void removeIP(Zone zone, String sld, ResouceRecordTypeIP type) {
+  void removeIp(Zone zone, String sld, ResouceRecordTypeIp type) {
     ResourceRecord rr = searchResourceRecord(zone, sld, type);
     if (rr != null) {
       zone.getResourceRecords().remove(rr);
@@ -160,7 +160,7 @@ class ZoneClientWrapper {
     }
   }
 
-  enum ResouceRecordTypeIP {
+  enum ResouceRecordTypeIp {
     A, AAAA
   }
 }

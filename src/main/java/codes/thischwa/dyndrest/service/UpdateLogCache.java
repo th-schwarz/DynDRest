@@ -54,16 +54,16 @@ public class UpdateLogCache implements InitializingBean {
   public void afterPropertiesSet() throws Exception {
     if (!isEnabled()) {
       log.info(
-          "Log page is disabled or dyndrest.update-log-file-pattern isn't set, prefill is canceled.");
+          "Log page is disabled or dyndrest.update-log-file-pattern isn't set,"
+              + " prefill is canceled.");
       return;
     }
 
     dateTimeFormatter = DateTimeFormatter.ofPattern(conf.updateLogDatePattern());
 
     // build location pattern, if no url type is found 'file:' will be assumed
-    String locPattern = (conf.updateLogFilePattern().contains(":")) ?
-        conf.updateLogFilePattern() :
-        "file:" + conf.updateLogFilePattern();
+    String locPattern = (conf.updateLogFilePattern().contains(":")) ? conf.updateLogFilePattern()
+        : "file:" + conf.updateLogFilePattern();
     log.info("Using the following log file pattern: {}", locPattern);
 
     List<String> logEntries = new ArrayList<>();
@@ -72,9 +72,9 @@ public class UpdateLogCache implements InitializingBean {
       log.debug("No log files found.");
       return;
     }
-    Arrays.stream(logs).filter(r -> r.getFilename() != null &&
-            (r.getFilename().endsWith(".log") || r.getFilename().endsWith(".gz")))
-        .forEach(r -> readResource(r, logEntries));
+    Arrays.stream(logs).filter(
+        r -> r.getFilename() != null && (r.getFilename().endsWith(".log") || r.getFilename()
+            .endsWith(".gz"))).forEach(r -> readResource(r, logEntries));
 
     // ordering and parsing, must be asc because new items will be added at the end
     Pattern pattern = Pattern.compile(conf.updateLogPattern());
@@ -84,26 +84,49 @@ public class UpdateLogCache implements InitializingBean {
     log.info("{} log entries successful read and parsed.", updateItems.size());
   }
 
-  public void addLogEntry(String host, String ipv4, String ipv6) {
+  /**
+   * Generate and add a log item with the desired parameters..
+   *
+   * @param host the host
+   * @param ipv4 the ipv 4
+   * @param ipv6 the ipv 6
+   */
+  public void addLogItem(String host, String ipv4, String ipv6) {
     String now = dateTimeFormatter.format(LocalDateTime.now());
     UpdateItem item = new UpdateItem(now, host, ipv4, ipv6);
     updateItems.add(item);
   }
 
-  public List<UpdateItem> getItems() {
+  /**
+   * Gets all log items.
+   *
+   * @return the all log items
+   */
+  public List<UpdateItem> getAllItems() {
     return updateItems;
   }
 
+  /**
+   * Gets the update log page with all items.
+   *
+   * @return the update log page
+   */
   public UpdateLogPage getResponseAll() {
     UpdateLogPage logs = new UpdateLogPage();
     logs.setPageSize(conf.updateLogPageSize());
     logs.setTotal(updateItems.size());
     logs.setItems(updateItems.stream()
-        .sorted(Comparator.comparing(UpdateItem::dateTime, Comparator.reverseOrder()))
-        .toList());
+        .sorted(Comparator.comparing(UpdateItem::dateTime, Comparator.reverseOrder())).toList());
     return logs;
   }
 
+  /**
+   * Gets the update log page for the desired 'page' and 'search'.
+   *
+   * @param page   the page, can be null
+   * @param search the search, can be null
+   * @return the update log response page
+   */
   public UpdateLogPage getResponsePage(Integer page, String search) {
     log.debug("Entered #getResponsePage with: page={}, search={}", page, search);
     if (page == null || page == 0) {
@@ -113,15 +136,13 @@ public class UpdateLogCache implements InitializingBean {
     lp.setPage(page);
 
     // searching in host and timestamp
-    List<UpdateItem> items = (search == null || search.isEmpty()) ?
-        new ArrayList<>(updateItems) :
-        updateItems.stream().filter(i -> i.host().contains(search) || i.dateTime().contains(search))
-            .toList();
+    List<UpdateItem> items = (search == null || search.isEmpty()) ? new ArrayList<>(updateItems)
+        : updateItems.stream()
+            .filter(i -> i.host().contains(search) || i.dateTime().contains(search)).toList();
 
     // respect ordering of dateTime, must be desc!
-    items =
-        items.stream().sorted(Comparator.comparing(UpdateItem::dateTime, Comparator.reverseOrder()))
-            .toList();
+    items = items.stream()
+        .sorted(Comparator.comparing(UpdateItem::dateTime, Comparator.reverseOrder())).toList();
 
     int currentIdx = (conf.updateLogPageSize() * page) - conf.updateLogPageSize();
     List<UpdateItem> pageItems = new ArrayList<>();
@@ -157,8 +178,8 @@ public class UpdateLogCache implements InitializingBean {
       return;
     }
     log.debug("Process log zone update file: {}", res.getFilename());
-    try (InputStream in = filename.endsWith(".gz") ? new GZIPInputStream(res.getInputStream()) :
-        res.getInputStream()) {
+    try (InputStream in = filename.endsWith(".gz") ? new GZIPInputStream(res.getInputStream())
+        : res.getInputStream()) {
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
       while (reader.ready()) {
         logItems.add(reader.readLine());

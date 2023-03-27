@@ -2,6 +2,7 @@ package codes.thischwa.dyndrest.provider.impl.domainrobot;
 
 import codes.thischwa.dyndrest.GenericIntegrationTest;
 import codes.thischwa.dyndrest.model.IpSetting;
+import codes.thischwa.dyndrest.provider.impl.domainrobot.ZoneClientWrapper.ResouceRecordTypeIp;
 import org.domainrobot.sdk.client.JsonUtils;
 import org.domainrobot.sdk.models.generated.JsonResponseDataZone;
 import org.domainrobot.sdk.models.generated.ResourceRecord;
@@ -41,7 +42,7 @@ class ZoneClientWrapperTest extends GenericIntegrationTest {
 		zcw.process(zone, "sub", new IpSetting("128.0.0.1"));
 		// AAAA is removed
 		assertEquals(rrCount - 1, zone.getResourceRecords().size());
-		ResourceRecord rr = zcw.searchResourceRecord(zone, "sub", ZoneClientWrapper.ResouceRecordTypeIP.A);
+		ResourceRecord rr = zcw.searchResourceRecord(zone, "sub", ResouceRecordTypeIp.A);
 		assertNotNull(rr);
 		assertEquals("128.0.0.1", rr.getValue());
 	}
@@ -52,7 +53,7 @@ class ZoneClientWrapperTest extends GenericIntegrationTest {
 		zcw.process(zone, "sub", new IpSetting("2a03:4000:41:32::20"));
 		// A is removed
 		assertEquals(rrCount - 1, zone.getResourceRecords().size());
-		ResourceRecord rr = zcw.searchResourceRecord(zone, "sub", ZoneClientWrapper.ResouceRecordTypeIP.AAAA);
+		ResourceRecord rr = zcw.searchResourceRecord(zone, "sub", ResouceRecordTypeIp.AAAA);
 		assertNotNull(rr);
 		assertEquals("2a03:4000:41:32:0:0:0:20", rr.getValue());
 	}
@@ -62,7 +63,7 @@ class ZoneClientWrapperTest extends GenericIntegrationTest {
 		assertEquals(rrCount, zone.getResourceRecords().size());
 		zcw.process(zone, "sub1", new IpSetting("128.0.0.1"));
 		assertEquals(rrCount + 1, zone.getResourceRecords().size());
-		ResourceRecord rr = zcw.searchResourceRecord(zone, "sub1", ZoneClientWrapper.ResouceRecordTypeIP.A);
+		ResourceRecord rr = zcw.searchResourceRecord(zone, "sub1", ResouceRecordTypeIp.A);
 		assertNotNull(rr);
 		assertEquals("128.0.0.1", rr.getValue());
 	}
@@ -72,7 +73,7 @@ class ZoneClientWrapperTest extends GenericIntegrationTest {
 		assertEquals(rrCount, zone.getResourceRecords().size());
 		zcw.process(zone, "sub1", new IpSetting("2a03:4000:41:32::20"));
 		assertEquals(rrCount + 1, zone.getResourceRecords().size());
-		ResourceRecord rr = zcw.searchResourceRecord(zone, "sub1", ZoneClientWrapper.ResouceRecordTypeIP.AAAA);
+		ResourceRecord rr = zcw.searchResourceRecord(zone, "sub1", ResouceRecordTypeIp.AAAA);
 		assertNotNull(rr);
 		assertEquals("2a03:4000:41:32:0:0:0:20", rr.getValue());
 	}
@@ -82,9 +83,9 @@ class ZoneClientWrapperTest extends GenericIntegrationTest {
 		assertEquals(rrCount, zone.getResourceRecords().size());
 		zcw.process(zone, "sub2", new IpSetting("128.0.0.2"));
 		assertEquals(rrCount + 1, zone.getResourceRecords().size());
-		zcw.removeIPv4(zone, "sub2");
+		zcw.removeIpv4(zone, "sub2");
 		assertEquals(rrCount, zone.getResourceRecords().size());
-		zcw.removeIPv4(zone, "unknownsub");
+		zcw.removeIpv4(zone, "unknownsub");
 		assertEquals(rrCount, zone.getResourceRecords().size());
 	}
 
@@ -93,15 +94,15 @@ class ZoneClientWrapperTest extends GenericIntegrationTest {
 		assertEquals(rrCount, zone.getResourceRecords().size());
 		zcw.process(zone, "sub2", new IpSetting("2a03:4000:41:32::20"));
 		assertEquals(rrCount + 1, zone.getResourceRecords().size());
-		zcw.removeIPv6(zone, "sub2");
+		zcw.removeIp6(zone, "sub2");
 		assertEquals(rrCount, zone.getResourceRecords().size());
-		zcw.removeIPv6(zone, "unknownsub");
+		zcw.removeIp6(zone, "unknownsub");
 		assertEquals(rrCount, zone.getResourceRecords().size());
 	}
 
 	@Test
 	final void testSearch() {
-		ResourceRecord rr = zcw.searchResourceRecord(zone, "sub", ZoneClientWrapper.ResouceRecordTypeIP.A);
+		ResourceRecord rr = zcw.searchResourceRecord(zone, "sub", ResouceRecordTypeIp.A);
 		assertEquals("85.209.51.215", rr.getValue());
 	}
 
@@ -117,15 +118,15 @@ class ZoneClientWrapperTest extends GenericIntegrationTest {
 
 	@Test
 	final void testIPsHasChanged() throws Exception {
-		assertFalse(zcw.hasIPsChanged(zone, "sub", new IpSetting("85.209.51.215","2a03:4000:41:32::10")));
-		assertTrue(zcw.hasIPsChanged(zone, "unknownsub", new IpSetting("85.209.51.216","2a03:4000:41:32::10")));
+		assertFalse(zcw.hasIpsChanged(zone, "sub", new IpSetting("85.209.51.215","2a03:4000:41:32::10")));
+		assertTrue(zcw.hasIpsChanged(zone, "unknownsub", new IpSetting("85.209.51.216","2a03:4000:41:32::10")));
 
-		assertTrue(zcw.hasIPsChanged(zone, "sub", new IpSetting("85.209.51.216","2a03:4000:41:32::10")));
-		assertTrue(zcw.hasIPsChanged(zone, "sub", new IpSetting("85.209.51.215", "2a03:4000:41:32::11")));
+		assertTrue(zcw.hasIpsChanged(zone, "sub", new IpSetting("85.209.51.216","2a03:4000:41:32::10")));
+		assertTrue(zcw.hasIpsChanged(zone, "sub", new IpSetting("85.209.51.215", "2a03:4000:41:32::11")));
 
-		assertTrue(zcw.hasIPsChanged(zone, "sub", new IpSetting("2a03:4000:41:32::10")));
-		assertTrue(zcw.hasIPsChanged(zone, "sub", new IpSetting("85.209.51.215")));
+		assertTrue(zcw.hasIpsChanged(zone, "sub", new IpSetting("2a03:4000:41:32::10")));
+		assertTrue(zcw.hasIpsChanged(zone, "sub", new IpSetting("85.209.51.215")));
 
-		assertFalse(zcw.hasIPsChanged(zone, "sub", new IpSetting()));
+		assertFalse(zcw.hasIpsChanged(zone, "sub", new IpSetting()));
 	}
 }

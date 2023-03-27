@@ -13,6 +13,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * The security configuration, mainly to specify the authentications for different routes.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -31,6 +34,11 @@ public class SecurityConfig {
     this.appConfig = appConfig;
   }
 
+  /**
+   * Instantiates the UserDetailsService with different users reading from the properties.
+   *
+   * @return the UserDetailsService
+   */
   @Bean
   public UserDetailsService userDetailsService() {
     InMemoryUserDetailsManager userManager = new InMemoryUserDetailsManager();
@@ -47,6 +55,13 @@ public class SecurityConfig {
         .roles(role).build();
   }
 
+  /**
+   * Specify different authentications for different routes..
+   *
+   * @param http the http
+   * @return the security filter chain
+   * @throws Exception the exception
+   */
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests().requestMatchers("/", "/favicon.ico", "/v3/api-docs*").permitAll()

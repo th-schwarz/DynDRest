@@ -1,14 +1,16 @@
 package codes.thischwa.dyndrest.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import codes.thischwa.dyndrest.GenericIntegrationTest;
 import codes.thischwa.dyndrest.model.UpdateItem;
 import codes.thischwa.dyndrest.model.UpdateLogPage;
+import java.util.regex.Pattern;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.regex.Pattern;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class UpdateLogCacheTest extends GenericIntegrationTest {
 
@@ -22,13 +24,13 @@ class UpdateLogCacheTest extends GenericIntegrationTest {
 	final void testCache() {
 		assertTrue(cache.isEnabled());
 		assertEquals(startCnt, cache.size());
-		assertEquals(startCnt, cache.getItems().size());
+		assertEquals(startCnt, cache.getAllItems().size());
 	}
 
 	@Test
 	final void testCompareEqualsHash() {
-		UpdateItem item1 = cache.getItems().get(0);
-		UpdateItem item2 = cache.getItems().get(1);
+		UpdateItem item1 = cache.getAllItems().get(0);
+		UpdateItem item2 = cache.getAllItems().get(1);
 
 		assertEquals(item1, item1);
 		assertTrue(item1.compareTo(item2) < 0);
@@ -43,16 +45,16 @@ class UpdateLogCacheTest extends GenericIntegrationTest {
 	@Test
 	final void testAddLogEntry() {
 		assertEquals(startCnt, cache.size());
-		cache.addLogEntry("my.dyndns.com", "91.0.0.1", null);
+		cache.addLogItem("my.dyndns.com", "91.0.0.1", null);
 		assertEquals(startCnt + 1, cache.size());
 
-		UpdateItem item = cache.getItems().remove(startCnt);
+		UpdateItem item = cache.getAllItems().remove(startCnt);
 		assertEquals("my.dyndns.com", item.host());
 		assertEquals("91.0.0.1", item.ipv4());
 		assertEquals("n/a", item.ipv6());
 
-		cache.addLogEntry("my.dyndns.com", "91.0.0.1", "2003:cc:2fff:1131:2e91:abff:febf:d839");
-		item = cache.getItems().remove(startCnt);
+		cache.addLogItem("my.dyndns.com", "91.0.0.1", "2003:cc:2fff:1131:2e91:abff:febf:d839");
+		item = cache.getAllItems().remove(startCnt);
 		assertEquals("my.dyndns.com", item.host());
 		assertEquals("91.0.0.1", item.ipv4());
 		assertEquals("2003:cc:2fff:1131:2e91:abff:febf:d839", item.ipv6());
@@ -61,7 +63,7 @@ class UpdateLogCacheTest extends GenericIntegrationTest {
 	@Test
 	final void testItem() {
 		assertEquals("UpdateItem [dateTime=2022-02-01 03:28:11.497, host=ursa.mydyndns.com, ipv4=217.229.130.11, ipv6=n/a]",
-				cache.getItems().get(0).toString());
+				cache.getAllItems().get(0).toString());
 		UpdateItem item = new UpdateItem("testDateTime", "testHost", null, null);
 		assertEquals("UpdateItem [dateTime=testDateTime, host=testHost, ipv4=n/a, ipv6=n/a]", item.toString());
 	}

@@ -4,6 +4,9 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Data object used by the update log.
+ */
 @Getter
 @Setter
 public class UpdateLogPage {
