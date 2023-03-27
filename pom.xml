@@ -271,7 +271,7 @@
                 <groupId>io.swagger.codegen.v3</groupId>
                 <artifactId>swagger-codegen-maven-plugin</artifactId>
                 <version>3.0.36</version>
-                <executions>
+             <!--   <executions>
                     <execution>
                         <id>export-to-html-doc</id>
                         <phase>integration-test</phase>
@@ -284,7 +284,7 @@
                             <output>${project.basedir}/docs/openapi</output>
                         </configuration>
                     </execution>
-                </executions>
+                </executions>-->
             </plugin>
         </plugins>
     </build>
