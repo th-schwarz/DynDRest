@@ -256,7 +256,7 @@
                     <apiDocsUrl>http://localhost:8080/v3/api-docs.yaml</apiDocsUrl>
                     <outputFileName>${openapi.outputFile}</outputFileName>
                 </configuration>
-                <executions>
+             <!--   <executions>
                     <execution>
                         <id>generate-openapi</id>
                         <phase>integration-test</phase>
@@ -264,7 +264,7 @@
                             <goal>generate</goal>
                         </goals>
                     </execution>
-                </executions>
+                </executions>-->
             </plugin>
             <plugin>
                 <!-- converts the openapi docu to html -->
