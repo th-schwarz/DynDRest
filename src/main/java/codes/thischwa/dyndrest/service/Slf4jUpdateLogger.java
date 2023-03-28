@@ -38,7 +38,7 @@ public class Slf4jUpdateLogger implements UpdateLogger, InitializingBean {
 
   @Override
   public void log(String host, IpSetting ipSetting) {
-    log.info("{}", buildLogEntry(logEntryFormat, host, ipSetting));
+    log.info(buildLogEntry(logEntryFormat, host, ipSetting));
     cache.addLogItem(host, ipSetting.ipv4ToString(), ipSetting.ipv6ToString());
   }
 
