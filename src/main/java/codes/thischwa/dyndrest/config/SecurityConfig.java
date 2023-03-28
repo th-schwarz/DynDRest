@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -64,16 +65,22 @@ public class SecurityConfig {
    */
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests().requestMatchers("/", "/favicon.ico", "/v3/api-docs*").permitAll()
+    HttpBasicConfigurer<HttpSecurity> configurer = http
+
+        // public routes
+        .authorizeHttpRequests().requestMatchers("/", "/favicon.ico", "/v3/api-docs*")
+        .permitAll()
         .and()
 
         // enable security for the log-view
         .authorizeHttpRequests().requestMatchers("/log").hasAnyRole(ROLE_LOGVIEWER).and()
 
-        // enable basic-auth for all other routes
-        .authorizeHttpRequests().anyRequest().hasAnyRole(ROLE_USER).and().httpBasic();
+        // enable basic-auth and ROLE_USER for all other routes
+        .authorizeHttpRequests().anyRequest().hasAnyRole(ROLE_USER)
+        .and()
+        .httpBasic();
 
-    return http.build();
+    return configurer.and().build();
   }
 
 }
