@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.springframework.boot</groupId>
@@ -34,24 +35,23 @@
 
     <fakerepo.dir>${project.basedir}/fake-repo</fakerepo.dir>
 
-    <!-- checkstyle 9.3 -->
+    <!-- checkstyle -->
+    <checkstyle.version>10.8.1</checkstyle.version>
     <checkstyle.plugin.version>3.2.1</checkstyle.plugin.version>
     <checkstyle.config.location>google_checks.xml</checkstyle.config.location>
     <!--        <checkstyle.violationSeverity>warning</checkstyle.violationSeverity>-->
     <checkstyle.consoleOutput>true</checkstyle.consoleOutput>
+    <checkstyle.config.suppressionsLocation>
+      ${project.basedir}/src/checkstyle/checkstyle-suppressions.xml
+    </checkstyle.config.suppressionsLocation>
+    <checkstyle.includeTestResources>false</checkstyle.includeTestResources>
+    <checkstyle.violationSeverity>error</checkstyle.violationSeverity>
+    <checkstyle.propertyExpansion>config_loc=${basedir}
+    </checkstyle.propertyExpansion>
     <linkXRef>false</linkXRef>
   </properties>
 
   <repositories>
-    <repository>
-      <id>central</id>
-      <name>Maven Central</name>
-      <layout>default</layout>
-      <url>https://repo1.maven.org/maven2</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
     <repository>
       <!-- DO NOT set id to "local" because it is reserved by Maven -->
       <!-- This is a fake maven repo. -->
@@ -170,6 +170,14 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <configuration>
+          <tagNameFormat>v@{project.version}</tagNameFormat>
+        </configuration>
+      </plugin>
+
+      <plugin>
         <!-- checkstyle -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
@@ -183,14 +191,13 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-release-plugin</artifactId>
-        <configuration>
-          <tagNameFormat>v@{project.version}</tagNameFormat>
-        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>${checkstyle.version}</version>
+          </dependency>
+        </dependencies>
       </plugin>
 
       <plugin>
