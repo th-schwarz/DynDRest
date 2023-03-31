@@ -39,15 +39,14 @@
     <checkstyle.version>10.8.1</checkstyle.version>
     <checkstyle.plugin.version>3.2.1</checkstyle.plugin.version>
     <checkstyle.config.location>google_checks.xml</checkstyle.config.location>
-    <!--        <checkstyle.violationSeverity>warning</checkstyle.violationSeverity>-->
-    <checkstyle.consoleOutput>true</checkstyle.consoleOutput>
-    <checkstyle.config.suppressionsLocation>
+    <checkstyle.suppressions.location>
       ${project.basedir}/src/checkstyle/checkstyle-suppressions.xml
-    </checkstyle.config.suppressionsLocation>
+    </checkstyle.suppressions.location>
     <checkstyle.includeTestResources>false</checkstyle.includeTestResources>
-    <checkstyle.violationSeverity>error</checkstyle.violationSeverity>
+    <checkstyle.violationSeverity>warning</checkstyle.violationSeverity>
     <checkstyle.propertyExpansion>config_loc=${basedir}
     </checkstyle.propertyExpansion>
+    <checkstyle.consoleOutput>true</checkstyle.consoleOutput>
     <linkXRef>false</linkXRef>
   </properties>
 
