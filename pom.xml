@@ -177,6 +177,12 @@
       </plugin>
 
       <plugin>
+        <!-- build the fat jar -->
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+
+      <plugin>
         <!-- checkstyle -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
