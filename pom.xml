@@ -9,11 +9,12 @@
   </parent>
   <groupId>codes.thischwa</groupId>
   <artifactId>dyndrest</artifactId>
-  <version>0.4-SNAPSHOT</version>
+  <version>0.3.1-SNAPSHOT</version>
   <name>DynDRest</name>
   <description>A simple REST-service for dynamic DNS.</description>
   <url>https://github.com/th-schwarz/DynDRest</url>
   <inceptionYear>2022</inceptionYear>
+  <packaging>jar</packaging>
 
   <properties>
     <java.version>17</java.version>
@@ -178,6 +179,9 @@
         <!-- build the fat jar -->
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <executable>true</executable>
+        </configuration>
       </plugin>
 
       <plugin>
