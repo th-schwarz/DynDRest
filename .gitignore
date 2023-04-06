@@ -9,7 +9,7 @@ pom.xml.*
 
 # local files
 /info.txt
-/logback.xml
+/logback-spring.xml
 /logback-update.xml
 /dyndrest.yml
 /dyndrest-update**

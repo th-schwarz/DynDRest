@@ -92,6 +92,9 @@ public class UpdateLogCache implements InitializingBean {
    * @param ipv6 the ipv 6
    */
   public void addLogItem(String host, String ipv4, String ipv6) {
+    if (!isEnabled()) {
+      return;
+    }
     String now = dateTimeFormatter.format(LocalDateTime.now());
     UpdateItem item = new UpdateItem(now, host, ipv4, ipv6);
     updateItems.add(item);
@@ -113,6 +116,9 @@ public class UpdateLogCache implements InitializingBean {
    */
   public UpdateLogPage getResponseAll() {
     UpdateLogPage logs = new UpdateLogPage();
+    if (!isEnabled()) {
+      return logs;
+    }
     logs.setPageSize(conf.updateLogPageSize());
     logs.setTotal(updateItems.size());
     logs.setItems(updateItems.stream()
@@ -128,11 +134,14 @@ public class UpdateLogCache implements InitializingBean {
    * @return the update log response page
    */
   public UpdateLogPage getResponsePage(Integer page, String search) {
+    UpdateLogPage lp = new UpdateLogPage();
+    if (!isEnabled()) {
+      return lp;
+    }
     log.debug("Entered #getResponsePage with: page={}, search={}", page, search);
     if (page == null || page == 0) {
       page = 1;
     }
-    UpdateLogPage lp = new UpdateLogPage();
     lp.setPage(page);
 
     // searching in host and timestamp

@@ -12,5 +12,6 @@ public record AppConfig(String provider, String updateLogFilePattern, int update
                         boolean hostValidationEnabled,
                         String updateLogUserName,
                         String updateLogUserPassword, boolean updateLogRestForceHttps,
-                        boolean greetingEnabled) {
+                        boolean greetingEnabled,
+                        String updateLogEncoderPattern) {
 }

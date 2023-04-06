@@ -5,76 +5,73 @@
 
 = Logback Configuration
 
-The common application logging and the update logging are both handled by Logback! For a better overview the configuration is split in two files.
+The common application logging and the update logging are both handled by Logback!
 
-== Example for the main Logback configuration
+== Example for a Logback configuration
 
 It defines the location logging and includes the configuration for the update logging.
 
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration debug="false">
-	<include file="logback-update.xml"/>
+<configuration debug="true">
+
 	<property name="log_path" value="/var/log"/>
 
-	<!-- daily rolling application log, retention period 30d -->
+	<!-- monthly rolling application log, retention period 30d -->
 	<appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>${log_path}/dyndrest.log</file>
 		<encoder>
 			<pattern>%d [%t] %-5level %logger{50} - %msg%n</pattern>
 		</encoder>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>${log_path}/dyndrest-%d{yyyy-MM-dd}.log.gz</fileNamePattern>
-			<maxHistory>30</maxHistory>
+			<fileNamePattern>${log_path}/dyndrest-%d{yyyy-MM}.log.gz</fileNamePattern>
+			<maxHistory>12</maxHistory>
 		</rollingPolicy>
 	</appender>
 
-	<logger name="org.hibernate" level="info"/>
-	<logger name="org.eclipse.jetty" level="info"/>
 	<logger name="org.springframework.boot.autoconfigure.logging" level="info"/>
 	<logger name="org.springframework.context.annotation.ClassPathBeanDefinitionScanner" level="info"/>
 	<logger name="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" level="trace"/>
 	<logger name="org.springframework.web" level="info"/>
 	<logger name="org.springframework.beans" level="info"/>
+	<logger name="org.thymeleaf" level="info"/>
+	<logger name="org.xnio.nio" level="warn"/>
 
-<logger name="org.thymeleaf" level="info"/>
 	<root level="debug">
 		<appender-ref ref="file"/>
 	</root>
+
+  <springProperty scope="context" name="update-enabled" source="dyndrest.update-log-page-enabled"/>
+  <if condition='property("update-enabled").contains("true")'>
+    <then>
+      <!-- logging for the update log view  -->
+      <springProperty scope="context" name="update-pattern"
+        source="dyndrest.update-log-encoder-pattern"/>
+      <appender name="update"
+        class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>./dyndrest-update.log</file>
+        <encoder>
+          <pattern>${update-pattern}</pattern>
+        </encoder>
+
+        <rollingPolicy
+          class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+          <fileNamePattern>./dyndrest-update-%d{yyyy-ww}.log.gz</fileNamePattern>
+          <maxHistory>26</maxHistory>
+        </rollingPolicy>
+      </appender>
+
+      <logger name="UpdateLogger" additivity="false" level="info">
+        <appender-ref ref="update"/>
+      </logger>
+    </then>
+  </if>
 </configuration>
 ----
+NOTE: The initialization of the update logger depends on thi application property `dyndrest.update-log-page-enabled`. The correct name of the update logger is very important, it must be *UpdateLogger*!
 
-== Example for the update log configuration (logback-update.xml)
-
-This configuration generates the log files on which the log-view is based. It's important to set the application property _dyndrest.update-log-file-pattern_ to the directory and file name pattern used in the configuration file!
-
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<included>
-	<appender name="update"
-                class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>./dyndrest-update.log</file>
-		<encoder>
-			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n</pattern>
-		</encoder>
-		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>./dydrest-update-%d{yyyy-MM}.log.gz</fileNamePattern>
-			<maxHistory>1</maxHistory>
-		</rollingPolicy>
-	</appender>
-	<logger name="UpdateLogger" additivity="false" level="info">
-		<appender-ref ref="update" />
-	</logger>
-</included>
-----
-
-====
-The correct name of the update logger is very important, it must be *UpdateLogger*!
-====
-
-=== Example for the update log
+== Example for the update log
 
 [source,console]
 ----

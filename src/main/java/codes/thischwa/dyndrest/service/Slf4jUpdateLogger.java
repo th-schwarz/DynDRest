@@ -4,6 +4,7 @@ import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.provider.Provider;
 import java.util.Comparator;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 /**
@@ -11,9 +12,10 @@ import org.springframework.stereotype.Service;
  * which logs into an extra file.
  */
 @Service
+@ConditionalOnProperty(name = "dyndrest.update-log-page-enabled", havingValue = "true")
 public class Slf4jUpdateLogger implements UpdateLogger, InitializingBean {
 
-  // a hard-coded name is needed for the extra log-appemner
+  // a hard-coded name is needed for the extra log-appender
   private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger("UpdateLogger");
 
   private static final int DEFAULT_HOSTNAME_LENGTH = 12;

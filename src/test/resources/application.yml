@@ -19,6 +19,7 @@ dyndrest:
   update-log-date-pattern: yyyy-MM-dd HH:mm:SSS
   # update-log-file-pattern: classpath:/test-files/dyndrest-update*
   update-log-file-pattern: file:target/test-classes/test-files/dyndrest-update*
+  update-log-encoder-pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n"
   update-log-page-enabled: true
   update-log-page-size: 4
   update-log-user-name: log-dev

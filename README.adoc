@@ -86,8 +86,7 @@ Here is the suggested file structure:
 │   ├── dyndrest-0.1.0.jar
 │   ├── dyndrest.jar -> dyndrest-0.1.0.jar
 │   ├── dyndrest-update.log   (log of the updates)
-│   ├── logback.xml         (logback configuration for application and update logoging, optional)
-│   ├── logback-update.xml  (extra logback configuration for update logging, optional include)
+│   ├── logback-spring.xml    (logback configuration for application and update logging)
 ----
 
 *dyndrest.yml* defines the individual properties and will be merged with
@@ -99,7 +98,7 @@ Important: The basic-auth, the api-tokens and the credentials for
 AutoDNS should be defined in this file!
 
 The configuration of Logback can be split into two files, one for the
-application logging (*logback.xml*) and one for a the well-formatted
+application logging (*logback-spring.xml*) and one for a the well-formatted
 zone update log (*logback-update.xml*). The second one is the one on
 which the log view is based. For further information have look at the
 link:docs/logback-configuration.adoc[Logback Configuration] documentation.
@@ -153,7 +152,7 @@ The start by command line looks like:
 [source,bash]
 ----
 cd /opt/dyndrest/
-java -jar dyndrest.jar --logging.config=logback.xml
+java -jar dyndrest.jar --logging.config=logback-spring.xml
 ----
 
 === by systemd Service

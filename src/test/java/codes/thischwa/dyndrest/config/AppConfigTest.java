@@ -1,10 +1,12 @@
 package codes.thischwa.dyndrest.config;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import codes.thischwa.dyndrest.GenericIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class AppConfigTest extends GenericIntegrationTest {
 
@@ -20,6 +22,7 @@ class AppConfigTest extends GenericIntegrationTest {
 
 		assertEquals("file:target/test-classes/test-files/dyndrest-update*", config.updateLogFilePattern());
 		assertEquals("(.*)\\s+-\\s+([a-zA-Z\\.-]*)\\s+(\\S*)\\s+(\\S*)", config.updateLogPattern());
+		assertEquals("%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n", config.updateLogEncoderPattern());
 		assertEquals("yyyy-MM-dd HH:mm:SSS", config.updateLogDatePattern());
 		assertTrue(config.updateLogPageEnabled());
 		assertEquals(4, config.updateLogPageSize());
