@@ -1,6 +1,7 @@
 package codes.thischwa.dyndrest.model;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -74,6 +75,7 @@ public class IpSetting {
     }
   }
 
+  @JsonIgnore
   public boolean isNotSet() {
     return ipv4 == null && ipv6 == null;
   }
