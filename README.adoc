@@ -93,15 +93,14 @@ Here is the suggested file structure:
 the default properties in the classpath, therefore the file can be kept
 as small as possible. A minimal configuration example can be found
 further below. If the file is inside the working directory, it is loaded
-automatically. The complete configuration setings can be found link:docs/dyndrest-configuration.adoc[here]. +
+automatically. The complete configuration settings can be found link:docs/dyndrest-configuration.adoc[here]. +
 Important: The basic-auth, the api-tokens and the credentials for
 AutoDNS should be defined in this file!
 
-The configuration of Logback can be split into two files, one for the
-application logging (*logback-spring.xml*) and one for a the well-formatted
-zone update log (*logback-update.xml*). The second one is the one on
-which the log view is based. For further information have look at the
-link:docs/logback-configuration.adoc[Logback Configuration] documentation.
+*logback-spring.xml* is the configuration file of Logback. For further information have look at the
+link:docs/logback-configuration.adoc[Logback Configuration]. There is example which
+demonstrates, how to configure an additional file appender for the update logging, which dependents on
+an application property.
 
 === Configuration example for the provider 'domainrobot'
 
