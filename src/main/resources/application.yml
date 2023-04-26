@@ -14,7 +14,7 @@ dyndrest:
   update-log-page-enabled: false
   update-log-page-size: 30
   update-log-pattern: (.*)\s+-\s+([a-zA-Z\.-]*)\s+(\S*)\s+(\S*)
-  update-log-date-pattern: yyyy-MM-dd HH:mm:SSS
+  update-log-date-pattern: yyyy-MM-dd HH:mm:ss.SSS
   update-log-file-pattern: ./dyndrest-update*
   update-log-encoder-pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n"
 
