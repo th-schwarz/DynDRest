@@ -40,6 +40,8 @@ Fritz!Box. DynDRest can be executed by `commandline`, `init.d` or
 If you find a bug or certain features are missing, don’t hesitate to
 file an issue on https://github.com/th-schwarz/DynDRest/issues[Github].
 
+This project is also a playground for the author to try things out. That's why not all changes are really necessary to move the project forward!
+
 DynDRest is kindly supported by
 
 image::https://resources.jetbrains.com/storage/products/company/brand/logos/IntelliJ_IDEA.png[IntelliJ IDEA logo,250,link="https://jb.gg/OpenSourceSupport"]
