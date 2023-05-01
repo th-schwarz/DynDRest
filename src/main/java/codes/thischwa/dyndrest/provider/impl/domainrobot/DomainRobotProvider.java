@@ -2,8 +2,8 @@ package codes.thischwa.dyndrest.provider.impl.domainrobot;
 
 import codes.thischwa.dyndrest.config.AppConfig;
 import codes.thischwa.dyndrest.model.IpSetting;
-import codes.thischwa.dyndrest.provider.impl.GenericProvider;
 import codes.thischwa.dyndrest.provider.ProviderException;
+import codes.thischwa.dyndrest.provider.impl.GenericProvider;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.domainrobot.sdk.models.generated.Zone;

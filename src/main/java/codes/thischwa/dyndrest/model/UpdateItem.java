@@ -1,6 +1,7 @@
 package codes.thischwa.dyndrest.model;
 
 import java.util.Objects;
+import org.springframework.lang.Nullable;
 
 /**
  * The Update item for the {@link UpdateLogPage}.
@@ -16,7 +17,7 @@ public record UpdateItem(String dateTime, String host, String ipv4, String ipv6)
    * @param ipv4     the ipv4
    * @param ipv6     the ipv6
    */
-  public UpdateItem(String dateTime, String host, String ipv4, String ipv6) {
+  public UpdateItem(String dateTime, String host, @Nullable String ipv4, @Nullable String ipv6) {
     this.dateTime = dateTime;
     this.host = host;
     this.ipv4 = ipv4 == null ? "n/a" : ipv4;
