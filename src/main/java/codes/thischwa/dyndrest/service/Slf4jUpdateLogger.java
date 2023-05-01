@@ -24,6 +24,7 @@ public class Slf4jUpdateLogger implements UpdateLogger, InitializingBean {
 
   private final UpdateLogCache cache;
 
+  @SuppressWarnings("NotNullFieldNotInitialized")
   private String logEntryFormat;
 
   public Slf4jUpdateLogger(Provider provider, UpdateLogCache cache) {

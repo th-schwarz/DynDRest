@@ -12,6 +12,7 @@ import org.domainrobot.sdk.models.DomainRobotHeaders;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 /**
@@ -28,9 +29,9 @@ class DomainRobotConfigurator implements InitializingBean {
   private final AutoDnsConfig autoDnsConfig;
   private final DomainRobotConfig domainRobotConfig;
   // <zone, ns>
-  private Map<String, String> zoneData = null;
+  private @Nullable Map<String, String> zoneData = null;
   // <fqdn, apitoken>
-  private Map<String, String> apitokenData = null;
+  private @Nullable Map<String, String> apitokenData = null;
 
   public DomainRobotConfigurator(AppConfig appConfig, AutoDnsConfig autoDnsConfig,
                                  DomainRobotConfig domainRobotConfig) {
@@ -103,7 +104,7 @@ class DomainRobotConfigurator implements InitializingBean {
   private void readZoneConfig(DomainRobotConfig.Zone zone) {
     zoneData.put(zone.name(), zone.ns());
     List<String> hostRawData = zone.hosts();
-    if (hostRawData == null || hostRawData.isEmpty()) {
+    if (hostRawData.isEmpty()) {
       throw new IllegalArgumentException("Missing host data for: " + zone.name());
     }
     hostRawData.forEach(hostRaw -> readHostString(hostRaw, zone));
@@ -122,8 +123,7 @@ class DomainRobotConfigurator implements InitializingBean {
   }
 
   void validate() {
-    if (zoneData == null || zoneData.isEmpty() || apitokenData == null
-        || apitokenData.isEmpty()) {
+    if (zoneData.isEmpty() || apitokenData.isEmpty()) {
       throw new IllegalArgumentException("Zone or host data are empty.");
     }
     log.info("*** Configured hosts:");

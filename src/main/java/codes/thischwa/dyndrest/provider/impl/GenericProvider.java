@@ -1,6 +1,9 @@
-package codes.thischwa.dyndrest.provider;
+package codes.thischwa.dyndrest.provider.impl;
 
 import codes.thischwa.dyndrest.model.IpSetting;
+import codes.thischwa.dyndrest.provider.Provider;
+import codes.thischwa.dyndrest.provider.ProviderException;
+import codes.thischwa.dyndrest.provider.UpdateHookException;
 import codes.thischwa.dyndrest.util.NetUtil;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Generic helper class provider implementations.
  */
+@SuppressWarnings("RedundantThrows")
 @Slf4j
 public abstract class GenericProvider implements Provider {
 

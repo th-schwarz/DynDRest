@@ -1,12 +1,14 @@
 package codes.thischwa.dyndrest.provider;
 
 import codes.thischwa.dyndrest.model.IpSetting;
+import codes.thischwa.dyndrest.provider.impl.GenericProvider;
 import java.util.Set;
 
 /**
  * Defines the functionality of a dns provider. <br> A new provider implementation should be
  * extended from {@link GenericProvider}. It already implements some basic functions.
  */
+@SuppressWarnings("EmptyMethod")
 public interface Provider {
 
   /**
@@ -36,7 +38,6 @@ public interface Provider {
    *
    * @param host      the host
    * @param ipSetting the ip setting
-   * @throws UpdateHookException if an exceptions happens while before-update-hook
    */
   void updateBeforeHook(String host, IpSetting ipSetting) throws UpdateHookException;
 
@@ -54,7 +55,6 @@ public interface Provider {
    *
    * @param host      the host
    * @param ipSetting the ip setting
-   * @throws UpdateHookException if an exceptions happens while after-update-hook
    */
   void updateAfterHook(String host, IpSetting ipSetting) throws UpdateHookException;
 

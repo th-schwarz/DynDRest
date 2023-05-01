@@ -40,6 +40,7 @@ public class Starter {
       this.config = config;
     }
 
+    @SuppressWarnings("NullableProblems")
     @Override
     public void onApplicationEvent(final ApplicationReadyEvent event) {
       log.info("*** Settings for DynDRest:");

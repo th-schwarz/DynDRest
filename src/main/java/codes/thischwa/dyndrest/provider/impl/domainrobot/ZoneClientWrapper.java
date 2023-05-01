@@ -11,6 +11,7 @@ import org.domainrobot.sdk.client.clients.ZoneClient;
 import org.domainrobot.sdk.models.DomainrobotApiException;
 import org.domainrobot.sdk.models.generated.ResourceRecord;
 import org.domainrobot.sdk.models.generated.Zone;
+import org.springframework.lang.Nullable;
 
 /**
  * Encapsulate the {@link ZoneClient} and adds same useful util methods.
@@ -27,6 +28,7 @@ class ZoneClientWrapper {
     this.defaultTtl = defaultTtl;
   }
 
+  @Nullable
   ResourceRecord searchResourceRecord(Zone zone, String name, ResouceRecordTypeIp type) {
     return zone.getResourceRecords().stream()
         .filter(rr -> rr.getType().equals(type.toString()) && rr.getName().equals(name))
@@ -52,7 +54,7 @@ class ZoneClientWrapper {
     return ipv4Changed || ipv6Changed;
   }
 
-  private boolean hasIpChanged(ResourceRecord rr, InetAddress ip) {
+  private boolean hasIpChanged(@Nullable ResourceRecord rr, @Nullable InetAddress ip) {
     if (rr == null || ip == null) {
       return false;
     }
@@ -105,7 +107,7 @@ class ZoneClientWrapper {
     processIpv6(zone, sld, ipSetting.getIpv6());
   }
 
-  private void processIpv4(Zone zone, String sld, Inet4Address ip) {
+  private void processIpv4(Zone zone, String sld, @Nullable Inet4Address ip) {
     if (ip != null) {
       addOrUpdateIpv4(zone, sld, ip);
     } else {
@@ -113,7 +115,7 @@ class ZoneClientWrapper {
     }
   }
 
-  private void processIpv6(Zone zone, String sld, Inet6Address ip) {
+  private void processIpv6(Zone zone, String sld, @Nullable Inet6Address ip) {
     if (ip != null) {
       addOrUpdateIpv6(zone, sld, ip);
     } else {

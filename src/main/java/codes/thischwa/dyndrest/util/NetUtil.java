@@ -8,6 +8,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.xbill.DNS.AAAARecord;
 import org.xbill.DNS.ARecord;
@@ -103,6 +104,7 @@ public interface NetUtil {
     return ipSetting;
   }
 
+  @Nullable
   private static org.xbill.DNS.Record lookup(String hostName, int type) throws IOException {
     try {
       org.xbill.DNS.Record[] records = new Lookup(hostName, type).run();

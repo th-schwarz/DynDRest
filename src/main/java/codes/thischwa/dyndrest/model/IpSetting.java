@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.lang.Nullable;
 
 /**
  * Object to hold the íp settings.
@@ -20,9 +21,9 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class IpSetting {
 
-  private Inet4Address ipv4;
+  private @Nullable Inet4Address ipv4;
 
-  private Inet6Address ipv6;
+  private @Nullable Inet6Address ipv6;
 
   public IpSetting() {
   }
@@ -35,7 +36,7 @@ public class IpSetting {
    * @throws UnknownHostException the unknown host exception, if ip strings couldn't convert to an
    *                              {@link InetAddress} object.
    */
-  public IpSetting(String ipv4Str, String ipv6Str) throws UnknownHostException {
+  public IpSetting(@Nullable String ipv4Str, @Nullable String ipv6Str) throws UnknownHostException {
     if (ipv4Str != null) {
       ipv4 = (Inet4Address) InetAddress.getByName(ipv4Str);
     }
@@ -81,12 +82,12 @@ public class IpSetting {
   }
 
   @JsonGetter("ipv4")
-  public String ipv4ToString() {
+  public @Nullable String ipv4ToString() {
     return ipv4 == null ? null : ipv4.getHostAddress();
   }
 
   @JsonGetter("ipv6")
-  public String ipv6ToString() {
+  public @Nullable String ipv6ToString() {
     return ipv6 == null ? null : ipv6.getHostAddress();
   }
 

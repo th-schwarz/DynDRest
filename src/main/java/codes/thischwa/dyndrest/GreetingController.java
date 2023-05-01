@@ -17,6 +17,7 @@ public class GreetingController {
    *
    * @return the welcome page
    */
+  @SuppressWarnings("SameReturnValue")
   @GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
   public String greeting() {
     return "about";

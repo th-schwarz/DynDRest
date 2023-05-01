@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -36,6 +37,7 @@ public class UpdateLogCache implements InitializingBean {
 
   private List<UpdateItem> updateItems = new CopyOnWriteArrayList<>();
 
+  @SuppressWarnings("NotNullFieldNotInitialized")
   private DateTimeFormatter dateTimeFormatter;
 
   public UpdateLogCache(AppConfig conf) {
@@ -91,7 +93,7 @@ public class UpdateLogCache implements InitializingBean {
    * @param ipv4 the ipv 4
    * @param ipv6 the ipv 6
    */
-  public void addLogItem(String host, String ipv4, String ipv6) {
+  public void addLogItem(String host, @Nullable String ipv4, @Nullable String ipv6) {
     if (!isEnabled()) {
       return;
     }
@@ -133,7 +135,7 @@ public class UpdateLogCache implements InitializingBean {
    * @param search the search, can be null
    * @return the update log response page
    */
-  public UpdateLogPage getResponsePage(Integer page, String search) {
+  public UpdateLogPage getResponsePage(@Nullable Integer page, @Nullable String search) {
     UpdateLogPage lp = new UpdateLogPage();
     if (!isEnabled()) {
       return lp;
@@ -170,7 +172,8 @@ public class UpdateLogCache implements InitializingBean {
     return lp;
   }
 
-  UpdateItem parseLogEntry(String logEntry, Pattern pattern) {
+  @Nullable
+  UpdateItem parseLogEntry(@Nullable String logEntry, Pattern pattern) {
     if (logEntry == null) {
       return null;
     }

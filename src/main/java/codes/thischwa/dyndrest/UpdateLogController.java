@@ -34,6 +34,7 @@ public class UpdateLogController {
    * @param model optional model for processing
    * @return the zone update logs page
    */
+  @SuppressWarnings("SameReturnValue")
   @GetMapping(value = "/log", produces = MediaType.TEXT_HTML_VALUE)
   public String log(Model model) {
     String baseUrl = NetUtil.getBaseUrl(config.updateLogRestForceHttps());
