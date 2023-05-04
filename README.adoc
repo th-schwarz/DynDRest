@@ -85,10 +85,13 @@ Here is the suggested file structure:
 ----
 ├── /opt/dyndrest
 │   ├── dyndrest.yml
-│   ├── dyndrest-0.1.0.jar
-│   ├── dyndrest.jar -> dyndrest-0.1.0.jar
+│   ├── dyndrest-0.4.1.jar
+│   ├── dyndrest.jar -> dyndrest-0.4.1.jar
 │   ├── dyndrest-update.log   (log of the updates)
-│   ├── logback-spring.xml    (logback configuration for application and update logging)
+│   ├── logback-spring.xml    (logback configuration)
+│   ├── /log
+│       ├── dyndrest.log   (application log)
+│       ├── dyndrest-update.log   (log of the updates)
 ----
 
 *dyndrest.yml* defines the individual properties and will be merged with
@@ -101,8 +104,7 @@ AutoDNS should be defined in this file!
 
 *logback-spring.xml* is the configuration file of Logback. For further information have look at the
 link:docs/logback-configuration.adoc[Logback Configuration]. There is example which
-demonstrates, how to configure an additional file appender for the update logging, which dependents on
-an application property.
+demonstrates, how to configure an additional file appender for the update logging, which dependents on an application property.
 
 === Configuration example for the provider 'domainrobot'
 

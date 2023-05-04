@@ -10,8 +10,6 @@ pom.xml.*
 # local files
 /info.txt
 /logback-spring.xml
-/logback-update.xml
 /dyndrest.yml
-/dyndrest-update**
-/domainrobot.yml
+/log/
 /docs/openapi/.swagger-codegen**
