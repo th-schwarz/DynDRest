@@ -13,5 +13,6 @@ public class NopUpdateLogger implements UpdateLogger {
 
   @Override
   public void log(String host, IpSetting ipSetting) {
+    // noop doesn't log anything
   }
 }
