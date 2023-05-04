@@ -27,7 +27,7 @@ dyndrest:
   update-log-user-password: l0g-dev
   update-log-pattern: (.*)\s+-\s+([a-zA-Z\.-]*)\s+(\S*)\s+(\S*)
   update-log-date-pattern: yyyy-MM-dd HH:mm:SSS
-  update-log-file-pattern: ./dyndrest-update*
+  update-log-file-pattern: ./log/dyndrest-update*
 
 ## disable springdoc endpoints and swagger-ui by default
 springdoc:
