@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-public class UpdateItemTest {
+class UpdateItemTest {
 
   @Test
   final void testItem() {
