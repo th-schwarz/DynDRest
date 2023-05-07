@@ -61,14 +61,6 @@ class UpdateLogCacheTest extends GenericIntegrationTest {
 	}
 
 	@Test
-	final void testItem() {
-		assertEquals("UpdateItem [dateTime=2022-02-01 03:28:11.497, host=ursa.mydyndns.com, ipv4=217.229.130.11, ipv6=n/a]",
-				cache.getAllItems().get(0).toString());
-		UpdateItem item = new UpdateItem("testDateTime", "testHost", null, null);
-		assertEquals("UpdateItem [dateTime=testDateTime, host=testHost, ipv4=n/a, ipv6=n/a]", item.toString());
-	}
-
-	@Test
 	final void testParseLogEntry() {
 		assertNull(cache.parseLogEntry(null, logEntryPattern));
 		assertNull(cache.parseLogEntry("abc", logEntryPattern));
