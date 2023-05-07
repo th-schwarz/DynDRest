@@ -10,7 +10,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 /**
- * The starter. of the application.
+ * The starter of the application.
  */
 @Slf4j
 @SpringBootApplication
