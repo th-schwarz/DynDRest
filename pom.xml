@@ -302,12 +302,12 @@
             <!-- converts the openapi docu to html -->
             <artifactId>swagger-codegen-maven-plugin</artifactId>
             <groupId>io.swagger.codegen.v3</groupId>
-            <version>3.0.36</version>
+            <version>3.0.42</version>
             <executions>
               <execution>
                 <configuration>
                   <inputSpec>${openapi.outputDir}/${openapi.outputFile}</inputSpec>
-                  <language>html2</language>
+                  <language>html</language>
                   <output>${project.basedir}/docs/openapi</output>
                 </configuration>
                 <goals>
