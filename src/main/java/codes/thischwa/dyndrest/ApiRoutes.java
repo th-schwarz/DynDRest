@@ -47,11 +47,12 @@ interface ApiRoutes {
 
   @Operation(summary = "Updates the desired IP addresses of the 'host', if the 'apitoken' belongs to the host. If both parameters for IP addresses aren't set, an attempt is made to fetch the remote IP.")
   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Updates the desired IP addresses of the 'host', if the 'apitoken' belongs to the host. If both parameters for IP addresses aren't set, an attempt is made to fetch the remote IP."),
-      @ApiResponse(responseCode = "400", description = "If the 'apitoken' doesn't belong to the host, IP addresses aren't valid or the remote IP couldn't determine."),
-      @ApiResponse(responseCode = "500", description = "If the update fails.")})
+      @ApiResponse(responseCode = "200", description = "The IPs are still up to date.", content = @Content),
+      @ApiResponse(responseCode = "201", description = "One or both IPs are changed. Update successful processed.", content = @Content),
+      @ApiResponse(responseCode = "400", description = "If the 'apitoken' doesn't belong to the host, IP addresses aren't valid or the remote IP couldn't determine.", content = @Content),
+      @ApiResponse(responseCode = "500", description = "If the update fails.", content = @Content)})
   @GetMapping(value = "/update/{host}", produces = MediaType.TEXT_PLAIN_VALUE)
-  void update(
+  ResponseEntity<?> update(
       @Parameter(description = "The host, for which the IPs must be updated.", content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE, examples = {
           @ExampleObject(value = "mydyndns.domain.com")})) @PathVariable String host,
       @Parameter(description = "The 'apitoken' which belongs to the 'host'.", content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE)) @RequestParam String apitoken,

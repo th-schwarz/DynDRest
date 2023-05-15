@@ -46,7 +46,7 @@ public class ApiController implements ApiRoutes {
   }
 
   @Override
-  public void update(String host, String apitoken, InetAddress ipv4, InetAddress ipv6,
+  public ResponseEntity<?> update(String host, String apitoken, InetAddress ipv4, InetAddress ipv6,
                      HttpServletRequest req) {
     log.debug("entered #update: host={}, apitoken={}, ipv4={}, ipv6={}", host, apitoken, ipv4,
         ipv6);
@@ -85,11 +85,13 @@ public class ApiController implements ApiRoutes {
         provider.processUpdate(host, reqIpSetting);
         log.info("Updated host {} successful with: {}", host, reqIpSetting);
         updateLogger.log(host, reqIpSetting);
+        return new ResponseEntity<>(HttpStatus.CREATED);
       }
     } catch (ProviderException e) {
       log.error("Updated host failed: " + host, e);
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 
   @Override
