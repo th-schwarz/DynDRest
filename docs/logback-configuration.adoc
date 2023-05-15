@@ -16,16 +16,18 @@ It defines the location logging and includes the configuration for the update lo
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="true">
 
-	<property name="log_path" value="/var/log"/>
+	<property name="log_path" value="./log"/>
+	<property name="log_name" value="dyndrest"/>
 
 	<!-- monthly rolling application log, retention period 30d -->
 	<appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>${log_path}/dyndrest.log</file>
+		<property name="app_log" value="${log_path}/${log_name}"/>
+		<file>${app_log}.log</file>
 		<encoder>
 			<pattern>%d [%t] %-5level %logger{50} - %msg%n</pattern>
 		</encoder>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>${log_path}/dyndrest-%d{yyyy-MM}.log.gz</fileNamePattern>
+			<fileNamePattern>${app_log}.%d{yyyy-MM}.log.gz</fileNamePattern>
 			<maxHistory>12</maxHistory>
 		</rollingPolicy>
 	</appender>
@@ -42,27 +44,32 @@ It defines the location logging and includes the configuration for the update lo
 		<appender-ref ref="file"/>
 	</root>
 
+
   <springProperty scope="context" name="update-enabled" source="dyndrest.update-log-page-enabled"/>
   <if condition='property("update-enabled").contains("true")'>
     <then>
       <!-- logging for the update log view  -->
+      <property name="update_log" value="${log_path}/${log_name}-update"/>
       <springProperty scope="context" name="update-pattern"
         source="dyndrest.update-log-encoder-pattern"/>
       <appender name="update"
         class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>./dyndrest-update.log</file>
+        <file>${update_log}.log</file>
         <encoder>
           <pattern>${update-pattern}</pattern>
         </encoder>
 
         <rollingPolicy
           class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-          <fileNamePattern>./dyndrest-update-%d{yyyy-ww}.log.gz</fileNamePattern>
-          <maxHistory>26</maxHistory>
+          <fileNamePattern>${update_log}.%d{yyyy-ww}.log.gz</fileNamePattern>
+          <maxHistory>52</maxHistory>
         </rollingPolicy>
       </appender>
 
-      <logger name="UpdateLogger" additivity="false" level="info">
+      <logger
+        name="UpdateLogger"
+        additivity="false"
+        level="info">
         <appender-ref ref="update"/>
       </logger>
     </then>
