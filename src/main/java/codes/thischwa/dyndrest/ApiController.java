@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-/**
- * The 'main' api controller.
- */
+/** The 'main' api controller. */
 @RestController
 @Slf4j
 public class ApiController implements ApiRoutes {
@@ -30,26 +28,25 @@ public class ApiController implements ApiRoutes {
 
   private final UpdateLogCache updateLogCache;
 
-
   /**
    * Instantiates a new Api controller.
    *
-   * @param provider       the provider
-   * @param updateLogger   the update logger
+   * @param provider the provider
+   * @param updateLogger the update logger
    * @param updateLogCache the update log cache
    */
-  public ApiController(Provider provider, UpdateLogger updateLogger,
-                       UpdateLogCache updateLogCache) {
+  public ApiController(
+      Provider provider, UpdateLogger updateLogger, UpdateLogCache updateLogCache) {
     this.provider = provider;
     this.updateLogger = updateLogger;
     this.updateLogCache = updateLogCache;
   }
 
   @Override
-  public ResponseEntity<Object> update(String host, String apitoken, InetAddress ipv4, InetAddress ipv6,
-                     HttpServletRequest req) {
-    log.debug("entered #update: host={}, apitoken={}, ipv4={}, ipv6={}", host, apitoken, ipv4,
-        ipv6);
+  public ResponseEntity<Object> update(
+      String host, String apitoken, InetAddress ipv4, InetAddress ipv6, HttpServletRequest req) {
+    log.debug(
+        "entered #update: host={}, apitoken={}, ipv4={}, ipv6={}", host, apitoken, ipv4, ipv6);
 
     // validation
     if (!provider.hostExists(host)) {
@@ -96,7 +93,7 @@ public class ApiController implements ApiRoutes {
 
   @Override
   public ResponseEntity<IpSetting> info(String host, @RequestParam String apitoken) {
-    log.debug("entered #info: host={}", host);    // validation
+    log.debug("entered #info: host={}", host); // validation
     if (!provider.hostExists(host)) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
@@ -117,8 +114,8 @@ public class ApiController implements ApiRoutes {
   }
 
   @Override
-  public ResponseEntity<UpdateLogPage> deliverLogs(@RequestParam Integer page,
-                                                   @RequestParam(required = false) String search) {
+  public ResponseEntity<UpdateLogPage> deliverLogs(
+      @RequestParam Integer page, @RequestParam(required = false) String search) {
     // grid.js: pagination starts with 0
     if (page != null) {
       page++;
