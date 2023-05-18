@@ -52,7 +52,7 @@ interface ApiRoutes {
       @ApiResponse(responseCode = "400", description = "If the 'apitoken' doesn't belong to the host, IP addresses aren't valid or the remote IP couldn't determine.", content = @Content),
       @ApiResponse(responseCode = "500", description = "If the update fails.", content = @Content)})
   @GetMapping(value = "/update/{host}", produces = MediaType.TEXT_PLAIN_VALUE)
-  ResponseEntity<?> update(
+  ResponseEntity<Object> update(
       @Parameter(description = "The host, for which the IPs must be updated.", content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE, examples = {
           @ExampleObject(value = "mydyndns.domain.com")})) @PathVariable String host,
       @Parameter(description = "The 'apitoken' which belongs to the 'host'.", content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE)) @RequestParam String apitoken,

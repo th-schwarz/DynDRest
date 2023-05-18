@@ -46,7 +46,7 @@ public class ApiController implements ApiRoutes {
   }
 
   @Override
-  public ResponseEntity<?> update(String host, String apitoken, InetAddress ipv4, InetAddress ipv6,
+  public ResponseEntity<Object> update(String host, String apitoken, InetAddress ipv4, InetAddress ipv6,
                      HttpServletRequest req) {
     log.debug("entered #update: host={}, apitoken={}, ipv4={}, ipv6={}", host, apitoken, ipv4,
         ipv6);
