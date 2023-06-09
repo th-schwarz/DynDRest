@@ -13,7 +13,7 @@ After=network.target
 
 [Service]
 User=dyndrest
-Group=adm
+Group=dyndrest
 ExecStart=/opt/dyndrest/dyndrest.jar --logging.config=/opt/dyndrest/logback-spring.xml
 SuccessExitStatus=143
 
