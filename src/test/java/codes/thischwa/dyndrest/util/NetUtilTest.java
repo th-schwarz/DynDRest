@@ -12,7 +12,7 @@ class NetUtilTest {
 	@Test
 	final void testResolve() throws IOException {
 		IpSetting ips = NetUtil.resolve("mein-email-fach.de");
-		assertEquals("IpSetting(ipv4=mein-email-fach.de./188.68.45.198, ipv6=mein-email-fach.de./2a03:4000:41:32:0:0:0:2)", ips.toString());
+		assertEquals("IpSetting(ipv4=mein-email-fach.de./37.120.183.96, ipv6=mein-email-fach.de./2a03:4000:4d:e8f:0:0:0:2)", ips.toString());
 	}
 
 	@Test
