@@ -35,13 +35,16 @@ public class ApiController implements ApiRoutes {
   /**
    * Instantiates a new Api controller.
    *
-   * @param provider       the provider
-   * @param config         the app config
-   * @param updateLogger   the update logger
+   * @param provider the provider
+   * @param config the app config
+   * @param updateLogger the update logger
    * @param updateLogCache the update log cache
    */
   public ApiController(
-      Provider provider, AppConfig config, UpdateLogger updateLogger, UpdateLogCache updateLogCache) {
+      Provider provider,
+      AppConfig config,
+      UpdateLogger updateLogger,
+      UpdateLogCache updateLogCache) {
     this.provider = provider;
     this.config = config;
     this.updateLogger = updateLogger;
