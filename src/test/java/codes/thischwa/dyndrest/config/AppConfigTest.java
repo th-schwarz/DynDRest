@@ -18,6 +18,8 @@ class AppConfigTest extends GenericIntegrationTest {
 		assertFalse(config.hostValidationEnabled());
 		assertTrue(config.greetingEnabled());
 
+		assertEquals(201, config.updateIpChangedStatus());
+
 		assertEquals("domainrobot", config.provider());
 
 		assertEquals("file:target/test-classes/test-files/dyndrest-update*", config.updateLogFilePattern());

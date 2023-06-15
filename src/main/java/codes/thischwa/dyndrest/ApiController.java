@@ -1,5 +1,6 @@
 package codes.thischwa.dyndrest;
 
+import codes.thischwa.dyndrest.config.AppConfig;
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.model.UpdateLogPage;
 import codes.thischwa.dyndrest.provider.Provider;
@@ -12,6 +13,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +26,8 @@ public class ApiController implements ApiRoutes {
 
   private final Provider provider;
 
+  private final AppConfig config;
+
   private final UpdateLogger updateLogger;
 
   private final UpdateLogCache updateLogCache;
@@ -31,13 +35,15 @@ public class ApiController implements ApiRoutes {
   /**
    * Instantiates a new Api controller.
    *
-   * @param provider the provider
-   * @param updateLogger the update logger
+   * @param provider       the provider
+   * @param config         the app config
+   * @param updateLogger   the update logger
    * @param updateLogCache the update log cache
    */
   public ApiController(
-      Provider provider, UpdateLogger updateLogger, UpdateLogCache updateLogCache) {
+      Provider provider, AppConfig config, UpdateLogger updateLogger, UpdateLogCache updateLogCache) {
     this.provider = provider;
+    this.config = config;
     this.updateLogger = updateLogger;
     this.updateLogCache = updateLogCache;
   }
@@ -82,7 +88,7 @@ public class ApiController implements ApiRoutes {
         provider.processUpdate(host, reqIpSetting);
         log.info("Updated host {} successful with: {}", host, reqIpSetting);
         updateLogger.log(host, reqIpSetting);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatusCode.valueOf(config.updateIpChangedStatus()));
       }
     } catch (ProviderException e) {
       log.error("Updated host failed: " + host, e);

@@ -11,6 +11,8 @@ server:
 dyndrest:
   greeting-enabled: true
   host-validation-enabled: true
+  # http status code for the case at least one IP has changed, e.g. 201
+  update-ip-changed-status: 200
   update-log-page-enabled: false
   update-log-page-size: 30
   update-log-pattern: (.*)\s+-\s+([a-zA-Z\.-]*)\s+(\S*)\s+(\S*)

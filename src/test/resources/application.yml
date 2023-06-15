@@ -24,6 +24,7 @@ dyndrest:
   update-log-page-size: 4
   update-log-user-name: log-dev
   update-log-user-password: l0g-dev
+  update-ip-changed-status: 201
   host-validation-enabled: false
 
 domainrobot:
