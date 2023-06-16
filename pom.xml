@@ -53,23 +53,12 @@
   <repositories>
     <repository>
       <!-- DO NOT set id to "local" because it is reserved by Maven -->
-      <!-- This is a fake maven repo. -->
+      <!-- This is a fake maven repo for the Domainrobot SDK. -->
       <id>fake-repo</id>
       <name>Just a fake repository.</name>
       <url>file://${fakerepo.dir}</url>
     </repository>
   </repositories>
-
-  <distributionManagement>
-    <repository>
-      <id>myrepo</id>
-      <url>https://myrepo.thischwa.codes/repository/dyndrest/</url>
-    </repository>
-    <snapshotRepository>
-      <id>myrepo</id>
-      <url>https://myrepo.thischwa.codes/repository/dyndrest/</url>
-    </snapshotRepository>
-  </distributionManagement>
 
   <issueManagement>
     <url>https://github.com/th-schwarz/DynDRest/issues</url>
