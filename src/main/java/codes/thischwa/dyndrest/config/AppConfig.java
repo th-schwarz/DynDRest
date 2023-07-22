@@ -18,6 +18,4 @@ public record AppConfig(
     @Nullable String updateLogUserName,
     @Nullable String updateLogUserPassword,
     boolean updateLogRestForceHttps,
-    String updateLogEncoderPattern,
-    @Nullable String healthCheckUserName,
-    @Nullable String healthCheckUserPassword) {}
+    String updateLogEncoderPattern) {}
