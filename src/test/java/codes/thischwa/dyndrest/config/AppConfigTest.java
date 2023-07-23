@@ -30,5 +30,8 @@ class AppConfigTest extends GenericIntegrationTest {
 		assertEquals(4, config.updateLogPageSize());
 		assertEquals("log-dev", config.updateLogUserName());
 		assertEquals("l0g-dev", config.updateLogUserPassword());
+
+		assertEquals("health", config.healthCheckUserName());
+		assertEquals("hea1th", config.healthCheckUserPassword());
 	}
 }

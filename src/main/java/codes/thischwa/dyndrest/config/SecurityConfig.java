@@ -20,6 +20,8 @@ public class SecurityConfig {
 
   static final String ROLE_LOGVIEWER = "LOGVIEWER";
   static final String ROLE_USER = "USER";
+
+  static final String ROLE_HEALTH = "HEALTH";
   private final AppConfig appConfig;
   private final PasswordEncoder encoder =
       PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -46,6 +48,10 @@ public class SecurityConfig {
     if (appConfig.updateLogUserName() != null && appConfig.updateLogUserPassword() != null) {
       userManager.createUser(
           build(appConfig.updateLogUserName(), appConfig.updateLogUserPassword(), ROLE_LOGVIEWER));
+    }
+    if (appConfig.healthCheckUserName() != null && appConfig.healthCheckUserPassword() != null) {
+      userManager.createUser(
+          build(appConfig.healthCheckUserName(), appConfig.healthCheckUserPassword(), ROLE_HEALTH));
     }
     return userManager;
   }
@@ -80,6 +86,12 @@ public class SecurityConfig {
         .authorizeHttpRequests()
         .requestMatchers("/log")
         .hasAnyRole(ROLE_LOGVIEWER)
+        .and()
+
+        // enable security for the health check
+        .authorizeHttpRequests()
+        .requestMatchers("/manage/health")
+        .hasAnyRole(ROLE_HEALTH)
         .and()
 
         // enable basic-auth and ROLE_USER for all other routes

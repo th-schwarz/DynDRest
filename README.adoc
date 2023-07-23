@@ -184,11 +184,12 @@ There are two additional routes which deliver web pages:
 * [/]: A simple
 greeting page which is enabled by default. It can be disabled by setting
 the property `dyndrest.greeting-enabled=false`.
+* [/manage/health]: A very simple health check with an extra basic-auth user. It can be enabled and configured by setting `management.endpoint.health.enabled=true` and the both properties `dyndrest.healthcheck-user-name` and `dyndrest.healthcheck-user-password`.
 * [/log]: Delivers a
 simple web page to view the zone update logs and is secured by
 basic-auth and can be configured by setting the two properties
 `dyndrest.update-log-user-name` and `dyndrest.update-log-user-password`.
-It is enabled by default but it can be disabled by setting the property
+It is enabled by default, but it can be disabled by setting the property
 `dyndrest.update-log-page-enabled=false`.
 
 == Setup a router for dynamic DNS

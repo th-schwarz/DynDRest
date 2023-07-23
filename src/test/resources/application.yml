@@ -12,6 +12,15 @@ server:
   servlet:
     context-path: /
 
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      base-path: /manage
+  endpoint:
+    health:
+      enabled: true
+
 dyndrest:
   provider: domainrobot
   greeting-enabled: true
@@ -26,6 +35,8 @@ dyndrest:
   update-log-user-password: l0g-dev
   update-ip-changed-status: 201
   host-validation-enabled: false
+  healthcheck-user-name: health
+  healthcheck-user-password: hea1th
 
 domainrobot:
   default-ttl: 61

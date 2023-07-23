@@ -1,11 +1,18 @@
 ## server settings
 server:
   address: 127.0.0.1
-  forward-headers-strategy: NATIVE
   port: 8081
+  forward-headers-strategy: NATIVE
   servlet:
     context-path: /
   shutdown: graceful
+
+## health check
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      base-path: /manage
 
 ## dyndrest config
 dyndrest:
