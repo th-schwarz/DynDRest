@@ -13,9 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-/**
- * The security configuration, mainly to specify the authentications for different routes.
- */
+/** The security configuration, mainly to specify the authentications for different routes. */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -25,8 +23,10 @@ public class SecurityConfig {
   private final AppConfig appConfig;
   private final PasswordEncoder encoder =
       PasswordEncoderFactories.createDelegatingPasswordEncoder();
+
   @Value("${spring.security.user.name}")
   private String userName;
+
   @Value("${spring.security.user.password}")
   private String password;
 
@@ -51,8 +51,12 @@ public class SecurityConfig {
   }
 
   private UserDetails build(String user, String password, String role) {
-    return User.builder().passwordEncoder(encoder::encode).username(user).password(password)
-        .roles(role).build();
+    return User.builder()
+        .passwordEncoder(encoder::encode)
+        .username(user)
+        .password(password)
+        .roles(role)
+        .build();
   }
 
   /**
@@ -67,19 +71,24 @@ public class SecurityConfig {
     http
 
         // public routes
-        .authorizeHttpRequests().requestMatchers("/", "/favicon.ico", "/v3/api-docs*")
+        .authorizeHttpRequests()
+        .requestMatchers("/", "/favicon.ico", "/v3/api-docs*")
         .permitAll()
         .and()
 
         // enable security for the log-view
-        .authorizeHttpRequests().requestMatchers("/log").hasAnyRole(ROLE_LOGVIEWER).and()
+        .authorizeHttpRequests()
+        .requestMatchers("/log")
+        .hasAnyRole(ROLE_LOGVIEWER)
+        .and()
 
         // enable basic-auth and ROLE_USER for all other routes
-        .authorizeHttpRequests().anyRequest().hasAnyRole(ROLE_USER)
+        .authorizeHttpRequests()
+        .anyRequest()
+        .hasAnyRole(ROLE_USER)
         .and()
         .httpBasic();
 
     return http.build();
   }
-
 }
