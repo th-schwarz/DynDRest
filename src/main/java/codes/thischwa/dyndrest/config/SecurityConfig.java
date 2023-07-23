@@ -46,21 +46,31 @@ public class SecurityConfig {
   public UserDetailsService userDetailsService() {
     InMemoryUserDetailsManager userManager = new InMemoryUserDetailsManager();
     build(userManager, userName, password, ROLE_USER);
-    build(userManager, appConfig.updateLogUserName(), appConfig.updateLogUserPassword(), ROLE_LOGVIEWER);
-    build(userManager, appConfig.healthCheckUserName(), appConfig.healthCheckUserPassword(), ROLE_HEALTH);
+    build(
+        userManager,
+        appConfig.updateLogUserName(),
+        appConfig.updateLogUserPassword(),
+        ROLE_LOGVIEWER);
+    build(
+        userManager,
+        appConfig.healthCheckUserName(),
+        appConfig.healthCheckUserPassword(),
+        ROLE_HEALTH);
     return userManager;
   }
 
-  private void build(UserDetailsManager udm, @Nullable String userName, @Nullable String password, String role) {
+  private void build(
+      UserDetailsManager udm, @Nullable String userName, @Nullable String password, String role) {
     if (userName == null || password == null) {
       return;
     }
-    udm.createUser(User.builder()
-        .passwordEncoder(encoder::encode)
-        .username(userName)
-        .password(password)
-        .roles(role)
-        .build());
+    udm.createUser(
+        User.builder()
+            .passwordEncoder(encoder::encode)
+            .username(userName)
+            .password(password)
+            .roles(role)
+            .build());
     log.info("User [{}] with role [{}] created.", userName, role);
   }
 
