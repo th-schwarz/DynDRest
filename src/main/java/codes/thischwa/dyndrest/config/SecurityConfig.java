@@ -1,19 +1,22 @@
 package codes.thischwa.dyndrest.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.Nullable;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 /** The security configuration, mainly to specify the authentications for different routes. */
 @Configuration
+@Slf4j
 public class SecurityConfig {
 
   static final String ROLE_LOGVIEWER = "LOGVIEWER";
@@ -42,25 +45,23 @@ public class SecurityConfig {
   @Bean
   public UserDetailsService userDetailsService() {
     InMemoryUserDetailsManager userManager = new InMemoryUserDetailsManager();
-    userManager.createUser(build(userName, password, ROLE_USER));
-    if (appConfig.updateLogUserName() != null && appConfig.updateLogUserPassword() != null) {
-      userManager.createUser(
-          build(appConfig.updateLogUserName(), appConfig.updateLogUserPassword(), ROLE_LOGVIEWER));
-    }
-    if (appConfig.healthCheckUserName() != null && appConfig.healthCheckUserPassword() != null) {
-      userManager.createUser(
-          build(appConfig.healthCheckUserName(), appConfig.healthCheckUserPassword(), ROLE_HEALTH));
-    }
+    build(userManager, userName, password, ROLE_USER);
+    build(userManager, appConfig.updateLogUserName(), appConfig.updateLogUserPassword(), ROLE_LOGVIEWER);
+    build(userManager, appConfig.healthCheckUserName(), appConfig.healthCheckUserPassword(), ROLE_HEALTH);
     return userManager;
   }
 
-  private UserDetails build(String user, String password, String role) {
-    return User.builder()
+  private void build(UserDetailsManager udm, @Nullable String userName, @Nullable String password, String role) {
+    if (userName == null || password == null) {
+      return;
+    }
+    udm.createUser(User.builder()
         .passwordEncoder(encoder::encode)
-        .username(user)
+        .username(userName)
         .password(password)
         .roles(role)
-        .build();
+        .build());
+    log.info("User [{}] with role [{}] created.", userName, role);
   }
 
   /**
