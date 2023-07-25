@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.Nullable;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -16,12 +17,12 @@ import org.springframework.security.web.SecurityFilterChain;
 
 /** The security configuration, mainly to specify the authentications for different routes. */
 @Configuration
+@EnableWebSecurity
 @Slf4j
 public class SecurityConfig {
 
   static final String ROLE_LOGVIEWER = "LOGVIEWER";
   static final String ROLE_USER = "USER";
-
   static final String ROLE_HEALTH = "HEALTH";
   private final AppConfig appConfig;
   private final PasswordEncoder encoder =
