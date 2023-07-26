@@ -111,7 +111,7 @@ public class SecurityConfig {
                     .hasAnyRole(ROLE_HEALTH))
 
         // enable basic-auth and ROLE_USER for all other routes
-        .authorizeHttpRequests((req) -> req.anyRequest().hasAnyRole(ROLE_USER))
+        .authorizeHttpRequests(req -> req.anyRequest().hasAnyRole(ROLE_USER))
         .httpBasic(Customizer.withDefaults());
 
     return http.build();
