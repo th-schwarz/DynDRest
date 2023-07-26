@@ -90,7 +90,7 @@ public class SecurityConfig {
 
         // public routes
         .authorizeHttpRequests(
-            (req) ->
+            req ->
                 req.requestMatchers(AntPathRequestMatcher.antMatcher("/"))
                     .permitAll()
                     .requestMatchers(AntPathRequestMatcher.antMatcher("/favicon.ico"))
@@ -100,13 +100,13 @@ public class SecurityConfig {
 
         // enable security for the log-view
         .authorizeHttpRequests(
-            (req) ->
+            req ->
                 req.requestMatchers(AntPathRequestMatcher.antMatcher("/log"))
                     .hasAnyRole(ROLE_LOGVIEWER))
 
         // enable security for the health check
         .authorizeHttpRequests(
-            (req) ->
+            req ->
                 req.requestMatchers(AntPathRequestMatcher.antMatcher("/manage/health"))
                     .hasAnyRole(ROLE_HEALTH))
 
