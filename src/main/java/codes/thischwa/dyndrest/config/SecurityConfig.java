@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.Nullable;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /** The security configuration, mainly to specify the authentications for different routes. */
 @Configuration
@@ -87,29 +89,30 @@ public class SecurityConfig {
     http
 
         // public routes
-        .authorizeHttpRequests()
-        .requestMatchers("/", "/favicon.ico", "/v3/api-docs*")
-        .permitAll()
-        .and()
+        .authorizeHttpRequests(
+            (req) ->
+                req.requestMatchers(AntPathRequestMatcher.antMatcher("/"))
+                    .permitAll()
+                    .requestMatchers(AntPathRequestMatcher.antMatcher("/favicon.ico"))
+                    .permitAll()
+                    .requestMatchers(AntPathRequestMatcher.antMatcher("/v3/api-docs*"))
+                    .permitAll())
 
         // enable security for the log-view
-        .authorizeHttpRequests()
-        .requestMatchers("/log")
-        .hasAnyRole(ROLE_LOGVIEWER)
-        .and()
+        .authorizeHttpRequests(
+            (req) ->
+                req.requestMatchers(AntPathRequestMatcher.antMatcher("/log"))
+                    .hasAnyRole(ROLE_LOGVIEWER))
 
         // enable security for the health check
-        .authorizeHttpRequests()
-        .requestMatchers("/manage/health")
-        .hasAnyRole(ROLE_HEALTH)
-        .and()
+        .authorizeHttpRequests(
+            (req) ->
+                req.requestMatchers(AntPathRequestMatcher.antMatcher("/manage/health"))
+                    .hasAnyRole(ROLE_HEALTH))
 
         // enable basic-auth and ROLE_USER for all other routes
-        .authorizeHttpRequests()
-        .anyRequest()
-        .hasAnyRole(ROLE_USER)
-        .and()
-        .httpBasic();
+        .authorizeHttpRequests((req) -> req.anyRequest().hasAnyRole(ROLE_USER))
+        .httpBasic(Customizer.withDefaults());
 
     return http.build();
   }
