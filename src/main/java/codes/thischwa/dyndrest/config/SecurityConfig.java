@@ -15,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /** The security configuration, mainly to specify the authentications for different routes. */
 @Configuration
@@ -85,29 +84,25 @@ public class SecurityConfig {
    * @throws Exception the exception
    */
   @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+  public SecurityFilterChain filterChain(HttpSecurity http, MvcRequestMatcherBuilder mvc)
+      throws Exception {
     http
 
         // public routes
         .authorizeHttpRequests(
             req ->
-                req.requestMatchers(AntPathRequestMatcher.antMatcher("/"))
-                    .permitAll()
-                    .requestMatchers(AntPathRequestMatcher.antMatcher("/favicon.ico"))
-                    .permitAll()
-                    .requestMatchers(AntPathRequestMatcher.antMatcher("/v3/api-docs*"))
-                    .permitAll())
+                req.requestMatchers(mvc.matchers("/", "/favicon.ico", "/v3/api-docs*")).permitAll())
 
         // enable security for the log-view
         .authorizeHttpRequests(
             req ->
-                req.requestMatchers(AntPathRequestMatcher.antMatcher("/log"))
+                req.requestMatchers(mvc.matchers("/log"))
                     .hasAnyRole(ROLE_LOGVIEWER))
 
         // enable security for the health check
         .authorizeHttpRequests(
             req ->
-                req.requestMatchers(AntPathRequestMatcher.antMatcher("/manage/health"))
+                req.requestMatchers(mvc.matchers("/manage/health"))
                     .hasAnyRole(ROLE_HEALTH))
 
         // enable basic-auth and ROLE_USER for all other routes
