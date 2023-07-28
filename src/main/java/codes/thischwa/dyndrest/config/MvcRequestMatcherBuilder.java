@@ -1,5 +1,7 @@
 package codes.thischwa.dyndrest.config;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
@@ -23,14 +25,15 @@ class MvcRequestMatcherBuilder {
   }
 
   MvcRequestMatcher[] matchers(String... patterns) {
-    MvcRequestMatcher[] matchers = new MvcRequestMatcher[patterns.length];
-    for (int index = 0; index < patterns.length; index++) {
-      matchers[index] = new MvcRequestMatcher(this.introspector, patterns[index]);
+    List<MvcRequestMatcher> matchers = new ArrayList<>(patterns.length);
+    for (String pattern : patterns)  {
+      MvcRequestMatcher matcher = new MvcRequestMatcher(this.introspector, pattern);
       if (this.servletPath != null) {
-        matchers[index].setServletPath(this.servletPath);
+        matcher.setServletPath(this.servletPath);
       }
+      matchers.add(matcher);
     }
-    return matchers;
+    return matchers.toArray(new MvcRequestMatcher[0]);
   }
 
   MvcRequestMatcherBuilder servletPath(String path) {
