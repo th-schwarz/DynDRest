@@ -176,6 +176,14 @@
       </plugin>
 
       <plugin>
+        <!-- deploy isn't desired, currently no repo available -->
+        <artifactId>maven-deploy-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+
+      <plugin>
         <!-- build the fat jar -->
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
