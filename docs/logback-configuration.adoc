@@ -34,7 +34,6 @@ It defines the location logging and includes the configuration for the update lo
 
 	<logger name="org.springframework.boot.autoconfigure.logging" level="info"/>
 	<logger name="org.springframework.context.annotation.ClassPathBeanDefinitionScanner" level="info"/>
-	<logger name="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" level="trace"/>
 	<logger name="org.springframework.web" level="info"/>
 	<logger name="org.springframework.beans" level="info"/>
 	<logger name="org.thymeleaf" level="info"/>
