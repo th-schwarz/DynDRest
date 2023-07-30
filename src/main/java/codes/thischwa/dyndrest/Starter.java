@@ -1,17 +1,20 @@
 package codes.thischwa.dyndrest;
 
 import codes.thischwa.dyndrest.config.AppConfig;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-/**
- * The starter of the application.
- */
+/** The starter of the application. */
 @Slf4j
 @SpringBootApplication
 @ConfigurationPropertiesScan
@@ -40,7 +43,6 @@ public class Starter {
       this.config = config;
     }
 
-    @SuppressWarnings("NullableProblems")
     @Override
     public void onApplicationEvent(final ApplicationReadyEvent event) {
       log.info("*** Settings for DynDRest:");
@@ -48,6 +50,15 @@ public class Starter {
       log.info("  * greeting-enabled: {}", config.greetingEnabled());
       log.info("  * host-validation-enabled: {}", config.hostValidationEnabled());
       log.info("  * update-log-page-enabled: {}", config.updateLogPageEnabled());
+      log.info("\n");
+      log.info("*** Endpoints:");
+
+      ApplicationContext applicationContext = event.getApplicationContext();
+      RequestMappingHandlerMapping requestMappingHandlerMapping = applicationContext
+              .getBean("requestMappingHandlerMapping", RequestMappingHandlerMapping.class);
+      Map<RequestMappingInfo, HandlerMethod> map = requestMappingHandlerMapping
+              .getHandlerMethods();
+      map.forEach((key, value) -> log.info("  * {}", key));
     }
   }
 }
