@@ -50,7 +50,7 @@ public class Starter {
       log.info("  * greeting-enabled: {}", config.greetingEnabled());
       log.info("  * host-validation-enabled: {}", config.hostValidationEnabled());
       log.info("  * update-log-page-enabled: {}", config.updateLogPageEnabled());
-      log.info("\n");
+      log.info("");
       log.info("*** Endpoints:");
 
       ApplicationContext applicationContext = event.getApplicationContext();
