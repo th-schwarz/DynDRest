@@ -14,7 +14,7 @@ After=network.target
 [Service]
 User=dyndrest
 Group=dyndrest
-ExecStart=/opt/dyndrest/dyndrest.jar --logging.config=/opt/dyndrest/logback-spring.xml
+ExecStart=/opt/dyndrest/dyndrest.jar
 SuccessExitStatus=143
 
 [Install]
@@ -36,8 +36,8 @@ Don't forget to customize user, group, the path to the jar file and the path to 
       Tasks: 36 (limit: 65000)
      Memory: 261.3M
      CGroup: /system.slice/dyndrest.service
-             ├─399617 /bin/bash /opt/dyndrest/dyndrest.jar --logging.config=/opt/dyndrest/logback-spring.xml
-             └─399652 /usr/bin/java -Dsun.misc.URLClassPath.disableJarChecking=true -jar /opt/dyndrest/dyndrest-0.3.jar --logging.config=/opt/dyndrest/logback-spring.xml
+             ├─399617 /bin/bash /opt/dyndrest/dyndrest.jar
+             └─399652 /usr/bin/java -Dsun.misc.URLClassPath.disableJarChecking=true -jar /opt/dyndrest/dyndrest-0.3.jar
 
 systemd[1]: Started DynDRest - A simple REST-service for dynamic DNS..
 dyndrest.jar[399652]:   ____              ____  ____           _
