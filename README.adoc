@@ -85,8 +85,8 @@ Here is the suggested file structure:
 ----
 ├── /opt/dyndrest
 │   ├── dyndrest.yml
-│   ├── dyndrest-0.4.1.jar
-│   ├── dyndrest.jar -> dyndrest-0.4.1.jar
+│   ├── dyndrest-0.5.0.jar
+│   ├── dyndrest.jar -> dyndrest-0.5.0.jar
 │   ├── dyndrest-update.log   (log of the updates)
 │   ├── logback.xml    (logback configuration)
 │   ├── /log
@@ -118,6 +118,9 @@ spring:
     user:
       name: dyndns
       password: test123
+
+logging:
+  config: file:./logback.xml
 
 dyndrest:
   provider: domainrobot
