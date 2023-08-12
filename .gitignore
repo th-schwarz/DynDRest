@@ -9,7 +9,7 @@ pom.xml.*
 
 # local files
 /info.txt
-/logback-spring.xml
+/logback.xml
 /dyndrest.yml
 /log/
 /docs/openapi/.swagger-codegen**

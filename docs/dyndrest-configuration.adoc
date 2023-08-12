@@ -26,6 +26,10 @@ management:
     health:
       enabled: true
 
+## log config
+logging:
+  config: file:./logback.xml
+
 ## dyndrest config
 dyndrest:
   provider: domainrobot
