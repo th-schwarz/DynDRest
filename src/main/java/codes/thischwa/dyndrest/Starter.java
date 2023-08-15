@@ -3,12 +3,14 @@ package codes.thischwa.dyndrest;
 import codes.thischwa.dyndrest.config.AppConfig;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
@@ -39,13 +41,18 @@ public class Starter {
 
     private final AppConfig config;
 
-    public ApplicationStartup(AppConfig config) {
+    private final Environment env;
+
+    public ApplicationStartup(AppConfig config, Environment env) {
       this.config = config;
+      this.env = env;
     }
 
     @Override
     public void onApplicationEvent(final ApplicationReadyEvent event) {
+      String profiles = String.join(",", env.getActiveProfiles());
       log.info("*** Settings for DynDRest:");
+      log.info("  * active profile(s): {}", StringUtils.isEmpty(profiles) ? "n/a" : profiles);
       log.info("  * provider: {}", config.provider());
       log.info("  * greeting-enabled: {}", config.greetingEnabled());
       log.info("  * host-validation-enabled: {}", config.hostValidationEnabled());

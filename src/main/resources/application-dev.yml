@@ -1,0 +1,58 @@
+spring:
+  main:
+    banner-mode: off
+  security:
+    user:
+      name: dyndns
+      password: test123
+
+server:
+  address: 127.0.0.1
+  port: 8081
+  servlet:
+    context-path: /
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /manage
+  endpoint:
+    health:
+      enabled: true
+
+dyndrest:
+  provider: domainrobot
+  greeting-enabled: true
+  update-log-pattern: (.*)\s+-\s+([a-zA-Z\.-]*)\s+(\S*)\s+(\S*)
+  update-log-date-pattern: yyyy-MM-dd HH:mm:SSS
+  # update-log-file-pattern: classpath:/test-files/dyndrest-update*
+  update-log-file-pattern: file:target/test-classes/test-files/dyndrest-update*
+  update-log-encoder-pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n"
+  update-log-page-enabled: true
+  update-log-page-size: 4
+  update-log-user-name: log-dev
+  update-log-user-password: l0g-dev
+  update-ip-changed-status: 201
+  host-validation-enabled: false
+  healthcheck-user-name: health
+  healthcheck-user-password: hea1th
+
+domainrobot:
+  default-ttl: 61
+  autodns:
+    url: https://api.autodns.com/v1
+    context: 4
+    user: user_t
+    password: pwd_t
+  zones:
+    - name: dynhost0.info
+      ns: ns0.domain.info
+      hosts:
+        - my0:1234567890abcdef
+        - test0:1234567890abcdx
+    - name: dynhost1.info
+      ns: ns1.domain.info
+      hosts:
+        - my1:1234567890abcdef
+        - test1:1234567890abcdx
