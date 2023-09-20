@@ -15,7 +15,6 @@ Gate Status]]
 https://sonarcloud.io/dashboard?id=th-schwarz_DynDRest[image:https://sonarcloud.io/api/project_badges/measure?project=th-schwarz_DynDRest&metric=security_rating[Security
 Rating]]
 https://sonarcloud.io/summary/new_code?id=th-schwarz_DynDRest[image:https://sonarcloud.io/api/project_badges/measure?project=th-schwarz_DynDRest&metric=coverage[Coverage]]
-https://codecov.io/gh/th-schwarz/DynDRest[image:https://codecov.io/gh/th-schwarz/DynDRest/graph/badge.svg?token=ARXPZ8IDMZ[codecov]]
 https://sonarcloud.io/dashboard?id=th-schwarz_DynDRest[image:https://sonarcloud.io/api/project_badges/measure?project=th-schwarz_DynDRest&metric=ncloc[Lines
 of Code]]
 https://sonarcloud.io/summary/new_code?id=th-schwarz_DynDRest[image:https://sonarcloud.io/api/project_badges/measure?project=th-schwarz_DynDRest&metric=code_smells[Code
