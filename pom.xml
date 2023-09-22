@@ -31,6 +31,7 @@
         <fakerepo.dir>${project.basedir}/fake-repo</fakerepo.dir>
 
         <sonar.organization>th-schwarz</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.sourceEncoding>${file.encoding}</sonar.sourceEncoding>
 
         <!-- openapi generation -->
