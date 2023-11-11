@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.2</version>
+        <version>3.1.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>codes.thischwa</groupId>
@@ -25,7 +25,7 @@
 
         <springdoc.version>2.0.4</springdoc.version>
         <domainrobot.version>0.2.8</domainrobot.version>
-        <dnsjava.version>3.5.2</dnsjava.version>
+        <dnsjava.version>3.5.3</dnsjava.version>
         <janino.version>3.1.9</janino.version>
 
         <fakerepo.dir>${project.basedir}/fake-repo</fakerepo.dir>
