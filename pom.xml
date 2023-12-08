@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.5</version>
+        <version>3.2.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>codes.thischwa</groupId>
@@ -23,7 +23,7 @@
         <project.build.sourceEncoding>${file.encoding}</project.build.sourceEncoding>
         <project.reporting.outputEncoding>${file.encoding}</project.reporting.outputEncoding>
 
-        <springdoc.version>2.2.0</springdoc.version>
+        <springdoc.version>2.3.0</springdoc.version>
         <domainrobot.version>0.2.8</domainrobot.version>
         <dnsjava.version>3.5.3</dnsjava.version>
         <janino.version>3.1.9</janino.version>
@@ -305,7 +305,7 @@
                         <!-- converts the openapi docu to html -->
                         <groupId>io.swagger.codegen.v3</groupId>
                         <artifactId>swagger-codegen-maven-plugin</artifactId>
-                        <version>3.0.46</version>
+                        <version>3.0.51</version>
                         <executions>
                             <execution>
                                 <configuration>
