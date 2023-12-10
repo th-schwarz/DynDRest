@@ -12,9 +12,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.lang.Nullable;
 
-/**
- * Object to hold the íp settings.
- */
+/** Object to hold the íp settings. */
 @Getter
 @Setter
 @ToString
@@ -25,16 +23,14 @@ public class IpSetting {
 
   private @Nullable Inet6Address ipv6;
 
-  public IpSetting() {
-  }
+  public IpSetting() {}
 
   /**
    * Instantiates a new Ip setting with strings for each ip type.
    *
    * @param ipv4Str ipv4 str
    * @param ipv6Str ipv6 str
-   * @throws UnknownHostException the unknown host exception, if ip strings couldn't convert to an
-   *                              {@link InetAddress} object.
+   * @throws UnknownHostException if the ip strings couldn't convert to an {@link InetAddress} object.
    */
   public IpSetting(@Nullable String ipv4Str, @Nullable String ipv6Str) throws UnknownHostException {
     if (ipv4Str != null) {
@@ -49,8 +45,8 @@ public class IpSetting {
    * Instantiates a new Ip setting with a string. The ip type is determined.
    *
    * @param ipStr the ip str
-   * @throws UnknownHostException the unknown host exception, if ip strings couldn't convert to an
-   *                              {@link InetAddress} object.
+   * @throws UnknownHostException if the ip strings couldn't convert to an
+   *     {@link InetAddress} object.
    */
   public IpSetting(String ipStr) throws UnknownHostException {
     InetAddress ip = InetAddress.getByName(ipStr);
@@ -90,5 +86,4 @@ public class IpSetting {
   public @Nullable String ipv6ToString() {
     return ipv6 == null ? null : ipv6.getHostAddress();
   }
-
 }
