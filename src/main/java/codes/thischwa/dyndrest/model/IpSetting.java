@@ -30,7 +30,8 @@ public class IpSetting {
    *
    * @param ipv4Str ipv4 str
    * @param ipv6Str ipv6 str
-   * @throws UnknownHostException if the ip strings couldn't convert to an {@link InetAddress} object.
+   * @throws UnknownHostException if the ip strings couldn't convert to an {@link InetAddress}
+   *     object.
    */
   public IpSetting(@Nullable String ipv4Str, @Nullable String ipv6Str) throws UnknownHostException {
     if (ipv4Str != null) {
@@ -45,8 +46,8 @@ public class IpSetting {
    * Instantiates a new Ip setting with a string. The ip type is determined.
    *
    * @param ipStr the ip str
-   * @throws UnknownHostException if the ip strings couldn't convert to an
-   *     {@link InetAddress} object.
+   * @throws UnknownHostException if the ip strings couldn't convert to an {@link InetAddress}
+   *     object.
    */
   public IpSetting(String ipStr) throws UnknownHostException {
     InetAddress ip = InetAddress.getByName(ipStr);
