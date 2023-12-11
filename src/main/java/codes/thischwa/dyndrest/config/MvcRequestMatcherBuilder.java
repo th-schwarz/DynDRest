@@ -40,7 +40,7 @@ class MvcRequestMatcherBuilder {
     return matchers.toArray(new MvcRequestMatcher[0]);
   }
 
-  MvcRequestMatcherBuilder servletPath(String path) {
-    return new MvcRequestMatcherBuilder(this.introspector, path);
+  MvcRequestMatcherBuilder servletPath(String servletPath) {
+    return new MvcRequestMatcherBuilder(this.introspector, servletPath);
   }
 }
