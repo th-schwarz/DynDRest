@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
@@ -18,9 +17,9 @@ import org.springframework.stereotype.Component;
 public class AppConfigurator implements InitializingBean {
   private final AppConfig appConfig;
 
-  private Map<String, String> zoneData = new HashMap<>();
+  private final Map<String, String> zoneData = new HashMap<>();
   // <fqdn, apitoken>
-  private Map<String, String> apitokenData = new HashMap<>();
+  private final Map<String, String> apitokenData = new HashMap<>();
 
   public AppConfigurator(AppConfig appConfig) {
     this.appConfig = appConfig;
@@ -52,6 +51,7 @@ public class AppConfigurator implements InitializingBean {
 
   /**
    * Fetches the api-token of the desired host.
+   *
    * @param host the host
    * @return the api-token
    * @throws IllegalArgumentException if the desired host isn't configured
@@ -63,6 +63,13 @@ public class AppConfigurator implements InitializingBean {
     return apitokenData.get(host);
   }
 
+  /**
+   * Gets primary name server for the desired zone.
+   *
+   * @param zone the desired zone
+   * @return the primary name server
+   * @throws IllegalArgumentException if the desired zone isn't configured
+   */
   public String getPrimaryNameServer(String zone) throws IllegalArgumentException {
     if (!zoneData.containsKey(zone)) {
       throw new IllegalArgumentException("Zone isn't configured: " + zone);
