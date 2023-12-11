@@ -1,6 +1,9 @@
 package codes.thischwa.dyndrest.config;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -37,10 +40,22 @@ public class AppConfigurator implements InitializingBean {
     return zoneData.keySet();
   }
 
+  /**
+   * Checks if the desired host is configured.
+   *
+   * @param host the desired host
+   * @return true if the host exists in the configuration
+   */
   public boolean hostExists(String host) {
     return apitokenData.containsKey(host);
   }
 
+  /**
+   * Fetches the api-token of the desired host.
+   * @param host the host
+   * @return the api-token
+   * @throws IllegalArgumentException if the desired host isn't configured
+   */
   public String getApitoken(String host) throws IllegalArgumentException {
     if (!hostExists(host)) {
       throw new IllegalArgumentException("Host isn't configured: " + host);
