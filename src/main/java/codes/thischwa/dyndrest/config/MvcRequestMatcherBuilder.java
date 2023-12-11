@@ -8,6 +8,10 @@ import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
+/*
+ * Helper to build {@link org.springframework.security.web.util.matcher.RequestMatcher}s based on
+ * {@link MvcRequestMatcher}.
+ */
 @Component
 class MvcRequestMatcherBuilder {
   private final HandlerMappingIntrospector introspector;

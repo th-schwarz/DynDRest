@@ -16,7 +16,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-/** The security configuration, mainly to specify the authentications for different routes. */
+/** The security configuration, mainly to specify the authentication9 for different routes. */
 @Configuration
 @EnableWebSecurity
 @Slf4j
@@ -26,6 +26,7 @@ public class SecurityConfig {
   static final String ROLE_USER = "USER";
   static final String ROLE_HEALTH = "HEALTH";
   private final AppConfig appConfig;
+  private final MvcRequestMatcherBuilder mvc;
   private final PasswordEncoder encoder =
       PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
@@ -35,8 +36,9 @@ public class SecurityConfig {
   @Value("${spring.security.user.password}")
   private String password;
 
-  public SecurityConfig(AppConfig appConfig) {
+  public SecurityConfig(AppConfig appConfig, MvcRequestMatcherBuilder mvc) {
     this.appConfig = appConfig;
+    this.mvc = mvc;
   }
 
   /**
@@ -84,7 +86,7 @@ public class SecurityConfig {
    * @throws Exception the exception
    */
   @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http, MvcRequestMatcherBuilder mvc)
+  public SecurityFilterChain filterChain(HttpSecurity http)
       throws Exception {
     http
 
