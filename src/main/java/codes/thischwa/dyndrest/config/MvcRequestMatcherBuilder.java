@@ -26,7 +26,7 @@ class MvcRequestMatcherBuilder {
 
   MvcRequestMatcher[] matchers(String... patterns) {
     List<MvcRequestMatcher> matchers = new ArrayList<>(patterns.length);
-    for (String pattern : patterns)  {
+    for (String pattern : patterns) {
       MvcRequestMatcher matcher = new MvcRequestMatcher(this.introspector, pattern);
       if (this.servletPath != null) {
         matcher.setServletPath(this.servletPath);

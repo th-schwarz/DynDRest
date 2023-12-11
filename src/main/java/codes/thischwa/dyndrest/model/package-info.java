@@ -1,6 +1,4 @@
-/**
- * Miscellaneous data classes.
- */
+/** Miscellaneous data classes. */
 @NonNullApi
 @NonNullFields
 package codes.thischwa.dyndrest.model;

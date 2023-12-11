@@ -17,9 +17,7 @@ import org.xbill.DNS.Record;
 import org.xbill.DNS.TextParseException;
 import org.xbill.DNS.Type;
 
-/**
- * Some network relevant utils.
- */
+/** Some network relevant utils. */
 public interface NetUtil {
 
   static boolean isIp(String ipStr) {
@@ -58,7 +56,7 @@ public interface NetUtil {
    * Build a basic auth string for the desired user and password.
    *
    * @param user the user
-   * @param pwd  the pwd
+   * @param pwd the pwd
    * @return the basic auth string
    */
   static String buildBasicAuth(String user, String pwd) {
@@ -113,5 +111,4 @@ public interface NetUtil {
       throw new IOException(String.format("Couldn't lookup for host %s", hostName), e);
     }
   }
-
 }

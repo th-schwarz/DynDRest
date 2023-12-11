@@ -5,9 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-/**
- * A simple controller that delivers a welcome page without basic-auth.
- */
+/** A simple controller that delivers a welcome page without basic-auth. */
 @Controller
 @ConditionalOnProperty(name = "dyndrest.greeting-enabled", matchIfMissing = true)
 public class GreetingController {

@@ -8,9 +8,7 @@ import codes.thischwa.dyndrest.util.NetUtil;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Generic helper class provider implementations.
- */
+/** Generic helper class provider implementations. */
 @SuppressWarnings("RedundantThrows")
 @Slf4j
 public abstract class GenericProvider implements Provider {
@@ -38,7 +36,7 @@ public abstract class GenericProvider implements Provider {
   /**
    * A wrapper for {@link #update(String, IpSetting)} with respect of hooks before and after.
    *
-   * @param host      the host
+   * @param host the host
    * @param ipSetting the ip setting
    * @throws ProviderException can be thrown while provider calls
    */

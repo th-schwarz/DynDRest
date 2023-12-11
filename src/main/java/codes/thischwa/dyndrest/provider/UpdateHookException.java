@@ -2,13 +2,10 @@ package codes.thischwa.dyndrest.provider;
 
 import java.io.Serial;
 
-/**
- * Thrown by the update hooks.
- */
+/** Thrown by the update hooks. */
 public class UpdateHookException extends Exception {
 
-  @Serial
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   public UpdateHookException(String message) {
     super(message);

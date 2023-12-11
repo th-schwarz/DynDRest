@@ -8,23 +8,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DomainRobotConfigTest extends GenericIntegrationTest {
 
-	private final int configuredEntries = 2;
-
 	@Autowired private DomainRobotConfig config;
 
 	@Test
-	final void testCountZones() {
-		assertEquals(configuredEntries, config.zones().size());
+	final void testAutoDnsConfig() {
+		DomainRobotConfig.Autodns autodns = config.autodns();
+		assertEquals("https://api.autodns.com/v1", autodns.url());
+		assertEquals("user_t", autodns.user());
+		assertEquals(4, autodns.context());
+		assertEquals("pwd_t", autodns.password());
 	}
 
 	@Test
-	final void testZoneDetails() {
-		DomainRobotConfig.Zone zone = config.zones().get(0);
-		assertEquals("dynhost0.info", zone.name());
-		assertEquals("ns0.domain.info", zone.ns());
-
-		assertEquals("my0:1234567890abcdef", zone.hosts().get(0));
-		assertEquals("test0:1234567890abcdx", zone.hosts().get(1));
+	void testDefaultTtl() {
+		assertEquals(61L, config.defaultTtl());
 	}
-
 }

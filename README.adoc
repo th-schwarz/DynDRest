@@ -124,16 +124,16 @@ logging:
 
 dyndrest:
   provider: domainrobot
-
-domainrobot:
-  autodns:
-    password: pwd_t
-    user: user_t
   zones:
     - name: dynhost.info
       ns: ns.domain.info
       hosts:
         - myhost:1234567890abcdef
+
+domainrobot:
+  autodns:
+    password: pwd_t
+    user: user_t
 ----
 
 The `zone` section defines a host `myhost.dynhost.info` with the

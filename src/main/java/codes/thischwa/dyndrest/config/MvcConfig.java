@@ -8,9 +8,7 @@ import org.springframework.format.FormatterRegistry;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-/**
- * The mvc config.
- */
+/** The mvc config. */
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
 

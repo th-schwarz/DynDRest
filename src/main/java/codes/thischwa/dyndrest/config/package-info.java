@@ -1,6 +1,4 @@
-/**
- * Miscellaneous configuration classes.
- */
+/** Miscellaneous configuration classes. */
 @NonNullApi
 @NonNullFields
 package codes.thischwa.dyndrest.config;

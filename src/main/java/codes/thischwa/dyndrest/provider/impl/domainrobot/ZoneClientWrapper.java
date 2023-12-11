@@ -13,9 +13,7 @@ import org.domainrobot.sdk.models.generated.ResourceRecord;
 import org.domainrobot.sdk.models.generated.Zone;
 import org.springframework.lang.Nullable;
 
-/**
- * Encapsulate the {@link ZoneClient} and adds same useful util methods.
- */
+/** Encapsulate the {@link ZoneClient} and adds same useful util methods. */
 class ZoneClientWrapper {
 
   private final Map<String, String> customHeaders;
@@ -32,7 +30,8 @@ class ZoneClientWrapper {
   ResourceRecord searchResourceRecord(Zone zone, String name, ResouceRecordTypeIp type) {
     return zone.getResourceRecords().stream()
         .filter(rr -> rr.getType().equals(type.toString()) && rr.getName().equals(name))
-        .findFirst().orElse(null);
+        .findFirst()
+        .orElse(null);
   }
 
   String deriveZone(String host) {
@@ -79,7 +78,7 @@ class ZoneClientWrapper {
   /**
    * Processes a zone-info for 'zone' and 'primaryNameServer'.
    *
-   * @param zone              the zone to process the info
+   * @param zone the zone to process the info
    * @param primaryNameServer the primary NS of the zone
    * @return the complete zone object from the domainrobot sdk
    * @throws ProviderException if an exception happens while processing the zone-info
@@ -95,11 +94,11 @@ class ZoneClientWrapper {
   }
 
   /**
-   * Processes the ip settings for the desired zone and subtld,
-   * The corresponding resource record will be updated or removed if null.
+   * Processes the ip settings for the desired zone and subtld, The corresponding resource record
+   * will be updated or removed if null.
    *
-   * @param zone      the zone
-   * @param sld       the sld
+   * @param zone the zone
+   * @param sld the sld
    * @param ipSetting the ip setting
    */
   void process(Zone zone, String sld, IpSetting ipSetting) {
@@ -163,6 +162,7 @@ class ZoneClientWrapper {
   }
 
   enum ResouceRecordTypeIp {
-    A, AAAA
+    A,
+    AAAA
   }
 }

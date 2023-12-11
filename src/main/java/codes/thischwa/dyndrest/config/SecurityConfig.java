@@ -95,15 +95,11 @@ public class SecurityConfig {
 
         // enable security for the log-view
         .authorizeHttpRequests(
-            req ->
-                req.requestMatchers(mvc.matchers("/log"))
-                    .hasAnyRole(ROLE_LOGVIEWER))
+            req -> req.requestMatchers(mvc.matchers("/log")).hasAnyRole(ROLE_LOGVIEWER))
 
         // enable security for the health check
         .authorizeHttpRequests(
-            req ->
-                req.requestMatchers(mvc.matchers("/manage/health"))
-                    .hasAnyRole(ROLE_HEALTH))
+            req -> req.requestMatchers(mvc.matchers("/manage/health")).hasAnyRole(ROLE_HEALTH))
 
         // enable basic-auth and ROLE_USER for all other routes
         .authorizeHttpRequests(req -> req.anyRequest().hasAnyRole(ROLE_USER))

@@ -5,15 +5,14 @@ import codes.thischwa.dyndrest.provider.impl.GenericProvider;
 import java.util.Set;
 
 /**
- * Defines the functionality of a dns provider. <br> A new provider implementation should be
- * extended from {@link GenericProvider}. It already implements some basic functions.
+ * Defines the functionality of a dns provider. <br>
+ * A new provider implementation should be extended from {@link GenericProvider}. It already
+ * implements some basic functions.
  */
 @SuppressWarnings("EmptyMethod")
 public interface Provider {
 
-  /**
-   * Validates the host configuration.
-   */
+  /** Validates the host configuration. */
   void validateHostConfiguration() throws IllegalArgumentException;
 
   /**
@@ -24,7 +23,8 @@ public interface Provider {
   Set<String> getConfiguredHosts();
 
   /**
-   * Checks if the desired 'hosts' exists. <br> Hint: There is no need to override it!
+   * Checks if the desired 'hosts' exists. <br>
+   * Hint: There is no need to override it!
    *
    * @param host the host
    * @return the boolean
@@ -36,7 +36,7 @@ public interface Provider {
   /**
    * Hook before update.
    *
-   * @param host      the host
+   * @param host the host
    * @param ipSetting the ip setting
    */
   void updateBeforeHook(String host, IpSetting ipSetting) throws UpdateHookException;
@@ -44,7 +44,7 @@ public interface Provider {
   /**
    * Update the desired 'host' with the desired IP setting.
    *
-   * @param host      the host
+   * @param host the host
    * @param ipSetting the ip setting
    * @throws ProviderException the provider exception
    */
@@ -53,7 +53,7 @@ public interface Provider {
   /**
    * Hook after update.
    *
-   * @param host      the host
+   * @param host the host
    * @param ipSetting the ip setting
    */
   void updateAfterHook(String host, IpSetting ipSetting) throws UpdateHookException;
@@ -77,10 +77,11 @@ public interface Provider {
 
   /**
    * Updates the desired 'host' with the desired IP setting with consideration of the before- and
-   * after-hooks. <br> Hint: There is no need to implement this, if the implementation derives from
-   * {@link GenericProvider}!
+   * after-hooks. <br>
+   * Hint: There is no need to implement this, if the implementation derives from {@link
+   * GenericProvider}!
    *
-   * @param host      the host
+   * @param host the host
    * @param ipSetting the ip setting
    * @throws ProviderException the provider exception
    */

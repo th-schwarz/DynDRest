@@ -1,6 +1,4 @@
-/**
- * Main package for the implementation of the provider interface and dependent classes.
- */
+/** Main package for the implementation of the provider interface and dependent classes. */
 @NonNullApi
 @NonNullFields
 package codes.thischwa.dyndrest.provider;

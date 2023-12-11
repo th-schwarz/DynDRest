@@ -61,10 +61,10 @@ public class Starter {
       log.info("*** Endpoints:");
 
       ApplicationContext applicationContext = event.getApplicationContext();
-      RequestMappingHandlerMapping requestMappingHandlerMapping = applicationContext
-              .getBean("requestMappingHandlerMapping", RequestMappingHandlerMapping.class);
-      Map<RequestMappingInfo, HandlerMethod> map = requestMappingHandlerMapping
-              .getHandlerMethods();
+      RequestMappingHandlerMapping requestMappingHandlerMapping =
+          applicationContext.getBean(
+              "requestMappingHandlerMapping", RequestMappingHandlerMapping.class);
+      Map<RequestMappingInfo, HandlerMethod> map = requestMappingHandlerMapping.getHandlerMethods();
       map.forEach((key, value) -> log.info("  * {}", key));
     }
   }

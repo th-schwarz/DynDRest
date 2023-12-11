@@ -9,9 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-/**
- * A controller that delivers a page to show the zone update logs.
- */
+/** A controller that delivers a page to show the zone update logs. */
 @Controller
 @ConditionalOnProperty(name = "dyndrest.update-log-page-enabled")
 public class UpdateLogController {
@@ -47,5 +45,4 @@ public class UpdateLogController {
     }
     return "log-view";
   }
-
 }

@@ -48,9 +48,11 @@ public class Slf4jUpdateLogger implements UpdateLogger, InitializingBean {
   @Override
   public void afterPropertiesSet() {
     // determine the max. length of the hosts for nicer logging
-    int maxSize = provider.getConfiguredHosts().stream().max(Comparator.comparing(String::length))
-        .map(String::length)
-        .orElse(DEFAULT_HOSTNAME_LENGTH);
+    int maxSize =
+        provider.getConfiguredHosts().stream()
+            .max(Comparator.comparing(String::length))
+            .map(String::length)
+            .orElse(DEFAULT_HOSTNAME_LENGTH);
     logEntryFormat = "%" + maxSize + "s  %16s  %s";
   }
 }

@@ -1,6 +1,4 @@
-/**
- * Package for the domainrobot {@link codes.thischwa.dyndrest.provider.Provider} implementation.
- */
+/** Package for the domainrobot {@link codes.thischwa.dyndrest.provider.Provider} implementation. */
 @NonNullApi
 @NonNullFields
 package codes.thischwa.dyndrest.provider.impl.domainrobot;

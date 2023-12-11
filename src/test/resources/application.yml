@@ -37,14 +37,6 @@ dyndrest:
   host-validation-enabled: false
   healthcheck-user-name: health
   healthcheck-user-password: hea1th
-
-domainrobot:
-  default-ttl: 61
-  autodns:
-    url: https://api.autodns.com/v1
-    context: 4
-    user: user_t
-    password: pwd_t
   zones:
     - name: dynhost0.info
       ns: ns0.domain.info
@@ -56,3 +48,11 @@ domainrobot:
       hosts:
         - my1:1234567890abcdef
         - test1:1234567890abcdx
+
+domainrobot:
+  default-ttl: 61
+  autodns:
+    url: https://api.autodns.com/v1
+    context: 4
+    user: user_t
+    password: pwd_t

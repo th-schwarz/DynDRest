@@ -1,6 +1,4 @@
-/**
- * Main package for the implementations of the provider interface and generic helper.
- */
+/** Main package for the implementations of the provider interface and generic helper. */
 @NonNullApi
 @NonNullFields
 package codes.thischwa.dyndrest.provider.impl;

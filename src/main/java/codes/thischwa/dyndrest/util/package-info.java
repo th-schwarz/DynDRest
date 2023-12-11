@@ -1,6 +1,4 @@
-/**
- * Package for util classes.
- */
+/** Package for util classes. */
 @NonNullApi
 @NonNullFields
 package codes.thischwa.dyndrest.util;

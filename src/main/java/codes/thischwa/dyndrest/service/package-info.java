@@ -1,6 +1,4 @@
-/**
- * Package for services.
- */
+/** Package for services. */
 @NonNullApi
 @NonNullFields
 package codes.thischwa.dyndrest.service;
