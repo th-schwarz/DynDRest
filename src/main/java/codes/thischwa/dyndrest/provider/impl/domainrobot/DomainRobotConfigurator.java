@@ -3,12 +3,10 @@ package codes.thischwa.dyndrest.provider.impl.domainrobot;
 import codes.thischwa.dyndrest.config.AppConfig;
 import codes.thischwa.dyndrest.config.AppConfigurator;
 import codes.thischwa.dyndrest.provider.Provider;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.domainrobot.sdk.client.Domainrobot;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 /** Configuration bean for the provider implementation of domainrobot. */
