@@ -77,8 +77,8 @@ public class UpdateLogCache implements InitializingBean {
     Arrays.stream(logs)
         .filter(
             r ->
-                r.getFilename() != null
-                    && (r.getFilename().endsWith(".log") || r.getFilename().endsWith(".gz")))
+                Objects.requireNonNull(r.getFilename()).endsWith(".log")
+                    || r.getFilename().endsWith(".gz"))
         .forEach(r -> readResource(r, logEntries));
 
     // ordering and parsing, must be asc because new items will be added at the end
