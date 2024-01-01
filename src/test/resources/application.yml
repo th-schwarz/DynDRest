@@ -56,3 +56,6 @@ domainrobot:
     context: 4
     user: user_t
     password: pwd_t
+  custom-header:
+    X-Domainrobot-WS: NONE
+    X-Domainrobot-Stid: my-stid-123

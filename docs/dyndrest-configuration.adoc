@@ -77,6 +77,10 @@ domainrobot:
     password: pwd_t
     user: user_t
 
+  ## set custom headers (X-Domainrobot-WS: NONE, is set by default)
+  custom-header:
+    X-Domainrobot-Stid: my-stid-123
+
 ## spring security
   security:
     user:

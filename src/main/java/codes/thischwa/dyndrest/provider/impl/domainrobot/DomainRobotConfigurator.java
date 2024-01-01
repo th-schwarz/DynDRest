@@ -3,11 +3,9 @@ package codes.thischwa.dyndrest.provider.impl.domainrobot;
 import codes.thischwa.dyndrest.config.AppConfig;
 import codes.thischwa.dyndrest.config.AppConfigurator;
 import codes.thischwa.dyndrest.provider.Provider;
-import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.domainrobot.sdk.client.Domainrobot;
-import org.domainrobot.sdk.models.DomainRobotHeaders;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.lang.Nullable;
@@ -19,16 +17,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 class DomainRobotConfigurator {
 
-  private static final Map<String, String> customHeaders =
-      new HashMap<>(Map.of(DomainRobotHeaders.DOMAINROBOT_HEADER_WEBSOCKET, "NONE"));
   private final AppConfig appConfig;
   private final AppConfigurator appConfigurator;
   private final DomainRobotConfig.Autodns autoDnsConfig;
   private final DomainRobotConfig domainRobotConfig;
-  // <zone, ns>
-  private final @Nullable Map<String, String> zoneData = null;
-  // <fqdn, apitoken>
-  private final @Nullable Map<String, String> apitokenData = null;
 
   public DomainRobotConfigurator(
       AppConfig appConfig, AppConfigurator appConfigurator, DomainRobotConfig domainRobotConfig) {
@@ -52,7 +44,7 @@ class DomainRobotConfigurator {
                 autoDnsConfig.password(),
                 autoDnsConfig.url())
             .getZone(),
-        customHeaders,
+        domainRobotConfig.customHeader(),
         domainRobotConfig.defaultTtl());
   }
 }

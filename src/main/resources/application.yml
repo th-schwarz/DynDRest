@@ -40,6 +40,9 @@ domainrobot:
   autodns:
     context: 4
     url: https://api.autodns.com/v1
+  ## custom headers
+  custom-header:
+    X-Domainrobot-WS: NONE
 
 ## import individual config
 spring:
