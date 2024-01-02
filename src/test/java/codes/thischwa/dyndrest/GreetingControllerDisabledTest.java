@@ -15,6 +15,6 @@ class GreetingControllerDisabledTest extends GenericIntegrationTest {
 	@Test
 	void greetingShouldReturnDefaultMessage() throws URISyntaxException {
 		HttpStatusCode status = restTemplate.getForEntity(getBaseUri(), String.class).getStatusCode();
-		assertEquals(status, HttpStatus.UNAUTHORIZED);
+		assertEquals(HttpStatus.UNAUTHORIZED, status);
 	}
 }
