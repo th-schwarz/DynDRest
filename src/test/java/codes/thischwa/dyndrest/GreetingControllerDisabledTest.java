@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, properties = { "dyndrest.greeting-enabled=false" })
-class GreetingControllerDiabledTest extends GenericIntegrationTest {
+class GreetingControllerDisabledTest extends GenericIntegrationTest {
 
 	@Test
 	void greetingShouldReturnDefaultMessage() throws URISyntaxException {
