@@ -124,20 +124,23 @@ logging:
 
 dyndrest:
   provider: domainrobot
-  zones:
-    - name: dynhost.info
-      ns: ns.domain.info
-      hosts:
-        - myhost:1234567890abcdef
 
 domainrobot:
   autodns:
     url: https://api.autodns.com/v1    # optional
     password: pwd_t
     user: user_t
+
+zones:
+- name: dynhost.info
+  ns: ns.domain.info
+  hosts:
+    - myhost:1234567890abcdef
+
+
 ----
 
-The `zone` section defines a host `myhost.dynhost.info` with the
+The `zones` section defines a host `myhost.dynhost.info` with the
 api-token `1234567890abcdef`.
 
 NOTE: This project uses _spring-doc_ to document the routes. The endpoints for this and the _swagger-ui_ are disabled by default!

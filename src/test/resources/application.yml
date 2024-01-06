@@ -37,17 +37,18 @@ dyndrest:
   host-validation-enabled: false
   healthcheck-user-name: health
   healthcheck-user-password: hea1th
-  zones:
-    - name: dynhost0.info
-      ns: ns0.domain.info
-      hosts:
-        - my0:1234567890abcdef
-        - test0:1234567890abcdx
-    - name: dynhost1.info
-      ns: ns1.domain.info
-      hosts:
-        - my1:1234567890abcdef
-        - test1:1234567890abcdx
+
+zones:
+  - name: dynhost0.info
+    ns: ns0.domain.info
+    hosts:
+      - my0:1234567890abcdef
+      - test0:1234567890abcdx
+  - name: dynhost1.info
+    ns: ns1.domain.info
+    hosts:
+      - my1:1234567890abcdef
+      - test1:1234567890abcdx
 
 domainrobot:
   default-ttl: 61

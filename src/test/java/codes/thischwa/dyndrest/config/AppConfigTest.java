@@ -15,41 +15,44 @@ class AppConfigTest extends GenericIntegrationTest {
 	private final int configuredEntries = 2;
 
 	@Autowired
-	private AppConfig config;
+	private AppConfig appConfig;
+
+	@Autowired
+	private ZoneConfig zoneConfig;
 
 	@Autowired
 	private AppConfigurator configurator;
 
 	@Test
 	final void testConfig() {
-		assertFalse(config.hostValidationEnabled());
-		assertTrue(config.greetingEnabled());
+		assertFalse(appConfig.hostValidationEnabled());
+		assertTrue(appConfig.greetingEnabled());
 
-		assertEquals(201, config.updateIpChangedStatus());
+		assertEquals(201, appConfig.updateIpChangedStatus());
 
-		assertEquals("domainrobot", config.provider());
+		assertEquals("domainrobot", appConfig.provider());
 
-		assertEquals("file:target/test-classes/test-files/dyndrest-update*", config.updateLogFilePattern());
-		assertEquals("(.*)\\s+-\\s+([a-zA-Z\\.-]*)\\s+(\\S*)\\s+(\\S*)", config.updateLogPattern());
-		assertEquals("%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n", config.updateLogEncoderPattern());
-		assertEquals("yyyy-MM-dd HH:mm:SSS", config.updateLogDatePattern());
-		assertTrue(config.updateLogPageEnabled());
-		assertEquals(4, config.updateLogPageSize());
-		assertEquals("log-dev", config.updateLogUserName());
-		assertEquals("l0g-dev", config.updateLogUserPassword());
+		assertEquals("file:target/test-classes/test-files/dyndrest-update*", appConfig.updateLogFilePattern());
+		assertEquals("(.*)\\s+-\\s+([a-zA-Z\\.-]*)\\s+(\\S*)\\s+(\\S*)", appConfig.updateLogPattern());
+		assertEquals("%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n", appConfig.updateLogEncoderPattern());
+		assertEquals("yyyy-MM-dd HH:mm:SSS", appConfig.updateLogDatePattern());
+		assertTrue(appConfig.updateLogPageEnabled());
+		assertEquals(4, appConfig.updateLogPageSize());
+		assertEquals("log-dev", appConfig.updateLogUserName());
+		assertEquals("l0g-dev", appConfig.updateLogUserPassword());
 
-		assertEquals("health", config.healthCheckUserName());
-		assertEquals("hea1th", config.healthCheckUserPassword());
+		assertEquals("health", appConfig.healthCheckUserName());
+		assertEquals("hea1th", appConfig.healthCheckUserPassword());
 	}
 
 	@Test
 	final void testCountZones() {
-		assertEquals(configuredEntries, config.zones().size());
+		assertEquals(configuredEntries, zoneConfig.zones().size());
 	}
 
 	@Test
 	final void testZoneDetails() {
-		AppConfig.Zone zone = config.zones().get(0);
+		ZoneConfig.Zone zone = zoneConfig.zones().get(0);
 		assertEquals("dynhost0.info", zone.name());
 		assertEquals("ns0.domain.info", zone.ns());
 
@@ -61,7 +64,7 @@ class AppConfigTest extends GenericIntegrationTest {
 	@Test
 	final void testWrongHostFormat() {
 		String wrongHost = "wrong-formatted.host";
-		AppConfig.Zone z = config.zones().get(0);
+		ZoneConfig.Zone z = zoneConfig.zones().get(0);
 		z.hosts().add(wrongHost);
 		assertThrows(IllegalArgumentException.class, configurator::read);
 		z.hosts().remove(wrongHost);
@@ -69,7 +72,7 @@ class AppConfigTest extends GenericIntegrationTest {
 
 	@Test
 	final void testEmptyHosts() {
-		AppConfig.Zone z = config.zones().get(1);
+		ZoneConfig.Zone z = zoneConfig.zones().get(1);
 		List<String> hosts = new ArrayList<>(z.hosts());
 		z.hosts().clear();
 		assertThrows(IllegalArgumentException.class, configurator::read);

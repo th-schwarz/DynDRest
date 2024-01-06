@@ -15,14 +15,15 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class AppConfigurator implements InitializingBean {
-  private final AppConfig appConfig;
+
+  private final ZoneConfig zoneConfig;
 
   private final Map<String, String> zoneData = new HashMap<>();
   // <fqdn, apitoken>
   private final Map<String, String> apitokenData = new HashMap<>();
 
-  public AppConfigurator(AppConfig appConfig) {
-    this.appConfig = appConfig;
+  public AppConfigurator(ZoneConfig zoneConfig) {
+    this.zoneConfig = zoneConfig;
   }
 
   @Override
@@ -85,10 +86,10 @@ public class AppConfigurator implements InitializingBean {
   void read() throws IllegalArgumentException {
     apitokenData.clear();
     zoneData.clear();
-    appConfig.zones().forEach(this::readZoneConfig);
+    zoneConfig.zones().forEach(this::readZoneConfig);
   }
 
-  private void readZoneConfig(AppConfig.Zone zone) {
+  private void readZoneConfig(ZoneConfig.Zone zone) {
     zoneData.put(zone.name(), zone.ns());
     List<String> hostRawData = zone.hosts();
     if (hostRawData.isEmpty()) {
@@ -97,7 +98,7 @@ public class AppConfigurator implements InitializingBean {
     hostRawData.forEach(hostRaw -> readHostString(hostRaw, zone));
   }
 
-  private void readHostString(String hostRaw, AppConfig.Zone zone) {
+  private void readHostString(String hostRaw, ZoneConfig.Zone zone) {
     String[] parts = hostRaw.split(":");
     if (parts.length != 2) {
       throw new IllegalArgumentException(

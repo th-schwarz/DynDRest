@@ -13,3 +13,4 @@ pom.xml.*
 /dyndrest.yml
 /log/
 /docs/openapi/.swagger-codegen**
+/zone.yml

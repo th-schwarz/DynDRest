@@ -1,8 +1,5 @@
 package codes.thischwa.dyndrest.config;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import java.util.List;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.lang.Nullable;
 
@@ -23,12 +20,6 @@ public record AppConfig(
     boolean updateLogRestForceHttps,
     String updateLogEncoderPattern,
     @Nullable String healthCheckUserName,
-    @Nullable String healthCheckUserPassword,
-    List<Zone> zones) {
+    @Nullable String healthCheckUserPassword) {
 
-  /** The Configuration of a zone. */
-  public record Zone(
-      @NotBlank(message = "The name of the zone shouldn't be empty.") String name,
-      @NotBlank(message = "The primary name server of the zone shouldn't be empty.") String ns,
-      @NotEmpty(message = "The hosts of the zone shouldn't be empty.") List<String> hosts) {}
 }
