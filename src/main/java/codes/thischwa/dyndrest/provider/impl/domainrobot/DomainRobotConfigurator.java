@@ -1,8 +1,8 @@
 package codes.thischwa.dyndrest.provider.impl.domainrobot;
 
 import codes.thischwa.dyndrest.config.AppConfig;
-import codes.thischwa.dyndrest.config.AppConfigurator;
 import codes.thischwa.dyndrest.provider.Provider;
+import codes.thischwa.dyndrest.service.ZoneService;
 import lombok.extern.slf4j.Slf4j;
 import org.domainrobot.sdk.client.Domainrobot;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -16,14 +16,14 @@ import org.springframework.stereotype.Component;
 class DomainRobotConfigurator {
 
   private final AppConfig appConfig;
-  private final AppConfigurator appConfigurator;
+  private final ZoneService zoneService;
   private final DomainRobotConfig.Autodns autoDnsConfig;
   private final DomainRobotConfig domainRobotConfig;
 
   public DomainRobotConfigurator(
-      AppConfig appConfig, AppConfigurator appConfigurator, DomainRobotConfig domainRobotConfig) {
+          AppConfig appConfig, ZoneService zoneService, DomainRobotConfig domainRobotConfig) {
     this.appConfig = appConfig;
-    this.appConfigurator = appConfigurator;
+    this.zoneService = zoneService;
     this.autoDnsConfig = domainRobotConfig.autodns();
     this.domainRobotConfig = domainRobotConfig;
   }
@@ -31,7 +31,7 @@ class DomainRobotConfigurator {
   @Bean
   Provider provider() {
     final ZoneClientWrapper zcw = buildZoneClientWrapper();
-    return new DomainRobotProvider(appConfig, appConfigurator, zcw);
+    return new DomainRobotProvider(appConfig, zoneService, zcw);
   }
 
   ZoneClientWrapper buildZoneClientWrapper() {

@@ -1,20 +1,20 @@
-package codes.thischwa.dyndrest.config;
+package codes.thischwa.dyndrest.service;
 
+import codes.thischwa.dyndrest.config.ZoneConfig;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
- * Configuration bean for the application configuration.<br>
- * Main task is reading and validating the host configuration.
+ * Service to read, validate and hold the zones and hosts data.
  */
 @Slf4j
-@Component
-public class AppConfigurator implements InitializingBean {
+@Service
+public class ZoneService implements InitializingBean {
 
   private final ZoneConfig zoneConfig;
 
@@ -22,7 +22,7 @@ public class AppConfigurator implements InitializingBean {
   // <fqdn, apitoken>
   private final Map<String, String> apitokenData = new HashMap<>();
 
-  public AppConfigurator(ZoneConfig zoneConfig) {
+  public ZoneService(ZoneConfig zoneConfig) {
     this.zoneConfig = zoneConfig;
   }
 

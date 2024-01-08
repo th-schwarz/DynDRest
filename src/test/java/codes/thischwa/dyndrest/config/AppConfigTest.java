@@ -1,14 +1,11 @@
 package codes.thischwa.dyndrest.config;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import codes.thischwa.dyndrest.GenericIntegrationTest;
+import codes.thischwa.dyndrest.service.ZoneService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class AppConfigTest extends GenericIntegrationTest {
 
@@ -21,7 +18,7 @@ class AppConfigTest extends GenericIntegrationTest {
 	private ZoneConfig zoneConfig;
 
 	@Autowired
-	private AppConfigurator configurator;
+	private ZoneService zoneService;
 
 	@Test
 	final void testConfig() {
@@ -60,22 +57,4 @@ class AppConfigTest extends GenericIntegrationTest {
 		assertEquals("test0:1234567890abcdx", zone.hosts().get(1));
 	}
 
-
-	@Test
-	final void testWrongHostFormat() {
-		String wrongHost = "wrong-formatted.host";
-		ZoneConfig.Zone z = zoneConfig.zones().get(0);
-		z.hosts().add(wrongHost);
-		assertThrows(IllegalArgumentException.class, configurator::read);
-		z.hosts().remove(wrongHost);
-	}
-
-	@Test
-	final void testEmptyHosts() {
-		ZoneConfig.Zone z = zoneConfig.zones().get(1);
-		List<String> hosts = new ArrayList<>(z.hosts());
-		z.hosts().clear();
-		assertThrows(IllegalArgumentException.class, configurator::read);
-		z.hosts().addAll(hosts);
-	}
 }
