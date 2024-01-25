@@ -10,7 +10,7 @@ pom.xml.*
 # local files
 /info.txt
 /logback.xml
-/dyndrest.yml
+/dyndrest**
 /log/
 /docs/openapi/.swagger-codegen**
 /zone.yml
