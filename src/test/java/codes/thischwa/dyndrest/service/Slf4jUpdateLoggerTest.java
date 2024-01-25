@@ -1,11 +1,10 @@
 package codes.thischwa.dyndrest.service;
 
-import codes.thischwa.dyndrest.model.IpSetting;
-import org.junit.jupiter.api.Test;
-
-import java.net.UnknownHostException;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import codes.thischwa.dyndrest.model.IpSetting;
+import java.net.UnknownHostException;
+import org.junit.jupiter.api.Test;
 
 class Slf4jUpdateLoggerTest {
 

@@ -1,8 +1,11 @@
 package codes.thischwa.dyndrest.provider.impl.domainrobot;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import codes.thischwa.dyndrest.GenericIntegrationTest;
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.provider.impl.domainrobot.ZoneClientWrapper.ResouceRecordTypeIp;
+import java.util.Objects;
 import org.domainrobot.sdk.client.JsonUtils;
 import org.domainrobot.sdk.models.generated.JsonResponseDataZone;
 import org.domainrobot.sdk.models.generated.ResourceRecord;
@@ -11,10 +14,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Objects;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ZoneClientWrapperTest extends GenericIntegrationTest {
 

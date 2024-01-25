@@ -1,14 +1,13 @@
 package codes.thischwa.dyndrest.provider;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import codes.thischwa.dyndrest.GenericIntegrationTest;
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.provider.impl.GenericProvider;
-import org.junit.jupiter.api.Test;
-
 import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 class ProviderTest extends GenericIntegrationTest {
 

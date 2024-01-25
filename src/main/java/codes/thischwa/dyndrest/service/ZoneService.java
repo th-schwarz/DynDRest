@@ -1,6 +1,7 @@
 package codes.thischwa.dyndrest.service;
 
 import codes.thischwa.dyndrest.config.ZoneConfig;
+import codes.thischwa.dyndrest.model.Zone;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,7 +90,7 @@ public class ZoneService implements InitializingBean {
     zoneConfig.zones().forEach(this::readZoneConfig);
   }
 
-  private void readZoneConfig(ZoneConfig.Zone zone) {
+  private void readZoneConfig(Zone zone) {
     zoneData.put(zone.name(), zone.ns());
     List<String> hostRawData = zone.hosts();
     if (hostRawData.isEmpty()) {
@@ -98,7 +99,7 @@ public class ZoneService implements InitializingBean {
     hostRawData.forEach(hostRaw -> readHostString(hostRaw, zone));
   }
 
-  private void readHostString(String hostRaw, ZoneConfig.Zone zone) {
+  private void readHostString(String hostRaw, Zone zone) {
     String[] parts = hostRaw.split(":");
     if (parts.length != 2) {
       throw new IllegalArgumentException(

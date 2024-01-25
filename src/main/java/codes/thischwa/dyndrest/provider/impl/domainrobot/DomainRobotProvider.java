@@ -19,10 +19,7 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
 
   private final ZoneClientWrapper zcw;
 
-  DomainRobotProvider(
-      AppConfig appConfig,
-      ZoneService zoneService,
-      ZoneClientWrapper zcw) {
+  DomainRobotProvider(AppConfig appConfig, ZoneService zoneService, ZoneClientWrapper zcw) {
     this.appConfig = appConfig;
     this.zoneService = zoneService;
     this.zcw = zcw;

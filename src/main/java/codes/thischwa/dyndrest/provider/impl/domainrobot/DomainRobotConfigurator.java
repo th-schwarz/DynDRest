@@ -21,7 +21,7 @@ class DomainRobotConfigurator {
   private final DomainRobotConfig domainRobotConfig;
 
   public DomainRobotConfigurator(
-          AppConfig appConfig, ZoneService zoneService, DomainRobotConfig domainRobotConfig) {
+      AppConfig appConfig, ZoneService zoneService, DomainRobotConfig domainRobotConfig) {
     this.appConfig = appConfig;
     this.zoneService = zoneService;
     this.autoDnsConfig = domainRobotConfig.autodns();

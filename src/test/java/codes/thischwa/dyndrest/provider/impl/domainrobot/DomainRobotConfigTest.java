@@ -1,12 +1,11 @@
 package codes.thischwa.dyndrest.provider.impl.domainrobot;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import codes.thischwa.dyndrest.GenericIntegrationTest;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class DomainRobotConfigTest extends GenericIntegrationTest {
 

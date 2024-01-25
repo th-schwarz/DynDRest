@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import codes.thischwa.dyndrest.model.IpSetting;
 import java.io.IOException;
 import java.net.IDN;
-
 import org.junit.jupiter.api.Test;
 import org.xbill.DNS.Name;
 

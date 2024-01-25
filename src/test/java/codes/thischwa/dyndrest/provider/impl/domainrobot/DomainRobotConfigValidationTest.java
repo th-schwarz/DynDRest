@@ -1,31 +1,28 @@
 package codes.thischwa.dyndrest.provider.impl.domainrobot;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import codes.thischwa.dyndrest.GenericIntegrationTest;
 import codes.thischwa.dyndrest.config.AppConfig;
 import codes.thischwa.dyndrest.config.ZoneConfig;
+import codes.thischwa.dyndrest.model.Zone;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+import java.util.Arrays;
+import java.util.Set;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Arrays;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 class DomainRobotConfigValidationTest extends GenericIntegrationTest {
 
-	private final int configuredEntries = 2;
-
 	private static Validator validator;
-
 	private static ValidatorFactory validatorFactory;
-
+	private final int configuredEntries = 2;
 	@Autowired private AppConfig appConfig;
 
 	@Autowired private ZoneConfig zoneConfig;
@@ -48,7 +45,7 @@ class DomainRobotConfigValidationTest extends GenericIntegrationTest {
 
 	@Test
 	final void testZoneDetails() {
-		ZoneConfig.Zone zone = zoneConfig.zones().get(0);
+		Zone zone = zoneConfig.zones().get(0);
 		assertEquals("dynhost0.info", zone.name());
 		assertEquals("ns0.domain.info", zone.ns());
 
@@ -65,24 +62,24 @@ class DomainRobotConfigValidationTest extends GenericIntegrationTest {
 
 	@Test
 	final void testZone_failName() {
-		ZoneConfig.Zone z = new ZoneConfig.Zone(null,"ns.dyndns.org", Arrays.asList("test1", "test2"));
-		Set<ConstraintViolation<ZoneConfig.Zone>> violations = validator.validate(z);
+		Zone z = new Zone(null,"ns.dyndns.org", Arrays.asList("test1", "test2"));
+		Set<ConstraintViolation<Zone>> violations = validator.validate(z);
 		assertEquals(1, violations.size());
 		assertEquals("The name of the zone shouldn't be empty.", violations.iterator().next().getMessage());
 	}
 
 	@Test
 	final void testZone_failNs() {
-		ZoneConfig.Zone z = new ZoneConfig.Zone("test.dyndns.org",null, Arrays.asList("test1", "test2"));
-		Set<ConstraintViolation<ZoneConfig.Zone>> violations = validator.validate(z);
+		Zone z = new Zone("test.dyndns.org",null, Arrays.asList("test1", "test2"));
+		Set<ConstraintViolation<Zone>> violations = validator.validate(z);
 		assertEquals(1, violations.size());
 		assertEquals("The primary name server of the zone shouldn't be empty.", violations.iterator().next().getMessage());
 	}
 
 	@Test
 	final void testZone_failHosts() {
-		ZoneConfig.Zone z = new ZoneConfig.Zone("test.dyndns.org","ns.dyndns.org", null);
-		Set<ConstraintViolation<ZoneConfig.Zone>> violations = validator.validate(z);
+		Zone z = new Zone("test.dyndns.org","ns.dyndns.org", null);
+		Set<ConstraintViolation<Zone>> violations = validator.validate(z);
 		assertEquals(1, violations.size());
 		assertEquals("The hosts of the zone shouldn't be empty.", violations.iterator().next().getMessage());
 	}
