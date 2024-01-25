@@ -20,6 +20,7 @@ public class HostJdbcDaoTest extends GenericIntegrationTest {
     Host host = hosts.get(0);
     assertEquals(1, host.getId());
     assertEquals("my0", host.getName());
+    assertEquals("1234567890abcdef", host.getApiToken());
     assertNull(host.getNs());
     assertNull(host.getZone());
   }
@@ -32,6 +33,7 @@ public class HostJdbcDaoTest extends GenericIntegrationTest {
     Host host = hosts.get(0);
     assertEquals(1, host.getId());
     assertEquals("my0", host.getName());
+    assertEquals("1234567890abcdef", host.getApiToken());
     assertEquals("ns0.domain.info", host.getNs());
     assertEquals("dynhost0.info", host.getZone());
   }

@@ -16,7 +16,7 @@ public class HostJdbcDao {
   private static final String sql_all = "SELECT * FROM host order by id";
 
   private static final String sql_all_extended =
-      "select h.id, h.NAME, concat(h.NAME, '.', z.NAME) full_host, "
+      "select h.id, h.NAME, h.API_TOKEN, concat(h.NAME, '.', z.NAME) full_host, "
               + "h.ZONE_ID, z.NAME as ZONE, z.NS, h.CHANGED "
               + "from HOST h "
               + "join ZONE z on z.ID = h.ZONE_ID "
