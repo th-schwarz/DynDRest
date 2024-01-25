@@ -26,8 +26,7 @@ release (latest by date including pre-releases)]]
 
 == Preface
 
-DynDRest is a simple REST-service for dynamic DNS and is a more general
-variant of https://github.com/th-schwarz/DDAuto[DDAuto]. The basic idea
+DynDRest is a simple REST-service for dynamic DNS. The basic idea
 is to have multiple implementations of different dns providers.
 https://www.internetx.com/en/domains/autodns[AutoDNS] will be one of
 them. +
