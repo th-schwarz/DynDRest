@@ -19,6 +19,7 @@ public class DatabaseTestConfig {
         .setType(H2)
         .setScriptEncoding("UTF-8")
         .ignoreFailedDrops(true)
+        .continueOnError(true)
         .addScript("/h2/dump.sql")
         .build();
   }
