@@ -14,5 +14,7 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+    - name: list dir
+      run: ls -al
     - name: Build with Maven
       run: mvn -B clean test
