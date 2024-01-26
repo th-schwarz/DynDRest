@@ -2,7 +2,6 @@ package codes.thischwa.dyndrest.repository;
 
 import codes.thischwa.dyndrest.model.Host;
 import java.util.List;
-
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
