@@ -15,7 +15,7 @@ public class DatabaseTestConfig {
   @Bean
   public DataSource getDataSource() {
     return new EmbeddedDatabaseBuilder()
-        .generateUniqueName(true)
+        .setName("dyndrest")
         .setType(H2)
         .setScriptEncoding("UTF-8")
         .ignoreFailedDrops(true)
