@@ -1,12 +1,10 @@
 package codes.thischwa.dyndrest.provider;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import codes.thischwa.dyndrest.GenericIntegrationTest;
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.provider.impl.GenericProvider;
-import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 class ProviderTest extends GenericIntegrationTest {
@@ -14,8 +12,6 @@ class ProviderTest extends GenericIntegrationTest {
   @Test
   final void test() throws ProviderException {
     TestProvider provider = new TestProvider();
-    assertTrue(provider.hostExists("sub1.mein-email-fach.de"));
-    assertTrue(provider.getConfiguredHosts().contains("sub1.mein-email-fach.de"));
 
     IpSetting ips = provider.info("mein-email-fach.de");
     assertEquals(
@@ -29,16 +25,7 @@ class ProviderTest extends GenericIntegrationTest {
     public void validateHostConfiguration() throws IllegalArgumentException {}
 
     @Override
-    public Set<String> getConfiguredHosts() {
-      return Set.of("sub1.mein-email-fach.de");
-    }
-
-    @Override
     public void update(String host, IpSetting ipSetting) throws ProviderException {}
 
-    @Override
-    public String getApitoken(String host) {
-      return null;
-    }
   }
 }

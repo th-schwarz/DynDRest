@@ -23,9 +23,7 @@ public record AppConfig(
     @Nullable String healthCheckUserPassword,
     @Nullable Database database) {
 
-  /**
-   * Represents a configuration class for a database connection.
-   */
+  /** Represents a configuration class for a database connection. */
   public record Database(
       String driverClassName, String jdbcUrlPrefix, String file, String user, String password) {}
 }

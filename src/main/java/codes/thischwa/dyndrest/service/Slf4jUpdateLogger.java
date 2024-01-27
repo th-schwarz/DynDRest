@@ -1,7 +1,6 @@
 package codes.thischwa.dyndrest.service;
 
 import codes.thischwa.dyndrest.model.IpSetting;
-import codes.thischwa.dyndrest.provider.Provider;
 import java.util.Comparator;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -20,15 +19,15 @@ public class Slf4jUpdateLogger implements UpdateLogger, InitializingBean {
 
   private static final int DEFAULT_HOSTNAME_LENGTH = 12;
 
-  private final Provider provider;
+  private final HostZoneService hostZoneService;
 
   private final UpdateLogCache cache;
 
   @SuppressWarnings("NotNullFieldNotInitialized")
   private String logEntryFormat;
 
-  public Slf4jUpdateLogger(Provider provider, UpdateLogCache cache) {
-    this.provider = provider;
+  public Slf4jUpdateLogger(HostZoneService hostZoneService, UpdateLogCache cache) {
+    this.hostZoneService = hostZoneService;
     this.cache = cache;
   }
 
@@ -49,7 +48,7 @@ public class Slf4jUpdateLogger implements UpdateLogger, InitializingBean {
   public void afterPropertiesSet() {
     // determine the max. length of the hosts for nicer logging
     int maxSize =
-        provider.getConfiguredHosts().stream()
+        hostZoneService.getConfiguredHosts().stream()
             .max(Comparator.comparing(String::length))
             .map(String::length)
             .orElse(DEFAULT_HOSTNAME_LENGTH);

@@ -2,7 +2,6 @@ package codes.thischwa.dyndrest.provider;
 
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.provider.impl.GenericProvider;
-import java.util.Set;
 
 /**
  * Defines the functionality of a dns provider. <br>
@@ -14,24 +13,6 @@ public interface Provider {
 
   /** Validates the host configuration. */
   void validateHostConfiguration() throws IllegalArgumentException;
-
-  /**
-   * Returns all hosts that are configured correctly.
-   *
-   * @return all hosts that are configured correctly
-   */
-  Set<String> getConfiguredHosts();
-
-  /**
-   * Checks if the desired 'hosts' exists. <br>
-   * Hint: There is no need to override it!
-   *
-   * @param host the host
-   * @return the boolean
-   */
-  default boolean hostExists(String host) {
-    return getConfiguredHosts().contains(host);
-  }
 
   /**
    * Hook before update.
@@ -57,14 +38,6 @@ public interface Provider {
    * @param ipSetting the ip setting
    */
   void updateAfterHook(String host, IpSetting ipSetting) throws UpdateHookException;
-
-  /**
-   * Gets apitoken of the desired 'host'.
-   *
-   * @param host the host
-   * @return the apitoken
-   */
-  String getApitoken(String host);
 
   /**
    * Determine the IPs of the 'host'.

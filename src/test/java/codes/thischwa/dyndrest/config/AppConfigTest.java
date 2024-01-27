@@ -3,8 +3,6 @@ package codes.thischwa.dyndrest.config;
 import static org.junit.jupiter.api.Assertions.*;
 
 import codes.thischwa.dyndrest.GenericIntegrationTest;
-import codes.thischwa.dyndrest.model.Zone;
-import codes.thischwa.dyndrest.service.ZoneService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

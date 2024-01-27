@@ -1,12 +1,12 @@
 package codes.thischwa.dyndrest.config;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import codes.thischwa.dyndrest.GenericIntegrationTest;
 import codes.thischwa.dyndrest.model.Zone;
-import codes.thischwa.dyndrest.service.ZoneService;
+import codes.thischwa.dyndrest.service.HostZoneService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ZoneConfigTest extends GenericIntegrationTest {
 
@@ -14,7 +14,7 @@ class ZoneConfigTest extends GenericIntegrationTest {
 
   @Autowired private ZoneConfig zoneConfig;
 
-  @Autowired private ZoneService zoneService;
+  @Autowired private HostZoneService hostZoneService;
 
   @Test
   final void testCountZones() {
@@ -24,10 +24,7 @@ class ZoneConfigTest extends GenericIntegrationTest {
   @Test
   final void testZoneDetails() {
     Zone zone = zoneConfig.zones().get(0);
-    assertEquals("dynhost0.info", zone.name());
-    assertEquals("ns0.domain.info", zone.ns());
-
-    assertEquals("my0:1234567890abcdef", zone.hosts().get(0));
-    assertEquals("test0:1234567890abcdx", zone.hosts().get(1));
+    assertEquals("dynhost0.info", zone.getName());
+    assertEquals("ns0.domain.info", zone.getNs());
   }
 }

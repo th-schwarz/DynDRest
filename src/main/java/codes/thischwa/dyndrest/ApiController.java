@@ -5,7 +5,7 @@ import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.model.UpdateLogPage;
 import codes.thischwa.dyndrest.provider.Provider;
 import codes.thischwa.dyndrest.provider.ProviderException;
-import codes.thischwa.dyndrest.service.HostValidationService;
+import codes.thischwa.dyndrest.service.HostZoneService;
 import codes.thischwa.dyndrest.service.UpdateLogCache;
 import codes.thischwa.dyndrest.service.UpdateLogger;
 import codes.thischwa.dyndrest.util.NetUtil;
@@ -34,7 +34,7 @@ public class ApiController implements ApiRoutes {
 
   private final UpdateLogCache updateLogCache;
 
-  private final HostValidationService validationService;
+  private final HostZoneService validationService;
 
   /**
    * Instantiates a new Api controller.
@@ -50,7 +50,7 @@ public class ApiController implements ApiRoutes {
       AppConfig config,
       UpdateLogger updateLogger,
       UpdateLogCache updateLogCache,
-      HostValidationService validationService) {
+      HostZoneService validationService) {
     this.provider = provider;
     this.config = config;
     this.updateLogger = updateLogger;
@@ -63,7 +63,7 @@ public class ApiController implements ApiRoutes {
       String host, String apitoken, InetAddress ipv4, InetAddress ipv6, HttpServletRequest req) {
     log.debug(
         "entered #update: host={}, apitoken={}, ipv4={}, ipv6={}", host, apitoken, ipv4, ipv6);
-    validateApitoken(host, apitoken);
+    validateHost(host, apitoken);
 
     IpSetting reqIpSetting = new IpSetting(ipv4, ipv6);
     if (reqIpSetting.isNotSet()) {
@@ -103,7 +103,7 @@ public class ApiController implements ApiRoutes {
   @Override
   public ResponseEntity<IpSetting> info(String host, @RequestParam String apitoken) {
     log.debug("entered #info: host={}", host); // validation
-    validateApitoken(host, apitoken);
+    validateHost(host, apitoken);
 
     IpSetting ipSetting;
     try {
@@ -126,7 +126,7 @@ public class ApiController implements ApiRoutes {
     return ResponseEntity.ok(updateLogCache.getResponsePage(page, search));
   }
 
-  private void validateApitoken(String host, String apitoken) {
+  private void validateHost(String host, String apitoken) {
     try {
       boolean valid = validationService.validate(host, apitoken);
       if (!valid) {

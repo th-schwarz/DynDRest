@@ -14,6 +14,7 @@ public class Host {
   private Integer id;
 
   private String name;
+  private String fullHost;
   private String apiToken;
 
   private Integer zoneId;

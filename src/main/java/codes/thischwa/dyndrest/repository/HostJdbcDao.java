@@ -36,15 +36,15 @@ public class HostJdbcDao {
   }
 
   public List<Host> getAll() {
-    return jdbcTemplate.query(sql_all, new BeanPropertyRowMapper<>(Host.class));
+    return jdbcTemplate.query(sql_all, BeanPropertyRowMapper.newInstance(Host.class));
   }
 
   public List<Host> getAllExtended() {
-    return jdbcTemplate.query(sql_all_extended, new BeanPropertyRowMapper<>(Host.class));
+    return jdbcTemplate.query(sql_all_extended, BeanPropertyRowMapper.newInstance(Host.class));
   }
 
   public Host getByFullHost(String fullHost) throws EmptyResultDataAccessException {
-    return (Host)
-        jdbcTemplate.queryForObject(sql_full_host, new BeanPropertyRowMapper(Host.class), fullHost);
+    return jdbcTemplate.queryForObject(
+        sql_full_host, BeanPropertyRowMapper.newInstance(Host.class), fullHost);
   }
 }
