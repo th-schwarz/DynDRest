@@ -26,6 +26,11 @@ public class HostZoneService {
     return host.getApiToken().equals(apitoken);
   }
 
+  /**
+   * Retrieves a list of configured hosts.
+   *
+   * @return the list of configured hosts
+   */
   public List<String> getConfiguredHosts() {
     List<String> hosts = new ArrayList<>();
     for (Host host : hostDao.getAllExtended()) {
