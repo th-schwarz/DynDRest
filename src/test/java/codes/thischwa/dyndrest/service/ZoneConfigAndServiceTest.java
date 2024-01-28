@@ -1,13 +1,10 @@
 package codes.thischwa.dyndrest.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import codes.thischwa.dyndrest.GenericIntegrationTest;
-import codes.thischwa.dyndrest.config.ZoneConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 
 class ZoneConfigAndServiceTest extends GenericIntegrationTest {
 
@@ -15,15 +12,9 @@ class ZoneConfigAndServiceTest extends GenericIntegrationTest {
 
   @Autowired private HostZoneService hostZoneService;
 
-  @Autowired private ZoneConfig zoneConfig;
-
-
   @Test
   final void testGetPrimaryNameServer() {
-    assertEquals("ns1.domain.info", hostZoneService.getPrimaryNameServer("dynhost1.info"));
-    assertThrows(
-        EmptyResultDataAccessException.class,
-        () -> hostZoneService.getPrimaryNameServer("unknown-host.info"));
+    assertEquals("ns1.domain.info", hostZoneService.getHost("my1.dynhost1.info").getNs());
   }
 
   @Test

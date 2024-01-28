@@ -3,6 +3,7 @@ package codes.thischwa.dyndrest.repository;
 import static org.junit.jupiter.api.Assertions.*;
 
 import codes.thischwa.dyndrest.GenericIntegrationTest;
+import codes.thischwa.dyndrest.model.FullHost;
 import codes.thischwa.dyndrest.model.Host;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -22,16 +23,14 @@ public class HostJdbcDaoTest extends GenericIntegrationTest {
     assertEquals(1, host.getId());
     assertEquals("my0", host.getName());
     assertEquals("1234567890abcdef", host.getApiToken());
-    assertNull(host.getNs());
-    assertNull(host.getZone());
   }
 
   @Test
   void testGetAllExtended() {
-    List<Host> hosts = repo.getAllExtended();
+    List<FullHost> hosts = repo.getAllExtended();
     assertEquals(4, hosts.size());
 
-    Host host = hosts.get(0);
+    FullHost host = hosts.get(0);
     assertEquals(1, host.getId());
     assertEquals("my0", host.getName());
     assertEquals("1234567890abcdef", host.getApiToken());

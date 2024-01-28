@@ -1,6 +1,7 @@
 package codes.thischwa.dyndrest.provider.impl.domainrobot;
 
 import codes.thischwa.dyndrest.config.AppConfig;
+import codes.thischwa.dyndrest.model.FullHost;
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.provider.impl.GenericProvider;
@@ -46,12 +47,12 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
     zcw.update(zone);
   }
 
-  private void checkZone(String zoneStr) throws IllegalArgumentException {
+  private void checkZone(FullHost host) throws IllegalArgumentException {
     try {
-      Zone zone = zcw.info(zoneStr, hostZoneService.getPrimaryNameServer(zoneStr));
+      Zone zone = zcw.info(host.getZone(), host.getNs());
       log.info("*** Zone confirmed: {}", zone.getOrigin());
     } catch (ProviderException e) {
-      log.error("Error while getting zone info of " + zoneStr, e);
+      log.error("Error while getting zone info of " + host.getZone(), e);
       throw new IllegalArgumentException("Zone couldn't be confirmed.");
     }
   }
@@ -60,8 +61,9 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
     if (!hostZoneService.hostExists(host)) {
       throw new IllegalArgumentException("Host isn't configured: " + host);
     }
-    String zone = zcw.deriveZone(host);
-    String primaryNameServer = hostZoneService.getPrimaryNameServer(zone);
+    FullHost fullHost = hostZoneService.getHost(host);
+    String zone = fullHost.getZone();
+    String primaryNameServer = fullHost.getNs();
     return zcw.info(zone, primaryNameServer);
   }
 

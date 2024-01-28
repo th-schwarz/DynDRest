@@ -1,7 +1,7 @@
 package codes.thischwa.dyndrest.service;
 
+import codes.thischwa.dyndrest.model.FullHost;
 import codes.thischwa.dyndrest.model.IpSetting;
-import java.util.Comparator;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
@@ -47,11 +47,11 @@ public class Slf4jUpdateLogger implements UpdateLogger, InitializingBean {
   @Override
   public void afterPropertiesSet() {
     // determine the max. length of the hosts for nicer logging
-    int maxSize =
-        hostZoneService.getConfiguredHosts().stream()
-            .max(Comparator.comparing(String::length))
-            .map(String::length)
-            .orElse(DEFAULT_HOSTNAME_LENGTH);
+    int maxSize = hostZoneService.getConfiguredHosts().stream()
+              .map(FullHost::getFullHost)
+              .mapToInt(String::length)
+              .max()
+              .orElse(DEFAULT_HOSTNAME_LENGTH);
     logEntryFormat = "%" + maxSize + "s  %16s  %s";
   }
 }

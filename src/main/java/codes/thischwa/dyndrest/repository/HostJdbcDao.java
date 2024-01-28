@@ -1,5 +1,6 @@
 package codes.thischwa.dyndrest.repository;
 
+import codes.thischwa.dyndrest.model.FullHost;
 import codes.thischwa.dyndrest.model.Host;
 import java.util.List;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -39,12 +40,12 @@ public class HostJdbcDao {
     return jdbcTemplate.query(sql_all, BeanPropertyRowMapper.newInstance(Host.class));
   }
 
-  public List<Host> getAllExtended() {
-    return jdbcTemplate.query(sql_all_extended, BeanPropertyRowMapper.newInstance(Host.class));
+  public List<FullHost> getAllExtended() {
+    return jdbcTemplate.query(sql_all_extended, BeanPropertyRowMapper.newInstance(FullHost.class));
   }
 
-  public Host getByFullHost(String fullHost) throws EmptyResultDataAccessException {
+  public FullHost getByFullHost(String fullHost) throws EmptyResultDataAccessException {
     return jdbcTemplate.queryForObject(
-        sql_full_host, BeanPropertyRowMapper.newInstance(Host.class), fullHost);
+        sql_full_host, BeanPropertyRowMapper.newInstance(FullHost.class), fullHost);
   }
 }
