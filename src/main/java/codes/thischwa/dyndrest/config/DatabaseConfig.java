@@ -3,6 +3,7 @@ package codes.thischwa.dyndrest.config;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -38,12 +39,8 @@ public class DatabaseConfig extends AbstractJdbcConfiguration {
 
   /** The DatabaseConfig class provides the configuration for the application's database. */
   public DatabaseConfig(AppConfig appConfig) {
-    if (appConfig.database() == null) {
-      throw new IllegalArgumentException(
-          "Shouldn't be initialized with the current configuration settings.");
-    }
     this.databaseConfig = appConfig.database();
-    String search = databaseConfig.file() + ".mv.db";
+    String search = Objects.requireNonNull(databaseConfig).file() + ".mv.db";
     Path dbPath = Paths.get(search);
     dbExists = Files.exists(dbPath);
   }

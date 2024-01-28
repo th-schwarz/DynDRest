@@ -22,9 +22,17 @@ public class HostZoneService {
     this.zoneDao = zoneDao;
   }
 
-  public boolean validate(String fullHost, String apitoken) throws EmptyResultDataAccessException {
+  /**
+   * Validates the API token for a given host.
+   *
+   * @param fullHost the full host name
+   * @param apiToken the API token to validate
+   * @return true if the API token is valid for the host, false otherwise
+   * @throws EmptyResultDataAccessException if the host cannot be found
+   */
+  public boolean validate(String fullHost, String apiToken) throws EmptyResultDataAccessException {
     Host host = hostDao.getByFullHost(fullHost);
-    return host.getApiToken().equals(apitoken);
+    return host.getApiToken().equals(apiToken);
   }
 
   /**
