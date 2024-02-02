@@ -3,7 +3,7 @@ package codes.thischwa.dyndrest.provider.impl.domainrobot;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import codes.thischwa.dyndrest.GenericIntegrationTest;
+import codes.thischwa.dyndrest.AbstractIntegrationTest;
 import codes.thischwa.dyndrest.config.AppConfig;
 import codes.thischwa.dyndrest.config.ZoneConfig;
 import codes.thischwa.dyndrest.model.Zone;
@@ -11,13 +11,14 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+
 import java.util.Set;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class DomainRobotConfigValidationTest extends GenericIntegrationTest {
+class DomainRobotConfigValidationTest extends AbstractIntegrationTest {
 
   private static Validator validator;
   private static ValidatorFactory validatorFactory;
@@ -51,7 +52,8 @@ class DomainRobotConfigValidationTest extends GenericIntegrationTest {
 
   @Test
   final void testZone_failName() {
-    Zone z = new Zone(null, "ns.dyndns.org");
+    Zone z = new Zone();
+    z.setNs("ns1.dyndns.org");
     Set<ConstraintViolation<Zone>> violations = validator.validate(z);
     assertEquals(1, violations.size());
     assertEquals(
@@ -60,7 +62,8 @@ class DomainRobotConfigValidationTest extends GenericIntegrationTest {
 
   @Test
   final void testZone_failNs() {
-    Zone z = new Zone("test.dyndns.org", null);
+    Zone z = new Zone();
+    z.setName("test.dyndns.org");
     Set<ConstraintViolation<Zone>> violations = validator.validate(z);
     assertEquals(1, violations.size());
     assertEquals(

@@ -2,7 +2,7 @@ package codes.thischwa.dyndrest.repository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import codes.thischwa.dyndrest.GenericIntegrationTest;
+import codes.thischwa.dyndrest.AbstractIntegrationTest;
 import codes.thischwa.dyndrest.model.FullHost;
 import codes.thischwa.dyndrest.model.Host;
 import java.util.List;
@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 
-public class HostJdbcDaoTest extends GenericIntegrationTest {
+public class HostJdbcDaoTest extends AbstractIntegrationTest {
 
   @Autowired private HostJdbcDao repo;
 
@@ -24,6 +24,7 @@ public class HostJdbcDaoTest extends GenericIntegrationTest {
     assertEquals("my0", host.getName());
     assertEquals("1234567890abcdef", host.getApiToken());
     assertEquals(1, host.getZoneId());
+    assertEquals("2024-01-28T12:06:29.821934", host.getChanged().toString());
   }
 
   @Test

@@ -1,12 +1,12 @@
 package codes.thischwa.dyndrest.model;
 
-import java.time.LocalDateTime;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /** Represents a Host entity. */
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class Host {
-  private Integer id;
+public class Host extends AbstractJdbcModel {
 
   private String name;
   private String fullHost;
@@ -14,5 +14,4 @@ public class Host {
 
   private Integer zoneId;
 
-  private LocalDateTime changed;
 }

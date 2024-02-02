@@ -10,7 +10,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-public abstract class GenericIntegrationTest {
+public abstract class AbstractIntegrationTest {
 
 	@Value("${local.server.port}") protected int port;
 

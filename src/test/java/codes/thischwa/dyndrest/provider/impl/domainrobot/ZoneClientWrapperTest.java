@@ -2,7 +2,7 @@ package codes.thischwa.dyndrest.provider.impl.domainrobot;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import codes.thischwa.dyndrest.GenericIntegrationTest;
+import codes.thischwa.dyndrest.AbstractIntegrationTest;
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.provider.impl.domainrobot.ZoneClientWrapper.ResouceRecordTypeIp;
 import java.util.Objects;
@@ -15,7 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class ZoneClientWrapperTest extends GenericIntegrationTest {
+class ZoneClientWrapperTest extends AbstractIntegrationTest {
 
 	private static final int rrCount = 5;
 
@@ -102,7 +102,8 @@ class ZoneClientWrapperTest extends GenericIntegrationTest {
 	@Test
 	final void testSearch() {
 		ResourceRecord rr = zcw.searchResourceRecord(zone, "sub", ResouceRecordTypeIp.A);
-		assertEquals("85.209.51.215", rr.getValue());
+        assert rr != null;
+        assertEquals("85.209.51.215", rr.getValue());
 	}
 
 	@Test

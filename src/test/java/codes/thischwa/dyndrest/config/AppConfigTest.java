@@ -2,11 +2,11 @@ package codes.thischwa.dyndrest.config;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import codes.thischwa.dyndrest.GenericIntegrationTest;
+import codes.thischwa.dyndrest.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class AppConfigTest extends GenericIntegrationTest {
+class AppConfigTest extends AbstractIntegrationTest {
 
   @Autowired private AppConfig appConfig;
 

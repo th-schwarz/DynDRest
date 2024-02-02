@@ -102,7 +102,8 @@ public class ApiController implements ApiRoutes {
 
   @Override
   public ResponseEntity<IpSetting> info(String host, @RequestParam String apitoken) {
-    log.debug("entered #info: host={}", host); // validation
+    log.debug("entered #info: host={}", host);
+    // validation
     validateHost(host, apitoken);
 
     IpSetting ipSetting;

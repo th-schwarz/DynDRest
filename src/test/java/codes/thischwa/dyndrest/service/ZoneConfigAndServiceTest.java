@@ -2,11 +2,11 @@ package codes.thischwa.dyndrest.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import codes.thischwa.dyndrest.GenericIntegrationTest;
+import codes.thischwa.dyndrest.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class ZoneConfigAndServiceTest extends GenericIntegrationTest {
+class ZoneConfigAndServiceTest extends AbstractIntegrationTest {
 
   private final int configuredEntries = 2;
 

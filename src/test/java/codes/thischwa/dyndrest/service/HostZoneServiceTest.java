@@ -2,14 +2,14 @@ package codes.thischwa.dyndrest.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import codes.thischwa.dyndrest.GenericIntegrationTest;
+import codes.thischwa.dyndrest.AbstractIntegrationTest;
 import codes.thischwa.dyndrest.model.FullHost;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 
-class HostZoneServiceTest extends GenericIntegrationTest {
+class HostZoneServiceTest extends AbstractIntegrationTest {
 
   @Autowired private HostZoneService service;
 

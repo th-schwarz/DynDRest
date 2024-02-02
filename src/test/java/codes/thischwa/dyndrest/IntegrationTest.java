@@ -21,7 +21,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 @AutoConfigureMockMvc
 @DisplayName("Integration & server tests")
-class IntegrationTest extends GenericIntegrationTest {
+class IntegrationTest extends AbstractIntegrationTest {
 
 	@Autowired private MockMvc mockMvc;
 

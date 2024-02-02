@@ -5,14 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import codes.thischwa.dyndrest.GenericIntegrationTest;
+import codes.thischwa.dyndrest.AbstractIntegrationTest;
 import codes.thischwa.dyndrest.model.UpdateItem;
 import codes.thischwa.dyndrest.model.UpdateLogPage;
 import java.util.regex.Pattern;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class UpdateLogCacheTest extends GenericIntegrationTest {
+class UpdateLogCacheTest extends AbstractIntegrationTest {
 
   private final int startCnt = 38;
 
