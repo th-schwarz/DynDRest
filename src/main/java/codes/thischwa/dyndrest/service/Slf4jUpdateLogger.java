@@ -23,12 +23,12 @@ public class Slf4jUpdateLogger implements UpdateLogger, InitializingBean {
 
   private final UpdateLogCache cache;
 
-  @SuppressWarnings("NotNullFieldNotInitialized")
   private String logEntryFormat;
 
   public Slf4jUpdateLogger(HostZoneService hostZoneService, UpdateLogCache cache) {
     this.hostZoneService = hostZoneService;
     this.cache = cache;
+    this.logEntryFormat = "%" + DEFAULT_HOSTNAME_LENGTH + "s  %16s  %s";
   }
 
   // it's static, just for testing
