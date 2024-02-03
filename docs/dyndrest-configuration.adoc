@@ -47,19 +47,6 @@ dyndrest:
   healthcheck-user-name: health
   healthcheck-user-password: test123
 
-## ---------------------- zone configuration section ------------------
-zones:
-- name: dynhost0.info
-  ns: ns0.domain.info
-  hosts:
-    - my0:1234567890abcdef
-    - test0:1234567890abcdx
-- name: dynhost1.info
-  ns: ns1.domain.info
-  hosts:
-    - my1:1234567890abcdef
-    - test1:1234567890abcdx
-
 ## disable springdoc endpoints and swagger-ui by default
 springdoc:
   api-docs:

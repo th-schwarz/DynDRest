@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.0</version>
+        <version>3.2.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>codes.thischwa</groupId>
@@ -33,6 +33,9 @@
         <sonar.organization>th-schwarz</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.sourceEncoding>${file.encoding}</sonar.sourceEncoding>
+        <sonar.exclusions>
+            src/main/java/codes/thischwa/dyndrest/config/**
+        </sonar.exclusions>
 
         <!-- openapi generation -->
         <openapi.outputDir>${project.build.directory}</openapi.outputDir>
@@ -113,6 +116,16 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jdbc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>

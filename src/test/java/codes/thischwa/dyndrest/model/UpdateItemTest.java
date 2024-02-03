@@ -9,9 +9,12 @@ class UpdateItemTest {
   @Test
   final void testItem() {
     UpdateItem item = new UpdateItem("testDateTime", "testHost", null, null);
-    assertEquals("UpdateItem[dateTime=testDateTime, host=testHost, ipv4=n/a, ipv6=n/a]", item.toString());
+    assertEquals(
+        "UpdateItem[dateTime=testDateTime, host=testHost, ipv4=n/a, ipv6=n/a]", item.toString());
     item = new UpdateItem("testDateTime", "testHost", "testipv4", "testipv6");
-    assertEquals("UpdateItem[dateTime=testDateTime, host=testHost, ipv4=testipv4, ipv6=testipv6]", item.toString());
+    assertEquals(
+        "UpdateItem[dateTime=testDateTime, host=testHost, ipv4=testipv4, ipv6=testipv6]",
+        item.toString());
   }
 
   @Test

@@ -1,13 +1,13 @@
 package codes.thischwa.dyndrest.service;
 
-import codes.thischwa.dyndrest.GenericIntegrationTest;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import codes.thischwa.dyndrest.AbstractIntegrationTest;
 import codes.thischwa.dyndrest.model.UpdateLogPage;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-class UpdateLogCachePaginationTest extends GenericIntegrationTest {
+class UpdateLogCachePaginationTest extends AbstractIntegrationTest {
 
 	@Autowired private UpdateLogCache cache;
 

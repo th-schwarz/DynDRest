@@ -1,13 +1,20 @@
 package codes.thischwa.dyndrest.config;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.lang.Nullable;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -15,6 +22,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 /** The security configuration, mainly to specify the authentication9 for different routes. */
 @Configuration
@@ -26,7 +35,6 @@ public class SecurityConfig {
   static final String ROLE_USER = "USER";
   static final String ROLE_HEALTH = "HEALTH";
   private final AppConfig appConfig;
-  private final MvcRequestMatcherBuilder mvc;
   private final PasswordEncoder encoder =
       PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
@@ -36,9 +44,8 @@ public class SecurityConfig {
   @Value("${spring.security.user.password}")
   private String password;
 
-  public SecurityConfig(AppConfig appConfig, MvcRequestMatcherBuilder mvc) {
+  public SecurityConfig(AppConfig appConfig) {
     this.appConfig = appConfig;
-    this.mvc = mvc;
   }
 
   /**
@@ -85,28 +92,43 @@ public class SecurityConfig {
    * @return the security filter chain
    * @throws Exception the exception
    */
+  @Order(Ordered.HIGHEST_PRECEDENCE)
   @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http)
-      throws Exception {
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
+
+        //
+        .securityMatcher(PathRequest.toH2Console())
+        .csrf(AbstractHttpConfigurer::disable)
+        .headers((headers) -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
 
         // public routes
         .authorizeHttpRequests(
             req ->
-                req.requestMatchers(mvc.matchers("/", "/favicon.ico", "/v3/api-docs*")).permitAll())
+                req.requestMatchers(
+                        buildMatchers("/", "/favicon.ico", "/h2**", "/h2/**", "/v3/api-docs*"))
+                    .permitAll())
 
         // enable security for the log-view
         .authorizeHttpRequests(
-            req -> req.requestMatchers(mvc.matchers("/log")).hasAnyRole(ROLE_LOGVIEWER))
+            req -> req.requestMatchers(buildMatchers("/log")).hasAnyRole(ROLE_LOGVIEWER))
 
         // enable security for the health check
         .authorizeHttpRequests(
-            req -> req.requestMatchers(mvc.matchers("/manage/health")).hasAnyRole(ROLE_HEALTH))
+            req -> req.requestMatchers(buildMatchers("/manage/health")).hasAnyRole(ROLE_HEALTH))
 
         // enable basic-auth and ROLE_USER for all other routes
         .authorizeHttpRequests(req -> req.anyRequest().hasAnyRole(ROLE_USER))
         .httpBasic(Customizer.withDefaults());
 
     return http.build();
+  }
+
+  private RequestMatcher[] buildMatchers(String... patterns) {
+    List<AntPathRequestMatcher> matchers = new ArrayList<>(patterns.length);
+    for (String pattern : patterns) {
+      matchers.add(new AntPathRequestMatcher(pattern));
+    }
+    return matchers.toArray(new AntPathRequestMatcher[0]);
   }
 }

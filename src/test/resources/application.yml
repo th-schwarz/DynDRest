@@ -6,6 +6,14 @@ spring:
       name: dyndns
       password: test123
 
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: none
+  h2:
+    console.enabled: true
+
 server:
   address: 127.0.0.1
   port: 8081
@@ -26,8 +34,8 @@ dyndrest:
   greeting-enabled: true
   update-log-pattern: (.*)\s+-\s+([a-zA-Z\.-]*)\s+(\S*)\s+(\S*)
   update-log-date-pattern: yyyy-MM-dd HH:mm:SSS
-  # update-log-file-pattern: classpath:/test-files/dyndrest-update*
-  update-log-file-pattern: file:target/test-classes/test-files/dyndrest-update*
+  update-log-file-pattern: classpath:/test-files/dyndrest-update*
+  #update-log-file-pattern: file:target/test-classes/test-files/dyndrest-update*
   update-log-encoder-pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n"
   update-log-page-enabled: true
   update-log-page-size: 4
@@ -37,6 +45,12 @@ dyndrest:
   host-validation-enabled: false
   healthcheck-user-name: health
   healthcheck-user-password: hea1th
+  database:
+    driver-class-name: org.h2.Driver
+    jdbc-url-prefix: "jdbc:h2:file:"
+    file: ./test-db
+    user: dba
+    password:
 
 zones:
   - name: dynhost0.info

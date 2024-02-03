@@ -1,15 +1,16 @@
 package codes.thischwa.dyndrest;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-
-import java.net.URI;
-import java.net.URISyntaxException;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public abstract class GenericIntegrationTest {
+@ActiveProfiles("test")
+public abstract class AbstractIntegrationTest {
 
 	@Value("${local.server.port}") protected int port;
 

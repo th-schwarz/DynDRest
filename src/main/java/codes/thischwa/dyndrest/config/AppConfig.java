@@ -20,6 +20,10 @@ public record AppConfig(
     boolean updateLogRestForceHttps,
     String updateLogEncoderPattern,
     @Nullable String healthCheckUserName,
-    @Nullable String healthCheckUserPassword) {
+    @Nullable String healthCheckUserPassword,
+    @Nullable Database database) {
 
+  /** Represents a configuration class for a database connection. */
+  public record Database(
+      String driverClassName, String jdbcUrlPrefix, String file, String user, String password) {}
 }
