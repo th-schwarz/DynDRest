@@ -25,6 +25,9 @@ public class Slf4jUpdateLogger implements UpdateLogger, InitializingBean {
 
   private String logEntryFormat;
 
+  /**
+   * Implementation of UpdateLogger that logs zone update information using the SLF4J framework.
+   */
   public Slf4jUpdateLogger(HostZoneService hostZoneService, UpdateLogCache cache) {
     this.hostZoneService = hostZoneService;
     this.cache = cache;
