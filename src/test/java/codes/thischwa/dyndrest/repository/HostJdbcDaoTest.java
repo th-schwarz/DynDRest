@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 
-public class HostJdbcDaoTest extends AbstractIntegrationTest {
+class HostJdbcDaoTest extends AbstractIntegrationTest {
 
   @Autowired private HostJdbcDao repo;
 

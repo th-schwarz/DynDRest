@@ -15,16 +15,16 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class HostJdbcDao {
 
-  private static final String sql_all = "SELECT * FROM host order by id";
+  private static final String SQL_ALL = "SELECT * FROM host order by id";
 
-  private static final String sql_all_extended =
+  private static final String SQL_ALL_EXTENDED =
       "select h.id, h.NAME, h.API_TOKEN, concat(h.NAME, '.', z.NAME) full_host, "
           + "h.ZONE_ID, z.NAME as ZONE, z.NS, h.CHANGED "
           + "from HOST h "
           + "join ZONE z on z.ID = h.ZONE_ID "
           + "order by h.id";
 
-  private static final String sql_full_host =
+  private static final String SQL_FULL_HOST =
       "select h.id, h.NAME, concat(h.NAME, '.', z.NAME) full_host, h.API_TOKEN, h.ZONE_ID, "
           + " z.NAME as ZONE, z.NS, h.CHANGED from HOST h "
           + "join PUBLIC.ZONE z on z.ID = h.ZONE_ID "
@@ -37,15 +37,15 @@ public class HostJdbcDao {
   }
 
   public List<Host> getAll() {
-    return jdbcTemplate.query(sql_all, BeanPropertyRowMapper.newInstance(Host.class));
+    return jdbcTemplate.query(SQL_ALL, BeanPropertyRowMapper.newInstance(Host.class));
   }
 
   public List<FullHost> getAllExtended() {
-    return jdbcTemplate.query(sql_all_extended, BeanPropertyRowMapper.newInstance(FullHost.class));
+    return jdbcTemplate.query(SQL_ALL_EXTENDED, BeanPropertyRowMapper.newInstance(FullHost.class));
   }
 
   public FullHost getByFullHost(String fullHost) throws EmptyResultDataAccessException {
     return jdbcTemplate.queryForObject(
-        sql_full_host, BeanPropertyRowMapper.newInstance(FullHost.class), fullHost);
+            SQL_FULL_HOST, BeanPropertyRowMapper.newInstance(FullHost.class), fullHost);
   }
 }

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ZoneJdbcDao {
 
-  private static final String sql_byname =
+  private static final String SQL_ZONE_BY_NAME =
       "select z.ID, NAME, NS, CHANGED from ZONE as z where NAME=?";
 
   private final JdbcTemplate jdbcTemplate;
@@ -23,6 +23,6 @@ public class ZoneJdbcDao {
 
   public Zone getByName(String name) throws EmptyResultDataAccessException {
     return jdbcTemplate.queryForObject(
-        sql_byname, BeanPropertyRowMapper.newInstance(Zone.class), name);
+            SQL_ZONE_BY_NAME, BeanPropertyRowMapper.newInstance(Zone.class), name);
   }
 }
