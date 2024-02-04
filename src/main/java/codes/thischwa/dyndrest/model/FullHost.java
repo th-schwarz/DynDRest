@@ -7,6 +7,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class FullHost extends Host {
-  private String zone;
-  private String ns;
+  @EqualsAndHashCode.Exclude private String zone;
+  @EqualsAndHashCode.Exclude private String ns;
 }

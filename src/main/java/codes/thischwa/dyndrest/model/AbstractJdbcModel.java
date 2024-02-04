@@ -3,6 +3,7 @@ package codes.thischwa.dyndrest.model;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -17,5 +18,5 @@ public abstract class AbstractJdbcModel {
 
   private Integer id;
 
-  private LocalDateTime changed;
+  @EqualsAndHashCode.Exclude private LocalDateTime changed;
 }
