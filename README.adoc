@@ -23,6 +23,10 @@ Give it a try!
 https://github.com/th-schwarz/DynDRest/releases[image:https://img.shields.io/github/v/release/th-schwarz/DynDRest?include_prereleases[GitHub
 release (latest by date including pre-releases)]]
 
+DynDRest is kindly supported by
+
+image::https://resources.jetbrains.com/storage/products/company/brand/logos/IntelliJ_IDEA.png[IntelliJ IDEA logo,250,link="https://jb.gg/OpenSourceSupport"]
+
 == Preface
 
 DynDRest is a simple REST-service for dynamic DNS. The basic idea
@@ -39,10 +43,6 @@ If you find a bug or certain features are missing, don’t hesitate to
 file an issue on https://github.com/th-schwarz/DynDRest/issues[Github].
 
 This project is also a playground for the author to try things out. That's why not all changes are really necessary to move the project forward!
-
-DynDRest is kindly supported by
-
-image::https://resources.jetbrains.com/storage/products/company/brand/logos/IntelliJ_IDEA.png[IntelliJ IDEA logo,250,link="https://jb.gg/OpenSourceSupport"]
 
 == Disclaimer
 
