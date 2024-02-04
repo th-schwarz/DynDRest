@@ -8,7 +8,11 @@
 
 name: Java CI with Maven
 
-on: [push]
+on:
+  push:
+    branches:
+      - develop
+      - feature*
 
 jobs:
   build:
@@ -21,7 +25,7 @@ jobs:
       uses: actions/setup-java@v3
       with:
         java-version: '17'
-        distribution: 'temurin'
+        distribution: 'corretto'
         architecture: x64
         cache: maven
     - name: Build with Maven
