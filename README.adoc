@@ -5,11 +5,11 @@
 
 = DynDRest :: A Simple Dynamic DNS Rest Service
 
-image:https://github.com/th-schwarz/DynDRest/actions/workflows/maven.yml/badge.svg[Build
-Status]
-https://github.com/th-schwarz/DynDRest/blob/develop/LICENSE[image:https://img.shields.io/github/license/th-schwarz/DynDRest[GitHub
-license]]
+image:https://github.com/th-schwarz/DynDRest/actions/workflows/build.yml/badge.svg["GitHub CI Build Status",link="https://github.com/th-schwarz/DynDRest/actions/workflows/build.yml"]
+image:https://img.shields.io/github/license/th-schwarz/DynDRest["License badge for DynDRest",link="https://github.com/th-schwarz/DynDRest/blob/develop/LICENSE"]
 
+
+https://codecov.io/gh/th-schwarz/DynDRest[image:https://codecov.io/gh/th-schwarz/DynDRest/graph/badge.svg?token=ARXPZ8IDMZ[codecov]] +
 https://sonarcloud.io/dashboard?id=th-schwarz_DynDRest[image:https://sonarcloud.io/api/project_badges/measure?project=th-schwarz_DynDRest&metric=alert_status[Quality
 Gate Status]]
 https://sonarcloud.io/dashboard?id=th-schwarz_DynDRest[image:https://sonarcloud.io/api/project_badges/measure?project=th-schwarz_DynDRest&metric=security_rating[Security
@@ -19,8 +19,6 @@ https://sonarcloud.io/dashboard?id=th-schwarz_DynDRest[image:https://sonarcloud.
 of Code]]
 https://sonarcloud.io/summary/new_code?id=th-schwarz_DynDRest[image:https://sonarcloud.io/api/project_badges/measure?project=th-schwarz_DynDRest&metric=code_smells[Code
 Smells]]
-
-https://codecov.io/gh/th-schwarz/DynDRest[image:https://codecov.io/gh/th-schwarz/DynDRest/graph/badge.svg?token=ARXPZ8IDMZ[codecov]]
 
 Give it a try!
 https://github.com/th-schwarz/DynDRest/releases[image:https://img.shields.io/github/v/release/th-schwarz/DynDRest?include_prereleases[GitHub
