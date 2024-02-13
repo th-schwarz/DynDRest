@@ -47,12 +47,12 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
     zcw.update(zone);
   }
 
-  private void checkZone(FullHost host) throws IllegalArgumentException {
+  private void checkZone(FullHost fullHost) throws IllegalArgumentException {
     try {
-      Zone zone = zcw.info(host.getZone(), host.getNs());
+      Zone zone = zcw.info(fullHost.getZone(), fullHost.getNs());
       log.info("*** Zone confirmed: {}", zone.getOrigin());
     } catch (ProviderException e) {
-      log.error("Error while getting zone info of " + host.getZone(), e);
+      log.error("Error while getting zone info of " + fullHost.getZone(), e);
       throw new IllegalArgumentException("Zone couldn't be confirmed.");
     }
   }

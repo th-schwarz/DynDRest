@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 
 /**
  * AbstractJdbcModel is an abstract base class that provides common fields for JDBC models. It
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public abstract class AbstractJdbcModel {
 
-  private Integer id;
+  @Id private Integer id;
 
   @EqualsAndHashCode.Exclude private LocalDateTime changed;
 }

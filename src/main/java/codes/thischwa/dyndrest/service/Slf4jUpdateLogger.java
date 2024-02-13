@@ -25,9 +25,7 @@ public class Slf4jUpdateLogger implements UpdateLogger, InitializingBean {
 
   private String logEntryFormat;
 
-  /**
-   * Implementation of UpdateLogger that logs zone update information using the SLF4J framework.
-   */
+  /** Implementation of UpdateLogger that logs zone update information using the SLF4J framework. */
   public Slf4jUpdateLogger(HostZoneService hostZoneService, UpdateLogCache cache) {
     this.hostZoneService = hostZoneService;
     this.cache = cache;
@@ -50,11 +48,12 @@ public class Slf4jUpdateLogger implements UpdateLogger, InitializingBean {
   @Override
   public void afterPropertiesSet() {
     // determine the max. length of the hosts for nicer logging
-    int maxSize = hostZoneService.getConfiguredHosts().stream()
-              .map(FullHost::getFullHost)
-              .mapToInt(String::length)
-              .max()
-              .orElse(DEFAULT_HOSTNAME_LENGTH);
+    int maxSize =
+        hostZoneService.getConfiguredHosts().stream()
+            .map(FullHost::getFullHost)
+            .mapToInt(String::length)
+            .max()
+            .orElse(DEFAULT_HOSTNAME_LENGTH);
     logEntryFormat = "%" + maxSize + "s  %16s  %s";
   }
 }

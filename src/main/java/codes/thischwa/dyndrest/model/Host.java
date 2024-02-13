@@ -9,7 +9,6 @@ import lombok.EqualsAndHashCode;
 public class Host extends AbstractJdbcModel {
 
   private String name;
-  @EqualsAndHashCode.Exclude private String fullHost;
   private String apiToken;
 
   private Integer zoneId;

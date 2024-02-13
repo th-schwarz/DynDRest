@@ -2,21 +2,25 @@ package codes.thischwa.dyndrest.service;
 
 import codes.thischwa.dyndrest.model.FullHost;
 import codes.thischwa.dyndrest.model.Host;
-import codes.thischwa.dyndrest.repository.HostJdbcDao;
+import codes.thischwa.dyndrest.model.ZoneImport;
+import codes.thischwa.dyndrest.repository.HostRepo;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
-/** Service for validating hosts. */
+/** Service for validating and maintaining hosts. */
 @Service
 @Slf4j
 public class HostZoneService {
-  private final HostJdbcDao hostDao;
+  @Nullable private final ZoneImport zoneImport;
+  private final HostRepo hostRepo;
 
-  public HostZoneService(HostJdbcDao hostDao) {
-    this.hostDao = hostDao;
+  public HostZoneService(HostRepo hostRepo, ZoneImport zoneImport) {
+    this.hostRepo = hostRepo;
+    this.zoneImport = zoneImport;
   }
 
   /**
@@ -28,7 +32,7 @@ public class HostZoneService {
    * @throws EmptyResultDataAccessException if the host cannot be found
    */
   public boolean validate(String fullHost, String apiToken) throws EmptyResultDataAccessException {
-    Host host = hostDao.getByFullHost(fullHost);
+    Host host = hostRepo.findByFullHost(fullHost);
     return host.getApiToken().equals(apiToken);
   }
 
@@ -38,7 +42,7 @@ public class HostZoneService {
    * @return the list of configured hosts
    */
   public List<FullHost> getConfiguredHosts() {
-    return hostDao.getAllExtended();
+    return hostRepo.findAllExtended();
   }
 
   /**
@@ -49,7 +53,7 @@ public class HostZoneService {
    */
   public boolean hostExists(String fullHost) {
     try {
-      return Optional.ofNullable(hostDao.getByFullHost(fullHost)).isPresent();
+      return Optional.ofNullable(hostRepo.findByFullHost(fullHost)).isPresent();
     } catch (EmptyResultDataAccessException e) {
       return false;
     }
@@ -63,6 +67,18 @@ public class HostZoneService {
    * @throws EmptyResultDataAccessException if no FullHost object is found for the given fullHost
    */
   public FullHost getHost(String fullHost) throws EmptyResultDataAccessException {
-    return hostDao.getByFullHost(fullHost);
+    return hostRepo.findByFullHost(fullHost);
+  }
+
+  public void importOnStart() {
+    if (zoneImport == null) {
+      return;
+    }
+    List<FullHost> hostsToImport = zoneImport.getHosts();
+    if (hostsToImport.isEmpty()) {
+      log.info("No zones found for import.");
+      return;
+    }
+    log.info("{} zones found for import.", hostsToImport.size());
   }
 }

@@ -7,7 +7,6 @@ import codes.thischwa.dyndrest.model.FullHost;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 
 class HostZoneServiceTest extends AbstractIntegrationTest {
 
@@ -36,7 +35,7 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     assertEquals(1, host.getZoneId());
     assertEquals("dynhost0.info", host.getZone());
 
-    assertThrows(EmptyResultDataAccessException.class, () -> service.getHost("unknown"));
+    assertNull(service.getHost("unknown"));
   }
 
   @Test
@@ -44,6 +43,6 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     assertTrue(service.validate("my0.dynhost0.info", "1234567890abcdef"));
     assertFalse(service.validate("my0.dynhost0.info", "1234567890abcdefx"));
 
-    assertThrows(EmptyResultDataAccessException.class, () -> service.validate("unknown", "token"));
+    assertThrows(NullPointerException.class, () -> service.validate("unknown", "token"));
   }
 }

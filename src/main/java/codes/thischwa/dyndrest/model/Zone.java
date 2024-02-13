@@ -14,5 +14,4 @@ public class Zone extends AbstractJdbcModel {
 
   @NotBlank(message = "The primary name server of the zone shouldn't be empty.")
   private String ns;
-
 }

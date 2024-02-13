@@ -9,4 +9,8 @@ import lombok.EqualsAndHashCode;
 public class FullHost extends Host {
   @EqualsAndHashCode.Exclude private String zone;
   @EqualsAndHashCode.Exclude private String ns;
+
+  public String getFullHost() {
+    return String.format("%s.%s", getName(), zone);
+  }
 }
