@@ -70,6 +70,9 @@ public class HostZoneService {
     return hostRepo.findByFullHost(fullHost);
   }
 
+  /**
+   * Imports zones on application start.
+   */
   public void importOnStart() {
     if (zoneImport == null) {
       return;
