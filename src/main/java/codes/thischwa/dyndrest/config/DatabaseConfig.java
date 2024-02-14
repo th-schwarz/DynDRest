@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration;
-import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -27,7 +26,6 @@ import org.springframework.transaction.TransactionManager;
  * will be populated with the basic schema.
  */
 @Configuration
-@EnableJdbcRepositories
 @Profile("!test")
 @ConditionalOnProperty(name = "dyndrest.database.jdbc-url-prefix")
 @Slf4j
