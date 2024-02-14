@@ -61,6 +61,7 @@ jobs:
 
   codecov-scan:
     needs: mvn-build
+    name: Build and analyze with codecov
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
