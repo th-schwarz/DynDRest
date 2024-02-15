@@ -10,10 +10,10 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class HostRepoTest extends AbstractIntegrationTest {
+class HostRepoTest extends AbstractIntegrationTest {
 
     @Autowired
-    HostRepo repo;
+    private HostRepo repo;
 
     @Test
     void testGetAll() {
