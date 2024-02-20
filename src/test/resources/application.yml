@@ -6,11 +6,6 @@ spring:
       name: dyndns
       password: test123
 
-  jpa:
-    show-sql: true
-    database-platform: org.hibernate.dialect.H2Dialect
-    hibernate:
-      ddl-auto: none
   h2:
     console.enabled: true
 
@@ -28,6 +23,15 @@ management:
   endpoint:
     health:
       enabled: true
+
+logging:
+  level:
+    org:
+      springframework:
+        jdbc:
+          core:
+            JdbcTemplate: DEBUG
+
 
 dyndrest:
   provider: domainrobot
@@ -56,13 +60,12 @@ zones:
   - name: dynhost0.info
     ns: ns0.domain.info
     hosts:
-      - my0:1234567890abcdef
-      - test0:1234567890abcdx
-  - name: dynhost1.info
+      - my3:api1
+  - name: zone1.info
     ns: ns1.domain.info
     hosts:
-      - my1:1234567890abcdef
-      - test1:1234567890abcdx
+      - host1:abc
+      - host2:123
 
 domainrobot:
   default-ttl: 61

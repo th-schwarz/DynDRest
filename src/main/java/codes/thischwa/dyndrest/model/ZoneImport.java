@@ -20,6 +20,9 @@ public record ZoneImport(@Nullable List<ZoneImport.Zone> zones) {
    */
   public List<FullHost> getHosts() {
     List<FullHost> fullHosts = new ArrayList<>();
+    if (zones == null) {
+      return fullHosts;
+    }
     for (ZoneImport.Zone zone : zones) {
       for (String hostRaw : zone.hosts()) {
         String[] parts = hostRaw.split(":");

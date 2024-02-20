@@ -15,7 +15,7 @@ import org.springframework.data.annotation.Id;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class AbstractJdbcModel {
+public abstract class AbstractJdbcEntity {
 
   @Id private Integer id;
 

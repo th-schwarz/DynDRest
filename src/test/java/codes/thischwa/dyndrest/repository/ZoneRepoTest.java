@@ -8,7 +8,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
- class ZoneRepoTest extends AbstractIntegrationTest {
+class ZoneRepoTest extends AbstractIntegrationTest {
 
   @Autowired private ZoneRepo repo;
 

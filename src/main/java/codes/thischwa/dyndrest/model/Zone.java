@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 /** The base config of a zone. */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class Zone extends AbstractJdbcModel {
+public class Zone extends AbstractJdbcEntity {
 
   @NotBlank(message = "The name of the zone shouldn't be empty.")
   private String name;

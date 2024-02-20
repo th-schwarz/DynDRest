@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 /** The ApplicationStartup class processes some tasks if the application is ready to start. */
 @Component
+@Profile("!test")
 @Slf4j
 public class ApplicationStartup implements ApplicationListener<ApplicationReadyEvent> {
 
@@ -56,6 +58,6 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
     Map<RequestMappingInfo, HandlerMethod> map = requestMappingHandlerMapping.getHandlerMethods();
     map.forEach((key, value) -> log.info("  * {}", key));
 
-    // hostZoneService.importOnStart();
+    hostZoneService.importOnStart();
   }
 }
