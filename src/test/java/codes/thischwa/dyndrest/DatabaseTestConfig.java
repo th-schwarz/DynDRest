@@ -8,10 +8,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 
 @Configuration
-public class DatabaseTestConfig {
+class DatabaseTestConfig {
 
   @Bean
-  public DataSource getDataSource() {
+  DataSource getDataSource() {
     return new EmbeddedDatabaseBuilder()
         .setName("dyndrest")
         .setType(H2)

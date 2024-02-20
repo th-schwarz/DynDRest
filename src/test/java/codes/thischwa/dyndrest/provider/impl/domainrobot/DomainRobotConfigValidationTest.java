@@ -28,13 +28,13 @@ class DomainRobotConfigValidationTest extends AbstractIntegrationTest {
   @Autowired private ZoneConfig zoneConfig;
 
   @BeforeAll
-  public static void setUp() {
+  static void setUp() {
     validatorFactory = Validation.buildDefaultValidatorFactory();
     validator = validatorFactory.getValidator();
   }
 
   @AfterAll
-  public static void close() {
+  static void close() {
     validatorFactory.close();
   }
 
