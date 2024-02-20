@@ -143,8 +143,9 @@ public class HostZoneService {
    */
   public void saveOrUpdate(Host host) {
     preSaveOrUpdate(host);
-    //hostRepo.save(host);
-    Host tmpHost = Host.getInstance(host.getName(), host.getApiToken(), host.getZoneId(), host.getChanged());
+    // hostRepo.save(host);
+    Host tmpHost =
+        Host.getInstance(host.getName(), host.getApiToken(), host.getZoneId(), host.getChanged());
     hostRepo.save(tmpHost);
     host.setId(tmpHost.getId());
     host.setChanged(tmpHost.getChanged());
