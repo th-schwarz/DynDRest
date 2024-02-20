@@ -5,7 +5,7 @@
 
 = DynDRest :: A Simple Dynamic DNS Rest Service
 
-image:https://github.com/th-schwarz/DynDRest/actions/workflows/build.yml/badge.svg["GitHub CI Build Status",link="https://github.com/th-schwarz/DynDRest/actions/workflows/build.yml"]
+image:https://github.com/th-schwarz/DynDRest/actions/workflows/build-and-analyse.yml/badge.svg["GitHub CI Build Status",link="https://github.com/th-schwarz/DynDRest/actions/workflows/build-and-analyse.yml"]
 image:https://img.shields.io/github/license/th-schwarz/DynDRest["License badge for DynDRest",link="https://github.com/th-schwarz/DynDRest/blob/develop/LICENSE"]
 
 :codecovURL: https://codecov.io/gh/th-schwarz/DynDRest
