@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.domainrobot.sdk.models.generated.Zone;
 import org.springframework.beans.factory.InitializingBean;
 
+import java.util.Optional;
+
 @Slf4j
 class DomainRobotProvider extends GenericProvider implements InitializingBean {
 
@@ -58,10 +60,11 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
   }
 
   Zone zoneInfo(String host) throws ProviderException, IllegalArgumentException {
-    if (!hostZoneService.hostExists(host)) {
+    Optional<FullHost> optFullHost = hostZoneService.getHost(host);
+    if (optFullHost.isEmpty()) {
       throw new IllegalArgumentException("Host isn't configured: " + host);
     }
-    FullHost fullHost = hostZoneService.getHost(host);
+    FullHost fullHost = hostZoneService.getHost(host).get();
     String zone = fullHost.getZone();
     String primaryNameServer = fullHost.getNs();
     return zcw.info(zone, primaryNameServer);

@@ -13,8 +13,8 @@ class ZoneConfigAndServiceTest extends AbstractIntegrationTest {
   @Autowired private HostZoneService hostZoneService;
 
   @Test
-  final void testGetPrimaryNameServer() {
-    assertEquals("ns1.domain.info", hostZoneService.getHost("my1.dynhost1.info").getNs());
+  void testGetPrimaryNameServer() {
+    assertEquals("ns1.domain.info", hostZoneService.getHost("my1.dynhost1.info").get().getNs());
   }
 
   @Test

@@ -39,8 +39,11 @@ public class HostZoneService {
    * @throws EmptyResultDataAccessException if the host cannot be found
    */
   public boolean validate(String fullHost, String apiToken) throws EmptyResultDataAccessException {
-    Host host = hostRepo.findByFullHost(fullHost);
-    return host.getApiToken().equals(apiToken);
+    Optional<FullHost> optHost = hostRepo.findByFullHost(fullHost);
+    if (optHost.isEmpty()) {
+      throw new EmptyResultDataAccessException("Host not found: " + fullHost, 1);
+    }
+    return optHost.get().getApiToken().equals(apiToken);
   }
 
   /**
@@ -68,7 +71,7 @@ public class HostZoneService {
    * @return true if the host exists in the list of configured hosts, false otherwise
    */
   public boolean hostExists(String fullHostStr) {
-    return Optional.ofNullable(hostRepo.findByFullHost(fullHostStr)).isPresent();
+    return hostRepo.findByFullHost(fullHostStr).isPresent();
   }
 
   /**
@@ -77,8 +80,7 @@ public class HostZoneService {
    * @param fullHostStr the full host to retrieve
    * @return the FullHost object for the given fullHost or null if not exists.
    */
-  @Nullable
-  public FullHost getHost(String fullHostStr) {
+  public Optional<FullHost> getHost(String fullHostStr) {
     return hostRepo.findByFullHost(fullHostStr);
   }
 
@@ -143,9 +145,7 @@ public class HostZoneService {
    */
   public void saveOrUpdate(Host host) {
     preSaveOrUpdate(host);
-    // hostRepo.save(host);
-    Host tmpHost =
-        Host.getInstance(host.getName(), host.getApiToken(), host.getZoneId(), host.getChanged());
+    Host tmpHost = Host.getInstance(host);
     hostRepo.save(tmpHost);
     host.setId(tmpHost.getId());
     host.setChanged(tmpHost.getChanged());
@@ -163,5 +163,15 @@ public class HostZoneService {
 
   private void preSaveOrUpdate(AbstractJdbcEntity entity) {
     entity.setChanged(LocalDateTime.now());
+  }
+
+  /**
+   * Retrieves a host by its ID.
+   *
+   * @param id The ID of the host to retrieve.
+   * @return An Optional object that contains the host if found, or an empty Optional if not found.
+   */
+  public Optional<Host> findHostById(Integer id) {
+    return hostRepo.findById(id);
   }
 }

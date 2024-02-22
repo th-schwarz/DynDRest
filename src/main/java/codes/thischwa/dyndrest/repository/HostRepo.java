@@ -3,6 +3,8 @@ package codes.thischwa.dyndrest.repository;
 import codes.thischwa.dyndrest.model.FullHost;
 import codes.thischwa.dyndrest.model.Host;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Repository;
@@ -24,5 +26,5 @@ public interface HostRepo extends ListCrudRepository<Host, Integer> {
           + " z.NAME as ZONE, z.NS, h.CHANGED from HOST h "
           + "join PUBLIC.ZONE z on z.ID = h.ZONE_ID "
           + "where concat(h.NAME, '.', z.NAME) = :fullHost")
-  FullHost findByFullHost(String fullHost);
+  Optional<FullHost> findByFullHost(String fullHost);
 }

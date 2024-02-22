@@ -15,8 +15,7 @@ class HostTest {
     Integer zoneId = 1;
     LocalDateTime changed = LocalDateTime.now();
 
-    Host host = Host.getInstance(name, apiToken, zoneId, changed);
-    
+    Host host = new Host(name, apiToken, zoneId, changed);
     assertEquals(name, host.getName());
     assertEquals(apiToken, host.getApiToken());
     assertEquals(zoneId, host.getZoneId());

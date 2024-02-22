@@ -6,10 +6,13 @@ import codes.thischwa.dyndrest.AbstractIntegrationTest;
 import codes.thischwa.dyndrest.model.FullHost;
 import codes.thischwa.dyndrest.model.Host;
 import codes.thischwa.dyndrest.model.Zone;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 class HostZoneServiceTest extends AbstractIntegrationTest {
 
@@ -44,7 +47,9 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
 
   @Test
   void testGetHost() {
-    FullHost host = service.getHost("my0.dynhost0.info");
+    Optional<FullHost> optHost = service.getHost("my0.dynhost0.info");
+    assertTrue(optHost.isPresent());
+    FullHost host = optHost.get();
     assertEquals(1, host.getId());
     assertEquals("my0.dynhost0.info", host.getFullHost());
     assertEquals("ns0.domain.info", host.getNs());
@@ -52,17 +57,18 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     assertEquals(1, host.getZoneId());
     assertEquals("dynhost0.info", host.getZone());
 
-    assertNull(service.getHost("unknown"));
+    assertFalse(service.getHost("unknown").isPresent());
   }
 
   @Test
-  final void testSaveHost() {
+  void testSaveUpdateHost() {
     Host host = new Host();
     host.setName("my3");
     host.setApiToken("0987654321fedcba");
     host.setZoneId(2);
     service.saveOrUpdate(host);
-    assertTrue(host.getId() > 4);
+    Integer id = host.getId();
+    assertTrue(id > 4);
     assertNotNull(host.getChanged());
 
     host.setId(null);
@@ -71,10 +77,23 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     } catch (Exception e) {
       assertEquals(DuplicateKeyException.class, e.getCause().getClass());
     }
+
+    LocalDateTime oldChanged = host.getChanged();
+    Optional<Host> optHost = service.findHostById(id);
+    assertTrue(optHost.isPresent());
+    host = optHost.get();
+    host.setApiToken("-+");
+    service.saveOrUpdate(host);
+
+    optHost = service.findHostById(id);
+    assertTrue(optHost.isPresent());
+    host = optHost.get();
+    assertEquals("-+", host.getApiToken());
+    assertTrue(oldChanged.isBefore(host.getChanged()));
   }
 
   @Test
-  final void testSaveFullHost() {
+  void testSaveFullHost() {
     FullHost fullHost = new FullHost();
     fullHost.setName("my4");
     fullHost.setApiToken("08/15");
@@ -92,7 +111,7 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
   }
 
   @Test
-  final void testSaveZone() {
+  void testSaveZone() {
     Zone zone = new Zone();
     zone.setName("zone1.org");
     zone.setNs("ns1.zone.org");
@@ -109,10 +128,10 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
   }
 
   @Test
-  final void testValidate() {
+  void testValidate() {
     assertTrue(service.validate("my0.dynhost0.info", "1234567890abcdef"));
     assertFalse(service.validate("my0.dynhost0.info", "1234567890abcdefx"));
 
-    assertThrows(NullPointerException.class, () -> service.validate("unknown", "token"));
+    assertThrows(EmptyResultDataAccessException.class, () -> service.validate("unknown", "token"));
   }
 }

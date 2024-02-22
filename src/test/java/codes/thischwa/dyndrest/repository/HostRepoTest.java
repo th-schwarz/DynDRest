@@ -5,7 +5,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import codes.thischwa.dyndrest.AbstractIntegrationTest;
 import codes.thischwa.dyndrest.model.FullHost;
 import codes.thischwa.dyndrest.model.Host;
+
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -28,12 +32,14 @@ class HostRepoTest extends AbstractIntegrationTest {
 
   @Test
   void testGetByFullHost() {
-    FullHost host = repo.findByFullHost("my1.dynhost1.info");
+    Optional<FullHost> optFullHost = repo.findByFullHost("my1.dynhost1.info");
+    assertTrue(optFullHost.isPresent());
+    FullHost host = optFullHost.get();
     assertEquals("1234567890abcdef", host.getApiToken());
     assertEquals(2, host.getZoneId());
     assertEquals("dynhost1.info", host.getZone());
     assertEquals("ns1.domain.info", host.getNs());
 
-    assertNull(repo.findByFullHost("unknown"));
+    assertFalse(repo.findByFullHost("unknown").isPresent());
   }
 }
