@@ -6,11 +6,10 @@ import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.provider.impl.GenericProvider;
 import codes.thischwa.dyndrest.service.HostZoneService;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.domainrobot.sdk.models.generated.Zone;
 import org.springframework.beans.factory.InitializingBean;
-
-import java.util.Optional;
 
 @Slf4j
 class DomainRobotProvider extends GenericProvider implements InitializingBean {

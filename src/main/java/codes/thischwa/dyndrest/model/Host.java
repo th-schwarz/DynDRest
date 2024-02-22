@@ -16,6 +16,14 @@ public class Host extends AbstractJdbcEntity {
 
   public Host() {}
 
+  /**
+   * Creates and initializes a new instance of the Host class.
+   *
+   * @param name     the name of the host
+   * @param apiToken the API token of the host
+   * @param zoneId   the zone ID of the host
+   * @param changed  the last modified timestamp of the host
+   */
   public Host(String name, String apiToken, Integer zoneId, LocalDateTime changed) {
     this.name = name;
     this.apiToken = apiToken;
