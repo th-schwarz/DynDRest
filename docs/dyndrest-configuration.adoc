@@ -70,10 +70,21 @@ domainrobot:
     X-Domainrobot-Stid: my-stid-123
 
 ## spring security
+spring:
   security:
     user:
       name: dyndns
       password: test123
+
+## zone and host definition for the initial import
+zones:
+- name: dynhost.info
+  ns: ns.domain.info
+  hosts:
+    - myhost:api-token123
 ----
 
-IMPORTANT: Keep in mind, you just have to set those properties you want to override! Your individual configuration is defined in `dyndrest.yml`, e.g. inside the application directory. To load an other file you could set the following property on start: `spring.config.import: optional:file:/yourPath/yourFile`
+IMPORTANT: Keep in mind, you just have to set those properties you want to override! Your individual configuration is defined in `dyndrest.yml`, e.g. inside the application directory. To load another file you could set the following property on start: `spring.config.import: optional:file:/yourPath/yourFile`
+
+The zone and host definition should be used to import hosts and zones initially. Exiting hosts and zones won't be updated!
+The configuration above defines the host _myhost.dynhost.info_ with the api-token _api-token123_ on the zone _dynhost.info_ with the primary nameserver _ns.domain.info_.

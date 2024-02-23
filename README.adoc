@@ -135,12 +135,9 @@ zones:
   ns: ns.domain.info
   hosts:
     - myhost:1234567890abcdef
-
-
 ----
 
-The `zones` section defines a host `myhost.dynhost.info` with the
-api-token `1234567890abcdef`.
+The `zones` section should be used for importing the hosts and zones configuration to the database initially. Existing data entries won't be updated. The example defines a host `myhost.dynhost.info` with the api-token `1234567890abcdef`.
 
 NOTE: This project uses _spring-doc_ to document the routes. The endpoints for this and the _swagger-ui_ are disabled by default!
 
