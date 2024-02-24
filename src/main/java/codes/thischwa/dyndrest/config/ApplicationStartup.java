@@ -48,7 +48,10 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
     log.info("  * greeting-enabled: {}", config.greetingEnabled());
     log.info("  * host-validation-enabled: {}", config.hostValidationEnabled());
     log.info("  * update-log-page-enabled: {}", config.updateLogPageEnabled());
-    log.info("");
+    log.info("h2 setting:");
+    log.info("  - spring.h2.console.enabled: {}", env.getProperty("spring.h2.console.enabled"));
+    log.info("  - spring.h2.console.path: {}", env.getProperty("spring.h2.console.path"));
+    log.info("  - dyndrest.database.file: {}", env.getProperty("dyndrest.database.file"));
     log.info("*** Endpoints:");
 
     ApplicationContext applicationContext = event.getApplicationContext();

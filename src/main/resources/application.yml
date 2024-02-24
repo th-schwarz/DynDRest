@@ -53,3 +53,14 @@ domainrobot:
 spring:
   config:
     import: optional:file:./dyndrest.yml
+
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
+  hibernate:
+    dll-auto: none
+
+  h2:
+    console:
+      enabled: false
+      path: /h2

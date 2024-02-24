@@ -122,7 +122,6 @@ public class HostZoneService {
 
     List<FullHost> hostsToSave =
         hostsToImport.stream().filter(fullHost -> !hostExists(fullHost.getFullHost())).toList();
-    log.info("{} hosts found for import.", hostsToSave.size());
     for (FullHost fullHost : hostsToSave) {
       Zone zone = getZone(fullHost.getZone());
       if (zone == null) {
@@ -136,6 +135,7 @@ public class HostZoneService {
       }
       saveOrUpdate(fullHost);
     }
+    log.info("{} hosts successful imported.", hostsToSave.size());
   }
 
   /**

@@ -47,6 +47,12 @@ dyndrest:
   healthcheck-user-name: health
   healthcheck-user-password: test123
 
+  # database config, credentials should be set at the individual properties
+  database:
+    driver-class-name: org.h2.Driver
+    jdbc-url-prefix: "jdbc:h2:file:"
+    file: ./dyndrest
+
 ## disable springdoc endpoints and swagger-ui by default
 springdoc:
   api-docs:
