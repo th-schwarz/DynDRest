@@ -59,7 +59,7 @@ class IntegrationTest extends AbstractIntegrationTest {
   final void testBasicUnAuth_global() throws Exception {
     mockMvc
         .perform(get("/info/test.mein-virtuelles-blech.de"))
-        .andExpect(status().isBadRequest());
+        .andExpect(status().isUnauthorized());
   }
 
 	@Test

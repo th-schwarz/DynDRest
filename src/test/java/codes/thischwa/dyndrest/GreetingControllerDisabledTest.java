@@ -15,6 +15,6 @@ class GreetingControllerDisabledTest extends AbstractIntegrationTest {
   @Test
   void greetingShouldReturnDefaultMessage() throws URISyntaxException {
     HttpStatusCode status = restTemplate.getForEntity(getBaseUri(), String.class).getStatusCode();
-    assertEquals(HttpStatus.NOT_FOUND, status);
+    assertEquals(HttpStatus.UNAUTHORIZED, status);
   }
 }

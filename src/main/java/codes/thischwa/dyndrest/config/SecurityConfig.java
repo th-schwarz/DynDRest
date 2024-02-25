@@ -13,7 +13,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -43,6 +42,9 @@ public class SecurityConfig {
 
   @Value("${spring.security.user.password}")
   private String password;
+
+  @Value("${spring.h2.console.enabled}")
+  private boolean h2ConsoleEnabled;
 
   public SecurityConfig(AppConfig appConfig) {
     this.appConfig = appConfig;
@@ -95,26 +97,26 @@ public class SecurityConfig {
   @Order(Ordered.HIGHEST_PRECEDENCE)
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http
+    if (h2ConsoleEnabled) {
+      // h2 settings
+      http.authorizeHttpRequests(
+              auth -> auth.requestMatchers(PathRequest.toH2Console()).permitAll())
+          .headers(
+              headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+          .csrf(csrf -> csrf.ignoringRequestMatchers(PathRequest.toH2Console()));
+    }
 
-        //
-        .securityMatcher(PathRequest.toH2Console())
-        .csrf(AbstractHttpConfigurer::disable)
-        .headers((headers) -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+    // public routes
+    http.authorizeHttpRequests(
+        req ->
+            req.requestMatchers(buildMatchers("/", "/favicon.ico", "/v3/api-docs*")).permitAll());
 
-        // public routes
-        .authorizeHttpRequests(
-            req ->
-                req.requestMatchers(
-                        buildMatchers("/", "/favicon.ico", "/h2**", "/h2/**", "/v3/api-docs*"))
-                    .permitAll())
+    // enable security for the log-view
+    http.authorizeHttpRequests(
+        req -> req.requestMatchers(buildMatchers("/log")).hasAnyRole(ROLE_LOGVIEWER));
 
-        // enable security for the log-view
-        .authorizeHttpRequests(
-            req -> req.requestMatchers(buildMatchers("/log")).hasAnyRole(ROLE_LOGVIEWER))
-
-        // enable security for the health check
-        .authorizeHttpRequests(
+    // enable security for the health check
+    http.authorizeHttpRequests(
             req -> req.requestMatchers(buildMatchers("/manage/health")).hasAnyRole(ROLE_HEALTH))
 
         // enable basic-auth and ROLE_USER for all other routes
