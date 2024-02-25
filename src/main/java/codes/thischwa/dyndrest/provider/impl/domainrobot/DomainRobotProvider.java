@@ -12,9 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.domainrobot.sdk.models.generated.Zone;
 import org.springframework.beans.factory.InitializingBean;
 
-/**
- * The type Domain robot provider.
- */
+/** The type Domain robot provider. */
 @Slf4j
 class DomainRobotProvider extends GenericProvider implements InitializingBean {
 
@@ -27,11 +25,11 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
   /**
    * Instantiates a new Domain robot provider.
    *
-   * @param appConfig the app config 
-   * @param hostZoneService the host zone service 
+   * @param appConfig the app config
+   * @param hostZoneService the host zone service
    * @param zcw the zcw
    */
-DomainRobotProvider(AppConfig appConfig, HostZoneService hostZoneService, ZoneClientWrapper zcw) {
+  DomainRobotProvider(AppConfig appConfig, HostZoneService hostZoneService, ZoneClientWrapper zcw) {
     this.appConfig = appConfig;
     this.hostZoneService = hostZoneService;
     this.zcw = zcw;
@@ -59,7 +57,8 @@ DomainRobotProvider(AppConfig appConfig, HostZoneService hostZoneService, ZoneCl
     zcw.update(zone);
   }
 
-  private void checkZone(codes.thischwa.dyndrest.model.Zone myZone) throws IllegalArgumentException {
+  private void checkZone(codes.thischwa.dyndrest.model.Zone myZone)
+      throws IllegalArgumentException {
     Zone zone;
     try {
       zone = zcw.info(myZone.getName(), myZone.getNs());
@@ -85,12 +84,12 @@ DomainRobotProvider(AppConfig appConfig, HostZoneService hostZoneService, ZoneCl
   /**
    * Zone info zone.
    *
-   * @param host the host 
-   * @return the zone 
-   * @throws ProviderException the provider exception 
+   * @param host the host
+   * @return the zone
+   * @throws ProviderException the provider exception
    * @throws IllegalArgumentException the illegal argument exception
    */
-Zone zoneInfo(String host) throws ProviderException, IllegalArgumentException {
+  Zone zoneInfo(String host) throws ProviderException, IllegalArgumentException {
     Optional<FullHost> optFullHost = hostZoneService.getHost(host);
     if (optFullHost.isEmpty()) {
       throw new IllegalArgumentException("Host isn't configured: " + host);
