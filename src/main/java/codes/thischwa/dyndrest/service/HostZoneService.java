@@ -85,16 +85,6 @@ public class HostZoneService {
   }
 
   /**
-   * Checks if a zone exists by the given zone string.
-   *
-   * @param zoneStr the string representing the zone name
-   * @return true if the zone exists, false otherwise
-   */
-  public boolean zoneExists(String zoneStr) {
-    return Optional.ofNullable(zoneRepo.findByName(zoneStr)).isPresent();
-  }
-
-  /**
    * Retrieves the Zone object for the specified zone name.
    *
    * @param zoneStr the name of the zone
@@ -173,5 +163,20 @@ public class HostZoneService {
    */
   public Optional<Host> findHostById(Integer id) {
     return hostRepo.findById(id);
+  }
+
+  /**
+   * Finds all hosts of a specified zone.
+   *
+   * @param zoneName the name of the zone to find hosts for
+   * @return a list of FullHost objects representing the hosts in the specified zone
+   * @throws IllegalArgumentException if the specified zone is not configured
+   */
+  public List<FullHost> findHostsOfZone(String zoneName) {
+    Zone zone = zoneRepo.findByName(zoneName);
+    if (zone == null) {
+      throw new IllegalArgumentException("Zone isn't configured: " + zoneName);
+    }
+    return hostRepo.findByZoneId(zone.getId());
   }
 }

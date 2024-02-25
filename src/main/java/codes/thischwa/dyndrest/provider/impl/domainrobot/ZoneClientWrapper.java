@@ -26,6 +26,15 @@ class ZoneClientWrapper {
     this.defaultTtl = defaultTtl;
   }
 
+  boolean hasSubTld(Zone zone, String sld) {
+    return zone.getResourceRecords().stream()
+        .anyMatch(
+            rr ->
+                (rr.getType().equals(ResouceRecordTypeIp.A.toString())
+                        || rr.getType().equals(ResouceRecordTypeIp.AAAA.toString()))
+                    && rr.getName().equals(sld));
+  }
+
   @Nullable
   ResourceRecord searchResourceRecord(Zone zone, String name, ResouceRecordTypeIp type) {
     return zone.getResourceRecords().stream()

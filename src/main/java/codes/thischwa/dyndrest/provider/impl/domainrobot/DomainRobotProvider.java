@@ -6,6 +6,8 @@ import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.provider.impl.GenericProvider;
 import codes.thischwa.dyndrest.service.HostZoneService;
+
+import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.domainrobot.sdk.models.generated.Zone;
@@ -27,9 +29,9 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
   }
 
   @Override
-  public void validateHostConfiguration() throws IllegalArgumentException {
+  public void validateHostZoneConfiguration() throws IllegalArgumentException {
     if (appConfig.hostValidationEnabled()) {
-      hostZoneService.getConfiguredHosts().forEach(this::checkZone);
+      hostZoneService.getConfiguredZones().forEach(this::checkZone);
     }
   }
 
@@ -48,13 +50,26 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
     zcw.update(zone);
   }
 
-  private void checkZone(FullHost fullHost) throws IllegalArgumentException {
+  private void checkZone(codes.thischwa.dyndrest.model.Zone myZone) throws IllegalArgumentException {
+    Zone zone;
     try {
-      Zone zone = zcw.info(fullHost.getZone(), fullHost.getNs());
+      zone = zcw.info(myZone.getName(), myZone.getNs());
       log.info("*** Zone confirmed: {}", zone.getOrigin());
     } catch (ProviderException e) {
-      log.error("Error while getting zone info of " + fullHost.getZone(), e);
+      log.error("Error while getting zone info of " + myZone.getName(), e);
       throw new IllegalArgumentException("Zone couldn't be confirmed.");
+    }
+    checkHosts(zone);
+  }
+
+  private void checkHosts(Zone zone) throws IllegalArgumentException {
+    List<FullHost> hosts = hostZoneService.findHostsOfZone(zone.getOrigin());
+    for (FullHost host : hosts) {
+      if (zcw.hasSubTld(zone, host.getName())) {
+        log.info("Host confirmed: {}", host.getFullHost());
+      } else {
+        throw new IllegalArgumentException("Host not confirmed: " + host.getFullHost());
+      }
     }
   }
 
@@ -63,7 +78,7 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
     if (optFullHost.isEmpty()) {
       throw new IllegalArgumentException("Host isn't configured: " + host);
     }
-    FullHost fullHost = hostZoneService.getHost(host).get();
+    FullHost fullHost = optFullHost.get();
     String zone = fullHost.getZone();
     String primaryNameServer = fullHost.getNs();
     return zcw.info(zone, primaryNameServer);
@@ -71,6 +86,6 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
 
   @Override
   public void afterPropertiesSet() throws IllegalArgumentException {
-    validateHostConfiguration();
+    validateHostZoneConfiguration();
   }
 }

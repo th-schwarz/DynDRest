@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 class ZoneClientWrapperTest extends AbstractIntegrationTest {
 
-	private static final int rrCount = 5;
+	private static int rrCount = 5;
 
 	@Autowired
 	private DomainRobotConfigurator domainRobotConfigurator;
@@ -36,7 +36,7 @@ class ZoneClientWrapperTest extends AbstractIntegrationTest {
 	}
 
 	@Test
-	final void testUpdateIPv4() throws Exception {
+	void testUpdateIPv4() throws Exception {
 		assertEquals(rrCount, zone.getResourceRecords().size());
 		zcw.process(zone, "sub", new IpSetting("128.0.0.1"));
 		// AAAA is removed
@@ -47,7 +47,7 @@ class ZoneClientWrapperTest extends AbstractIntegrationTest {
 	}
 
 	@Test
-	final void testUpdateIPv6() throws Exception {
+	void testUpdateIPv6() throws Exception {
 		assertEquals(rrCount, zone.getResourceRecords().size());
 		zcw.process(zone, "sub", new IpSetting("2a03:4000:41:32::20"));
 		// A is removed
@@ -58,7 +58,7 @@ class ZoneClientWrapperTest extends AbstractIntegrationTest {
 	}
 
 	@Test
-	final void testAddIPv4() throws Exception {
+	void testAddIPv4() throws Exception {
 		assertEquals(rrCount, zone.getResourceRecords().size());
 		zcw.process(zone, "sub1", new IpSetting("128.0.0.1"));
 		assertEquals(rrCount + 1, zone.getResourceRecords().size());
@@ -68,7 +68,7 @@ class ZoneClientWrapperTest extends AbstractIntegrationTest {
 	}
 
 	@Test
-	final void testAddIPv6() throws Exception {
+	void testAddIPv6() throws Exception {
 		assertEquals(rrCount, zone.getResourceRecords().size());
 		zcw.process(zone, "sub1", new IpSetting("2a03:4000:41:32::20"));
 		assertEquals(rrCount + 1, zone.getResourceRecords().size());
@@ -78,7 +78,7 @@ class ZoneClientWrapperTest extends AbstractIntegrationTest {
 	}
 
 	@Test
-	final void testRemoveIPv4() throws Exception {
+	void testRemoveIPv4() throws Exception {
 		assertEquals(rrCount, zone.getResourceRecords().size());
 		zcw.process(zone, "sub2", new IpSetting("128.0.0.2"));
 		assertEquals(rrCount + 1, zone.getResourceRecords().size());
@@ -89,7 +89,7 @@ class ZoneClientWrapperTest extends AbstractIntegrationTest {
 	}
 
 	@Test
-	final void testRemoveIPv6() throws Exception {
+	void testRemoveIPv6() throws Exception {
 		assertEquals(rrCount, zone.getResourceRecords().size());
 		zcw.process(zone, "sub2", new IpSetting("2a03:4000:41:32::20"));
 		assertEquals(rrCount + 1, zone.getResourceRecords().size());
@@ -100,24 +100,24 @@ class ZoneClientWrapperTest extends AbstractIntegrationTest {
 	}
 
 	@Test
-	final void testSearch() {
+	void testSearch() {
 		ResourceRecord rr = zcw.searchResourceRecord(zone, "sub", ResouceRecordTypeIp.A);
         assert rr != null;
         assertEquals("85.209.51.215", rr.getValue());
 	}
 
 	@Test
-	final void testDeriveZone() {
+	void testDeriveZone() {
 		assertEquals("example.com", zcw.deriveZone("sub.example.com"));
 	}
 
 	@Test
-	final void testDeriveZone_fail() {
+	void testDeriveZone_fail() {
 		Assertions.assertThrows(IllegalArgumentException.class, () -> zcw.deriveZone("example.com"));
 	}
 
 	@Test
-	final void testIPsHasChanged() throws Exception {
+	void testIPsHasChanged() throws Exception {
 		assertFalse(zcw.hasIpsChanged(zone, "sub", new IpSetting("85.209.51.215","2a03:4000:41:32::10")));
 		assertTrue(zcw.hasIpsChanged(zone, "unknownsub", new IpSetting("85.209.51.216","2a03:4000:41:32::10")));
 
@@ -128,5 +128,11 @@ class ZoneClientWrapperTest extends AbstractIntegrationTest {
 		assertTrue(zcw.hasIpsChanged(zone, "sub", new IpSetting("85.209.51.215")));
 
 		assertFalse(zcw.hasIpsChanged(zone, "sub", new IpSetting()));
+	}
+
+	@Test
+	void testHasSubTld() {
+		assertTrue(zcw.hasSubTld(zone, "sub"));
+		assertFalse(zcw.hasSubTld(zone, "unknown"));
 	}
 }

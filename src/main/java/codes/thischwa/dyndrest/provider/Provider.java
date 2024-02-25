@@ -12,7 +12,7 @@ import codes.thischwa.dyndrest.provider.impl.GenericProvider;
 public interface Provider {
 
   /** Validates the host configuration. */
-  void validateHostConfiguration() throws IllegalArgumentException;
+  void validateHostZoneConfiguration() throws IllegalArgumentException;
 
   /**
    * Hook before update.

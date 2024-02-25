@@ -22,7 +22,7 @@ class ProviderTest extends AbstractIntegrationTest {
   static class TestProvider extends GenericProvider {
 
     @Override
-    public void validateHostConfiguration() throws IllegalArgumentException {}
+    public void validateHostZoneConfiguration() throws IllegalArgumentException {}
 
     @Override
     public void update(String host, IpSetting ipSetting) throws ProviderException {}

@@ -24,6 +24,15 @@ public interface HostRepo extends ListCrudRepository<Host, Integer> {
       "select h.id, h.NAME, concat(h.NAME, '.', z.NAME) full_host, h.API_TOKEN, h.ZONE_ID, "
           + " z.NAME as ZONE, z.NS, h.CHANGED from HOST h "
           + "join PUBLIC.ZONE z on z.ID = h.ZONE_ID "
-          + "where concat(h.NAME, '.', z.NAME) = :fullHost")
+          + "where concat(h.NAME, '.', z.NAME) = :fullHost "
+          + "order by h.id")
   Optional<FullHost> findByFullHost(String fullHost);
+
+  @Query(
+      "select h.id, h.NAME, concat(h.NAME, '.', z.NAME) full_host, h.API_TOKEN, h.ZONE_ID, "
+          + " z.NAME as ZONE, z.NS, h.CHANGED from HOST h "
+          + "join PUBLIC.ZONE z on z.ID = h.ZONE_ID "
+          + "where z.ID = :zoneId "
+          + "order by h.id")
+  List<FullHost> findByZoneId(Integer zoneId);
 }
