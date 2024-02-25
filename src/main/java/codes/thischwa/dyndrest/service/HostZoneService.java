@@ -100,9 +100,6 @@ public class HostZoneService {
    * be updated.
    */
   public void importOnStart() {
-    if (zoneImport == null) {
-      return;
-    }
     List<FullHost> hostsToImport = zoneImport.getHosts();
     if (hostsToImport.isEmpty()) {
       log.info("No zones found for import.");
@@ -125,7 +122,7 @@ public class HostZoneService {
       }
       saveOrUpdate(fullHost);
     }
-    if (!hostsToImport.isEmpty()) {
+    if (!hostsToSave.isEmpty()) {
       log.info("{} hosts successful imported.", hostsToSave.size());
     }
   }
