@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class HostZoneService {
-  @Nullable private final ZoneImport zoneImport;
+  private final ZoneImport zoneImport;
   private final HostRepo hostRepo;
   private final ZoneRepo zoneRepo;
 
@@ -125,7 +125,9 @@ public class HostZoneService {
       }
       saveOrUpdate(fullHost);
     }
-    log.info("{} hosts successful imported.", hostsToSave.size());
+    if (!hostsToImport.isEmpty()) {
+      log.info("{} hosts successful imported.", hostsToSave.size());
+    }
   }
 
   /**
