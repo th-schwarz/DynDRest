@@ -6,13 +6,15 @@ import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.provider.impl.GenericProvider;
 import codes.thischwa.dyndrest.service.HostZoneService;
-
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.domainrobot.sdk.models.generated.Zone;
 import org.springframework.beans.factory.InitializingBean;
 
+/**
+ * The type Domain robot provider.
+ */
 @Slf4j
 class DomainRobotProvider extends GenericProvider implements InitializingBean {
 
@@ -22,7 +24,14 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
 
   private final ZoneClientWrapper zcw;
 
-  DomainRobotProvider(AppConfig appConfig, HostZoneService hostZoneService, ZoneClientWrapper zcw) {
+  /**
+   * Instantiates a new Domain robot provider.
+   *
+   * @param appConfig the app config 
+   * @param hostZoneService the host zone service 
+   * @param zcw the zcw
+   */
+DomainRobotProvider(AppConfig appConfig, HostZoneService hostZoneService, ZoneClientWrapper zcw) {
     this.appConfig = appConfig;
     this.hostZoneService = hostZoneService;
     this.zcw = zcw;
@@ -73,7 +82,15 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
     }
   }
 
-  Zone zoneInfo(String host) throws ProviderException, IllegalArgumentException {
+  /**
+   * Zone info zone.
+   *
+   * @param host the host 
+   * @return the zone 
+   * @throws ProviderException the provider exception 
+   * @throws IllegalArgumentException the illegal argument exception
+   */
+Zone zoneInfo(String host) throws ProviderException, IllegalArgumentException {
     Optional<FullHost> optFullHost = hostZoneService.getHost(host);
     if (optFullHost.isEmpty()) {
       throw new IllegalArgumentException("Host isn't configured: " + host);
