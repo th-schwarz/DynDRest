@@ -46,6 +46,9 @@ public class SecurityConfig {
   @Value("${spring.h2.console.enabled}")
   private boolean h2ConsoleEnabled;
 
+  @Value("${management.endpoints.web.base-path}")
+  private String managementBasePath;
+
   public SecurityConfig(AppConfig appConfig) {
     this.appConfig = appConfig;
   }
@@ -88,7 +91,7 @@ public class SecurityConfig {
   }
 
   /**
-   * Specify different authentications for different routes..
+   * Specify different authentications for different routes.
    *
    * @param http the http
    * @return the security filter chain
@@ -117,10 +120,12 @@ public class SecurityConfig {
 
     // enable security for the health check
     http.authorizeHttpRequests(
-            req -> req.requestMatchers(buildMatchers("/manage/health")).hasAnyRole(ROLE_HEALTH))
+        req ->
+            req.requestMatchers(buildMatchers(managementBasePath + "/health"))
+                .hasAnyRole(ROLE_HEALTH));
 
-        // enable basic-auth and ROLE_USER for all other routes
-        .authorizeHttpRequests(req -> req.anyRequest().hasAnyRole(ROLE_USER))
+    // enable basic-auth and ROLE_USER for all other routes
+    http.authorizeHttpRequests(req -> req.anyRequest().hasAnyRole(ROLE_USER))
         .httpBasic(Customizer.withDefaults());
 
     return http.build();
