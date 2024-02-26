@@ -26,7 +26,7 @@ class IntegrationTest extends AbstractIntegrationTest {
 	@Autowired private MockMvc mockMvc;
 
 	@Test
-	final void testNoAuth_Greeting() throws Exception {
+	void testNoAuth_Greeting() throws Exception {
 		mockMvc.perform(get("/"))
 				//.andDo(print())
 				.andExpect(status().isOk()).andExpect(content().contentType(new MediaType("text", "html", StandardCharsets.UTF_8)))
@@ -34,7 +34,7 @@ class IntegrationTest extends AbstractIntegrationTest {
 	}
 
 	@Test
-	final void testBasicAuth_log() throws Exception {
+	void testBasicAuth_log() throws Exception {
 		mockMvc.perform(get("/log").with(httpBasic("log-dev", "l0g-dev")))
 				//			.andDo(print())
 				.andExpect(status().isOk()).andExpect(content().contentType(new MediaType("text", "html", StandardCharsets.UTF_8)))
@@ -42,7 +42,7 @@ class IntegrationTest extends AbstractIntegrationTest {
 	}
 
   @Test
-  final void testBasicAuth_health() throws Exception {
+  void testBasicAuth_health() throws Exception {
     mockMvc
         .perform(get("/manage/health").with(httpBasic("health", "hea1th")))
         //			.andDo(print())
@@ -56,14 +56,14 @@ class IntegrationTest extends AbstractIntegrationTest {
   }
 
   @Test
-  final void testBasicUnAuth_global() throws Exception {
+  void testBasicUnAuth_global() throws Exception {
     mockMvc
         .perform(get("/info/test.mein-virtuelles-blech.de"))
         .andExpect(status().isUnauthorized());
   }
 
 	@Test
-	final void testBasicAuth_global() throws Exception {
+	void testBasicAuth_global() throws Exception {
 		mockMvc.perform(get("/info/update-log").queryParam("page", "0").with(httpBasic("dyndns", "test123")))
 				//			.andDo(print())
 				.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -71,7 +71,7 @@ class IntegrationTest extends AbstractIntegrationTest {
 	}
 
 	@Test
-	final void testBaseUrl() {
+	void testBaseUrl() {
 		// feed the mock
 		MockHttpServletRequest mockRequest = new MockHttpServletRequest();
 		mockRequest.setContextPath("/");
@@ -84,7 +84,7 @@ class IntegrationTest extends AbstractIntegrationTest {
 	}
 
 	@Test
-	final void testFavicon() throws Exception {
+	void testFavicon() throws Exception {
 		mockMvc.perform(get("/favicon.ico")).andExpect(status().isOk()).andExpect(content().string(""));
 	}
 }
