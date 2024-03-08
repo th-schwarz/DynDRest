@@ -3,12 +3,19 @@ package codes.thischwa.dyndrest;
 import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.H2;
 
 import javax.sql.DataSource;
+
+import codes.thischwa.dyndrest.config.StringToEnumConverter;
+import codes.thischwa.dyndrest.config.EnumToStringConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Configuration
-class DatabaseTestConfig {
+class DatabaseTestConfig extends AbstractJdbcConfiguration {
 
   @Bean
   DataSource getDataSource() {
@@ -20,5 +27,11 @@ class DatabaseTestConfig {
         .continueOnError(true)
         .addScript("/h2/dump.sql")
         .build();
+  }
+
+  @Override
+  protected List<?> userConverters() {
+    return Arrays.asList(
+        new EnumToStringConverter(), new StringToEnumConverter());
   }
 }

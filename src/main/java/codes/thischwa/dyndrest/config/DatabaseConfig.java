@@ -3,15 +3,23 @@ package codes.thischwa.dyndrest.config;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import javax.sql.DataSource;
+
+import codes.thischwa.dyndrest.model.UpdateLog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.convert.ReadingConverter;
+import org.springframework.data.convert.WritingConverter;
+import org.springframework.data.jdbc.core.convert.JdbcCustomConversions;
 import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -81,5 +89,11 @@ public class DatabaseConfig extends AbstractJdbcConfiguration {
         new ResourceDatabasePopulator(
             false, false, "UTF-8", new ClassPathResource("h2/schema.sql"));
     resourceDatabasePopulator.execute(ds);
+  }
+
+  @Override
+  protected List<?> userConverters() {
+    return Arrays.asList(
+            new EnumToStringConverter(), new StringToEnumConverter());
   }
 }
