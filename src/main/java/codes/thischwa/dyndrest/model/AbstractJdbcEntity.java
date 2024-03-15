@@ -14,8 +14,7 @@ import org.springframework.lang.Nullable;
 @Data
 public abstract class AbstractJdbcEntity {
 
-  @Id @Nullable
-  private Integer id;
+  @Id @Nullable private Integer id;
 
   @EqualsAndHashCode.Exclude private LocalDateTime changed;
 }

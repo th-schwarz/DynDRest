@@ -4,8 +4,9 @@ import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.
 
 import javax.sql.DataSource;
 
-import codes.thischwa.dyndrest.config.StringToEnumConverter;
-import codes.thischwa.dyndrest.config.EnumToStringConverter;
+import codes.thischwa.dyndrest.config.converter.EnumToStringConverter;
+import codes.thischwa.dyndrest.config.converter.StringToEnumConverter;
+import codes.thischwa.dyndrest.model.UpdateLog;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration;
@@ -32,6 +33,6 @@ class DatabaseTestConfig extends AbstractJdbcConfiguration {
   @Override
   protected List<?> userConverters() {
     return Arrays.asList(
-        new EnumToStringConverter(), new StringToEnumConverter());
+        new EnumToStringConverter(), new StringToEnumConverter(UpdateLog.Status.class));
   }
 }

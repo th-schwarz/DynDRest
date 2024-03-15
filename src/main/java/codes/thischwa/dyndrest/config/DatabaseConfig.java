@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Objects;
 import javax.sql.DataSource;
 
+import codes.thischwa.dyndrest.config.converter.EnumToStringConverter;
+import codes.thischwa.dyndrest.config.converter.StringToEnumConverter;
 import codes.thischwa.dyndrest.model.UpdateLog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -94,6 +96,6 @@ public class DatabaseConfig extends AbstractJdbcConfiguration {
   @Override
   protected List<?> userConverters() {
     return Arrays.asList(
-            new EnumToStringConverter(), new StringToEnumConverter());
+            new EnumToStringConverter(), new StringToEnumConverter(UpdateLog.Status.class));
   }
 }

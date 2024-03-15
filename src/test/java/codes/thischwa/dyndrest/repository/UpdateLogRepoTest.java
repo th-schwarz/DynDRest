@@ -1,34 +1,52 @@
 package codes.thischwa.dyndrest.repository;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import codes.thischwa.dyndrest.AbstractIntegrationTest;
 import codes.thischwa.dyndrest.model.FullUpdateLog;
-import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.model.UpdateLog;
-import java.net.UnknownHostException;
 import java.util.List;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 public class UpdateLogRepoTest extends AbstractIntegrationTest {
 
   @Autowired private UpdateLogRepo repo;
 
-  @BeforeAll
-  void init() throws UnknownHostException {
-    repo.save(UpdateLog.getInstance(1, new IpSetting("198.0.1.0", "2a03:4000:41:32:0:0:1:0")));
-    repo.save(UpdateLog.getInstance(2, new IpSetting("198.0.2.0", "2a03:4000:41:32:0:0:2:0")));
-    for (int i = 1; i <= 20; i++) {
-      repo.save(UpdateLog.getInstance(1, new IpSetting("198.0.1." + i)));
-      repo.save(UpdateLog.getInstance(2, new IpSetting("198.0.2." + i)));
-    }
+  @Test
+  void testFindAllByStatus() {
+    assertEquals(43, repo.findAll().size());
+    List<FullUpdateLog> logs = repo.findAllByStatus(UpdateLog.Status.virgin);
+    assertEquals(42, logs.size());
   }
 
   @Test
-  void testFindByStatus() {
-    List<FullUpdateLog> logs = repo.findByStatus(UpdateLog.Status.NEW);
-    assertEquals(42, logs.size());
+  void testFindById() {
+    List<FullUpdateLog> hosts = repo.findAllFullUpdateLogsByIds(List.of(43, 42));
+    assertEquals(2, hosts.size());
+  }
+
+  @Test
+  void testPagination() {
+    Page<UpdateLog> page =
+        repo.findAll(PageRequest.of(0, 4, Sort.by(Sort.Direction.DESC, "changed")));
+    assertEquals(43, page.getTotalElements());
+    assertEquals(4, page.getSize());
+    assertEquals(11, page.getTotalPages());
+    assertEquals(0, page.getNumber());
+    assertEquals(4, page.getNumberOfElements());
+    assertTrue(page.isFirst());
+    assertFalse(page.isLast());
+
+    assertEquals(43, page.getContent().get(0).getId());
+    assertEquals(42, page.getContent().get(1).getId());
+    assertEquals(41, page.getContent().get(2).getId());
+    assertEquals(40, page.getContent().get(3).getId());
+
+    page = repo.findAll(PageRequest.of(1, 4, Sort.by(Sort.Direction.DESC, "changed")));
+    assertEquals(39, page.getContent().get(0).getId());
   }
 }

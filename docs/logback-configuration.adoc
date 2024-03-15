@@ -19,7 +19,7 @@ It defines the location logging and includes the configuration for the update lo
 	<property name="log_path" value="./log"/>
 	<property name="log_name" value="dyndrest"/>
 
-	<!-- monthly rolling application log, retention period 30d -->
+	<!-- monthly rolling application log -->
 	<appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<property name="app_log" value="${log_path}/${log_name}"/>
 		<file>${app_log}.log</file>
@@ -42,45 +42,5 @@ It defines the location logging and includes the configuration for the update lo
 	<root level="debug">
 		<appender-ref ref="file"/>
 	</root>
-
-
-  <springProperty scope="context" name="update-enabled" source="dyndrest.update-log-page-enabled"/>
-  <if condition='property("update-enabled").contains("true")'>
-    <then>
-      <!-- logging for the update log view  -->
-      <property name="update_log" value="${log_path}/${log_name}-update"/>
-      <springProperty scope="context" name="update-pattern"
-        source="dyndrest.update-log-encoder-pattern"/>
-      <appender name="update"
-        class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${update_log}.log</file>
-        <encoder>
-          <pattern>${update-pattern}</pattern>
-        </encoder>
-
-        <rollingPolicy
-          class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-          <fileNamePattern>${update_log}.%d{yyyy-ww}.log.gz</fileNamePattern>
-          <maxHistory>52</maxHistory>
-        </rollingPolicy>
-      </appender>
-
-      <logger
-        name="UpdateLogger"
-        additivity="false"
-        level="info">
-        <appender-ref ref="update"/>
-      </logger>
-    </then>
-  </if>
 </configuration>
-----
-NOTE: The initialization of the update logger depends on thi application property `dyndrest.update-log-page-enabled`. The correct name of the update logger is very important, it must be *UpdateLogger*!
-
-== Example for the update log
-
-[source,console]
-----
-2022-11-16 04:15:00.123 -   dyndns.mydomain.com         127.1.2.4  2a03:4000:41:32::3
-2022-11-17 04:15:01.236 -   dyndns.mydomain.com         127.1.2.5  2a03:4000:41:32::4
 ----

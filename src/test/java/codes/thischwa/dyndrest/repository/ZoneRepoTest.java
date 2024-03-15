@@ -13,7 +13,7 @@ class ZoneRepoTest extends AbstractIntegrationTest {
   @Autowired private ZoneRepo repo;
 
   @Test
-  final void testFindById() {
+  void testFindById() {
     Optional<Zone> zoneOpt = repo.findById(1);
     assertTrue(zoneOpt.isPresent());
     Zone zone = zoneOpt.get();
@@ -23,7 +23,7 @@ class ZoneRepoTest extends AbstractIntegrationTest {
   }
 
   @Test
-  final void testFindByName() {
+  void testFindByName() {
     Zone zone = repo.findByName("dynhost1.info");
     assertEquals(2, zone.getId());
     assertEquals("ns1.domain.info", zone.getNs());

@@ -14,7 +14,7 @@ public class Host extends AbstractJdbcEntity {
   private Integer zoneId;
 
   /**
-   * Creates and initializes a new instance of the Host class.<br />
+   * Creates and initializes a new instance of the Host class.<br>
    * Required for database processing.
    *
    * @param host the host instance

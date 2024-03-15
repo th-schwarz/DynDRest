@@ -13,7 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.test.annotation.Rollback;
 
+@Rollback
 class HostZoneServiceTest extends AbstractIntegrationTest {
 
   @Autowired private HostZoneService service;
@@ -62,6 +64,7 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
 
   @Test
   void testSaveUpdateHost() {
+    int hostCnt = service.getConfiguredHosts().size();
     Host host = new Host();
     host.setName("my3");
     host.setApiToken("0987654321fedcba");
@@ -70,6 +73,7 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     Integer id = host.getId();
     assertTrue(id > 4);
     assertNotNull(host.getChanged());
+    assertEquals(hostCnt + 1, service.getConfiguredHosts().size());
 
     host.setId(null);
     try {

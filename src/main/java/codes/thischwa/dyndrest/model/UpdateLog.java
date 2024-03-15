@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.lang.Nullable;
 
+/** The UpdateLog class represents a log entry for a zone update operation. */
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class UpdateLog extends AbstractJdbcEntity {
@@ -17,12 +18,22 @@ public class UpdateLog extends AbstractJdbcEntity {
 
   private @Nullable LocalDateTime changedUpdate;
 
-  private Status status = Status.NEW;
+  private Status status = Status.virgin;
 
   public static UpdateLog getInstance(Integer hostId, IpSetting ipSetting) {
-    return getInstance(hostId, ipSetting, Status.NEW, null, LocalDateTime.now());
+    return getInstance(hostId, ipSetting, Status.virgin, null, LocalDateTime.now());
   }
 
+  /**
+   * Returns a new instance of UpdateLog with the specified parameters.
+   *
+   * @param hostId The host id.
+   * @param ipSetting The IP settings.
+   * @param status The status of the update log entry.
+   * @param changedUpdate The date and time of the changed update, can be null.
+   * @param changed The date and time of the log entry creation.
+   * @return A new instance of UpdateLog.
+   */
   public static UpdateLog getInstance(
       Integer hostId,
       IpSetting ipSetting,
@@ -34,13 +45,15 @@ public class UpdateLog extends AbstractJdbcEntity {
     updateLog.setIpv4(ipSetting.ipv4ToString());
     updateLog.setIpv6(ipSetting.ipv6ToString());
     updateLog.setChangedUpdate(changedUpdate);
+    updateLog.setChanged(changed);
     updateLog.setStatus(status);
     return updateLog;
   }
 
+  /** The Status enum represents the possible statuses for an update log entry. */
   public enum Status {
-    FAILED,
-    SUCCESS,
-    NEW
+    failed,
+    success,
+    virgin
   }
 }
