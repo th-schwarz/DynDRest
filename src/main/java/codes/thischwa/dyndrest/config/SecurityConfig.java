@@ -112,11 +112,12 @@ public class SecurityConfig {
     // public routes
     http.authorizeHttpRequests(
         req ->
-            req.requestMatchers(buildMatchers("/", "/favicon.ico", "/v3/api-docs*")).permitAll());
+            req.requestMatchers(buildMatchers("/", "/log-ui", "/favicon.ico", "/v3/api-docs*"))
+                .permitAll());
 
     // enable security for the log-view
     http.authorizeHttpRequests(
-        req -> req.requestMatchers(buildMatchers("/log")).hasAnyRole(ROLE_LOGVIEWER));
+        req -> req.requestMatchers(buildMatchers("/log-ui/*")).hasAnyRole(ROLE_LOGVIEWER));
 
     // enable security for the health check
     http.authorizeHttpRequests(

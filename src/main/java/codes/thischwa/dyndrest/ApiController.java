@@ -2,12 +2,10 @@ package codes.thischwa.dyndrest;
 
 import codes.thischwa.dyndrest.config.AppConfig;
 import codes.thischwa.dyndrest.model.IpSetting;
-import codes.thischwa.dyndrest.model.UpdateLogPage;
 import codes.thischwa.dyndrest.provider.Provider;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.service.HostZoneService;
-import codes.thischwa.dyndrest.service.UpdateLogCache;
-import codes.thischwa.dyndrest.service.UpdateLogger;
+import codes.thischwa.dyndrest.service.UpdateLogService;
 import codes.thischwa.dyndrest.util.NetUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
@@ -30,9 +28,7 @@ public class ApiController implements ApiRoutes {
 
   private final AppConfig config;
 
-  private final UpdateLogger updateLogger;
-
-  private final UpdateLogCache updateLogCache;
+  private final UpdateLogService updateLogService;
 
   private final HostZoneService validationService;
 
@@ -41,20 +37,17 @@ public class ApiController implements ApiRoutes {
    *
    * @param provider the provider
    * @param config the app config
-   * @param updateLogger the update logger
-   * @param updateLogCache the update log cache
-   * @param validationService the validation serviced
+   * @param updateLogService the update log service
+   * @param validationService the validation service
    */
   public ApiController(
       Provider provider,
       AppConfig config,
-      UpdateLogger updateLogger,
-      UpdateLogCache updateLogCache,
+      UpdateLogService updateLogService,
       HostZoneService validationService) {
     this.provider = provider;
     this.config = config;
-    this.updateLogger = updateLogger;
-    this.updateLogCache = updateLogCache;
+    this.updateLogService = updateLogService;
     this.validationService = validationService;
   }
 
@@ -90,13 +83,16 @@ public class ApiController implements ApiRoutes {
       } else {
         provider.processUpdate(host, reqIpSetting);
         log.info("Updated host {} successful with: {}", host, reqIpSetting);
-        updateLogger.log(host, reqIpSetting);
+        updateLogService.log(host, reqIpSetting);
         return new ResponseEntity<>(HttpStatusCode.valueOf(config.updateIpChangedStatus()));
       }
     } catch (ProviderException e) {
       log.error("Updated host failed: " + host, e);
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    // generate update log
+    updateLogService.log(host, reqIpSetting);
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
@@ -115,16 +111,6 @@ public class ApiController implements ApiRoutes {
     }
 
     return ResponseEntity.ok(ipSetting);
-  }
-
-  @Override
-  public ResponseEntity<UpdateLogPage> deliverLogs(
-      @RequestParam Integer page, @RequestParam(required = false) String search) {
-    // grid.js: pagination starts with 0
-    if (page != null) {
-      page++;
-    }
-    return ResponseEntity.ok(updateLogCache.getResponsePage(page, search));
   }
 
   private void validateHost(String host, String apitoken) {

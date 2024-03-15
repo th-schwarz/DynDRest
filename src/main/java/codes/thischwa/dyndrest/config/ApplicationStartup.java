@@ -1,6 +1,10 @@
 package codes.thischwa.dyndrest.config;
 
+import codes.thischwa.dyndrest.model.IpSetting;
+import codes.thischwa.dyndrest.model.UpdateLog;
+import codes.thischwa.dyndrest.repository.UpdateLogRepo;
 import codes.thischwa.dyndrest.service.HostZoneService;
+import java.time.LocalDateTime;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +29,7 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
   private final Environment env;
 
   private final HostZoneService hostZoneService;
+  private final UpdateLogRepo updateLogRepo;
 
   /**
    * The ApplicationStartup constructor initializes the ApplicationStartup object.
@@ -33,10 +38,15 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
    * @param env The environment settings.
    * @param hostZoneService The HostZoneService.
    */
-  public ApplicationStartup(AppConfig config, Environment env, HostZoneService hostZoneService) {
+  public ApplicationStartup(
+      AppConfig config,
+      Environment env,
+      HostZoneService hostZoneService,
+      UpdateLogRepo updateLogRepo) {
     this.config = config;
     this.env = env;
     this.hostZoneService = hostZoneService;
+    this.updateLogRepo = updateLogRepo;
   }
 
   @Override
@@ -62,5 +72,29 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
     map.forEach((key, value) -> log.info("  * {}", key));
 
     hostZoneService.importOnStart();
+    // buildDummyUpdateLogs();
+  }
+
+  private void buildDummyUpdateLogs() {
+    try {
+      LocalDateTime dateTime = LocalDateTime.now();
+      updateLogRepo.save(
+          UpdateLog.getInstance(
+              1,
+              new IpSetting("198.0.1.0", "2a03:4000:41:32:0:0:1:0"),
+              UpdateLog.Status.success,
+              dateTime,
+              dateTime));
+      for (int i = 1; i <= 150; i++) {
+        dateTime = dateTime.plusMinutes(10);
+        updateLogRepo.save(
+            UpdateLog.getInstance(
+                1, new IpSetting("198.0.1." + i), UpdateLog.Status.success, dateTime, dateTime));
+
+        log.info("Dummy logs created");
+      }
+    } catch (Exception e) {
+      log.error("Error creating dummy logs", e);
+    }
   }
 }

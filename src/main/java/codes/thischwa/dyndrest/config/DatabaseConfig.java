@@ -1,5 +1,8 @@
 package codes.thischwa.dyndrest.config;
 
+import codes.thischwa.dyndrest.config.converter.EnumToStringConverter;
+import codes.thischwa.dyndrest.config.converter.StringToEnumConverter;
+import codes.thischwa.dyndrest.model.UpdateLog;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -7,21 +10,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import javax.sql.DataSource;
-
-import codes.thischwa.dyndrest.config.converter.EnumToStringConverter;
-import codes.thischwa.dyndrest.config.converter.StringToEnumConverter;
-import codes.thischwa.dyndrest.model.UpdateLog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.data.convert.ReadingConverter;
-import org.springframework.data.convert.WritingConverter;
-import org.springframework.data.jdbc.core.convert.JdbcCustomConversions;
 import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -29,6 +24,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.TransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * The Database configuration. <br>
@@ -36,6 +32,7 @@ import org.springframework.transaction.TransactionManager;
  * will be populated with the basic schema.
  */
 @Configuration
+@EnableTransactionManagement
 @Profile("!test")
 @ConditionalOnProperty(name = "dyndrest.database.jdbc-url-prefix")
 @Slf4j
@@ -96,6 +93,6 @@ public class DatabaseConfig extends AbstractJdbcConfiguration {
   @Override
   protected List<?> userConverters() {
     return Arrays.asList(
-            new EnumToStringConverter(), new StringToEnumConverter(UpdateLog.Status.class));
+            new EnumToStringConverter<Enum<?>>(), new StringToEnumConverter(UpdateLog.Status.class));
   }
 }

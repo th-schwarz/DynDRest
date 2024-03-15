@@ -1,7 +1,6 @@
 package codes.thischwa.dyndrest;
 
 import codes.thischwa.dyndrest.model.IpSetting;
-import codes.thischwa.dyndrest.model.UpdateLogPage;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,7 +16,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -127,20 +125,4 @@ interface ApiRoutes {
               content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE))
           @RequestParam
           String apitoken);
-
-  @Operation(summary = "Delivers pageable update logs.")
-  @ApiResponse(responseCode = "200", description = "Ordered list of update logs.")
-  @GetMapping(value = "info/update-log", produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<UpdateLogPage> deliverLogs(
-      @Parameter(
-              description = "Page number to fetch. If it is not committed, it will be '1'.",
-              content = @Content(mediaType = "int"))
-          @Nullable
-          @RequestParam(required = false)
-          Integer page,
-      @Parameter(
-              description = "String to search for. It belongs to 'host' and 'timestamp'.",
-              content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE))
-          @RequestParam(required = false)
-          String search);
 }

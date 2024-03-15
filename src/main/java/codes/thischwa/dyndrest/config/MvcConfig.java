@@ -2,6 +2,8 @@ package codes.thischwa.dyndrest.config;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+
+import org.springframework.boot.convert.ApplicationConversionService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
@@ -15,6 +17,8 @@ public class MvcConfig implements WebMvcConfigurer {
   @Override
   public void addFormatters(FormatterRegistry registry) {
     registry.addConverter(new InetAdrConverter());
+    // enum conversion
+    ApplicationConversionService.configure(registry);
   }
 
   private static class InetAdrConverter implements Converter<String, InetAddress> {
