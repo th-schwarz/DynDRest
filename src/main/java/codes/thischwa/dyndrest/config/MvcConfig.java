@@ -2,7 +2,6 @@ package codes.thischwa.dyndrest.config;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-
 import org.springframework.boot.convert.ApplicationConversionService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
