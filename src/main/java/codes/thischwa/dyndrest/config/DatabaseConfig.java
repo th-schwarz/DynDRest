@@ -94,6 +94,6 @@ public class DatabaseConfig extends AbstractJdbcConfiguration {
   protected List<?> userConverters() {
     return Arrays.asList(
         new EnumToStringConverter<Enum<?>>(),
-        new StringToEnumConverter<UpdateLog.Status>(UpdateLog.Status.class));
+        new StringToEnumConverter<>(UpdateLog.Status.class));
   }
 }
