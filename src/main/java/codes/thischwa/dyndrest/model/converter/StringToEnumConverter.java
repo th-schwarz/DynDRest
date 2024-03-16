@@ -21,6 +21,6 @@ public class StringToEnumConverter<T extends Enum<T>> implements Converter<Strin
   @Override
   public T convert(String source) {
     String sanitizedSource = source.trim();
-    return (T) Enum.valueOf(cls, sanitizedSource);
+    return Enum.valueOf(cls, sanitizedSource);
   }
 }
