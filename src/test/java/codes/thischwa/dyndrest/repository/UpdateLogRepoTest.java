@@ -12,7 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-public class UpdateLogRepoTest extends AbstractIntegrationTest {
+class UpdateLogRepoTest extends AbstractIntegrationTest {
 
   @Autowired private UpdateLogRepo repo;
 

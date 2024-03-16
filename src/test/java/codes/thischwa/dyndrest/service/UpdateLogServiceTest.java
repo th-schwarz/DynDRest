@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 
-public class UpdateLogServiceTest extends AbstractIntegrationTest {
+class UpdateLogServiceTest extends AbstractIntegrationTest {
 
   @Autowired private UpdateLogService updateLogService;
 

@@ -5,7 +5,6 @@ import codes.thischwa.dyndrest.model.FullUpdateLog;
 import codes.thischwa.dyndrest.service.UpdateLogService;
 import codes.thischwa.dyndrest.util.NetUtil;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
@@ -65,7 +64,7 @@ public class UpdateLogController {
     int totalPages = pageLog.getTotalPages();
     if (totalPages >= 0) {
       List<Integer> pageNumbers =
-          IntStream.rangeClosed(0, totalPages - 1).boxed().collect(Collectors.toList());
+          IntStream.rangeClosed(0, totalPages - 1).boxed().toList();
       model.addAttribute("pageNumbers", pageNumbers);
     }
     return "log-view";
