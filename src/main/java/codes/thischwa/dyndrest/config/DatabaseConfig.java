@@ -1,7 +1,7 @@
 package codes.thischwa.dyndrest.config;
 
-import codes.thischwa.dyndrest.config.converter.EnumToStringConverter;
-import codes.thischwa.dyndrest.config.converter.StringToEnumConverter;
+import codes.thischwa.dyndrest.model.converter.EnumToStringConverter;
+import codes.thischwa.dyndrest.model.converter.StringToEnumConverter;
 import codes.thischwa.dyndrest.model.UpdateLog;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -93,6 +93,7 @@ public class DatabaseConfig extends AbstractJdbcConfiguration {
   @Override
   protected List<?> userConverters() {
     return Arrays.asList(
-        new EnumToStringConverter<Enum<?>>(), new StringToEnumConverter(UpdateLog.Status.class));
+        new EnumToStringConverter<Enum<?>>(),
+        new StringToEnumConverter<UpdateLog.Status>(UpdateLog.Status.class));
   }
 }

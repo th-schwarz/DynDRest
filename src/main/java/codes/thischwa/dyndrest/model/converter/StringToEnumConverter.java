@@ -1,4 +1,4 @@
-package codes.thischwa.dyndrest.config.converter;
+package codes.thischwa.dyndrest.model.converter;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;
@@ -20,7 +20,7 @@ public class StringToEnumConverter<T extends Enum<T>> implements Converter<Strin
 
   @Override
   public T convert(String source) {
-    String sanitizedSource = source.trim().toUpperCase();
+    String sanitizedSource = source.trim();
     return (T) Enum.valueOf(cls, sanitizedSource);
   }
 }

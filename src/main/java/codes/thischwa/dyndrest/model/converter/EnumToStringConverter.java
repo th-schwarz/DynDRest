@@ -1,4 +1,4 @@
-package codes.thischwa.dyndrest.config.converter;
+package codes.thischwa.dyndrest.model.converter;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.WritingConverter;

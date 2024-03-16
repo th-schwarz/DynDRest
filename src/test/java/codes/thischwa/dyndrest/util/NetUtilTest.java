@@ -6,13 +6,15 @@ import static org.junit.jupiter.api.Assertions.*;
 import codes.thischwa.dyndrest.model.IpSetting;
 import java.io.IOException;
 import java.net.IDN;
+import java.util.Base64;
+
 import org.junit.jupiter.api.Test;
 import org.xbill.DNS.Name;
 
 class NetUtilTest {
 
   @Test
-  final void testResolve() throws IOException {
+  void testResolve() throws IOException {
     IpSetting ips = resolve("mein-email-fach.de");
     assertEquals(
         "IpSetting(ipv4=mein-email-fach.de./37.120.183.96, ipv6=mein-email-fach.de./2a03:4000:4d:e8f:0:0:0:2)",
@@ -20,7 +22,7 @@ class NetUtilTest {
   }
 
   @Test
-  final void testIsIp() {
+  void testIsIp() {
     assertTrue(isIp("188.68.45.198"));
     assertFalse(isIp("188.68.45.265"));
 
@@ -29,19 +31,19 @@ class NetUtilTest {
   }
 
   @Test
-  final void testIsIpv4() {
+  void testIsIpv4() {
     assertTrue(isIpv4("188.68.45.198"));
     assertFalse(isIpv4("188.68.45.265"));
   }
 
   @Test
-  final void testIsIpv6() {
+  void testIsIpv6() {
     assertTrue(isIpv6("2a03:4000:41:32:0:0:0:2"));
     assertFalse(isIpv6("2a03:4000:41:32:0:0:0:2h"));
   }
 
   @Test
-  final void testDnsjavaIdn() {
+  void testDnsjavaIdn() {
     String idn = "müller.de";
     String ascii = IDN.toASCII(idn);
     assertEquals("m\\252ller.de", Name.fromConstantString(idn).toString());
@@ -54,5 +56,39 @@ class NetUtilTest {
     assertEquals("xn--gwts07e", Name.fromConstantString(ascii).toString());
     String finalIdn = idn;
     assertThrows(IllegalArgumentException.class, () -> Name.fromConstantString(finalIdn));
+  }
+
+  /** Test the buildBasicAuth method with normal inputs */
+  @Test
+  void testBuildBasicAuth_SimpleValues() {
+    String user = "user";
+    String password = "password";
+
+    // Call the method and get the result
+    String result = NetUtil.buildBasicAuth(user, password);
+
+    // Create the expected output in the same format as the method
+    String expected =
+        "Basic " + Base64.getEncoder().encodeToString((user + ":" + password).getBytes());
+
+    // Assert that the expected output and actual output are equal
+    assertEquals(expected, result);
+  }
+
+  /** Test the buildBasicAuth method with special characters in the username and password */
+  @Test
+  void testBuildBasicAuth_SpecialCharacters() {
+    String user = "user@123!";
+    String password = "pass!@#$$%^&*()_+";
+
+    // Call the method and get the result
+    String result = NetUtil.buildBasicAuth(user, password);
+
+    // Create the expected output in the same format as the method
+    String expected =
+        "Basic " + Base64.getEncoder().encodeToString((user + ":" + password).getBytes());
+
+    // Assert that the expected output and actual output are equal
+    assertEquals(expected, result);
   }
 }

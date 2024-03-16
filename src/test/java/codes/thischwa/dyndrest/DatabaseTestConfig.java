@@ -4,8 +4,8 @@ import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.
 
 import javax.sql.DataSource;
 
-import codes.thischwa.dyndrest.config.converter.EnumToStringConverter;
-import codes.thischwa.dyndrest.config.converter.StringToEnumConverter;
+import codes.thischwa.dyndrest.model.converter.EnumToStringConverter;
+import codes.thischwa.dyndrest.model.converter.StringToEnumConverter;
 import codes.thischwa.dyndrest.model.UpdateLog;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
