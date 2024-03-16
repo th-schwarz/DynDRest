@@ -138,4 +138,13 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
 
     assertThrows(EmptyResultDataAccessException.class, () -> service.validate("unknown", "token"));
   }
+
+  @Test
+  void testImportOnStart() {
+    assertEquals(2, service.getConfiguredZones().size());
+    assertEquals(4, service.getConfiguredHosts().size());
+    service.importOnStart();
+    assertEquals(3, service.getConfiguredZones().size());
+    assertEquals(7, service.getConfiguredHosts().size());
+  }
 }
