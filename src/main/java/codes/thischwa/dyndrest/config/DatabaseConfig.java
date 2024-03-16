@@ -1,8 +1,8 @@
 package codes.thischwa.dyndrest.config;
 
+import codes.thischwa.dyndrest.model.UpdateLog;
 import codes.thischwa.dyndrest.model.converter.EnumToStringConverter;
 import codes.thischwa.dyndrest.model.converter.StringToEnumConverter;
-import codes.thischwa.dyndrest.model.UpdateLog;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
