@@ -38,14 +38,14 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Slf4j
 public class DatabaseConfig extends AbstractJdbcConfiguration {
 
-  @Nullable private final AppConfig.Database databaseConfig;
+  @Nullable private final AppConfig.Database appDatabaseConfig;
 
   private final boolean dbExists;
 
   /** The DatabaseConfig class provides the configuration for the application's database. */
   public DatabaseConfig(AppConfig appConfig) {
-    this.databaseConfig = appConfig.database();
-    String search = Objects.requireNonNull(databaseConfig).file() + ".mv.db";
+    this.appDatabaseConfig = appConfig.database();
+    String search = Objects.requireNonNull(appDatabaseConfig).file() + ".mv.db";
     Path dbPath = Paths.get(search);
     dbExists = Files.exists(dbPath);
   }
@@ -59,16 +59,16 @@ public class DatabaseConfig extends AbstractJdbcConfiguration {
   @Bean
   public DataSource getDataSource() {
     DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
-    dataSourceBuilder.driverClassName(databaseConfig.driverClassName());
-    dataSourceBuilder.url(databaseConfig.jdbcUrlPrefix() + databaseConfig.file());
-    dataSourceBuilder.username(databaseConfig.user());
-    dataSourceBuilder.password(databaseConfig.password());
+    dataSourceBuilder.driverClassName(appDatabaseConfig.driverClassName());
+    dataSourceBuilder.url(appDatabaseConfig.jdbcUrlPrefix() + appDatabaseConfig.file());
+    dataSourceBuilder.username(appDatabaseConfig.user());
+    dataSourceBuilder.password(appDatabaseConfig.password());
     DataSource ds = dataSourceBuilder.build();
     if (dbExists) {
-      log.info("Embedded database found: {}", databaseConfig.file());
+      log.info("Embedded database found: {}", appDatabaseConfig.file());
     } else {
       populate(ds);
-      log.info("Embedded database successful built and populated: {}", databaseConfig.file());
+      log.info("Embedded database successful built and populated: {}", appDatabaseConfig.file());
     }
     return ds;
   }
