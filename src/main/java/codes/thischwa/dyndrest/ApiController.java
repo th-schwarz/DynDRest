@@ -30,7 +30,7 @@ public class ApiController implements ApiRoutes {
 
   private final UpdateLogService updateLogService;
 
-  private final HostZoneService validationService;
+  private final HostZoneService hostZoneService;
 
   /**
    * Instantiates a new Api controller.
@@ -38,17 +38,17 @@ public class ApiController implements ApiRoutes {
    * @param provider the provider
    * @param config the app config
    * @param updateLogService the update log service
-   * @param validationService the validation service
+   * @param hostZoneService the service for maintaining hosts and zones
    */
   public ApiController(
       Provider provider,
       AppConfig config,
       UpdateLogService updateLogService,
-      HostZoneService validationService) {
+      HostZoneService hostZoneService) {
     this.provider = provider;
     this.config = config;
     this.updateLogService = updateLogService;
-    this.validationService = validationService;
+    this.hostZoneService = hostZoneService;
   }
 
   @Override
@@ -91,7 +91,7 @@ public class ApiController implements ApiRoutes {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    // generate update log
+    // building the update log
     updateLogService.log(host, reqIpSetting);
     return new ResponseEntity<>(HttpStatus.OK);
   }
@@ -115,7 +115,7 @@ public class ApiController implements ApiRoutes {
 
   private void validateHost(String host, String apitoken) {
     try {
-      boolean valid = validationService.validate(host, apitoken);
+      boolean valid = hostZoneService.validate(host, apitoken);
       if (!valid) {
         log.warn("Validation: host {} not found.", host);
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
