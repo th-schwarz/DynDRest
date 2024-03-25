@@ -1,7 +1,11 @@
 package codes.thischwa.dyndrest.service;
 
 import codes.thischwa.dyndrest.config.AppConfig;
-import codes.thischwa.dyndrest.model.*;
+import codes.thischwa.dyndrest.model.AbstractJdbcEntity;
+import codes.thischwa.dyndrest.model.FullHost;
+import codes.thischwa.dyndrest.model.FullUpdateLog;
+import codes.thischwa.dyndrest.model.IpSetting;
+import codes.thischwa.dyndrest.model.UpdateLog;
 import codes.thischwa.dyndrest.repository.UpdateLogRepo;
 import java.time.LocalDateTime;
 import java.util.List;
