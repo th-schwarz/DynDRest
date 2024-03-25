@@ -70,16 +70,11 @@ public class UpdateLogService {
       FullHost fullHost = opt.get();
       UpdateLog updateLog =
           UpdateLog.getInstance(
-              fullHost.getId(),
-              reqIpSetting,
-              status,
-              LocalDateTime.now(),
-              LocalDateTime.now());
+              fullHost.getId(), reqIpSetting, status, LocalDateTime.now(), LocalDateTime.now());
       logRepo.save(updateLog);
     } else {
       // shouldn't be happened
       throw new IllegalArgumentException("Host not found: " + host);
     }
   }
-
 }
