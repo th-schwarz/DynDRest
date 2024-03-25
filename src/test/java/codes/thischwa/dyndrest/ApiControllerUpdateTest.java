@@ -38,7 +38,7 @@ class ApiControllerUpdateTest extends AbstractApiControllerTest {
     verify(provider, times(1)).info(host);
     verify(provider, times(1)).processUpdate(host, setting);
     verify(updateLogService, times(1))
-        .log(eq(host), eq(setting), eq(UpdateLog.Status.success));
+        .log(host, setting, UpdateLog.Status.success);
   }
 
   @Test
@@ -60,7 +60,7 @@ class ApiControllerUpdateTest extends AbstractApiControllerTest {
     verify(provider, times(1)).info(host);
     verify(provider, times(1)).processUpdate(host, remoteIp);
     verify(updateLogService, times(1))
-        .log(eq(host), eq(remoteIp), eq(UpdateLog.Status.success));
+        .log(host, remoteIp, UpdateLog.Status.success);
   }
 
   @Test
@@ -134,6 +134,6 @@ class ApiControllerUpdateTest extends AbstractApiControllerTest {
     verify(provider, times(1)).info(host);
     verify(provider, never()).processUpdate(host, setting);
     verify(updateLogService, times(1))
-        .log(eq(host), eq(setting), eq(UpdateLog.Status.failed));
+        .log(host, setting, UpdateLog.Status.failed);
   }
 }
