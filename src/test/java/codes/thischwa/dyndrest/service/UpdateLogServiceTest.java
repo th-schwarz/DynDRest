@@ -19,7 +19,7 @@ class UpdateLogServiceTest extends AbstractIntegrationTest {
   @Test
   void testLog() throws UnknownHostException {
     assertEquals(43, updateLogService.count());
-    updateLogService.log("my0.dynhost0.info", new IpSetting("129.0.0.3"));
+    updateLogService.log("my0.dynhost0.info", new IpSetting("129.0.0.3"), UpdateLog.Status.success);
     assertEquals(44, updateLogService.count());
   }
 

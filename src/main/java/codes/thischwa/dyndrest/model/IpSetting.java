@@ -64,7 +64,7 @@ public class IpSetting {
    * @param ipv4 the ipv 4
    * @param ipv6 the ipv 6
    */
-  public IpSetting(InetAddress ipv4, InetAddress ipv6) {
+  public IpSetting(@Nullable InetAddress ipv4, @Nullable InetAddress ipv6) {
     if (ipv4 instanceof Inet4Address ip) {
       this.ipv4 = ip;
     }

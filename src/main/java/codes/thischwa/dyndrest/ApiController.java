@@ -2,6 +2,7 @@ package codes.thischwa.dyndrest;
 
 import codes.thischwa.dyndrest.config.AppConfig;
 import codes.thischwa.dyndrest.model.IpSetting;
+import codes.thischwa.dyndrest.model.UpdateLog;
 import codes.thischwa.dyndrest.provider.Provider;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.service.HostZoneService;
@@ -15,6 +16,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -53,7 +55,7 @@ public class ApiController implements ApiRoutes {
 
   @Override
   public ResponseEntity<Object> update(
-      String host, String apitoken, InetAddress ipv4, InetAddress ipv6, HttpServletRequest req) {
+          String host, String apitoken, @Nullable InetAddress ipv4, @Nullable InetAddress ipv6, HttpServletRequest req) {
     log.debug(
         "entered #update: host={}, apitoken={}, ipv4={}, ipv6={}", host, apitoken, ipv4, ipv6);
     validateHost(host, apitoken);
@@ -83,16 +85,17 @@ public class ApiController implements ApiRoutes {
       } else {
         provider.processUpdate(host, reqIpSetting);
         log.info("Updated host {} successful with: {}", host, reqIpSetting);
-        updateLogService.log(host, reqIpSetting);
+        updateLogService.log(host, reqIpSetting, UpdateLog.Status.success);
         return new ResponseEntity<>(HttpStatusCode.valueOf(config.updateIpChangedStatus()));
       }
     } catch (ProviderException e) {
       log.error("Updated host failed: " + host, e);
+      updateLogService.log(host, reqIpSetting, UpdateLog.Status.failed);
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     // building the update log
-    updateLogService.log(host, reqIpSetting);
+    updateLogService.log(host, reqIpSetting, UpdateLog.Status.success);
     return new ResponseEntity<>(HttpStatus.OK);
   }
 

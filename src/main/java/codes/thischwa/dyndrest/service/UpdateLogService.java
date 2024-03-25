@@ -1,11 +1,7 @@
 package codes.thischwa.dyndrest.service;
 
 import codes.thischwa.dyndrest.config.AppConfig;
-import codes.thischwa.dyndrest.model.AbstractJdbcEntity;
-import codes.thischwa.dyndrest.model.FullHost;
-import codes.thischwa.dyndrest.model.FullUpdateLog;
-import codes.thischwa.dyndrest.model.IpSetting;
-import codes.thischwa.dyndrest.model.UpdateLog;
+import codes.thischwa.dyndrest.model.*;
 import codes.thischwa.dyndrest.repository.UpdateLogRepo;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,9 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-/**
- * The service class for managing zone update logs.
- */
+/** The service class for managing zone update logs. */
 @Service
 @Slf4j
 public class UpdateLogService {
@@ -31,9 +25,7 @@ public class UpdateLogService {
 
   private final HostZoneService hostZoneService;
 
-  /**
-   * The constructor.
-   */
+  /** The constructor. */
   public UpdateLogService(
       UpdateLogRepo logRepo, AppConfig appConfig, HostZoneService hostZoneService) {
     this.logRepo = logRepo;
@@ -60,14 +52,19 @@ public class UpdateLogService {
     return new PageImpl<>(updateLogs, create(pageNo), rawPage.getTotalElements());
   }
 
+  long count() {
+    return logRepo.count();
+  }
+
   /**
-   * Logs the update of a host with the given IP settings.
+   * Logs the update of a host with the given IP settings and status.
    *
    * @param host The host to update.
    * @param reqIpSetting The IP settings for the update.
+   * @param status The status of the update log entry.
    * @throws IllegalArgumentException If the host is not found.
    */
-  public void log(String host, IpSetting reqIpSetting) {
+  public void log(String host, IpSetting reqIpSetting, UpdateLog.Status status) {
     Optional<FullHost> opt = hostZoneService.getHost(host);
     if (opt.isPresent()) {
       FullHost fullHost = opt.get();
@@ -75,7 +72,7 @@ public class UpdateLogService {
           UpdateLog.getInstance(
               fullHost.getId(),
               reqIpSetting,
-              UpdateLog.Status.success,
+              status,
               LocalDateTime.now(),
               LocalDateTime.now());
       logRepo.save(updateLog);
@@ -85,7 +82,4 @@ public class UpdateLogService {
     }
   }
 
-  long count() {
-    return logRepo.count();
-  }
 }

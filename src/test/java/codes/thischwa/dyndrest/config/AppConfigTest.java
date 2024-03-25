@@ -19,10 +19,6 @@ class AppConfigTest extends AbstractIntegrationTest {
 
     assertEquals("domainrobot", appConfig.provider());
 
-    assertEquals(
-        "file:target/test-classes/test-files/dyndrest-update*", appConfig.updateLogFilePattern());
-    assertEquals("(.*)\\s+-\\s+([a-zA-Z\\.-]*)\\s+(\\S*)\\s+(\\S*)", appConfig.updateLogPattern());
-    assertEquals("%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n", appConfig.updateLogEncoderPattern());
     assertEquals("yyyy-MM-dd HH:mm:SSS", appConfig.updateLogDatePattern());
     assertTrue(appConfig.updateLogPageEnabled());
     assertEquals(4, appConfig.updateLogPageSize());
