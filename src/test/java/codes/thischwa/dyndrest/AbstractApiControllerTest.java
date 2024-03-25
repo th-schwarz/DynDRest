@@ -22,4 +22,10 @@ abstract class AbstractApiControllerTest {
   void init() {
     apiController = new ApiController(provider, appConfig, updateLogService, hostZoneService);
   }
+
+  private int hostCount = 0;
+
+  protected String buildHostName(String domain) {
+    return String.format("host-%02d.%s", ++hostCount, domain);
+  }
 }
