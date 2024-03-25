@@ -24,6 +24,15 @@ class UpdateLogServiceTest extends AbstractIntegrationTest {
   }
 
   @Test
+  void testLog_unknown() throws Exception {
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            updateLogService.log(
+                "unknown.dynhost0.info", new IpSetting("129.0.0.3"), UpdateLog.Status.success));
+  }
+
+  @Test
   void testGetPage() {
     Page<FullUpdateLog> page = updateLogService.getPage(0);
     assertNotNull(page);
