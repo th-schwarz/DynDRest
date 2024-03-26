@@ -16,7 +16,7 @@ public class UpdateLog extends AbstractJdbcEntity {
 
   private @Nullable String ipv6;
 
-  private @Nullable LocalDateTime changedUpdate;
+  private @EqualsAndHashCode.Exclude @Nullable LocalDateTime changedUpdate;
 
   private Status status = Status.virgin;
 

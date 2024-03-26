@@ -9,6 +9,8 @@ import lombok.EqualsAndHashCode;
 public class Host extends AbstractJdbcEntity {
 
   private String name;
+
+  @EqualsAndHashCode.Exclude
   private String apiToken;
 
   private Integer zoneId;
