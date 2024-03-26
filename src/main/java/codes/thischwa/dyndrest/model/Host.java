@@ -27,6 +27,7 @@ public class Host extends AbstractJdbcEntity {
       return host;
     }
     Host tmpHost = new Host();
+    tmpHost.setId(host.getId());
     tmpHost.setName(host.getName());
     tmpHost.setApiToken(host.getApiToken());
     tmpHost.setZoneId(host.getZoneId());

@@ -31,7 +31,14 @@ class HostTest {
     assertNotEquals(h1, h2);
     h2.setId(1);
     assertEquals(h1, h2);
-    
+
+    FullHost h1Full = new FullHost();
+    h1Full.setId(1);
+    h1Full.setName("test1");
+    h1Full.setZoneId(1);
+    Host h1Tmp = Host.getInstance(h1Full);
+    assertEquals(h1, h1Tmp);
+
     h1.setChanged(LocalDateTime.now());
     assertNotEquals(h1, h2);
 
