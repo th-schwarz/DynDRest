@@ -18,14 +18,14 @@ class UpdateLogRepoTest extends AbstractIntegrationTest {
 
   @Test
   void testFindAllByStatus() {
-    assertEquals(43, repo.findAll().size());
-    List<FullUpdateLog> logs = repo.findAllByStatus(UpdateLog.Status.virgin);
-    assertEquals(42, logs.size());
+    assertEquals(42, repo.findAll().size());
+    List<FullUpdateLog> logs = repo.findAllByStatus(UpdateLog.Status.failed);
+    assertEquals(2, logs.size());
   }
 
   @Test
   void testFindById() {
-    List<FullUpdateLog> hosts = repo.findAllFullUpdateLogsByIds(List.of(43, 42));
+    List<FullUpdateLog> hosts = repo.findAllFullUpdateLogsByIds(List.of(41, 42));
     assertEquals(2, hosts.size());
   }
 
@@ -33,7 +33,7 @@ class UpdateLogRepoTest extends AbstractIntegrationTest {
   void testPagination() {
     Page<UpdateLog> page =
         repo.findAll(PageRequest.of(0, 4, Sort.by(Sort.Direction.DESC, "changed")));
-    assertEquals(43, page.getTotalElements());
+    assertEquals(42, page.getTotalElements());
     assertEquals(4, page.getSize());
     assertEquals(11, page.getTotalPages());
     assertEquals(0, page.getNumber());
@@ -41,12 +41,12 @@ class UpdateLogRepoTest extends AbstractIntegrationTest {
     assertTrue(page.isFirst());
     assertFalse(page.isLast());
 
-    assertEquals(43, page.getContent().get(0).getId());
-    assertEquals(42, page.getContent().get(1).getId());
-    assertEquals(41, page.getContent().get(2).getId());
-    assertEquals(40, page.getContent().get(3).getId());
+    assertEquals(42, page.getContent().get(0).getId());
+    assertEquals(41, page.getContent().get(1).getId());
+    assertEquals(40, page.getContent().get(2).getId());
+    assertEquals(39, page.getContent().get(3).getId());
 
     page = repo.findAll(PageRequest.of(1, 4, Sort.by(Sort.Direction.DESC, "changed")));
-    assertEquals(39, page.getContent().get(0).getId());
+    assertEquals(38, page.getContent().get(0).getId());
   }
 }

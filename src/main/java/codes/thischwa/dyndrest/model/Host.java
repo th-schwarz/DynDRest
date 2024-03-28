@@ -10,13 +10,13 @@ public class Host extends AbstractJdbcEntity {
 
   private String name;
 
-  @EqualsAndHashCode.Exclude
-  private String apiToken;
+  @EqualsAndHashCode.Exclude private String apiToken;
 
   private Integer zoneId;
 
   /**
-   * Creates and initializes a new instance of the Host class.<br>
+   * Creates and initializes a new instance of the Host class, if the desired host is an instance of
+   * {@link FullHost}.<br>
    * Required for database processing.
    *
    * @param host the host instance

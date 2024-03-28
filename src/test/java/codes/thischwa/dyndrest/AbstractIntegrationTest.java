@@ -1,14 +1,13 @@
 package codes.thischwa.dyndrest;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.UnknownHostException;
-import java.time.LocalDateTime;
-
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.model.UpdateLog;
 import codes.thischwa.dyndrest.repository.UpdateLogRepo;
 import jakarta.annotation.PostConstruct;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.UnknownHostException;
+import java.time.LocalDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,34 +41,29 @@ public abstract class AbstractIntegrationTest {
           UpdateLog.getInstance(
               1,
               new IpSetting("198.0.1.0", "2a03:4000:41:32:0:0:1:0"),
-              UpdateLog.Status.virgin,
+              UpdateLog.Status.failed,
               null,
               dateTime));
       for (int i = 1; i <= 20; i++) {
         dateTime = dateTime.plusMinutes(10);
         updateLogRepo.save(
             UpdateLog.getInstance(
-                1, new IpSetting("198.0.1." + i), UpdateLog.Status.virgin, null, dateTime));
+                1, new IpSetting("198.0.1." + i), UpdateLog.Status.success, dateTime, dateTime));
       }
       dateTime = dateTime.plusMinutes(10);
       updateLogRepo.save(
           UpdateLog.getInstance(
               2,
               new IpSetting("198.0.2.0", "2a03:4000:41:32:0:0:2:0"),
-              UpdateLog.Status.virgin,
+              UpdateLog.Status.failed,
               null,
               dateTime));
       for (int i = 1; i <= 20; i++) {
         dateTime = dateTime.plusMinutes(10);
         updateLogRepo.save(
             UpdateLog.getInstance(
-                2, new IpSetting("198.0.2." + i), UpdateLog.Status.virgin, null, dateTime));
+                2, new IpSetting("198.0.2." + i), UpdateLog.Status.success, dateTime, dateTime));
       }
-      dateTime = dateTime.plusMinutes(10);
-      updateLogRepo.save(
-          UpdateLog.getInstance(
-              2, new IpSetting("198.0.2.254"), UpdateLog.Status.failed, dateTime, dateTime));
-      log.info("*** {} update logs generated.", updateLogRepo.count());
     } catch (UnknownHostException e) {
       throw new RuntimeException(e);
     }

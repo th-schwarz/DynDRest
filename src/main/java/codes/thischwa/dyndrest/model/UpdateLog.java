@@ -18,11 +18,7 @@ public class UpdateLog extends AbstractJdbcEntity {
 
   private @EqualsAndHashCode.Exclude @Nullable LocalDateTime changedUpdate;
 
-  private Status status = Status.virgin;
-
-  public static UpdateLog getInstance(Integer hostId, IpSetting ipSetting) {
-    return getInstance(hostId, ipSetting, Status.virgin, null, LocalDateTime.now());
-  }
+  private Status status = Status.failed;
 
   /**
    * Returns a new instance of UpdateLog with the specified parameters.
@@ -53,7 +49,6 @@ public class UpdateLog extends AbstractJdbcEntity {
   /** The Status enum represents the possible statuses for an update log entry. */
   public enum Status {
     failed,
-    success,
-    virgin
+    success
   }
 }

@@ -18,9 +18,9 @@ class UpdateLogServiceTest extends AbstractIntegrationTest {
 
   @Test
   void testLog() throws UnknownHostException {
-    assertEquals(43, updateLogService.count());
+    assertEquals(42, updateLogService.count());
     updateLogService.log("my0.dynhost0.info", new IpSetting("129.0.0.3"), UpdateLog.Status.success);
-    assertEquals(44, updateLogService.count());
+    assertEquals(43, updateLogService.count());
   }
 
   @Test
@@ -36,33 +36,33 @@ class UpdateLogServiceTest extends AbstractIntegrationTest {
   void testGetPage() {
     Page<FullUpdateLog> page = updateLogService.getPage(0);
     assertNotNull(page);
-    assertEquals(43, page.getTotalElements());
+    assertEquals(42, page.getTotalElements());
     assertEquals(4, page.getSize());
     assertEquals(11, page.getTotalPages());
     assertTrue(page.isFirst());
     assertEquals(0, page.getNumber());
 
     FullUpdateLog log = page.getContent().get(0);
-    assertEquals(43, log.getId());
+    assertEquals(42, log.getId());
     assertEquals(2, log.getHostId());
     assertEquals("test0.dynhost0.info", log.getHost());
-    assertEquals("198.0.2.254", log.getIpv4());
-    assertEquals(UpdateLog.Status.failed, log.getStatus());
-    assertEquals(START_DATETIME.withHour(20).withMinute(30), log.getChangedUpdate());
-    assertEquals(START_DATETIME.withHour(20).withMinute(30), log.getChanged());
+    assertEquals("198.0.2.20", log.getIpv4());
+    assertEquals(UpdateLog.Status.success, log.getStatus());
+    assertEquals(START_DATETIME.withHour(20).withMinute(20), log.getChangedUpdate());
+    assertEquals(START_DATETIME.withHour(20).withMinute(20), log.getChanged());
 
     log = page.getContent().get(3);
-    assertEquals(40, log.getId());
+    assertEquals(39, log.getId());
     assertEquals(2, log.getHostId());
     assertEquals("test0.dynhost0.info", log.getHost());
-    assertEquals("198.0.2.18", log.getIpv4());
-    assertEquals(UpdateLog.Status.virgin, log.getStatus());
-    assertNull(log.getChangedUpdate());
-    assertEquals(START_DATETIME.withHour(20).withMinute(0), log.getChanged());
+    assertEquals("198.0.2.17", log.getIpv4());
+    assertEquals(UpdateLog.Status.success, log.getStatus());
+    assertEquals(START_DATETIME.withHour(19).withMinute(50), log.getChangedUpdate());
+    assertEquals(START_DATETIME.withHour(19).withMinute(50), log.getChanged());
 
     page = updateLogService.getPage(10);
     assertTrue(page.isLast());
     assertEquals(4, page.getSize());
-    assertEquals(3, page.getNumberOfElements());
+    assertEquals(2, page.getNumberOfElements());
   }
 }

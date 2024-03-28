@@ -36,7 +36,7 @@ create table PUBLIC.UPDATE_LOG
     IPV6           CHARACTER VARYING(39),
     CHANGED        TIMESTAMP default now() on update CURRENT_TIMESTAMP,
     CHANGED_UPDATE TIMESTAMP,
-    STATUS         ENUM ('success', 'failed', 'new'),
+    STATUS         ENUM ('success', 'failed'),
     constraint HOST_ID___FK
         foreign key (HOST_ID) references PUBLIC.HOST
 );

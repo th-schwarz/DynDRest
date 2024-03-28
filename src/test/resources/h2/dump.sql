@@ -46,7 +46,7 @@ CREATE CACHED TABLE "PUBLIC"."UPDATE_LOG"
     IPV6           CHARACTER VARYING(39),
     CHANGED        TIMESTAMP default now() on update CURRENT_TIMESTAMP,
     CHANGED_UPDATE TIMESTAMP,
-    "STATUS"       ENUM ('success', 'failed', 'virgin')
+    "STATUS"       ENUM ('success', 'failed')
 );
 
 ALTER TABLE "PUBLIC"."UPDATE_LOG"
