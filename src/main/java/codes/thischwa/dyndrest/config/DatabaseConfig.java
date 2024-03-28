@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Objects;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,7 +33,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableTransactionManagement
 @Profile("!test")
-@ConditionalOnProperty(name = "dyndrest.database.jdbc-url-prefix")
 @Slf4j
 public class DatabaseConfig extends AbstractJdbcConfiguration {
 
