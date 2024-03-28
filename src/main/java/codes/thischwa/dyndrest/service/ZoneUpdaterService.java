@@ -9,6 +9,11 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+/**
+ * The ZoneUpdaterService class is responsible for updating zones on a schedule. It is a Spring
+ * service that uses the scheduling feature of Spring Framework to run the update task at regular
+ * intervals.
+ */
 @Service
 @EnableScheduling
 @Profile("!test")
@@ -16,8 +21,8 @@ import org.springframework.stereotype.Service;
 @ConditionalOnProperty(name = "dyndrest.zone-updater-delay")
 public class ZoneUpdaterService {
 
-    @Scheduled(fixedDelayString = "${dyndrest.zone-updater-delay}", timeUnit = TimeUnit.SECONDS)
-    void process() {
-        log.info("*** process: {}", LocalDateTime.now());
-    }
+  @Scheduled(fixedDelayString = "${dyndrest.zone-updater-delay}", timeUnit = TimeUnit.SECONDS)
+  void process() {
+    log.info("*** process: {}", LocalDateTime.now());
+  }
 }
