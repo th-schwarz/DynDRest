@@ -24,7 +24,7 @@ class UpdateLogServiceTest extends AbstractIntegrationTest {
   }
 
   @Test
-  void testLog_unknown() throws Exception {
+  void testLog_unknown() {
     assertThrows(
         IllegalArgumentException.class,
         () ->
@@ -64,5 +64,14 @@ class UpdateLogServiceTest extends AbstractIntegrationTest {
     assertTrue(page.isLast());
     assertEquals(4, page.getSize());
     assertEquals(2, page.getNumberOfElements());
+
+    log = page.getContent().get(1);
+    assertEquals(1, log.getId());
+    assertEquals(1, log.getHostId());
+    assertEquals("my0.dynhost0.info", log.getHost());
+    assertEquals("198.0.1.0", log.getIpv4());
+    assertEquals(UpdateLog.Status.failed, log.getStatus());
+    assertNull(log.getChangedUpdate());
+    assertEquals(START_DATETIME.withHour(13).withMinute(30), log.getChanged());
   }
 }
