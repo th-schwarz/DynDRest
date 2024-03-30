@@ -22,15 +22,13 @@ dyndrest:
   update-ip-changed-status: 200
   update-log-page-enabled: false
   update-log-page-size: 30
-  update-log-pattern: (.*)\s+-\s+([a-zA-Z\.-]*)\s+(\S*)\s+(\S*)
   update-log-date-pattern: yyyy-MM-dd HH:mm:ss.SSS
-  update-log-file-pattern: ./log/dyndrest-update*
-  update-log-encoder-pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n"
   # database config, credentials should be set at the individual properties
   database:
     driver-class-name: org.h2.Driver
     jdbc-url-prefix: "jdbc:h2:file:"
     file: ./dyndrest
+    user: dba
 
 ## disable springdoc endpoints and swagger-ui by default
 springdoc:
