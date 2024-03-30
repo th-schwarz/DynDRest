@@ -35,12 +35,12 @@
                 </thead>
                 <tbody>
                 <tr th:each="log: ${logs}">
-                    <td th:text="${#temporals.format(log.changedUpdate, 'yyyy/MM/dd HH:mm:ss')}"/>
+                    <td th:text="${#temporals.format(log.changedUpdate, logDatePattern)}"/>
                     <td th:text="${log.host}"/>
                     <td th:text="${log.ipv4}"/>
                     <td th:text="${log.ipv6}"/>
                     <td th:text="${log.status}"/>
-                    <td th:text="${#temporals.format(log.changed, 'yyyy/MM/dd HH:mm:ss')}"/>
+                    <td th:text="${#temporals.format(log.changed, logDatePattern)}"/>
                 </tr>
                 </tbody>
             </table>

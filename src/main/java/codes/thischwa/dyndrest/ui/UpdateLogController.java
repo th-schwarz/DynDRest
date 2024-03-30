@@ -1,4 +1,4 @@
-package codes.thischwa.dyndrest;
+package codes.thischwa.dyndrest.ui;
 
 import codes.thischwa.dyndrest.config.AppConfig;
 import codes.thischwa.dyndrest.model.FullUpdateLog;
@@ -52,6 +52,7 @@ public class UpdateLogController {
     model.addAttribute("server_url", baseUrl + "/log-ui/");
 
     Page<FullUpdateLog> pageLog = updateLogService.getPage(page);
+    model.addAttribute("logDatePattern", config.updateLogDatePattern());
     model.addAttribute("logs", pageLog.getContent());
     model.addAttribute("page", page);
     model.addAttribute("countTotalPages", pageLog.getTotalPages());
