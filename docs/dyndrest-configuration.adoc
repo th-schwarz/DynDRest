@@ -41,9 +41,7 @@ dyndrest:
   update-log-page-size: 30
   update-log-user-name: log-dev
   update-log-user-password: l0g-dev
-  update-log-pattern: (.*)\s+-\s+([a-zA-Z\.-]*)\s+(\S*)\s+(\S*)
   update-log-date-pattern: yyyy-MM-dd HH:mm:SSS
-  update-log-file-pattern: ./log/dyndrest-update*
   healthcheck-user-name: health
   healthcheck-user-password: test123
 
