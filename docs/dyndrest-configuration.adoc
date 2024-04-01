@@ -66,14 +66,23 @@ domainrobot:
   autodns:
     context: 4
     url: https://api.autodns.com/v1
-
-# ---------------------- non-default section -------------------
-    password: pwd_t
     user: user_t
-
-  ## set custom headers (X-Domainrobot-WS: NONE, is set by default)
+    password: pwd_t
+  # set custom headers (X-Domainrobot-WS: NONE, is set by default)
   custom-header:
     X-Domainrobot-Stid: my-stid-123
+
+# ---------------------- non-default section -------------------
+  database:
+    password: pwd_t
+    user: user_ts
+    driver-class-name: org.h2.Driver
+    jdbc-url-prefix: "jdbc:h2:file:"
+    file: ./test-db
+    backup:
+      enabled: true
+      path: ./backup
+      cron: "0 30 4 * * SUN"
 
 ## spring security
 spring:
