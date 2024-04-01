@@ -63,7 +63,7 @@ public class BackupService {
 
   @Transactional
   @Scheduled(cron = "${dyndrest.database.backup.cron}")
-  void process() {
+  public void process() {
     if (!enabled) {
       return;
     }
