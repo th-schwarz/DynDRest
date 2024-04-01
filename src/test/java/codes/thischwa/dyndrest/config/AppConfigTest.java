@@ -38,5 +38,11 @@ class AppConfigTest extends AbstractIntegrationTest {
     assertEquals("./test-db", db.file());
     assertEquals("dba", db.user());
     assertEquals("", db.password());
+
+    AppConfig.Database.Backup bck = db.backup();
+    assertNotNull(bck);
+    assertTrue(bck.enabled());
+    assertEquals("./backup", bck.path());
+    assertEquals("0 30 4 * * SUN", bck.cron());
   }
 }

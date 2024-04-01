@@ -51,6 +51,10 @@ dyndrest:
     file: ./test-db
     user: dba
     password:
+    backup:
+      enabled: true
+      path: ./backup
+      cron: "0 30 4 * * SUN"
 
 zones:
   - name: dynhost0.info
