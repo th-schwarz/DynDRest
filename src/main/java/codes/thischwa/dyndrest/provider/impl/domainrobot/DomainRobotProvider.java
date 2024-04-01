@@ -11,9 +11,11 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.domainrobot.sdk.models.generated.Zone;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 /** The type Domain robot provider. */
 @Slf4j
+@ConditionalOnProperty(value = "dyndrest.provider", havingValue = "domainrobot")
 class DomainRobotProvider extends GenericProvider implements InitializingBean {
 
   private final AppConfig appConfig;
