@@ -29,8 +29,8 @@ public class BackupService {
 
   private final JdbcTemplate jdbcTemplate;
 
-  private boolean enabled;
-  private AppConfig.Database.Backup backup;
+  private final boolean enabled;
+  private final AppConfig.Database.Backup backup;
 
   /**
    * The BackupService class is responsible for performing database backups based on the provided
@@ -62,8 +62,8 @@ public class BackupService {
   }
 
   /**
-   * This method is responsible for performing the database backup process.
-   * It is scheduled to run at regular intervals based on the cron expression specified in the configuration.
+   * This method is responsible for performing the database backup process. It is scheduled to run
+   * at regular intervals based on the cron expression specified in the configuration.
    */
   @Transactional
   @Scheduled(cron = "${dyndrest.database.backup.cron}")
