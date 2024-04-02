@@ -85,14 +85,12 @@ Here is the suggested file structure:
 │   ├── dyndrest.yml
 │   ├── dyndrest-0.7.0.jar
 │   ├── dyndrest.jar -> dyndrest-0.7.0.jar
-│   ├── dyndrest-update.log   (log of the updates)
 │   ├── logback.xml    (logback configuration)
 │   ├── dyndrest.mv.db  (h2 database file)
-│   ├── /log
-│       ├── dyndrest.log   (application log)
-│       ├── dyndrest-update.log   (log of the updates)
 │   ├── /backup
 │       ├── dump.sql   (optional backup of the database)
+│   ├── /log
+│       ├── dyndrest.log   (application log)
 ----
 
 *dyndrest.yml* defines the individual properties. The file is read by default and
