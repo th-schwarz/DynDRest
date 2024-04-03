@@ -22,7 +22,7 @@ dyndrest:
   update-ip-changed-status: 200
   update-log-page-enabled: false
   update-log-page-size: 30
-  update-log-date-pattern: yyyy-MM-dd HH:mm:ss.SSS
+  update-log-date-pattern: yyyy-MM-dd HH:mm:ss
   # database config, credentials should be set at the individual properties
   database:
     driver-class-name: org.h2.Driver
