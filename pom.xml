@@ -272,7 +272,7 @@
                         <groupId>org.springframework.boot</groupId>
                         <artifactId>spring-boot-maven-plugin</artifactId>
                         <configuration>
-                            <commandlineArguments>--swagger.enabled=true
+                            <commandlineArguments>
                                 --springdoc.writer-with-default-pretty-printer=true
                                 --springdoc.api-docs.enabled=true --dyndrest.host-validation-enable=false
                                 --server.port=8080

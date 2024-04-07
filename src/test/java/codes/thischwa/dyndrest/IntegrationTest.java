@@ -44,7 +44,7 @@ class IntegrationTest extends AbstractIntegrationTest {
   @Test
   void testLogRedirect() throws Exception {
     mockMvc
-        .perform(get("/log-ui"))
+        .perform(get("/log-ui").with(httpBasic("log-dev", "l0g-dev")))
         .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl("/log-ui/0"));
   }

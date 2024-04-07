@@ -3,7 +3,10 @@ package codes.thischwa.dyndrest.config;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
+import org.springframework.boot.actuate.health.HealthEndpoint;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +27,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-/** The security configuration, mainly to specify the authentication9 for different routes. */
+/** The security configuration, mainly to specify the authentication for different routes. */
 @Configuration
 @EnableWebSecurity
 @Slf4j
@@ -33,9 +36,15 @@ public class SecurityConfig {
   static final String ROLE_LOGVIEWER = "LOGVIEWER";
   static final String ROLE_USER = "USER";
   static final String ROLE_HEALTH = "HEALTH";
+
   private final AppConfig appConfig;
   private final PasswordEncoder encoder =
       PasswordEncoderFactories.createDelegatingPasswordEncoder();
+
+  private final String[] loguiPaths = {"/log-ui", "/log-ui/*"};
+  private final List<String> publicPaths = new ArrayList<>(List.of("/favicon.ico", "/error"));
+
+  private final boolean updateLogEnabled;
 
   @Value("${spring.security.user.name}")
   private String userName;
@@ -46,11 +55,22 @@ public class SecurityConfig {
   @Value("${spring.h2.console.enabled}")
   private boolean h2ConsoleEnabled;
 
-  @Value("${management.endpoints.web.base-path}")
-  private String managementBasePath;
+  @Value("${management.endpoint.health.enabled}")
+  private boolean healthEnabled;
+
 
   public SecurityConfig(AppConfig appConfig) {
     this.appConfig = appConfig;
+
+    // check if credentials for update-log-view
+    boolean isUpdateLogCredentialsEmpty =
+        StringUtils.isEmpty(appConfig.updateLogUserName())
+            || StringUtils.isEmpty(appConfig.updateLogUserPassword());
+    updateLogEnabled = appConfig.updateLogPageEnabled() && !isUpdateLogCredentialsEmpty;
+    if(appConfig.greetingEnabled()) {
+      publicPaths.add("/");
+    }
+    log.info("Public paths: {}", String.join(",", publicPaths));
   }
 
   /**
@@ -62,16 +82,20 @@ public class SecurityConfig {
   public UserDetailsService userDetailsService() {
     InMemoryUserDetailsManager userManager = new InMemoryUserDetailsManager();
     build(userManager, userName, password, ROLE_USER);
-    build(
-        userManager,
-        appConfig.updateLogUserName(),
-        appConfig.updateLogUserPassword(),
-        ROLE_LOGVIEWER);
-    build(
-        userManager,
-        appConfig.healthCheckUserName(),
-        appConfig.healthCheckUserPassword(),
-        ROLE_HEALTH);
+    if (updateLogEnabled) {
+      build(
+          userManager,
+          appConfig.updateLogUserName(),
+          appConfig.updateLogUserPassword(),
+          ROLE_LOGVIEWER);
+    }
+    if (healthEnabled) {
+      build(
+          userManager,
+          appConfig.healthCheckUserName(),
+          appConfig.healthCheckUserPassword(),
+          ROLE_HEALTH);
+    }
     return userManager;
   }
 
@@ -109,21 +133,23 @@ public class SecurityConfig {
           .csrf(csrf -> csrf.ignoringRequestMatchers(PathRequest.toH2Console()));
     }
 
+    if (updateLogEnabled) {
+      // enable security for the log-view
+      http.authorizeHttpRequests(
+          req -> req.requestMatchers(buildMatchers(loguiPaths)).hasAnyRole(ROLE_LOGVIEWER));
+    }
+
+    if (healthEnabled) {
+      // enable security for the health check, all other management endpoints are disabled
+      http.authorizeHttpRequests(
+          req ->
+              req.requestMatchers(EndpointRequest.to(HealthEndpoint.class))
+                  .hasAnyRole(ROLE_HEALTH));
+    }
+
     // public routes
     http.authorizeHttpRequests(
-        req ->
-            req.requestMatchers(buildMatchers("/", "/log-ui", "/favicon.ico", "/v3/api-docs*"))
-                .permitAll());
-
-    // enable security for the log-view
-    http.authorizeHttpRequests(
-        req -> req.requestMatchers(buildMatchers("/log-ui/*")).hasAnyRole(ROLE_LOGVIEWER));
-
-    // enable security for the health check
-    http.authorizeHttpRequests(
-        req ->
-            req.requestMatchers(buildMatchers(managementBasePath + "/health"))
-                .hasAnyRole(ROLE_HEALTH));
+            req -> req.requestMatchers(buildMatchers(publicPaths.toArray(new String[0]))).permitAll());
 
     // enable basic-auth and ROLE_USER for all other routes
     http.authorizeHttpRequests(req -> req.anyRequest().hasAnyRole(ROLE_USER))
