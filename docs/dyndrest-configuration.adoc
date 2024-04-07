@@ -16,7 +16,7 @@ server:
     context-path: /
   shutdown: graceful
 
-# health check
+# management
 management:
   endpoints:
     enabled-by-default: false
