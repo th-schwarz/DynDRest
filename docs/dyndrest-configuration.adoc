@@ -60,6 +60,16 @@ springdoc:
   swagger-ui:
     enabled: false
 
+## management
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      base-path: /manage
+  endpoint:
+    health:
+      enabled: false
+
 domainrobot:
   default-ttl: 60
   ## credentials for the domainrobot sdk

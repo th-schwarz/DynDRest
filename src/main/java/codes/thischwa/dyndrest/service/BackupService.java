@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @EnableScheduling
 @Profile("!test")
 @Slf4j
-@ConditionalOnProperty(name = "dyndrest.database.backup.enabled", havingValue = "true")
+@ConditionalOnProperty(name = "dyndrest.database.backup.enabled")
 public class BackupService {
 
   private final JdbcTemplate jdbcTemplate;
@@ -37,6 +37,7 @@ public class BackupService {
    * configuration.
    */
   public BackupService(AppConfig appConfig, JdbcTemplate jdbcTemplate) {
+    assert appConfig.database().backup() != null;
     this.backup = appConfig.database().backup();
     this.jdbcTemplate = jdbcTemplate;
     enabled = backup.enabled();
