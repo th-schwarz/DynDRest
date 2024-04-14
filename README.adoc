@@ -89,6 +89,8 @@ Here is the suggested file structure:
 │   ├── dyndrest.mv.db  (h2 database file)
 │   ├── /backup
 │       ├── dump.sql   (optional backup of the database)
+│   ├── /restore
+│       ├── dump.sql   (optional dump of the database to restore)
 │   ├── /log
 │       ├── dyndrest.log   (application log)
 ----
@@ -141,7 +143,7 @@ The `zones` section should be used for importing the hosts and zones configurati
 
 NOTE: This project uses _spring-doc_ to document the routes. The endpoints for this and the _swagger-ui_ are disabled by default!
 
-==== Backup
+==== Backup and Restore
 
 There is a very simple cron-triggered service to dump the database regulary. The configuration is part of the database configuration:
 
@@ -153,14 +155,20 @@ dyndrest:
       enabled: true
       path: ./backup
       cron: "0 30 18 * * MON"
+    restore:
+      enabled: enabled
+      path: ./restore
+    dump-file: dump.sql
 ----
 
 In this example every monday at 18:30 a database dump will be written to `./backup/dump.sql`. The file will be overwritten every time!
 
+If _restore_ is enabled and the file `./restore/dump.sql` exists at start, the dump will be restored and the file renamed to `./restore/dump.sql.bak`.
+
 ==== Suggested AutoDNS setup
 
 For security reasons, it makes sense to create a separate owner for the
-zone updated by DynDRest. This owner just needs the permission for
+zones updated by DynDRest. This owner just needs the permission for
 zone-info and zone-updates!
 
 == Start

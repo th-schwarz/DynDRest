@@ -55,6 +55,10 @@ dyndrest:
       enabled: true
       path: ./backup
       cron: "0 30 4 * * SUN"
+    restore:
+      enabled: true
+      path: ./restore
+    dump-file: dump.sql
 
 zones:
   - name: dynhost0.info

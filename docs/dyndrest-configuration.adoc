@@ -53,22 +53,22 @@ dyndrest:
     user: dba
     password: strong
 
+  # backup and restore settings
+    backup:
+      enabled: false
+      cron: "0 0 4 * * MON"
+      path: ./backup
+    restore:
+      enabled: false
+      path: ./restore
+    dump-file: dump.sql
+
 ## disable springdoc endpoints and swagger-ui by default
 springdoc:
   api-docs:
     enabled: false
   swagger-ui:
     enabled: false
-
-## management
-management:
-  endpoints:
-    enabled-by-default: false
-    web:
-      base-path: /manage
-  endpoint:
-    health:
-      enabled: false
 
 domainrobot:
   default-ttl: 60

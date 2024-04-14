@@ -27,15 +27,27 @@ public record AppConfig(
       String file,
       String user,
       String password,
-      @Nullable Backup backup) {
+      String dumpFile,
+      @Nullable Backup backup,
+      @Nullable Restore restore) {
 
     /**
      * Represents a backup configuration.
      *
      * @param enabled Specifies if the backup is enabled or not.
-     * @param path The path where the backup files will be stored.
+     * @param path The path where the backup files will be stored, e.g {@code ./backup}. This should
+     *     be a valid file system path.
      * @param cron The cron expression that defines the backup schedule.
      */
     public record Backup(boolean enabled, String path, String cron) {}
+
+    /**
+     * Represents a restore configuration.
+     *
+     * @param enabled Specifies if the restore functionality is enabled or not.
+     * @param path The path where the backup files for restore are stored, e.g. {@code ./restore}.
+     *     This should be a valid file system path.
+     */
+    public record Restore(boolean enabled, String path) {}
   }
 }

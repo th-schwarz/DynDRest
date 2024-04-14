@@ -32,6 +32,13 @@ dyndrest:
     jdbc-url-prefix: "jdbc:h2:file:"
     file: ./dyndrest
     user: dba
+    backup:
+      enabled: false
+      path: ./backup
+    restore:
+      enabled: false
+      path: ./restore
+    dump-file: dump.sql
 
 ## disable springdoc endpoints and swagger-ui by default
 springdoc:

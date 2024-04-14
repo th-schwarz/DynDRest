@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.lang.Nullable;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,11 @@ public class BackupService {
   private final JdbcTemplate jdbcTemplate;
 
   private final boolean enabled;
+  private final AppConfig.Database database;
   private final AppConfig.Database.Backup backup;
+
+  @Nullable
+  private String dumpPath;
 
   /**
    * The BackupService class is responsible for performing database backups based on the provided
@@ -38,6 +43,7 @@ public class BackupService {
    */
   public BackupService(AppConfig appConfig, JdbcTemplate jdbcTemplate) {
     assert appConfig.database().backup() != null;
+    database = appConfig.database();
     this.backup = appConfig.database().backup();
     this.jdbcTemplate = jdbcTemplate;
     enabled = backup.enabled();
@@ -60,6 +66,7 @@ public class BackupService {
         throw new RuntimeException("couldn't create backup path: " + backupPath.toAbsolutePath());
       }
     }
+    dumpPath = Paths.get(backupPath.toString(), database.dumpFile()).toString();
   }
 
   /**
@@ -72,8 +79,8 @@ public class BackupService {
     if (!enabled) {
       return;
     }
-    String sql = String.format("SCRIPT DROP TO '%s/dump.sql';", backup.path());
+    String sql = String.format("SCRIPT DROP TO '%s';", dumpPath);
     jdbcTemplate.execute(sql);
-    log.info("Database backup successful processed for path: {}", backup.path());
+    log.info("Database backup successful processed: {}", dumpPath);
   }
 }
