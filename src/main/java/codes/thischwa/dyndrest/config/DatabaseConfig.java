@@ -31,7 +31,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 /**
  * The Database configuration. <br>
  * The {@link DataSource} will be generated and if the embedded database wasn't exists, the database
- * will be populated with the basic schema.
+ * will be populated with the basic schema or with a desired database dump.<br>
+ * Hint: The service is specific for h2!
  */
 @Configuration
 @EnableTransactionManagement

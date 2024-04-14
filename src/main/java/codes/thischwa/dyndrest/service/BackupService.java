@@ -17,9 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * The ZoneUpdaterService class is responsible for updating zones on a schedule. It is a Spring
- * service that uses the scheduling feature of Spring Framework to run the update task at regular
- * intervals.
+ * The BackupService class is responsible for performing database backups based on the provided
+ * configuration.<br>
+ * Hint: The service is specific for h2!
  */
 @Service
 @EnableScheduling
