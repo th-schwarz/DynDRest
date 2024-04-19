@@ -1,9 +1,9 @@
 package codes.thischwa.dyndrest.config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.boot.actuate.health.HealthEndpoint;
@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
 import org.springframework.lang.Nullable;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,6 +27,7 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.util.StringUtils;
 
 /** The security configuration, mainly to specify the authentication for different routes. */
 @Configuration
@@ -36,13 +38,14 @@ public class SecurityConfig {
   static final String ROLE_LOGVIEWER = "LOGVIEWER";
   static final String ROLE_USER = "USER";
   static final String ROLE_HEALTH = "HEALTH";
-
+  public final Environment env;
   private final AppConfig appConfig;
   private final PasswordEncoder encoder =
       PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
+  private final List<String> publicPaths =
+      new ArrayList<>(List.of("/favicon.ico", "/error"));
   private final String[] loguiPaths = {"/log-ui", "/log-ui/*"};
-  private final List<String> publicPaths = new ArrayList<>(List.of("/favicon.ico", "/error"));
 
   private final boolean updateLogEnabled;
 
@@ -58,17 +61,21 @@ public class SecurityConfig {
   @Value("${management.endpoint.health.enabled}")
   private boolean healthEnabled;
 
-
-  public SecurityConfig(AppConfig appConfig) {
+  public SecurityConfig(AppConfig appConfig, Environment env) {
     this.appConfig = appConfig;
+    this.env = env;
 
     // check if credentials for update-log-view
     boolean isUpdateLogCredentialsEmpty =
-        StringUtils.isEmpty(appConfig.updateLogUserName())
-            || StringUtils.isEmpty(appConfig.updateLogUserPassword());
+        !StringUtils.hasText(appConfig.updateLogUserName())
+            || !StringUtils.hasText(appConfig.updateLogUserPassword());
     updateLogEnabled = appConfig.updateLogPageEnabled() && !isUpdateLogCredentialsEmpty;
-    if(appConfig.greetingEnabled()) {
+
+    if (appConfig.greetingEnabled()) {
       publicPaths.add("/");
+    }
+    if (Arrays.asList(env.getActiveProfiles()).contains("opendoc")) {
+      publicPaths.add("/v3/api-docs*");
     }
     log.info("Public paths: {}", String.join(",", publicPaths));
   }
@@ -149,7 +156,7 @@ public class SecurityConfig {
 
     // public routes
     http.authorizeHttpRequests(
-            req -> req.requestMatchers(buildMatchers(publicPaths.toArray(new String[0]))).permitAll());
+        req -> req.requestMatchers(buildMatchers(publicPaths.toArray(new String[0]))).permitAll());
 
     // enable basic-auth and ROLE_USER for all other routes
     http.authorizeHttpRequests(req -> req.anyRequest().hasAnyRole(ROLE_USER))

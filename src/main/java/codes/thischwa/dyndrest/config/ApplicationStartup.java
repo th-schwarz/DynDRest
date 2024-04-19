@@ -7,13 +7,13 @@ import codes.thischwa.dyndrest.service.HostZoneService;
 import java.time.LocalDateTime;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -53,7 +53,7 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
   public void onApplicationEvent(final ApplicationReadyEvent event) {
     String profiles = String.join(",", env.getActiveProfiles());
     log.info("*** Settings for DynDRest:");
-    log.info("  * active profile(s): {}", StringUtils.isEmpty(profiles) ? "n/a" : profiles);
+    log.info("  * active profile(s): {}", !StringUtils.hasText(profiles) ? "n/a" : profiles);
     log.info("  * provider: {}", config.provider());
     log.info("  * greeting-enabled: {}", config.greetingEnabled());
     log.info("  * host-validation-enabled: {}", config.hostValidationEnabled());
@@ -62,6 +62,8 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
     log.info("  - spring.h2.console.enabled: {}", env.getProperty("spring.h2.console.enabled"));
     log.info("  - spring.h2.console.path: {}", env.getProperty("spring.h2.console.path"));
     log.info("  - dyndrest.database.file: {}", env.getProperty("dyndrest.database.file"));
+    log.info("  - backup enabled: {}", config.database().backup() != null && config.database().backup().enabled());
+    log.info("  - restore enabled: {}", config.database().restore() != null && config.database().restore().enabled());
     log.info("*** Endpoints:");
 
     ApplicationContext applicationContext = event.getApplicationContext();
