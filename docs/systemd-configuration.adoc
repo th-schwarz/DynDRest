@@ -22,7 +22,7 @@ WantedBy=multi-user.target
 ----
 
 ====
-Don't forget to customize user, group, the path to the jar file and the path to the logback configuration file!
+Don't forget to customize user, group and the path to the jar file!
 ====
 
 == Status Output
