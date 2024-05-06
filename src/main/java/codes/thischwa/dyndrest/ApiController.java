@@ -89,6 +89,7 @@ public class ApiController implements ApiRoutes {
       } else {
         provider.processUpdate(host, reqIpSetting);
         log.info("Updated host {} successful with: {}", host, reqIpSetting);
+        // building the update log
         updateLogService.log(host, reqIpSetting, UpdateLog.Status.success);
         return new ResponseEntity<>(HttpStatusCode.valueOf(config.updateIpChangedStatus()));
       }
@@ -97,9 +98,6 @@ public class ApiController implements ApiRoutes {
       updateLogService.log(host, reqIpSetting, UpdateLog.Status.failed);
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    // building the update log
-    updateLogService.log(host, reqIpSetting, UpdateLog.Status.success);
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
