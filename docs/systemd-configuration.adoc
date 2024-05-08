@@ -15,6 +15,7 @@ After=network.target
 User=dyndrest
 Group=dyndrest
 ExecStart=/opt/dyndrest/dyndrest.jar
+ExecStop=/bin/kill -15 $MAINPID
 SuccessExitStatus=143
 
 [Install]
