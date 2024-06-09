@@ -47,13 +47,14 @@ springdoc:
   swagger-ui:
     enabled: false
 
+##  configuration for the domain robot sdk
 domainrobot:
   default-ttl: 60
-  ## base properties for the domainrobot sdk
+  # connection properties
   autodns:
     context: 4
     url: https://api.autodns.com/v1
-  ## custom headers
+  # custom headers
   custom-header:
     X-Domainrobot-WS: NONE
 
@@ -62,6 +63,7 @@ spring:
   config:
     import: optional:file:./dyndrest.yml
 
+## database related properties
   jpa:
     show-sql: true
     database-platform: org.hibernate.dialect.H2Dialect
