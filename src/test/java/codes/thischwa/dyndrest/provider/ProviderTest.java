@@ -13,9 +13,9 @@ class ProviderTest extends AbstractIntegrationTest {
   final void test() throws ProviderException {
     TestProvider provider = new TestProvider();
 
-    IpSetting ips = provider.info("mein-email-fach.de");
+    IpSetting ips = provider.info("mein-mail-server.de");
     assertEquals(
-        "IpSetting(ipv4=mein-email-fach.de./37.120.183.96, ipv6=mein-email-fach.de./2a03:4000:4d:e8f:0:0:0:2)",
+        "IpSetting(ipv4=mein-mail-server.de./37.120.183.249, ipv6=mein-mail-server.de./2a03:4000:8:750:0:0:0:2)",
         ips.toString());
   }
 
