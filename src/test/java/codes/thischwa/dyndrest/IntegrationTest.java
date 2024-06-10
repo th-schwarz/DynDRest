@@ -7,7 +7,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import codes.thischwa.dyndrest.util.NetUtil;
-import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -27,7 +26,7 @@ class IntegrationTest extends AbstractIntegrationTest {
   @Autowired private MockMvc mockMvc;
 
   @BeforeAll
-  void init() throws UnknownHostException {
+  void init() {
     initUpdateLogDatabase();
   }
 
