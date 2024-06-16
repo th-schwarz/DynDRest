@@ -128,7 +128,6 @@ dyndrest:
 
 domainrobot:
   autodns:
-    url: https://api.autodns.com/v1    # optional
     password: pwd_t
     user: user_t
 
