@@ -1,6 +1,5 @@
 package codes.thischwa.dyndrest.model;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -9,9 +8,7 @@ import lombok.EqualsAndHashCode;
 @Data
 public class Zone extends AbstractJdbcEntity {
 
-  @NotBlank(message = "The name of the zone shouldn't be empty.")
   private String name;
 
-  @NotBlank(message = "The primary name server of the zone shouldn't be empty.")
   private String ns;
 }
