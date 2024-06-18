@@ -1,115 +1,66 @@
 :source-highlighter: highlightjs
 :highlightjs-languages: yaml
+:toc:
+:toc-title:
 
 = DynDRest Configuration
 
-All configuration properties with default settings:
+== Default settings
+
+DynDRest has a lot of configuration settings. Most of them has default settings, but they can be overwritten by the individual configuration file.
+
+Below all default settings are listed.
+
 
 [source,yaml]
 ----
-## server settings
-server:
-  address: 127.0.0.1
-  forward-headers-strategy: NATIVE
-  port: 8081
-  servlet:
-    context-path: /
-  shutdown: graceful
+include::../src/main/resources/application.yml[]
+----
 
-# management
-management:
-  endpoints:
-    enabled-by-default: false
-    web:
-      base-path: /manage
-  endpoint:
-    health:
-      enabled: true
+== Individual settings
 
-## log config
-logging:
-  config: file:./logback.xml
+The individual configuration file `dyndrest.yml` should be inside the application directory.
 
-## dyndrest config
-dyndrest:
-  provider: domainrobot
-  greeting-enabled: true
-  host-validation-enabled: true
-  # http status code for the case at least one IP has changed, e.g. 201
-  update-ip-changed-status: 200
-  update-log-page-enabled: false
-  update-log-page-size: 30
-  update-log-user-name: log-dev
-  update-log-user-password: l0g-dev
-  update-log-date-pattern: yyyy-MM-dd HH:mm:SSS
-  healthcheck-user-name: health
-  healthcheck-user-password: test123
+=== OAuth2
 
-  # database config, credentials should be set at the individual properties, mainly user and password
-  database:
-    driver-class-name: org.h2.Driver
-    jdbc-url-prefix: "jdbc:h2:file:"
-    file: ./dyndrest
-    user: dba
-    password: strong
-
-  # backup and restore settings
-    backup:
-      enabled: false
-      cron: "0 0 4 * * MON"
-      path: ./backup
-    restore:
-      enabled: false
-      path: ./restore
-    dump-file: dump.sql
-
-## disable springdoc endpoints and swagger-ui by default
-springdoc:
-  api-docs:
-    enabled: false
-  swagger-ui:
-    enabled: false
-
-domainrobot:
-  default-ttl: 60
-  ## credentials for the domainrobot sdk
-  autodns:
-    context: 4
-    url: https://api.autodns.com/v1
-    user: user_t
-    password: pwd_t
-  # set custom headers (X-Domainrobot-WS: NONE, is set by default)
-  custom-header:
-    X-Domainrobot-Stid: my-stid-123
-
-# ---------------------- non-default section -------------------
-  database:
-    password: pwd_t
-    user: user_ts
-    driver-class-name: org.h2.Driver
-    jdbc-url-prefix: "jdbc:h2:file:"
-    file: ./test-db
-    backup:
-      enabled: true
-      path: ./backup
-      cron: "0 30 4 * * SUN"
-
-## spring security
+[source,yaml]
+----
 spring:
   security:
     user:
-      name: dyndns
-      password: test123
-
-## zone and host definition for the initial import
-zones:
-- name: dynhost.info
-  ns: ns.domain.info
-  hosts:
-    - myhost:api-token123
+      name: oauthuser
+      password: oauthpasswd
 ----
 
-IMPORTANT: Keep in mind, you just have to set those properties you want to override! Your individual configuration is defined in `dyndrest.yml`, e.g. inside the application directory. To load another file you could set the following property on start: `spring.config.import: optional:file:/yourPath/yourFile`
+=== Provider settings for AutoDNS (domainrobot-sdk)
 
-The zone and host definition should be used to import hosts and zones initially. Exiting hosts and zones won't be updated!
-The configuration above defines the host _myhost.dynhost.info_ with the api-token _api-token123_ on the zone _dynhost.info_ with the primary nameserver _ns.domain.info_.
+[source,yaml]
+----
+spring:
+  security:
+    user:
+      name: oauthuser
+      password: oauthpasswd
+----
+[[backup_restore]]
+=== Backup and Restore
+
+There is a very simple cron-triggered service to dump the database regular, it's part of the database configuration:
+
+[source,yaml]
+----
+dyndrest:
+  database:
+    backup:
+      enabled: true
+      path: ./backup
+      cron: "0 30 18 * * MON"
+    restore:
+      enabled: enabled
+      path: ./restore
+    dump-file: dump.sql
+----
+
+In this example every monday at 18:30 a database dump will be written to `./backup/dump.sql`. The file will be overwritten every time!
+
+If _restore_ is enabled and the file `./restore/dump.sql` exists at start, the dump will be restored and the file renamed to `./restore/dump.sql.bak`.

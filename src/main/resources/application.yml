@@ -58,7 +58,7 @@ domainrobot:
   custom-header:
     X-Domainrobot-WS: NONE
 
-## import individual config
+## import of the individual configuration settings
 spring:
   config:
     import: optional:file:./dyndrest.yml

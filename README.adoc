@@ -1,4 +1,5 @@
 :toc:
+:toclevels: 3
 :toc-title:
 :source-highlighter: highlightjs
 :highlightjs-languages: yaml,console
@@ -107,7 +108,7 @@ AutoDNS should be defined in this file!
 link:docs/logback-configuration.adoc[Logback Configuration]. There is example which
 demonstrates, how to configure an additional file appender for the update logging, which dependents on an application property.
 
-=== Configuration example for the provider 'domainrobot'
+=== Minimal configuration example
 
 This is a minimal configuration example for your individual properties
 file `dyndrest.yml` using the provider _domainrobot_:
@@ -142,29 +143,17 @@ The `zones` section should be used for importing the hosts and zones configurati
 
 NOTE: This project uses _spring-doc_ to document the routes. The endpoints for this and the _swagger-ui_ are disabled by default!
 
-==== Backup and Restore
+=== Backup and Restore of the Database
 
-There is a very simple cron-triggered service to dump the database regulary. The configuration is part of the database configuration:
+There are 2 very basic configurations:
 
-[source,yaml]
-----
-dyndrest:
-  database:
-    backup:
-      enabled: true
-      path: ./backup
-      cron: "0 30 18 * * MON"
-    restore:
-      enabled: enabled
-      path: ./restore
-    dump-file: dump.sql
-----
+- Backup: A cron-triggered service to dump the database regular.
 
-In this example every monday at 18:30 a database dump will be written to `./backup/dump.sql`. The file will be overwritten every time!
+- Restore: Very basic strategy, if _restore_ is enabled and the file `./restore/dump.sql` exists at start, the dump will be restored and the file renamed to `./restore/dump.sql.bak`.
 
-If _restore_ is enabled and the file `./restore/dump.sql` exists at start, the dump will be restored and the file renamed to `./restore/dump.sql.bak`.
+Or further info, see <<docs/dyndrest-configuration.adoc#backup_restore, Backup & Restore>>
 
-==== Suggested AutoDNS setup
+=== Suggested AutoDNS setup
 
 For security reasons, it makes sense to create a separate owner for the
 zones updated by DynDRest. This owner just needs the permission for
