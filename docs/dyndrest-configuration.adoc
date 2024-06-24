@@ -58,7 +58,7 @@ dyndrest:
     restore:
       enabled: enabled
       path: ./restore
-    dump-file: dump.sql
+    dump-file: dump.sql.bak
 ----
 
 In this example every monday at 18:30 a database dump will be written to `./backup/dump.sql`. The file will be overwritten every time!

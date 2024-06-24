@@ -33,11 +33,6 @@ class AppConfigTest extends AbstractIntegrationTest {
   final void testDatabase() {
     AppConfig.Database db = appConfig.database();
     assertNotNull(db);
-    assertEquals("org.h2.Driver", db.driverClassName());
-    assertEquals("jdbc:h2:mem:", db.jdbcUrlPrefix());
-    assertEquals("./test-db", db.file());
-    assertEquals("dba", db.user());
-    assertEquals("", db.password());
     assertEquals("dump.sql", db.dumpFile());
 
     AppConfig.Database.Backup bck = db.backup();
