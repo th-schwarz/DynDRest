@@ -22,6 +22,11 @@ public record AppConfig(
 
   /** Represents a configuration class for a database connection. */
   public record Database(
+      String driverClassName,
+      String jdbcUrlPrefix,
+      String file,
+      String user,
+      String password,
       String dumpFile,
       @Nullable Backup backup,
       @Nullable Restore restore) {
