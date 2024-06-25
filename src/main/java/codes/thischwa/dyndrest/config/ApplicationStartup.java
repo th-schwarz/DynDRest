@@ -32,11 +32,12 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
   private final UpdateLogRepo updateLogRepo;
 
   /**
-   * The ApplicationStartup constructor initializes the ApplicationStartup object.
+   * Initializes the application on startup.
    *
-   * @param config The base configuration of the application.
-   * @param env The environment settings.
-   * @param hostZoneService The HostZoneService.
+   * @param config the application configuration
+   * @param env the application environment
+   * @param hostZoneService the host zone service
+   * @param updateLogRepo the update log repository
    */
   public ApplicationStartup(
       AppConfig config,
@@ -62,8 +63,12 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
     log.info("  - spring.h2.console.enabled: {}", env.getProperty("spring.h2.console.enabled"));
     log.info("  - spring.h2.console.path: {}", env.getProperty("spring.h2.console.path"));
     log.info("  - dyndrest.database.file: {}", env.getProperty("dyndrest.database.file"));
-    log.info("  - backup enabled: {}", config.database().backup() != null && config.database().backup().enabled());
-    log.info("  - restore enabled: {}", config.database().restore() != null && config.database().restore().enabled());
+    log.info(
+        "  - backup enabled: {}",
+        config.database().backup() != null && config.database().backup().enabled());
+    log.info(
+        "  - restore enabled: {}",
+        config.database().restore() != null && config.database().restore().enabled());
     log.info("*** Endpoints:");
 
     ApplicationContext applicationContext = event.getApplicationContext();
@@ -72,7 +77,6 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
             "requestMappingHandlerMapping", RequestMappingHandlerMapping.class);
     Map<RequestMappingInfo, HandlerMethod> map = requestMappingHandlerMapping.getHandlerMethods();
     map.forEach((key, value) -> log.info("  * {}", key));
-
     hostZoneService.importOnStart();
     // buildDummyUpdateLogs();
   }

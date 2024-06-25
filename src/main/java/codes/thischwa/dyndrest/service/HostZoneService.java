@@ -112,11 +112,11 @@ public class HostZoneService {
     for (FullHost fullHost : hostsToSave) {
       Zone zone = getZone(fullHost.getZone());
       if (zone == null) {
-        Zone tmoZone = new Zone();
-        tmoZone.setName(fullHost.getZone());
-        tmoZone.setNs(fullHost.getNs());
-        saveOrUpdate(tmoZone);
-        fullHost.setZoneId(tmoZone.getId());
+        Zone tmpZone = new Zone();
+        tmpZone.setName(fullHost.getZone());
+        tmpZone.setNs(fullHost.getNs());
+        saveOrUpdate(tmpZone);
+        fullHost.setZoneId(tmpZone.getId());
       } else {
         fullHost.setZoneId(zone.getId());
       }

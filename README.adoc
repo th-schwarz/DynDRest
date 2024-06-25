@@ -89,9 +89,9 @@ Here is the suggested file structure:
 │   ├── logback.xml    (logback configuration)
 │   ├── dyndrest.mv.db  (h2 database file)
 │   ├── /backup
-│       ├── dump.sql.bak   (optional backup of the database)
+│       ├── dump.sql   (optional backup of the database)
 │   ├── /restore
-│       ├── dump.sql.bak   (optional dump of the database to restore)
+│       ├── dump.sql   (optional dump of the database to restore)
 │   ├── /log
 │       ├── dyndrest.log   (application log)
 ----
