@@ -17,7 +17,7 @@ import org.springframework.lang.Nullable;
 
 /** This class provides database restore functionality based on the provided configuration. */
 @Slf4j
-public class RestoreService {
+public class DatabaseRestoreHandler {
 
   private final JdbcTemplate jdbcTemplate;
 
@@ -35,7 +35,7 @@ public class RestoreService {
    * classpath resource). If the restore functionality is enabled and the restore path exists, it
    * restores the database from the dump file and moves the dump file to a backup location.
    */
-  public RestoreService(AppConfig appConfig, DataSource dataSource) {
+  public DatabaseRestoreHandler(AppConfig appConfig, DataSource dataSource) {
     AppConfig.Database databaseConfig = appConfig.database();
     this.jdbcTemplate = new JdbcTemplate(dataSource);
 
