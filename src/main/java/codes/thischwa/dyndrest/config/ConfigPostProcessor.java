@@ -32,6 +32,18 @@ public class ConfigPostProcessor implements BeanPostProcessor {
         .postProcessBeforeInitialization(bean, beanName);
   }
 
+  /**
+   * Performs post-processing after bean initialization. If the bean is an instance of {@link DataSource},
+   * it assigns it to the {@link ConfigPostProcessor#dataSource} field. If the bean is an instance of {@link AppConfig},
+   * it assigns it to the {@link ConfigPostProcessor#appConfig} field. If both beans are found,
+   * the {@link RestoreService#restore()} method will be called. If an exception occurs during the restore process,
+   * it wraps the exception and throws a {@link BeanInitializationException}.
+   *
+   * @param bean The initialized bean object.
+   * @param beanName The name of the bean.
+   * @return The post-processed bean object.
+   * @throws BeansException if an error occurs during the bean post-processing.
+   */
   @Nullable
   @Override
   public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
