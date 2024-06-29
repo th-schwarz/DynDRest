@@ -61,6 +61,12 @@ public class SecurityConfig {
   @Value("${management.endpoint.health.enabled}")
   private boolean healthEnabled;
 
+  /**
+   * Constructs a SecurityConfig object with the given AppConfig and Environment.
+   *
+   * @param appConfig The AppConfig object containing application configuration.
+   * @param env The Environment object containing environment-specific information.
+   */
   public SecurityConfig(AppConfig appConfig, Environment env) {
     this.appConfig = appConfig;
     this.env = env;
