@@ -48,11 +48,11 @@ public class ConfigPostProcessor implements BeanPostProcessor {
   @Nullable
   @Override
   public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-    if (bean instanceof DataSource) {
-      dataSource = (DataSource) bean;
+    if (bean instanceof DataSource ds) {
+      dataSource = ds;
     }
-    if (bean instanceof AppConfig) {
-      appConfig = (AppConfig) bean;
+    if (bean instanceof AppConfig ac) {
+      appConfig = ac;
     }
     if (!processed && dataSource != null && appConfig != null) {
       log.info("*** Relevant beans found!");

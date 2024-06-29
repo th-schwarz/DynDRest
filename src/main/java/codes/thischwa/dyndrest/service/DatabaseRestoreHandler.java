@@ -90,7 +90,7 @@ public class DatabaseRestoreHandler {
   private boolean isDatabaseEmpty() {
     String query = "SELECT count(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'PUBLIC'";
     Integer count = jdbcTemplate.queryForObject(query, Integer.class);
-    return count == 0;
+    return count == null || count == 0;
   }
 
   private void populate(DataSource ds) {
