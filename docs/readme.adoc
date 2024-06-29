@@ -3,6 +3,4 @@
 
 * link:dyndrest-configuration.adoc[Complete DynDRest Configuration]
 
-* link:logback-configuration.adoc[Logback Configuration]
-
 * link:systemd-configuration.adoc[Example of a systemd Configuration]
