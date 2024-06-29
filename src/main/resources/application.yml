@@ -28,10 +28,7 @@ dyndrest:
   update-log-date-pattern: yyyy-MM-dd HH:mm:ss
   # database config, credentials should be set at the individual properties
   database:
-    driver-class-name: org.h2.Driver
-    jdbc-url-prefix: "jdbc:h2:file:"
     file: ./dyndrest
-    user: dba
     backup:
       enabled: false
       path: ./backup
@@ -62,6 +59,11 @@ domainrobot:
 spring:
   config:
     import: optional:file:./dyndrest.yml
+
+  ## the datasource
+  datasource:
+    url: jdbc:h2:file:./dyndrest
+    driverClassName: org.h2.Driver
 
 ## database related properties
   jpa:

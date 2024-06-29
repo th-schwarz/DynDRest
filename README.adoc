@@ -119,6 +119,10 @@ spring:
       name: dyndns
       password: test123
 
+  datasource:
+    username: dba
+    password: secretpwd
+
 logging:
   config: file:./logback.xml
 
