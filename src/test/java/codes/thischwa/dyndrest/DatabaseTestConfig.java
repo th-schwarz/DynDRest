@@ -22,7 +22,8 @@ class DatabaseTestConfig extends AbstractJdbcConfiguration {
         .setScriptEncoding("UTF-8")
         .ignoreFailedDrops(true)
         .continueOnError(true)
-        .addScript("classpath:/h2/dump.sql")
+        //.addScript("classpath:/h2/dump.sql")
+            .addScript("file:./target/test-classes/h2/dump.sql")
         .build();
   }
 }
