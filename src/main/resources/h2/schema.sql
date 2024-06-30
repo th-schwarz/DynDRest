@@ -28,7 +28,7 @@ create table HOST
 
 comment on column HOST.NAME is 'prefix of the full host name';
 
-create table PUBLIC.UPDATE_LOG
+create table UPDATE_LOG
 (
     ID             INTEGER auto_increment primary key,
     HOST_ID        INTEGER not null,
