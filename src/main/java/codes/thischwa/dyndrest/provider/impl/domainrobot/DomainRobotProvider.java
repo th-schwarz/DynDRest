@@ -73,8 +73,12 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
   }
 
   private void checkHosts(Zone zone) throws IllegalArgumentException {
-    List<FullHost> hosts = hostZoneService.findHostsOfZone(zone.getOrigin());
-    for (FullHost host : hosts) {
+    Optional<List<FullHost>> opt = hostZoneService.findHostsOfZone(zone.getOrigin());
+    if (opt.isEmpty()){
+      log.warn("No hosts found for zone: {}", zone.getOrigin());
+      return;
+    }
+    for (FullHost host : opt.get()) {
       if (zcw.hasSubTld(zone, host.getName())) {
         log.info("Host confirmed: {}", host.getFullHost());
       } else {

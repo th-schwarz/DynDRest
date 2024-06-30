@@ -169,13 +169,13 @@ public class HostZoneService {
    *
    * @param zoneName the name of the zone to find hosts for
    * @return a list of FullHost objects representing the hosts in the specified zone
-   * @throws IllegalArgumentException if the specified zone is not configured
    */
-  public List<FullHost> findHostsOfZone(String zoneName) {
+  public Optional<List<FullHost>> findHostsOfZone(String zoneName) {
     Zone zone = zoneRepo.findByName(zoneName);
     if (zone == null) {
-      throw new IllegalArgumentException("Zone isn't configured: " + zoneName);
+      log.warn("Zone isn't configured: " + zoneName);
+      return Optional.empty();
     }
-    return hostRepo.findByZoneId(zone.getId());
+    return Optional.of(hostRepo.findByZoneId(zone.getId()));
   }
 }

@@ -9,17 +9,20 @@ import codes.thischwa.dyndrest.model.Zone;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.test.annotation.Rollback;
 
-@Rollback
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class HostZoneServiceTest extends AbstractIntegrationTest {
 
   @Autowired private HostZoneService service;
 
+  @Order(1)
   @Test
   void testGetConfiguredHosts() {
     List<FullHost> fullHosts = service.getConfiguredHosts();
@@ -32,6 +35,7 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     assertEquals("ns0.domain.info", host.getNs());
   }
 
+  @Order(2)
   @Test
   void testGetConfiguredZones() {
     List<Zone> zones = service.getConfiguredZones();
@@ -41,12 +45,14 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     assertEquals("ns1.domain.info", zone.getNs());
   }
 
+  @Order(3)
   @Test
   void testHostExists() {
     assertTrue(service.hostExists("my0.dynhost0.info"));
     assertFalse(service.hostExists("unknown"));
   }
 
+  @Order(4)
   @Test
   void testGetHost() {
     Optional<FullHost> optHost = service.getHost("my0.dynhost0.info");
@@ -62,6 +68,45 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     assertFalse(service.getHost("unknown").isPresent());
   }
 
+  @Order(5)
+  @Test
+  void testValidate() {
+    assertTrue(service.validate("my0.dynhost0.info", "1234567890abcdef"));
+    assertFalse(service.validate("my0.dynhost0.info", "1234567890abcdefx"));
+
+    assertThrows(EmptyResultDataAccessException.class, () -> service.validate("unknown", "token"));
+  }
+
+  @Order(6)
+  @Test
+  void testFindHostsOfZone() {
+    Optional<List<FullHost>> optional = service.findHostsOfZone("dynhost0.info");
+    assertFalse(optional.isEmpty());
+    List<FullHost> hosts = optional.get();
+    assertEquals(2, hosts.size());
+    FullHost host = hosts.get(0);
+    assertEquals(1, host.getId());
+    assertEquals("my0.dynhost0.info", host.getFullHost());
+    assertEquals("ns0.domain.info", host.getNs());
+    assertEquals("1234567890abcdef", host.getApiToken());
+    assertEquals(1, host.getZoneId());
+    assertEquals("dynhost0.info", host.getZone());
+
+    optional = service.findHostsOfZone("unknown");
+    assertTrue(optional.isEmpty());
+  }
+
+  @Order(7)
+  @Test
+  void testImportOnStart() {
+    assertEquals(2, service.getConfiguredZones().size());
+    assertEquals(4, service.getConfiguredHosts().size());
+    service.importOnStart();
+    assertEquals(3, service.getConfiguredZones().size());
+    assertEquals(7, service.getConfiguredHosts().size());
+  }
+
+  @Order(8)
   @Test
   void testSaveUpdateHost() {
     int hostCnt = service.getConfiguredHosts().size();
@@ -96,6 +141,7 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     assertTrue(oldChanged.isBefore(host.getChanged()));
   }
 
+  @Order(9)
   @Test
   void testSaveFullHost() {
     FullHost fullHost = new FullHost();
@@ -114,6 +160,7 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     }
   }
 
+  @Order(10)
   @Test
   void testSaveZone() {
     Zone zone = new Zone();
@@ -129,22 +176,5 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     } catch (Exception e) {
       assertEquals(DuplicateKeyException.class, e.getCause().getClass());
     }
-  }
-
-  @Test
-  void testValidate() {
-    assertTrue(service.validate("my0.dynhost0.info", "1234567890abcdef"));
-    assertFalse(service.validate("my0.dynhost0.info", "1234567890abcdefx"));
-
-    assertThrows(EmptyResultDataAccessException.class, () -> service.validate("unknown", "token"));
-  }
-
-  @Test
-  void testImportOnStart() {
-    assertEquals(2, service.getConfiguredZones().size());
-    assertEquals(4, service.getConfiguredHosts().size());
-    service.importOnStart();
-    assertEquals(3, service.getConfiguredZones().size());
-    assertEquals(7, service.getConfiguredHosts().size());
   }
 }

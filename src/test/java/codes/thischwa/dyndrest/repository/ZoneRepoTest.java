@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import codes.thischwa.dyndrest.AbstractIntegrationTest;
 import codes.thischwa.dyndrest.model.Zone;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,5 +31,43 @@ class ZoneRepoTest extends AbstractIntegrationTest {
     assertEquals("2024-01-28T12:00:37.013707", zone.getChanged().toString());
 
     assertNull(repo.findByName("unknown"));
+  }
+
+  @Test
+  void testUpdate() {
+    Zone zone = new Zone();
+    zone.setName("newzone2.info");
+    zone.setNs("new2.ns.info");
+    zone.setChanged(LocalDateTime.now());
+    repo.save(zone);
+
+    zone = repo.findByName("newzone2.info");
+    assertEquals("new2.ns.info", zone.getNs());
+    zone.setNs("ns2.new.info");
+    repo.save(zone);
+
+    zone = repo.findByName("newzone2.info");
+    assertEquals("ns2.new.info", zone.getNs());
+
+    repo.delete(zone);
+
+    zone = repo.findByName("newzone2.info");
+    assertNull(zone);
+  }
+
+  @Test
+  void testSave() {
+    Zone zone = new Zone();
+    zone.setName("newzone1.info");
+    zone.setNs("new1.ns.info");
+    zone.setChanged(LocalDateTime.now());
+    repo.save(zone);
+
+    zone = repo.findByName("newzone1.info");
+    assertEquals("new1.ns.info", zone.getNs());
+
+    repo.delete(zone);
+    zone = repo.findByName("newzone1.info");
+    assertNull(zone);
   }
 }
