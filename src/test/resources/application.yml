@@ -46,10 +46,6 @@ dyndrest:
   healthcheck-user-name: health
   healthcheck-user-password: hea1th
   database:
-    driver-class-name: org.h2.Driver
-    jdbc-url-prefix: "jdbc:h2:mem:"
-    file: ./test-db
-    user: dba
     password:
     backup:
       enabled: true
