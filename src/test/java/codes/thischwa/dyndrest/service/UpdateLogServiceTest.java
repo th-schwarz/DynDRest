@@ -8,30 +8,19 @@ import codes.thischwa.dyndrest.model.FullUpdateLog;
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.model.UpdateLog;
 import java.net.UnknownHostException;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UpdateLogServiceTest extends AbstractIntegrationTest {
 
   @Autowired private UpdateLogService updateLogService;
 
-  @Test
-  void testLog() throws UnknownHostException {
-    assertEquals(42, updateLogService.count());
-    updateLogService.log("my0.dynhost0.info", new IpSetting("129.0.0.3"), UpdateLog.Status.success);
-    assertEquals(43, updateLogService.count());
-  }
-
-  @Test
-  void testLog_unknown() {
-    assertThrows(
-        IllegalArgumentException.class,
-        () ->
-            updateLogService.log(
-                "unknown.dynhost0.info", new IpSetting("129.0.0.3"), UpdateLog.Status.success));
-  }
-
+  @Order(1)
   @Test
   void testGetPage() {
     Page<FullUpdateLog> page = updateLogService.getPage(0);
@@ -73,5 +62,23 @@ class UpdateLogServiceTest extends AbstractIntegrationTest {
     assertEquals(UpdateLog.Status.failed, log.getStatus());
     assertNull(log.getChangedUpdate());
     assertEquals(START_DATETIME.withHour(13).withMinute(30), log.getChanged());
+  }
+
+  @Order(2)
+  @Test
+  void testLog_unknown() {
+    assertThrows(
+            IllegalArgumentException.class,
+            () ->
+                    updateLogService.log(
+                            "unknown.dynhost0.info", new IpSetting("129.0.0.3"), UpdateLog.Status.success));
+  }
+
+  @Order(3)
+  @Test
+  void testLog() throws UnknownHostException {
+    assertEquals(42, updateLogService.count());
+    updateLogService.log("my0.dynhost0.info", new IpSetting("129.0.0.3"), UpdateLog.Status.success);
+    assertEquals(43, updateLogService.count());
   }
 }
