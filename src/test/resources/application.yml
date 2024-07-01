@@ -9,6 +9,18 @@ spring:
   h2:
     console.enabled: true
 
+  datasource:
+    url: jdbc:h2:mem:dyndrest;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false
+    driverClassName: org.h2.Driver
+    username: dba
+
+  sql:
+    init:
+      schema-locations: classpath:h2/dump.sql
+
+  jpa:
+    show-sql: true
+
 server:
   address: 127.0.0.1
   port: 8081
