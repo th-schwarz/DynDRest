@@ -5,9 +5,10 @@ on:
     branches:
       - develop
       - feature*
+      - git-action-test
+
   pull_request:
     types: [ opened, synchronize, reopened ]
-
 
 jobs:
 
@@ -22,8 +23,12 @@ jobs:
           distribution: 'corretto'
           architecture: x64
           cache: maven
+      - name: generate classpath.txt
+        run: mvn dependency:build-classpath -Dmdep.outputFile=classpath.txt
+      - run: echo classpath.txt
+      - run: echo ":src/test/resources" >> classpath.txt
       - name: Build with Maven
-        run: mvn verify
+        run: mvn -DtestClasspath=classpath.txt verify
 
   sonarcloud-scan:
     needs: mvn-build
