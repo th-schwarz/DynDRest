@@ -2,10 +2,6 @@ name: Build and Analyse
 
 on:
   push:
-    branches:
-      - develop
-      - feature*
-      - git-action-test
 
   pull_request:
     types: [ opened, synchronize, reopened ]
