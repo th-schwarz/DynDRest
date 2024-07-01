@@ -21,8 +21,9 @@ jobs:
           cache: maven
       - name: generate classpath.txt
         run: mvn dependency:build-classpath -Dmdep.outputFile=classpath.txt
-      - run: echo classpath.txt
+      - run: cat classpath.txt
       - run: echo ":src/test/resources" >> classpath.txt
+      - run: cat classpath.txt
       - name: Build with Maven
         run: mvn -DtestClasspath=classpath.txt verify
 
