@@ -10,6 +10,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 /** This class provides database restore functionality based on the provided configuration. */
 @Service
+@Profile("!test")
 @Slf4j
 public class DatabaseRestoreHandler extends PostProcessor {
 
