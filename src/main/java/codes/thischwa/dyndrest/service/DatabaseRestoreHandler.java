@@ -1,11 +1,13 @@
 package codes.thischwa.dyndrest.service;
 
 import codes.thischwa.dyndrest.config.AppConfig;
+import codes.thischwa.dyndrest.config.PostProcessor;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Collection;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
@@ -14,14 +16,16 @@ import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Service;
 
 /** This class provides database restore functionality based on the provided configuration. */
+@Service
 @Slf4j
-public class DatabaseRestoreHandler {
+public class DatabaseRestoreHandler extends PostProcessor {
 
-  private final JdbcTemplate jdbcTemplate;
+  private JdbcTemplate jdbcTemplate;
 
-  private final boolean dbExists;
+  private boolean dbExists;
 
   private boolean restoreEnabled;
 
@@ -29,13 +33,16 @@ public class DatabaseRestoreHandler {
 
   @Nullable private Path restorePathBak = null;
 
-  /**
-   * This method restores the database based on the provided configuration. If the database is
-   * empty, it populates it with the provided schema file (either from the restore path or a default
-   * classpath resource). If the restore functionality is enabled and the restore path exists, it
-   * restores the database from the dump file and moves the dump file to a backup location.
-   */
-  public DatabaseRestoreHandler(AppConfig appConfig, DataSource dataSource) {
+  @Override
+  public void process(Collection<Object> wantedBeans) throws Exception {
+    AppConfig appConfig = (AppConfig) wantedBeans.stream()
+          .filter(bean -> bean instanceof AppConfig)
+          .findFirst()
+          .orElseThrow(() -> new IllegalStateException("AppConfig not found."));
+    DataSource dataSource = (DataSource) wantedBeans.stream()
+            .filter(bean -> bean instanceof DataSource)
+            .findFirst()
+            .orElseThrow(() -> new IllegalStateException("Datasource not found."));
     AppConfig.Database databaseConfig = appConfig.database();
     this.jdbcTemplate = new JdbcTemplate(dataSource);
 
@@ -58,6 +65,7 @@ public class DatabaseRestoreHandler {
     } else {
       restoreEnabled = false;
     }
+    restore();
   }
 
   /**
@@ -82,7 +90,7 @@ public class DatabaseRestoreHandler {
         }
       }
     } else {
-      log.info("Embedded database not found!");
+      log.info("Embedded database is empty, try restore it from the last dump!");
       populate(ds);
     }
   }
@@ -102,5 +110,10 @@ public class DatabaseRestoreHandler {
         new ResourceDatabasePopulator(false, false, "UTF-8", dbResource);
     resourceDatabasePopulator.execute(ds);
     log.info("Database successful populated from {}", dbResource);
+  }
+
+  @Override
+  public Class[] getWanted() {
+    return new Class[] {AppConfig.class, DataSource.class};
   }
 }
