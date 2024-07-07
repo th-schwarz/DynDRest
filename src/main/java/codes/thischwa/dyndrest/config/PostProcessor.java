@@ -51,6 +51,22 @@ public abstract class PostProcessor implements BeanPostProcessor {
   @Nullable
   @Override
   public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+    processBean(bean);
+    if (!processed && wanted.isEmpty()) {
+      log.info("*** Wanted beans found!");
+      try {
+        process(initialized);
+      } catch (Exception e) {
+        throw new BeanInitializationException(
+            "Error while processing " + this.getClass().getName(), e);
+      }
+      processed = true;
+    }
+
+    return BeanPostProcessor.super.postProcessAfterInitialization(bean, beanName);
+  }
+
+  private void processBean(Object bean) {
     Collection<Class<?>> toBeRemoved = new HashSet<>();
     for (Class<?> wantedBean : wanted) {
       if (wantedBean.isInstance(bean) && !initialized.contains(bean)) {
@@ -59,17 +75,5 @@ public abstract class PostProcessor implements BeanPostProcessor {
       }
     }
     wanted.removeAll(toBeRemoved);
-    if (!processed && wanted.isEmpty()) {
-      log.info("*** Relevant beans found!");
-      try {
-        process(initialized);
-      } catch (Exception e) {
-        throw new BeanInitializationException(
-            "Error while processing " + this.getClass().getName());
-      }
-      processed = true;
-    }
-
-    return BeanPostProcessor.super.postProcessAfterInitialization(bean, beanName);
   }
 }
