@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.context.annotation.Profile;
 import org.springframework.lang.Nullable;
 
 /**
@@ -15,7 +14,6 @@ import org.springframework.lang.Nullable;
  * configuration. This class is responsible for restoring the database if all the necessary
  * conditions are met.
  */
-@Profile("!test")
 @Slf4j
 public abstract class PostProcessor implements BeanPostProcessor {
 

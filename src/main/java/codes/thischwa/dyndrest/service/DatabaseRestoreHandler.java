@@ -38,11 +38,11 @@ public class DatabaseRestoreHandler extends PostProcessor {
   @Override
   public void process(Collection<Object> wantedBeans) throws Exception {
     AppConfig appConfig = (AppConfig) wantedBeans.stream()
-          .filter(bean -> bean instanceof AppConfig)
+          .filter(AppConfig.class::isInstance)
           .findFirst()
           .orElseThrow(() -> new IllegalStateException("AppConfig not found."));
     DataSource dataSource = (DataSource) wantedBeans.stream()
-            .filter(bean -> bean instanceof DataSource)
+            .filter(DataSource.class::isInstance)
             .findFirst()
             .orElseThrow(() -> new IllegalStateException("Datasource not found."));
     AppConfig.Database databaseConfig = appConfig.database();
