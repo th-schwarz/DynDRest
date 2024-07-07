@@ -82,16 +82,21 @@ public class DatabaseRestoreHandler extends PostProcessor {
         assert restorePath != null;
         assert restorePathBak != null;
         populate(ds);
-        try {
-          Files.move(restorePath, restorePathBak, StandardCopyOption.REPLACE_EXISTING);
-          log.info("Database restored successful, restore dump has moved to: {}", restorePathBak);
-        } catch (IOException e) {
-          throw new RuntimeException(e);
-        }
+        renameDump();
       }
     } else {
       log.info("Embedded database is empty, try restore it from the last dump!");
       populate(ds);
+      renameDump();
+    }
+  }
+
+  private void renameDump() {
+    try {
+      Files.move(restorePath, restorePathBak, StandardCopyOption.REPLACE_EXISTING);
+      log.info("Database restored successful, restore dump has moved to: {}", restorePathBak);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
   }
 
@@ -113,7 +118,7 @@ public class DatabaseRestoreHandler extends PostProcessor {
   }
 
   @Override
-  public Class[] getWanted() {
-    return new Class[] {AppConfig.class, DataSource.class};
+  public Class<?>[] getWanted() {
+    return new Class<?>[] {AppConfig.class, DataSource.class};
   }
 }

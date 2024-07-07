@@ -19,7 +19,7 @@ import org.springframework.lang.Nullable;
 @Slf4j
 public abstract class PostProcessor implements BeanPostProcessor {
 
-  private final Collection<Class> wanted;
+  private final Collection<Class<?>> wanted;
   private final Collection<Object> initialized = new HashSet<>();
   private boolean processed;
 
@@ -28,7 +28,7 @@ public abstract class PostProcessor implements BeanPostProcessor {
     Collections.addAll(wanted, getWanted());
   }
 
-  public abstract Class[] getWanted();
+  public abstract Class<?>[] getWanted();
 
   public abstract void process(Collection<Object> wantedBeans) throws Exception;
 
@@ -53,7 +53,7 @@ public abstract class PostProcessor implements BeanPostProcessor {
   @Nullable
   @Override
   public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-    Collection<Class> toBeRemoved = new HashSet<>();
+    Collection<Class<?>> toBeRemoved = new HashSet<>();
     for (Class<?> wantedBean : wanted) {
       if (wantedBean.isInstance(bean) && !initialized.contains(bean)) {
         initialized.add(bean);
