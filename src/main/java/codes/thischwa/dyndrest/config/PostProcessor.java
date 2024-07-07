@@ -17,17 +17,27 @@ import org.springframework.lang.Nullable;
 @Slf4j
 public abstract class PostProcessor implements BeanPostProcessor {
 
-  private final Collection<Class<?>> wanted;
+  private final Collection<Class<?>> wanted = new HashSet<>();
   private final Collection<Object> initialized = new HashSet<>();
   private boolean processed;
 
   public PostProcessor() {
-    wanted = new HashSet<>();
     Collections.addAll(wanted, getWanted());
   }
 
+  /**
+   * Retrieves the array of spring-managed bean classes that should be fetched by the post-processor.
+   *
+   * @return The array of classes.
+   */
   public abstract Class<?>[] getWanted();
 
+  /**
+   * Starts the process with the desired spring managed beans.
+   *
+   * @param wantedBeans The collection of Spring bean instances to be processed.
+   * @throws Exception if an error occurs during the processing.
+   */
   public abstract void process(Collection<Object> wantedBeans) throws Exception;
 
   @Nullable
