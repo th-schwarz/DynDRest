@@ -37,37 +37,54 @@ public class DatabaseRestoreHandler extends PostProcessor {
 
   @Override
   public void process(Collection<Object> wantedBeans) throws Exception {
-    AppConfig appConfig = (AppConfig) wantedBeans.stream()
-          .filter(AppConfig.class::isInstance)
-          .findFirst()
-          .orElseThrow(() -> new IllegalStateException("AppConfig not found."));
-    DataSource dataSource = (DataSource) wantedBeans.stream()
+    setupRestorationParams(wantedBeans);
+    if ((!dbExists && !restoreEnabled) || (dbExists && restoreEnabled)) {
+      restore();
+    }
+  }
+
+  private void setupRestorationParams(Collection<Object> wantedBeans) {
+    AppConfig appConfig = getAppConfig(wantedBeans);
+    jdbcTemplate = new JdbcTemplate(getDataSource(wantedBeans));
+    dbExists = !isDatabaseEmpty();
+
+    AppConfig.Database databaseConfig = appConfig.database();
+    AppConfig.Database.Restore dbRestore = databaseConfig.restore();
+
+    if (dbRestore != null && dbRestore.enabled()) {
+      setupRestorePath(databaseConfig, dbRestore);
+    }
+  }
+
+  private AppConfig getAppConfig(Collection<Object> wantedBeans) {
+    return (AppConfig)
+        wantedBeans.stream()
+            .filter(AppConfig.class::isInstance)
+            .findFirst()
+            .orElseThrow(() -> new IllegalStateException("AppConfig not found."));
+  }
+
+  private DataSource getDataSource(Collection<Object> wantedBeans) {
+    return (DataSource)
+        wantedBeans.stream()
             .filter(DataSource.class::isInstance)
             .findFirst()
             .orElseThrow(() -> new IllegalStateException("Datasource not found."));
-    AppConfig.Database databaseConfig = appConfig.database();
-    this.jdbcTemplate = new JdbcTemplate(dataSource);
+  }
 
-    dbExists = !isDatabaseEmpty();
-    AppConfig.Database.Restore dbRestore = databaseConfig.restore();
-    if (dbRestore == null) {
-      restoreEnabled = false;
-      return;
-    }
-    if (dbRestore.enabled()) {
-      restorePath = Paths.get(dbRestore.path(), databaseConfig.dumpFile()).normalize();
-      if (Files.exists(restorePath)) {
-        log.info("Database restore enabled and path exists: {}", restorePath);
-        restoreEnabled = true;
-        restorePathBak =
-            Paths.get(dbRestore.path(), databaseConfig.dumpFile() + ".bak").normalize();
-      } else {
-        log.warn("Database restore is enabled, but path does not exist: {}", restorePath);
-      }
+  private void setupRestorePath(
+      AppConfig.Database databaseConfig, AppConfig.Database.Restore dbRestore) {
+    restorePath = Paths.get(dbRestore.path(), databaseConfig.dumpFile()).normalize();
+
+    if (Files.exists(restorePath)) {
+      restoreEnabled = true;
+      restorePathBak = Paths.get(dbRestore.path(), databaseConfig.dumpFile() + ".bak").normalize();
+      log.info("Database restore enabled and path exists: {}", restorePath);
     } else {
+      log.warn("Database restore is enabled, but path does not exist: {}", restorePath);
       restoreEnabled = false;
+      restorePath = null;
     }
-    restore();
   }
 
   /**
@@ -83,13 +100,21 @@ public class DatabaseRestoreHandler extends PostProcessor {
       if (restoreEnabled) {
         assert restorePath != null;
         assert restorePathBak != null;
+        log.info("Database exists and restore is enabled, try to restore it from the last dump.");
         populate(ds);
         renameDump();
       }
     } else {
-      log.info("Embedded database is empty, try restore it from the last dump!");
-      populate(ds);
-      renameDump();
+      if (restoreEnabled) {
+        log.info(
+            "Embedded database doesn't exists and restore is enabled, try restore it from the last dump!");
+        populate(ds);
+        renameDump();
+      } else {
+        log.info(
+            "Embedded database doesn't exists and restore is disabled, try restore the schema!");
+        populate(ds);
+      }
     }
   }
 

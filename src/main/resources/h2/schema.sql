@@ -23,7 +23,7 @@ create table HOST
     constraint HOST_UNIQUE
         unique (ZONE_ID, NAME),
     constraint HOST_ZONE_ID___FK
-        foreign key (ZONE_ID) references ZONE
+        foreign key (ZONE_ID) references ZONE  on delete cascade
 );
 
 comment on column HOST.NAME is 'prefix of the full host name';
@@ -38,7 +38,7 @@ create table UPDATE_LOG
     CHANGED_UPDATE TIMESTAMP,
     STATUS         ENUM ('success', 'failed'),
     constraint HOST_ID___FK
-        foreign key (HOST_ID) references PUBLIC.HOST
+        foreign key (HOST_ID) references HOST on delete cascade
 );
 
 

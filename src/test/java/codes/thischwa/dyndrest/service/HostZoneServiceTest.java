@@ -9,6 +9,8 @@ import codes.thischwa.dyndrest.model.Zone;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
+import codes.thischwa.dyndrest.repository.UpdateLogRepo;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -21,6 +23,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 class HostZoneServiceTest extends AbstractIntegrationTest {
 
   @Autowired private HostZoneService service;
+
+  @Autowired private UpdateLogRepo logRepo;
 
   @Order(1)
   @Test
@@ -40,7 +44,10 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
   void testGetConfiguredZones() {
     List<Zone> zones = service.getConfiguredZones();
     assertEquals(2, zones.size());
-    Zone zone = zones.get(1);
+    Zone zone = zones.get(0);
+    assertEquals("dynhost0.info", zone.getName());
+    assertEquals("ns0.domain.info", zone.getNs());
+    zone = zones.get(1);
     assertEquals("dynhost1.info", zone.getName());
     assertEquals("ns1.domain.info", zone.getNs());
   }
@@ -162,7 +169,7 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
 
   @Order(10)
   @Test
-  void testSaveZone() {
+  void testSaveZoneDuplicate() {
     Zone zone = new Zone();
     zone.setName("zone1.org");
     zone.setNs("ns1.zone.org");
