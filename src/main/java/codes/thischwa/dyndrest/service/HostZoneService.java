@@ -178,4 +178,13 @@ public class HostZoneService {
     }
     return Optional.of(hostRepo.findByZoneId(zone.getId()));
   }
+
+  /**
+   * Deletes a zone from the repository.
+   *
+   * @param zone the zone to be deleted
+   */
+  public void deleteZone(Zone zone) {
+    zoneRepo.delete(zone);
+  }
 }

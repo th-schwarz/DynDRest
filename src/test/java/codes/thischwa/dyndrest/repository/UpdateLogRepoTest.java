@@ -25,8 +25,14 @@ class UpdateLogRepoTest extends AbstractIntegrationTest {
 
   @Test
   void testFindById() {
-    List<FullUpdateLog> hosts = repo.findAllFullUpdateLogsByIds(List.of(41, 42));
-    assertEquals(2, hosts.size());
+    List<FullUpdateLog> logs = repo.findAllFullUpdateLogsByIds(List.of(41, 42));
+    assertEquals(2, logs.size());
+  }
+
+  @Test
+  void testFindByHostId() {
+    List<FullUpdateLog> logs = repo.findByHostId(1);
+    assertFalse(logs.isEmpty());
   }
 
   @Test
