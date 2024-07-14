@@ -1,7 +1,7 @@
 package codes.thischwa.dyndrest.service;
 
 import codes.thischwa.dyndrest.config.AppConfig;
-import codes.thischwa.dyndrest.config.PostProcessor;
+import codes.thischwa.dyndrest.config.BeanCollector;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Profile("!test")
 @Slf4j
-public class DatabaseRestoreHandler extends PostProcessor {
+public class DatabaseRestoreHandler extends BeanCollector {
 
   private JdbcTemplate jdbcTemplate;
 
@@ -118,13 +118,10 @@ public class DatabaseRestoreHandler extends PostProcessor {
     }
   }
 
-  private void renameDump() {
-    try {
+  private void renameDump() throws IOException {
+      assert restorePath != null;
+      assert restorePathBak != null;
       Files.move(restorePath, restorePathBak, StandardCopyOption.REPLACE_EXISTING);
-      log.info("Database restored successful, restore dump has moved to: {}", restorePathBak);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
   }
 
   private boolean isDatabaseEmpty() {

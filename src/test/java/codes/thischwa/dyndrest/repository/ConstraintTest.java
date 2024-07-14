@@ -2,7 +2,6 @@ package codes.thischwa.dyndrest.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import codes.thischwa.dyndrest.AbstractIntegrationTest;
@@ -13,7 +12,6 @@ import codes.thischwa.dyndrest.service.HostZoneService;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -23,11 +21,10 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class ConstraintTest extends AbstractIntegrationTest {
+class ConstraintTest extends AbstractIntegrationTest {
 
   @Autowired private HostZoneService service;
   @Autowired private ZoneRepo zoneRepo;
-  @Autowired private HostRepo hostRepo;
   @Autowired private UpdateLogRepo logRepo;
 
   @Test

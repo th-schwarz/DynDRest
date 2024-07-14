@@ -10,23 +10,28 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.lang.Nullable;
 
 /**
- * A Spring Bean post-processor that performs database restoration based on the provided
- * configuration. This class is responsible for restoring the database if all the necessary
- * conditions are met.
+ * BeanCollector is an abstract class that implements the BeanPostProcessor interface. It provides
+ * functionality for collecting and processing desired Spring managed beans.
+ *
+ * <p>During the bean post-processing, BeanCollector checks if the bean matches the desired types.
+ * Once all the desired beans are initialized, it triggers the processing logic by calling the
+ * process() method. The processBean() method is called internally to check and initialize the
+ * beans.
  */
 @Slf4j
-public abstract class PostProcessor implements BeanPostProcessor {
+public abstract class BeanCollector implements BeanPostProcessor {
 
   private final Collection<Class<?>> wanted = new HashSet<>();
   private final Collection<Object> initialized = new HashSet<>();
   private boolean processed;
 
-  public PostProcessor() {
+  public BeanCollector() {
     Collections.addAll(wanted, getWanted());
   }
 
   /**
-   * Retrieves the array of spring-managed bean classes that should be fetched by the post-processor.
+   * Retrieves the array of spring-managed bean classes that should be fetched by the
+   * post-processor.
    *
    * @return The array of classes.
    */
