@@ -25,7 +25,7 @@ public abstract class BeanCollector implements BeanPostProcessor {
   private final Collection<Object> initialized = new HashSet<>();
   private boolean processed;
 
-  public BeanCollector() {
+  protected BeanCollector() {
     Collections.addAll(wanted, getWanted());
   }
 
@@ -54,9 +54,8 @@ public abstract class BeanCollector implements BeanPostProcessor {
 
   /**
    * Performs post-processing after the initialization of a Spring bean. This method checks if the
-   * bean matches the desired types and initializes them. Once all the desired beans are
-   * initialized, it triggers the processing logic. This method should be implemented by a subclass
-   * of PostProcessor.
+   * bean matches the desired types. Once all the desired beans are initialized, it triggers the
+   * processing logic. This method should be implemented by a subclass of PostProcessor.
    *
    * @param bean The Spring bean instance to be post-processed.
    * @param beanName The name of the Spring bean.
@@ -66,9 +65,9 @@ public abstract class BeanCollector implements BeanPostProcessor {
   @Nullable
   @Override
   public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-    processBean(bean);
+    collectBean(bean);
     if (!processed && wanted.isEmpty()) {
-      log.info("*** Wanted beans found!");
+      log.info("*** Wanted beans found, start #process!");
       try {
         process(initialized);
       } catch (Exception e) {
@@ -81,7 +80,7 @@ public abstract class BeanCollector implements BeanPostProcessor {
     return BeanPostProcessor.super.postProcessAfterInitialization(bean, beanName);
   }
 
-  private void processBean(Object bean) {
+  private void collectBean(Object bean) {
     Collection<Class<?>> toBeRemoved = new HashSet<>();
     for (Class<?> wantedBean : wanted) {
       if (wantedBean.isInstance(bean) && !initialized.contains(bean)) {
