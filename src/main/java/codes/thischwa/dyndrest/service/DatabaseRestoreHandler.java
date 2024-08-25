@@ -10,6 +10,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.FatalBeanException;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
@@ -36,11 +38,16 @@ public class DatabaseRestoreHandler extends BeanCollector {
   @Nullable private Path restorePathBak = null;
 
   @Override
-  public void process(Collection<Object> wantedBeans) throws Exception {
+  public void process(Collection<Object> wantedBeans) throws BeansException {
     log.info("entered #process");
     setupRestorationParams(wantedBeans);
     if ((!dbExists && !restoreEnabled) || (dbExists && restoreEnabled)) {
-      restore();
+        try {
+            restore();
+        } catch (Exception e) {
+          log.error("Error while restoring database", e);
+        throw new FatalBeanException("Exception while trying to restore the database.", e);
+        }
     }
   }
 

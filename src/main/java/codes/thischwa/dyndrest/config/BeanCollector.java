@@ -41,9 +41,9 @@ public abstract class BeanCollector implements BeanPostProcessor {
    * Starts the process with the desired spring managed beans.
    *
    * @param wantedBeans The collection of Spring bean instances to be processed.
-   * @throws Exception if an error occurs during the processing.
+   * @throws BeansException if an error occurs during the processing.
    */
-  public abstract void process(Collection<Object> wantedBeans) throws Exception;
+  public abstract void process(Collection<Object> wantedBeans) throws BeansException;
 
   @Nullable
   @Override
