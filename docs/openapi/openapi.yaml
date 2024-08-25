@@ -1,0 +1,328 @@
+openapi: 3.0.1
+info:
+  title: A Dynamic DNS REST Service.
+  description: The routes of the dynamic DNS API
+  contact:
+    name: Thilo Schwarz
+    url: https://github.com/th-schwarz/DynDRest
+    email: osp (at) thischwa.codes
+  license:
+    name: MIT Licence
+    url: https://github.com/th-schwarz/DynDRest/blob/develop/LICENSE
+  version: "0.2"
+externalDocs:
+  description: DynDRest on Github
+  url: https://github.com/th-schwarz/DynDRest
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /api/ips/{host}:
+    get:
+      tags:
+      - api-controller
+      summary: Determines the IP settings of the 'host' and returns it in a JSON object.
+      operationId: fetchHostIpSetting
+      parameters:
+      - name: host
+        in: path
+        description: "The host, for which the IPs must be determined."
+        required: true
+        schema:
+          type: string
+          description: "The host, for which the IPs must be determined."
+          example: mydyndns.domain.com
+        example: mydyndns.domain.com
+      - name: apiToken
+        in: query
+        description: "The 'apiToken', which must belong to the host'."
+        required: true
+        schema:
+          type: string
+          description: "The 'apiToken', which must belong to the host'."
+      responses:
+        "403":
+          description: "If the 'apiToken' doesn't belong to the host, IP addresses\
+            \ aren't valid or the remote IP couldn't determine."
+        "404":
+          description: If the 'host' isn't configured.
+        "200":
+          description: A JSON object with the IP settings of the 'host'.
+          content:
+            application/json:
+              example:
+                ipv4: 127.1.2.4
+                ipv6: 2a03:4000:41:32:0:0:0:2
+        "500":
+          description: If the zone info fails.
+    put:
+      tags:
+      - api-controller
+      summary: "Updates the desired IP addresses of the 'host'. If both parameters\
+        \ for IP addresses aren't set, an attempt is made to fetch the remote IP."
+      operationId: updateHost
+      parameters:
+      - name: host
+        in: path
+        description: "The host, for which the IPs must be updated. It has to be a\
+          \ full domain name."
+        required: true
+        schema:
+          type: string
+          description: "The host, for which the IPs must be updated. It has to be\
+            \ a full domain name."
+          example: mydyndns.domain.com
+        example: mydyndns.domain.com
+      - name: apiToken
+        in: query
+        description: The 'apiToken' to authenticate the changes of the IPs for this
+          host.
+        required: true
+        schema:
+          type: string
+          description: The 'apiToken' to authenticate the changes of the IPs for this
+            host.
+      - name: ipv4
+        in: query
+        description: An IPv4 address.
+        required: false
+        schema:
+          type: string
+          description: An IPv4 address.
+      - name: ipv6
+        in: query
+        description: An IPv6 address.
+        required: false
+        schema:
+          type: string
+          description: An IPv6 address.
+      responses:
+        "200":
+          description: The IPs are still up to date.
+        "400":
+          description: At least one IP address isn't valid or the remote IP couldn't
+            be determined.
+        "201":
+          description: 'One or both IPs are changed. Update successful processed.
+            (Dependent on the configuration the response code could be ''200''! '
+        "403":
+          description: If the 'apiToken' doesn't belong to the host.
+        "404":
+          description: The desired host doesn't exists.
+        "500":
+          description: If the update failed.
+  /admin/zones/{zoneName}/{ns}:
+    post:
+      tags:
+      - admin-controller
+      summary: Adds a zone with the specified name and name server.
+      operationId: addZone
+      parameters:
+      - name: zoneName
+        in: path
+        description: "The name of the zone, must be a valid domain name."
+        required: true
+        schema:
+          type: string
+          description: "The name of the zone, must be a valid domain name."
+          example: domain.com
+        example: domain.com
+      - name: ns
+        in: path
+        description: "The name server of the zone, must be a valid domain name."
+        required: true
+        schema:
+          type: string
+          description: "The name server of the zone, must be a valid domain name."
+          example: ns1.domain.info
+        example: ns1.domain.info
+      - name: adminToken
+        in: query
+        description: The 'admin-token' to authorize the operation.
+        required: true
+        schema:
+          type: string
+          description: The 'admin-token' to authorize the operation.
+      responses:
+        "409":
+          description: A zone with the specified name already exists.
+        "403":
+          description: The 'adminToken' is wrong.
+        "200":
+          description: The desired Zone was successfully created.
+  /admin/zones/{zoneName}/hosts/{host}:
+    post:
+      tags:
+      - admin-controller
+      summary: Adds a host with the specified host for the desired zone.
+      operationId: addHost
+      parameters:
+      - name: zoneName
+        in: path
+        description: The name of the zone for which the host is to be created.
+        required: true
+        schema:
+          type: string
+          description: The name of the zone for which the host is to be created.
+          example: domain.com
+        example: domain.com
+      - name: host
+        in: path
+        description: "The name of the host to create, It is just the sub-domain part."
+        required: true
+        schema:
+          type: string
+          description: "The name of the host to create, It is just the sub-domain\
+            \ part."
+      - name: apiToken
+        in: query
+        description: The 'api-token' to authenticate IP changes of the created host.
+          Should be a strong one!
+        required: true
+        schema:
+          type: string
+          description: The 'api-token' to authenticate IP changes of the created host.
+            Should be a strong one!
+      - name: adminToken
+        in: query
+        description: The 'admin-token' to authorize the operation.
+        required: true
+        schema:
+          type: string
+          description: The 'admin-token' to authorize the operation.
+      responses:
+        "200":
+          description: The desired host was successfully created.
+        "409":
+          description: The desired host already exists.
+        "500":
+          description: If the operation has failed.
+        "403":
+          description: The 'adminToken' is wrong.
+        "404":
+          description: The zone doesn't exists.
+  /admin/zones:
+    get:
+      tags:
+      - admin-controller
+      summary: Returns a list of all configured zones.
+      operationId: listZones
+      parameters:
+      - name: adminToken
+        in: query
+        description: The 'admin-token' to authorize the operation.
+        required: true
+        schema:
+          type: string
+          description: The 'admin-token' to authorize the operation.
+      responses:
+        "200":
+          description: Zones listed successful.
+          content:
+            application/json:
+              example:
+              - name: mydomain.net
+                ns: a1.nameserver.net
+                changed: 2024-03-11T09:07:59.022057
+        "403":
+          description: The 'adminToken' is wrong.
+  /admin/zones/{zoneName}/hosts:
+    get:
+      tags:
+      - admin-controller
+      summary: Returns a list of hosts of the desired zone.
+      operationId: listHostsOfZone
+      parameters:
+      - name: zoneName
+        in: path
+        description: The name of the zone for which the hosts are to be listed.
+        required: true
+        schema:
+          type: string
+          description: The name of the zone for which the hosts are to be listed.
+          example: domain.com
+        example: domain.com
+      - name: adminToken
+        in: query
+        description: The 'admin-token' to authorize the operation.
+        required: true
+        schema:
+          type: string
+          description: The 'admin-token' to authorize the operation.
+      responses:
+        "200":
+          description: The hosts of the desired zones fetched successful.
+          content:
+            application/json:
+              example:
+              - name: master
+                apiToken: secureApiToken
+                zone: mydomain.net
+                ns: a1.nameserver.net
+                fullHost: master.mydomain.net
+                changed: 2024-03-11T09:07:59.037688
+        "403":
+          description: The 'adminToken' is wrong.
+  /admin/zones/{name}:
+    delete:
+      tags:
+      - admin-controller
+      summary: Deletes the zone with the specified name.
+      operationId: deleteZone
+      parameters:
+      - name: name
+        in: path
+        description: "The name of the zone, must be a valid domain name."
+        required: true
+        schema:
+          type: string
+          description: "The name of the zone, must be a valid domain name."
+          example: domain.com
+        example: domain.com
+      - name: adminToken
+        in: query
+        description: The 'admin-token' to authorize the operation.
+        required: true
+        schema:
+          type: string
+          description: The 'admin-token' to authorize the operation.
+      responses:
+        "403":
+          description: The 'adminToken' is wrong.
+        "200":
+          description: The Zone deleted successful.
+        "404":
+          description: The zone doesn't exists.
+  /admin/zones/hosts/{host}:
+    delete:
+      tags:
+      - admin-controller
+      summary: Deletes the host with the specified host name.
+      operationId: deleteHost
+      parameters:
+      - name: host
+        in: path
+        description: The full name of the host.
+        required: true
+        schema:
+          type: string
+          description: The full name of the host.
+          example: mydyndns.domain.com
+        example: mydyndns.domain.com
+      - name: adminToken
+        in: query
+        description: The 'admin-token' to authorize the operation.
+        required: true
+        schema:
+          type: string
+          description: The 'admin-token' to authorize the operation.
+      responses:
+        "200":
+          description: The desired host was successfully deleted.
+        "500":
+          description: If the operation has failed.
+        "404":
+          description: The desired host doesn't exists.
+        "403":
+          description: The 'adminToken' is wrong.
+components: {}

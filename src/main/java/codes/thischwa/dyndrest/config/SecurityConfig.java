@@ -17,7 +17,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -35,6 +37,7 @@ import org.springframework.util.StringUtils;
 @Slf4j
 public class SecurityConfig {
 
+  static final String ROLE_ADMIN = "ADMIN";
   static final String ROLE_LOGVIEWER = "LOGVIEWER";
   static final String ROLE_USER = "USER";
   static final String ROLE_HEALTH = "HEALTH";
@@ -43,11 +46,13 @@ public class SecurityConfig {
   private final PasswordEncoder encoder =
       PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-  private final List<String> publicPaths =
-      new ArrayList<>(List.of("/favicon.ico", "/error"));
+  private final List<String> publicPaths = new ArrayList<>(List.of("/favicon.ico", "/error"));
   private final String[] loguiPaths = {"/log-ui", "/log-ui/*"};
+  private final String adminPath = "/admin/**";
 
   private final boolean updateLogEnabled;
+
+  private final boolean adminEnabled;
 
   @Value("${spring.security.user.name}")
   private String userName;
@@ -71,11 +76,17 @@ public class SecurityConfig {
     this.appConfig = appConfig;
     this.env = env;
 
-    // check if credentials for update-log-view
+    // check if credentials for update-log-view exists
     boolean isUpdateLogCredentialsEmpty =
         !StringUtils.hasText(appConfig.updateLogUserName())
             || !StringUtils.hasText(appConfig.updateLogUserPassword());
     updateLogEnabled = appConfig.updateLogPageEnabled() && !isUpdateLogCredentialsEmpty;
+
+    // check if credentials for admin exits
+    adminEnabled =
+        StringUtils.hasText(appConfig.adminUserName())
+            && StringUtils.hasText(appConfig.adminUserPassword())
+            && StringUtils.hasText(appConfig.adminApiToken());
 
     if (appConfig.greetingEnabled()) {
       publicPaths.add("/");
@@ -108,6 +119,9 @@ public class SecurityConfig {
           appConfig.healthCheckUserName(),
           appConfig.healthCheckUserPassword(),
           ROLE_HEALTH);
+    }
+    if (adminEnabled) {
+      build(userManager, appConfig.adminUserName(), appConfig.adminUserPassword(), ROLE_ADMIN);
     }
     return userManager;
   }
@@ -160,13 +174,27 @@ public class SecurityConfig {
                   .hasAnyRole(ROLE_HEALTH));
     }
 
+    if (adminEnabled) {
+      // enables security for the admin paths
+      http.authorizeHttpRequests(
+        req ->
+            req.requestMatchers(buildMatchers(adminPath)).hasRole(ROLE_ADMIN))
+              .sessionManagement(
+                      (session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+              .csrf(AbstractHttpConfigurer::disable);
+    }
+
     // public routes
     http.authorizeHttpRequests(
         req -> req.requestMatchers(buildMatchers(publicPaths.toArray(new String[0]))).permitAll());
 
     // enable basic-auth and ROLE_USER for all other routes
+    // it's a rest-api, so there is no need for session handling and csrf
     http.authorizeHttpRequests(req -> req.anyRequest().hasAnyRole(ROLE_USER))
-        .httpBasic(Customizer.withDefaults());
+        .httpBasic(Customizer.withDefaults())
+        .sessionManagement(
+            (session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .csrf(AbstractHttpConfigurer::disable);
 
     return http.build();
   }

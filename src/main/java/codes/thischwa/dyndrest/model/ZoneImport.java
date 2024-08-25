@@ -28,7 +28,7 @@ public record ZoneImport(@Nullable List<ZoneImport.Zone> zones) {
         String[] parts = hostRaw.split(":");
         if (parts.length != 2) {
           throw new IllegalArgumentException(
-              "The host entry must be in the following format: [sld|:[apitoken], but it was: "
+              "The host entry must be in the following format: [sld|:[apiToken], but it was: "
                   + hostRaw);
         }
         FullHost fullHost = new FullHost();

@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 
 /** This class provides database restore functionality based on the provided configuration. */
 @Service
-@Profile("!test")
+@Profile({"!opendoc"})
 @Slf4j
 public class DatabaseRestoreHandler extends BeanCollector {
 
@@ -37,6 +37,7 @@ public class DatabaseRestoreHandler extends BeanCollector {
 
   @Override
   public void process(Collection<Object> wantedBeans) throws Exception {
+    log.info("entered #process");
     setupRestorationParams(wantedBeans);
     if ((!dbExists && !restoreEnabled) || (dbExists && restoreEnabled)) {
       restore();
@@ -107,7 +108,8 @@ public class DatabaseRestoreHandler extends BeanCollector {
     } else {
       if (restoreEnabled) {
         log.info(
-            "Embedded database doesn't exists and restore is enabled, try restore it from the last dump!");
+            "Embedded database doesn't exists and restore is enabled, " +
+                    "try restore it from the last dump!");
         populate(ds);
         renameDump();
       } else {
@@ -119,9 +121,9 @@ public class DatabaseRestoreHandler extends BeanCollector {
   }
 
   private void renameDump() throws IOException {
-      assert restorePath != null;
-      assert restorePathBak != null;
-      Files.move(restorePath, restorePathBak, StandardCopyOption.REPLACE_EXISTING);
+    assert restorePath != null;
+    assert restorePathBak != null;
+    Files.move(restorePath, restorePathBak, StandardCopyOption.REPLACE_EXISTING);
   }
 
   private boolean isDatabaseEmpty() {

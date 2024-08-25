@@ -1,6 +1,8 @@
 package codes.thischwa.dyndrest.model;
 
 import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.lang.Nullable;
@@ -13,7 +15,8 @@ import org.springframework.lang.Nullable;
 @Data
 public abstract class AbstractJdbcEntity {
 
-  @Id @Nullable private Integer id;
+  @Id @Nullable @JsonIgnore
+  private Integer id;
 
   private LocalDateTime changed;
 }

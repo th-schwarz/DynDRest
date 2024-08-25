@@ -18,6 +18,9 @@ public record AppConfig(
     boolean updateLogRestForceHttps,
     @Nullable String healthCheckUserName,
     @Nullable String healthCheckUserPassword,
+    @Nullable String adminUserName,
+    @Nullable String adminUserPassword,
+    @Nullable String adminApiToken,
     Database database) {
 
   /** Represents a configuration class for a database connection. */

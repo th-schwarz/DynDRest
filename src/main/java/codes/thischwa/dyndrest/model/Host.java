@@ -1,5 +1,6 @@
 package codes.thischwa.dyndrest.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -12,6 +13,7 @@ public class Host extends AbstractJdbcEntity {
 
   @EqualsAndHashCode.Exclude private String apiToken;
 
+  @JsonIgnore
   private Integer zoneId;
 
   /**

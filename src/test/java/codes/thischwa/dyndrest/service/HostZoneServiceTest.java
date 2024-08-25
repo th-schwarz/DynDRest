@@ -7,10 +7,9 @@ import codes.thischwa.dyndrest.model.FullHost;
 import codes.thischwa.dyndrest.model.Host;
 import codes.thischwa.dyndrest.model.Zone;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import codes.thischwa.dyndrest.repository.UpdateLogRepo;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -18,13 +17,25 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.relational.core.conversion.DbActionExecutionException;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class HostZoneServiceTest extends AbstractIntegrationTest {
 
+  @Autowired private JdbcTemplate jdbcTemplate;
+
   @Autowired private HostZoneService service;
 
-  @Autowired private UpdateLogRepo logRepo;
+  @Order(0)
+  @Test
+  void testGetZone() {
+    Zone zone = service.getZone("dynhost1.info");
+    assertNotNull(zone);
+
+    zone = service.getZone("unknown.info");
+    assertNull(zone);
+  }
 
   @Order(1)
   @Test
@@ -123,7 +134,7 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     host.setZoneId(2);
     service.saveOrUpdate(host);
     Integer id = host.getId();
-    assertTrue(id > 4);
+    assertTrue(id != null && id > 4);
     assertNotNull(host.getChanged());
     assertEquals(hostCnt + 1, service.getConfiguredHosts().size());
 
@@ -156,7 +167,7 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     fullHost.setApiToken("08/15");
     fullHost.setZoneId(2);
     service.saveOrUpdate(fullHost);
-    assertTrue(fullHost.getId() > 4);
+    assertTrue(fullHost.getId() != null && fullHost.getId() > 4);
     assertNotNull(fullHost.getChanged());
 
     fullHost.setId(null);
@@ -174,7 +185,7 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     zone.setName("zone1.org");
     zone.setNs("ns1.zone.org");
     service.saveOrUpdate(zone);
-    assertTrue(zone.getId() > 2);
+    assertTrue(zone.getId() != null && zone.getId() > 2);
     assertNotNull(zone.getChanged());
 
     zone.setId(null);
@@ -183,5 +194,61 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     } catch (Exception e) {
       assertEquals(DuplicateKeyException.class, e.getCause().getClass());
     }
+  }
+
+  @Order(11)
+  @Test
+  void testAddZone() {
+    Zone z = service.addZone("zone2.org", "ns2.zone.org");
+    assertNotNull(z.getId());
+    assertNotNull(z.getChanged());
+
+    assertThrows(
+        DbActionExecutionException.class, () -> service.addZone("zone2.org", "ns2.zone.org"));
+  }
+
+  @Order(12)
+  @Test
+  void testDeleteZone() {
+    Optional<FullHost> h = service.getHost("test0.dynhost0.info");
+    assertTrue(h.isPresent());
+    Integer id = h.get().getId();
+    Integer count =
+        jdbcTemplate.queryForObject(
+            "select count(*) from UPDATE_LOG where HOST_ID=?", Integer.class, id);
+    assertTrue(count != null && count > 0);
+    Zone zone = service.getZone("dynhost0.info");
+    assertNotNull(zone);
+
+    service.deleteZone(zone);
+    assertNull(service.getZone("dynhost0.info"));
+    h = service.getHost("test0.dynhost0.info");
+    assertFalse(h.isPresent());
+    count =
+        jdbcTemplate.queryForObject(
+            "select count(*) from UPDATE_LOG where HOST_ID=?", Integer.class, id);
+    assertEquals(0, count);
+  }
+
+  @Order(13)
+  @Test
+  void testAddHost() {
+    Zone z = service.getAllZones().get(0);
+    int hostCnt = service.findHostsOfZone(z.getName()).orElse(new ArrayList<>()).size();
+    Host host = new Host();
+    host.setName("my5");
+    host.setApiToken("abcdef1234567890");
+    host.setZoneId(z.getId());
+    service.saveOrUpdate(host);
+    Optional<List<FullHost>> optHosts = service.findHostsOfZone(z.getName());
+    assertTrue(optHosts.isPresent());
+    List<FullHost> hosts = optHosts.get();
+    assertEquals(hostCnt + 1, hosts.size());
+    Optional<FullHost> optFullHost =
+        hosts.stream().filter(h -> h.getName().startsWith("my5")).findFirst();
+    assertTrue(optFullHost.isPresent());
+    FullHost fullHost = optFullHost.get();
+    assertNotNull(fullHost.getId());
+    assertEquals(z.getId(), fullHost.getZoneId());
   }
 }

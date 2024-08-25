@@ -96,9 +96,9 @@ class ZoneClientWrapper {
     try {
       return zc.info(zone, primaryNameServer, customHeaders);
     } catch (DomainrobotApiException e) {
-      throw new ProviderException("API exception", e);
+      throw new ProviderException("Domain-Robot-API exception", e);
     } catch (Exception e) {
-      throw new ProviderException("Unknown exception", e);
+      throw new ProviderException("Unexpected exception", e);
     }
   }
 
@@ -154,6 +154,11 @@ class ZoneClientWrapper {
     }
   }
 
+  void removeSld(Zone zone, String sld) {
+    removeIpv4(zone, sld);
+    removeIp6(zone, sld);
+  }
+
   void removeIpv4(Zone zone, String sld) {
     removeIp(zone, sld, ResouceRecordTypeIp.A);
   }
@@ -165,7 +170,6 @@ class ZoneClientWrapper {
   void removeIp(Zone zone, String sld, ResouceRecordTypeIp type) {
     ResourceRecord rr = searchResourceRecord(zone, sld, type);
     if (rr != null) {
-      zone.getResourceRecords().remove(rr);
       zone.getResourceRecords().remove(rr);
     }
   }

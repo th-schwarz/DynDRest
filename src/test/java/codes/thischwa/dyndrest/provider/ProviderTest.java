@@ -27,5 +27,10 @@ class ProviderTest extends AbstractIntegrationTest {
     @Override
     public void update(String host, IpSetting ipSetting) throws ProviderException {}
 
+    @Override
+    public void addHost(String zaneName, String host) throws ProviderException {}
+
+    @Override
+    public void removeHost(String host) throws ProviderException {}
   }
 }

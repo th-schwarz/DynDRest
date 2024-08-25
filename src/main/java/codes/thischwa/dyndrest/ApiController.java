@@ -7,6 +7,7 @@ import codes.thischwa.dyndrest.provider.Provider;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.service.HostZoneService;
 import codes.thischwa.dyndrest.service.UpdateLogService;
+import codes.thischwa.dyndrest.util.DomainNameValidator;
 import codes.thischwa.dyndrest.util.NetUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
@@ -25,6 +26,8 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 @Slf4j
 public class ApiController implements ApiRoutes {
+
+  private final DomainNameValidator domainNameValidator = new DomainNameValidator();
 
   private final Provider provider;
 
@@ -54,15 +57,15 @@ public class ApiController implements ApiRoutes {
   }
 
   @Override
-  public ResponseEntity<Object> update(
+  public ResponseEntity<Void> updateHost(
       String host,
-      String apitoken,
+      String apiToken,
       @Nullable InetAddress ipv4,
       @Nullable InetAddress ipv6,
       HttpServletRequest req) {
     log.debug(
-        "entered #update: host={}, apitoken={}, ipv4={}, ipv6={}", host, apitoken, ipv4, ipv6);
-    validateHost(host, apitoken);
+        "entered #update: host={}, apiToken={}, ipv4={}, ipv6={}", host, apiToken, ipv4, ipv6);
+    validateHost(host, apiToken);
 
     IpSetting reqIpSetting = new IpSetting(ipv4, ipv6);
     if (reqIpSetting.isNotSet()) {
@@ -98,14 +101,14 @@ public class ApiController implements ApiRoutes {
       updateLogService.log(host, reqIpSetting, UpdateLog.Status.failed);
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    return new ResponseEntity<>(HttpStatus.OK);
+    return ResponseEntity.ok().build();
   }
 
   @Override
-  public ResponseEntity<IpSetting> info(String host, @RequestParam String apitoken) {
+  public ResponseEntity<IpSetting> fetchHostIpSetting(String host, @RequestParam String apiToken) {
     log.debug("entered #info: host={}", host);
     // validation
-    validateHost(host, apitoken);
+    validateHost(host, apiToken);
 
     IpSetting ipSetting;
     try {
@@ -118,15 +121,15 @@ public class ApiController implements ApiRoutes {
     return ResponseEntity.ok(ipSetting);
   }
 
-  private void validateHost(String host, String apitoken) {
+  private void validateHost(String host, String apiToken) {
     try {
-      boolean valid = hostZoneService.validate(host, apitoken);
+      boolean valid = hostZoneService.validate(host, apiToken);
       if (!valid) {
-        log.warn("Validation: host {} not found.", host);
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        log.warn("Validation: apiToken isn't valid for host {}.", host);
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN);
       }
     } catch (EmptyResultDataAccessException e) {
-      log.warn("Validation: Unknown apitoken {} for host {}.", apitoken, host);
+      log.warn("Validation: Host {} not found.", host);
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
   }

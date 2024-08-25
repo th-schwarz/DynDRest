@@ -19,16 +19,16 @@ class ApiControllerInfoTest extends AbstractApiControllerTest {
   void testSuccess() throws Exception {
     String host = buildHostName("domain.info");
     log.debug("entered #testSuccess: {}", host);
-    String apitoken = "valid_token";
+    String apiToken = "valid_token";
     IpSetting setting = new IpSetting("192.168.1.1");
 
-    when(hostZoneService.validate(host, apitoken)).thenReturn(true);
+    when(hostZoneService.validate(host, apiToken)).thenReturn(true);
     when(provider.info(host)).thenReturn(setting);
 
-    ResponseEntity<IpSetting> result = apiController.info(host, apitoken);
+    ResponseEntity<IpSetting> result = apiController.fetchHostIpSetting(host, apiToken);
     assertEquals(HttpStatus.OK, result.getStatusCode());
     assertEquals(setting, result.getBody());
-    verify(hostZoneService).validate(host, apitoken);
+    verify(hostZoneService).validate(host, apiToken);
     verify(provider).info(host);
   }
 
@@ -36,46 +36,46 @@ class ApiControllerInfoTest extends AbstractApiControllerTest {
   void testWithInvalidHost() throws Exception {
     String host = buildHostName("domain.info");
     log.debug("entered #testWithInvalidHost: {}", host);
-    String apitoken = "valid_token";
+    String apiToken = "valid_token";
 
-    when(hostZoneService.validate(host, apitoken)).thenThrow(EmptyResultDataAccessException.class);
+    when(hostZoneService.validate(host, apiToken)).thenThrow(EmptyResultDataAccessException.class);
 
     try {
-      apiController.info(host, apitoken);
+      apiController.fetchHostIpSetting(host, apiToken);
       fail("should fail");
     } catch (ResponseStatusException e) {
       assertEquals(HttpStatus.NOT_FOUND, e.getStatusCode());
     }
-    verify(hostZoneService).validate(host, apitoken);
+    verify(hostZoneService).validate(host, apiToken);
   }
 
   @Test
   void testWithInvalidApitoken() throws Exception {
     String host = buildHostName("domain.info");
     log.debug("entered #testWithInvalidApitoken: {}", host);
-    String apitoken = "invalid_token";
+    String apiToken = "invalid_token";
 
-    when(hostZoneService.validate(host, apitoken)).thenReturn(false);
+    when(hostZoneService.validate(host, apiToken)).thenReturn(false);
 
     try {
-      apiController.info(host, apitoken);
+      apiController.fetchHostIpSetting(host, apiToken);
       fail("should fail");
     } catch (ResponseStatusException e) {
-      assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+      assertEquals(HttpStatus.FORBIDDEN, e.getStatusCode());
     }
-    verify(hostZoneService).validate(host, apitoken);
+    verify(hostZoneService).validate(host, apiToken);
   }
 
   @Test
   void testWithProviderException() throws Exception {
     String host = buildHostName("domain.info");
     log.debug("entered #testWithProviderException: {}", host);
-    String apitoken = "valid_token";
+    String apiToken = "valid_token";
 
-    when(hostZoneService.validate(host, apitoken)).thenReturn(true);
+    when(hostZoneService.validate(host, apiToken)).thenReturn(true);
     when(provider.info(host)).thenThrow(new ProviderException("Unknown Exception"));
 
-    ResponseEntity<IpSetting> result = apiController.info(host, apitoken);
+    ResponseEntity<IpSetting> result = apiController.fetchHostIpSetting(host, apiToken);
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
   }
 }

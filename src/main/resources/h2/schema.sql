@@ -10,9 +10,6 @@ create table ZONE
 
 comment on column ZONE.NS is 'the name server of the zone';
 
-create unique index UNIQUE_IDX
-    on ZONE (NAME);
-
 create table HOST
 (
     ID        INTEGER auto_increment primary key,

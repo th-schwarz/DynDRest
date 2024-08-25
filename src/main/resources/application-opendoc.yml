@@ -1,0 +1,52 @@
+spring:
+  main:
+    banner-mode: off
+  security:
+    user:
+      name: dyndns
+      password: test123
+
+  datasource:
+    url: jdbc:h2:mem:dyndrest;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false
+    driverClassName: org.h2.Driver
+    username: dba
+
+  sql:
+    init:
+      schema-locations: classpath:/h2/schema.sql
+
+  jpa:
+    show-sql: true
+
+server:
+  address: 127.0.0.1
+  port: 8080
+  servlet:
+    context-path: /
+
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      base-path: /manage
+  endpoint:
+    health:
+      enabled: false
+
+springdoc:
+  api-docs:
+    enabled: true
+  writer-with-default-pretty-printer: true
+
+dyndrest:
+  provider: domainrobot
+  greeting-enabled: false
+  host-validation-enabled: false
+
+domainrobot:
+  default-ttl: 61
+  autodns:
+    url: https://api.autodns.com/v1
+    context: 4
+    user: user_t
+    password: pwd_t

@@ -87,12 +87,12 @@ public class HostZoneService {
   /**
    * Retrieves the Zone object for the specified zone name.
    *
-   * @param zoneStr the name of the zone
+   * @param name the name of the zone
    * @return the Zone object for the specified zone name or null if not exists.
    */
   @Nullable
-  public Zone getZone(String zoneStr) {
-    return zoneRepo.findByName(zoneStr);
+  public Zone getZone(String name) {
+    return zoneRepo.findByName(name);
   }
 
   /**
@@ -150,8 +150,40 @@ public class HostZoneService {
     zoneRepo.save(zone);
   }
 
+  /**
+   * Adds a new Zone with the specified name and name server to the system.
+   *
+   * @param name The name of the Zone.
+   * @param ns The name server of the Zone.
+   * @return The newly created Zone.
+   */
+  public Zone addZone(String name, String ns) {
+    Zone z = new Zone();
+    z.setName(name);
+    z.setNs(ns);
+    saveOrUpdate(z);
+    return z;
+  }
+
   private void preSaveOrUpdate(AbstractJdbcEntity entity) {
     entity.setChanged(LocalDateTime.now());
+  }
+
+  /**
+   * Adds a new host to the specified zone.
+   *
+   * @param zone the zone for the host
+   * @param hostname the hostname of the host
+   * @param apiToken the API token for the host
+   * @return the newly created host
+   */
+  public Host addHost(Zone zone, String hostname, String apiToken) {
+    Host host = new Host();
+    host.setZoneId(zone.getId());
+    host.setName(hostname);
+    host.setApiToken(apiToken);
+    saveOrUpdate(host);
+    return host;
   }
 
   /**
@@ -176,15 +208,35 @@ public class HostZoneService {
       log.warn("Zone isn't configured: " + zoneName);
       return Optional.empty();
     }
+    assert zone.getId() != null;
     return Optional.of(hostRepo.findByZoneId(zone.getId()));
   }
 
   /**
-   * Deletes a zone from the repository.
+   * Deletes a zone.
    *
    * @param zone the zone to be deleted
    */
   public void deleteZone(Zone zone) {
     zoneRepo.delete(zone);
+  }
+
+  /**
+   * Retrieves all zones.
+   *
+   * @return a list of all zones in the system.
+   */
+  public List<Zone> getAllZones() {
+    return zoneRepo.findAll();
+  }
+
+  /**
+   * Deletes a host from the system.
+   *
+   * @param host the Host object to be deleted
+   */
+  public void deleteHost(Host host) {
+      assert host.getId() != null;
+      hostRepo.deleteById(host.getId());
   }
 }

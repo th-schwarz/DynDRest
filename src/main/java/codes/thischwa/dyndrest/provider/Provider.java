@@ -59,4 +59,8 @@ public interface Provider {
    * @throws ProviderException the provider exception
    */
   void processUpdate(String host, IpSetting ipSetting) throws ProviderException;
+
+  void addHost(String zaneName, String host) throws ProviderException;
+
+  void removeHost(String host) throws ProviderException;
 }

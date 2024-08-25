@@ -192,9 +192,7 @@ as an init.d Service (System V)].
 == Routes
 
 All routes are secured by basic-auth. A detailed description of the
-routes can be found at the
-https://htmlpreview.github.io/?https://github.com/th-schwarz/DynDRest/blob/develop/docs/openapi/index.html[OAS3
-documentation].
+routes can be found at the https://th-schwarz.github.io/DynDRest/openapi-develop.html[OAS3 documentation].
 
 There are additional routes:
 

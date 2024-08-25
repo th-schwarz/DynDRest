@@ -16,7 +16,7 @@ spring:
 
   sql:
     init:
-      schema-locations: classpath:h2/dump.sql
+      schema-locations: classpath:/h2/dump.sql
 
   jpa:
     show-sql: true
@@ -44,7 +44,6 @@ logging:
           core:
             JdbcTemplate: DEBUG
 
-
 dyndrest:
   provider: domainrobot
   greeting-enabled: true
@@ -57,6 +56,9 @@ dyndrest:
   host-validation-enabled: false
   healthcheck-user-name: health
   healthcheck-user-password: hea1th
+  admin-user-name: admin
+  admin-user-password: adm1n
+  admin-api-token: token123
   database:
     password:
     backup:

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.2.5</version>
-        <relativePath /> <!-- lookup parent from repository -->
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>codes.thischwa</groupId>
     <artifactId>dyndrest</artifactId>
@@ -41,7 +42,7 @@
         </sonar.exclusions>
 
         <!-- openapi generation -->
-        <openapi.outputDir>${project.build.directory}</openapi.outputDir>
+        <openapi.outputDir>${project.basedir}/docs/openapi</openapi.outputDir>
         <openapi.outputFile.extless>openapi</openapi.outputFile.extless>
         <openapi.outputFile>${openapi.outputFile.extless}.yaml</openapi.outputFile>
 
@@ -274,15 +275,15 @@
                         <artifactId>spring-boot-maven-plugin</artifactId>
                         <configuration>
                             <commandlineArguments>
-                                --springdoc.writer-with-default-pretty-printer=true
-                                --springdoc.api-docs.enabled=true --dyndrest.host-validation-enable=false
-                                --server.port=8080
+                                --spring.config.import=classpath:/application-opendoc.yml
                             </commandlineArguments>
                             <executable>true</executable>
                             <includeSystemScope>true</includeSystemScope>
-                            <jvmArguments>-Dspring.application.admin.enabled=true
-                                -Dspring.config.import=file:target/test-classes/application.yml
+                            <jvmArguments>
                             </jvmArguments>
+                            <profiles>
+                                <profile>opendoc</profile>
+                            </profiles>
                         </configuration>
                         <executions>
                             <execution>
@@ -306,6 +307,7 @@
                         <version>1.4</version>
                         <configuration>
                             <apiDocsUrl>http://localhost:8080/v3/api-docs.yaml</apiDocsUrl>
+                            <outputDir>${openapi.outputDir}</outputDir>
                             <outputFileName>${openapi.outputFile}</outputFileName>
                         </configuration>
                         <executions>
@@ -314,26 +316,6 @@
                                 <goals>
                                     <goal>generate</goal>
                                 </goals>
-                                <phase>integration-test</phase>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <!-- converts the openapi docu to html -->
-                        <groupId>io.swagger.codegen.v3</groupId>
-                        <artifactId>swagger-codegen-maven-plugin</artifactId>
-                        <version>3.0.51</version>
-                        <executions>
-                            <execution>
-                                <configuration>
-                                    <inputSpec>${openapi.outputDir}/${openapi.outputFile}</inputSpec>
-                                    <language>html</language>
-                                    <output>${project.basedir}/docs/openapi</output>
-                                </configuration>
-                                <goals>
-                                    <goal>generate</goal>
-                                </goals>
-                                <id>export-to-html-doc</id>
                                 <phase>integration-test</phase>
                             </execution>
                         </executions>

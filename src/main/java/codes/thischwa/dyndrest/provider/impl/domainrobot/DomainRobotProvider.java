@@ -40,7 +40,7 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
   @Override
   public void validateHostZoneConfiguration() throws IllegalArgumentException {
     if (appConfig.hostValidationEnabled()) {
-      hostZoneService.getConfiguredZones().forEach(this::checkZone);
+      hostZoneService.getConfiguredZones().forEach(this::zoneConfirmed);
     }
   }
 
@@ -59,7 +59,24 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
     zcw.update(zone);
   }
 
-  private void checkZone(codes.thischwa.dyndrest.model.Zone myZone)
+  // not required for domainrobot. #update adds the required records.
+  @Override
+  public void addHost(String zoneName, String host) throws ProviderException {
+  }
+
+  @Override
+  public void removeHost(String host) throws ProviderException {
+    Optional<FullHost> optFullHost = hostZoneService.getHost(host);
+    if (!optFullHost.isPresent()) {
+      throw new ProviderException("Host isn't configured: " + host);
+    }
+    FullHost fullHost = optFullHost.get();
+    Zone zone = zoneInfo(host);
+    zcw.removeSld(zone, fullHost.getName());
+    zcw.update(zone);
+  }
+
+  private void zoneConfirmed(codes.thischwa.dyndrest.model.Zone myZone)
       throws IllegalArgumentException {
     Zone zone;
     try {
@@ -69,10 +86,10 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
       log.error("Error while getting zone info of " + myZone.getName(), e);
       throw new IllegalArgumentException("Zone couldn't be confirmed.");
     }
-    checkHosts(zone);
+    hostsOfZoneConfirmed(zone);
   }
 
-  private void checkHosts(Zone zone) throws IllegalArgumentException {
+  private void hostsOfZoneConfirmed(Zone zone) throws IllegalArgumentException {
     Optional<List<FullHost>> opt = hostZoneService.findHostsOfZone(zone.getOrigin());
     if (opt.isEmpty()) {
       log.warn("No hosts found for zone: {}", zone.getOrigin());
