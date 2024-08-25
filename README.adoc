@@ -60,10 +60,10 @@ _mydyndns.domain.com_ by calling the following curl command:
 [source,console]
 ----
 curl -u dyndns:test123 -i \
-   "http://localhost:8081/update/mydyndns.domain.com?apitoken=1234567890abcdf&ipv4=127.1.2.4&ipv6=2a03:4000:41:32::2"
+   "http://localhost:8081/router/mydyndns.domain.com?apitoken=1234567890abcdf&ipv4=127.1.2.4&ipv6=2a03:4000:41:32::2"
 ----
 
-For each host an api-token must be defined. If the api-token doesn’t
+For each host an api-token must be defined. If the api-token does not
 match the host, the update will be failed. Due to this security feature,
 DynDRest can be used by different people. They can’t update the IPs each
 other.
@@ -84,8 +84,8 @@ Here is the suggested file structure:
 ----
 ├── /opt/dyndrest
 │   ├── dyndrest.yml
-│   ├── dyndrest-0.7.0.jar
-│   ├── dyndrest.jar -> dyndrest-0.7.0.jar
+│   ├── dyndrest-0.8.0.jar
+│   ├── dyndrest.jar -> dyndrest-0.8.0.jar
 │   ├── logback.xml    (logback configuration)
 │   ├── dyndrest.mv.db  (h2 database file)
 │   ├── /backup
@@ -209,7 +209,7 @@ It is enabled by default, but it can be disabled by setting the property
 
 As an example, let’s have a look at the setup of dynamic DNS in the
 https://service.avm.de/help/en/FRITZ-Box-7530/019p2/hilfe_dyndns[Fritz!Box
-7590]. The following settngs are required:
+7590]. The following settings are required:
 
 * _DynDNS Provider:_
 User-defined
@@ -217,6 +217,6 @@ User-defined
 updated.
 * _Username / Password:_ The credentials for basic-auth.
 * _Update-URL:_
-[your-host:port]/update/<domain>?apitoken=[yourApitoken]&ipv4=<ipaddr>&ipv6=<ip6addr>
+[your-host:port]/router/<domain>?apiToken=[yourApiToken]&ipv4=<ipaddr>&ipv6=<ip6addr>
 If both IP parameters are omitted, an attempt is made to fetch the
 remote IP.

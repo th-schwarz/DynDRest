@@ -41,11 +41,6 @@ paths:
           type: string
           description: "The 'apiToken', which must belong to the host'."
       responses:
-        "403":
-          description: "If the 'apiToken' doesn't belong to the host, IP addresses\
-            \ aren't valid or the remote IP couldn't determine."
-        "404":
-          description: If the 'host' isn't configured.
         "200":
           description: A JSON object with the IP settings of the 'host'.
           content:
@@ -53,8 +48,13 @@ paths:
               example:
                 ipv4: 127.1.2.4
                 ipv6: 2a03:4000:41:32:0:0:0:2
+        "403":
+          description: "If the 'apiToken' doesn't belong to the host, IP addresses\
+            \ aren't valid or the remote IP couldn't determine."
         "500":
           description: If the zone info fails.
+        "404":
+          description: If the 'host' isn't configured.
     put:
       tags:
       - api-controller
@@ -168,12 +168,13 @@ paths:
         example: domain.com
       - name: host
         in: path
-        description: "The name of the host to create, It is just the sub-domain part."
+        description: "The name of the host to create, it's just the sub-domain part."
         required: true
         schema:
           type: string
-          description: "The name of the host to create, It is just the sub-domain\
-            \ part."
+          description: "The name of the host to create, it's just the sub-domain part."
+          example: host1
+        example: host1
       - name: apiToken
         in: query
         description: The 'api-token' to authenticate IP changes of the created host.
@@ -201,6 +202,64 @@ paths:
           description: The 'adminToken' is wrong.
         "404":
           description: The zone doesn't exists.
+  /router/{host}:
+    get:
+      tags:
+      - api-controller
+      summary: "Updates the desired IP addresses of the 'host'. If both parameters\
+        \ for IP addresses aren't set, an attempt is made to fetch the remote IP.\
+        \ It is an alternative route for routers which requires the GET method!"
+      operationId: routerUpdateHost
+      parameters:
+      - name: host
+        in: path
+        description: "The host, for which the IPs must be updated. It has to be a\
+          \ full domain name."
+        required: true
+        schema:
+          type: string
+          description: "The host, for which the IPs must be updated. It has to be\
+            \ a full domain name."
+          example: mydyndns.domain.com
+        example: mydyndns.domain.com
+      - name: apiToken
+        in: query
+        description: The 'apiToken' to authenticate the changes of the IPs for this
+          host.
+        required: true
+        schema:
+          type: string
+          description: The 'apiToken' to authenticate the changes of the IPs for this
+            host.
+      - name: ipv4
+        in: query
+        description: An IPv4 address.
+        required: false
+        schema:
+          type: string
+          description: An IPv4 address.
+      - name: ipv6
+        in: query
+        description: An IPv6 address.
+        required: false
+        schema:
+          type: string
+          description: An IPv6 address.
+      responses:
+        "200":
+          description: The IPs are still up to date.
+        "400":
+          description: At least one IP address isn't valid or the remote IP couldn't
+            be determined.
+        "201":
+          description: 'One or both IPs are changed. Update successful processed.
+            (Dependent on the configuration the response code could be ''200''! '
+        "403":
+          description: If the 'apiToken' doesn't belong to the host.
+        "404":
+          description: The desired host doesn't exists.
+        "500":
+          description: If the update failed.
   /admin/zones:
     get:
       tags:
@@ -250,6 +309,8 @@ paths:
           type: string
           description: The 'admin-token' to authorize the operation.
       responses:
+        "403":
+          description: The 'adminToken' is wrong.
         "200":
           description: The hosts of the desired zones fetched successful.
           content:
@@ -261,8 +322,6 @@ paths:
                 ns: a1.nameserver.net
                 fullHost: master.mydomain.net
                 changed: 2024-03-11T09:07:59.037688
-        "403":
-          description: The 'adminToken' is wrong.
   /admin/zones/{name}:
     delete:
       tags:
