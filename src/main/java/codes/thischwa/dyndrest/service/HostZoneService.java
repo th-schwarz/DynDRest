@@ -208,7 +208,9 @@ public class HostZoneService {
       log.warn("Zone isn't configured: " + zoneName);
       return Optional.empty();
     }
-    assert zone.getId() != null;
+    if (zone.getId() == null) {
+      throw new IllegalArgumentException("Zone id shouldn't be null.");
+    }
     return Optional.of(hostRepo.findByZoneId(zone.getId()));
   }
 
@@ -236,7 +238,9 @@ public class HostZoneService {
    * @param host the Host object to be deleted
    */
   public void deleteHost(Host host) {
-      assert host.getId() != null;
-      hostRepo.deleteById(host.getId());
+    if (host.getId() == null) {
+      throw new IllegalArgumentException("Host id should not be null.");
+    }
+    hostRepo.deleteById(host.getId());
   }
 }

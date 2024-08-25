@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @AutoConfigureMockMvc
 @DisplayName("Integration tests: Rest - '/admin/'")
-class RestTestAdmin extends AbstractIntegrationTest {
+class AdminRestTest extends AbstractIntegrationTest {
 
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   @Autowired private MockMvc mockMvc;

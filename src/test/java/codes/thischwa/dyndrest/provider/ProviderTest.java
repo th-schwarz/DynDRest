@@ -19,7 +19,7 @@ class ProviderTest extends AbstractIntegrationTest {
         ips.toString());
   }
 
-  static class TestProvider extends GenericProvider {
+  private static class TestProvider extends GenericProvider {
 
     @Override
     public void validateHostZoneConfiguration() throws IllegalArgumentException {}

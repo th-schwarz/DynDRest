@@ -59,9 +59,9 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
     zcw.update(zone);
   }
 
-  // not required for domainrobot. #update adds the required records.
   @Override
   public void addHost(String zoneName, String host) throws ProviderException {
+    // not required for domainrobot. #update adds the required records.
   }
 
   @Override

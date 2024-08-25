@@ -7,7 +7,6 @@ import codes.thischwa.dyndrest.provider.Provider;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.service.HostZoneService;
 import codes.thischwa.dyndrest.service.UpdateLogService;
-import codes.thischwa.dyndrest.util.DomainNameValidator;
 import codes.thischwa.dyndrest.util.NetUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
@@ -26,8 +25,6 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 @Slf4j
 public class ApiController implements ApiRoutes {
-
-  private final DomainNameValidator domainNameValidator = new DomainNameValidator();
 
   private final Provider provider;
 
