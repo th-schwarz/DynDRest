@@ -24,7 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 /** The 'main' api controller. */
 @RestController
 @Slf4j
-public class ApiController implements ApiRoutes {
+public class ApiController implements ApiRoutes, RouterRoutes {
 
   private final Provider provider;
 
@@ -62,8 +62,44 @@ public class ApiController implements ApiRoutes {
       HttpServletRequest req) {
     log.debug(
         "entered #update: host={}, apiToken={}, ipv4={}, ipv6={}", host, apiToken, ipv4, ipv6);
+    return updateIpAddresses(host, apiToken, ipv4, ipv6, req);
+  }
+
+  @Override
+  public ResponseEntity<IpSetting> fetchHostIpSetting(String host, @RequestParam String apiToken) {
+    log.debug("entered #info: host={}", host);
+    // validation
     validateHost(host, apiToken);
 
+    IpSetting ipSetting;
+    try {
+      ipSetting = provider.info(host);
+    } catch (ProviderException e) {
+      log.error("Zone info failed for: " + host, e);
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    return ResponseEntity.ok(ipSetting);
+  }
+
+  @Override
+  public ResponseEntity<Void> routerUpdateHost(
+      String host, String apiToken, InetAddress ipv4, InetAddress ipv6, HttpServletRequest req) {
+    log.debug(
+        "entered #routerUpdateHost: host={}, apiToken={}, ipv4={}, ipv6={}",
+        host,
+        apiToken,
+        ipv4,
+        ipv6);
+    return updateIpAddresses(host, apiToken, ipv4, ipv6, req);
+  }
+
+  private ResponseEntity<Void> updateIpAddresses(
+      String host,
+      String apiToken,
+      @Nullable InetAddress ipv4,
+      @Nullable InetAddress ipv6,
+      HttpServletRequest req) {
+    validateHost(host, apiToken);
     IpSetting reqIpSetting = new IpSetting(ipv4, ipv6);
     if (reqIpSetting.isNotSet()) {
       log.debug("Both IP parameters are null, try to fetch the remote IP.");
@@ -99,23 +135,6 @@ public class ApiController implements ApiRoutes {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
     return ResponseEntity.ok().build();
-  }
-
-  @Override
-  public ResponseEntity<IpSetting> fetchHostIpSetting(String host, @RequestParam String apiToken) {
-    log.debug("entered #info: host={}", host);
-    // validation
-    validateHost(host, apiToken);
-
-    IpSetting ipSetting;
-    try {
-      ipSetting = provider.info(host);
-    } catch (ProviderException e) {
-      log.error("Zone info failed for: " + host, e);
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    return ResponseEntity.ok(ipSetting);
   }
 
   private void validateHost(String host, String apiToken) {
