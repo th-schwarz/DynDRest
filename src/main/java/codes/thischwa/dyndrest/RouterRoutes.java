@@ -11,8 +11,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/**
+ * This interface defines alternative routes for routers that do not support the PUT method.
+ */
 public interface RouterRoutes {
-
+  /*+
+   * It's a duplicate of {@link codes.thischwa.dyndrest.ApiRoutes#updateHost} for routers which can't use the Put method.
+   */
   @Operation(
       summary =
           "Updates the desired IP addresses of the 'host'. If both parameters for IP addresses aren't set, an attempt is made to fetch the remote IP. It is an alternative route for routers which requires the GET method!")
