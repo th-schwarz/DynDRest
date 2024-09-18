@@ -1,7 +1,7 @@
-package codes.thischwa.dyndrest;
+package codes.thischwa.dyndrest.server;
 
-import codes.thischwa.dyndrest.config.AppConfig;
-import codes.thischwa.dyndrest.model.FullHost;
+import codes.thischwa.dyndrest.model.config.AppConfig;
+import codes.thischwa.dyndrest.model.HostEnriched;
 import codes.thischwa.dyndrest.model.Zone;
 import codes.thischwa.dyndrest.provider.Provider;
 import codes.thischwa.dyndrest.provider.ProviderException;
@@ -88,10 +88,10 @@ public class AdminController implements AdminRoutes {
   }
 
   @Override
-  public ResponseEntity<List<FullHost>> listHostsOfZone(String zoneName, String adminToken) {
+  public ResponseEntity<List<HostEnriched>> listHostsOfZone(String zoneName, String adminToken) {
     log.debug("entered #listHostsOfZone.");
     checkAdminToken(adminToken);
-    Optional<List<FullHost>> hosts = hostZoneService.findHostsOfZone(zoneName);
+    Optional<List<HostEnriched>> hosts = hostZoneService.findHostsOfZone(zoneName);
     return hosts.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
   }
 
@@ -104,7 +104,7 @@ public class AdminController implements AdminRoutes {
     if (zone == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
-    Optional<List<FullHost>> fullHosts = hostZoneService.findHostsOfZone(zoneName);
+    Optional<List<HostEnriched>> fullHosts = hostZoneService.findHostsOfZone(zoneName);
     if (fullHosts.isPresent() && fullHosts.get().stream().anyMatch(h -> h.getName().equals(host))) {
       log.error("Host {} already exists.", host);
       throw new ResponseStatusException(HttpStatus.CONFLICT);
@@ -123,18 +123,18 @@ public class AdminController implements AdminRoutes {
   public ResponseEntity<Void> deleteHost(String host, String adminToken) {
     log.debug("entered #deleteHost: fullHost={}", host);
     checkAdminToken(adminToken);
-    Optional<FullHost> optionalFullHost = hostZoneService.getHost(host);
+    Optional<HostEnriched> optionalFullHost = hostZoneService.getHost(host);
     if (optionalFullHost.isEmpty()) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
-    FullHost fullHost = optionalFullHost.get();
+    HostEnriched hostEnriched = optionalFullHost.get();
     try {
-      provider.removeHost(fullHost.getFullHost());
+      provider.removeHost(hostEnriched.getFullHost());
     } catch (ProviderException e) {
-      log.error("Failed to remove host: fullHost=" + fullHost.getFullHost(), e);
+      log.error("Failed to remove host: fullHost=" + hostEnriched.getFullHost(), e);
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
-    hostZoneService.deleteHost(fullHost);
+    hostZoneService.deleteHost(hostEnriched);
     return ResponseEntity.ok().build();
   }
 

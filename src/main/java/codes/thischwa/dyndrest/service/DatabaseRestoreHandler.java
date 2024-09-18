@@ -1,7 +1,7 @@
 package codes.thischwa.dyndrest.service;
 
-import codes.thischwa.dyndrest.config.AppConfig;
-import codes.thischwa.dyndrest.config.BeanCollector;
+import codes.thischwa.dyndrest.model.config.AppConfig;
+import codes.thischwa.dyndrest.server.config.BeanCollector;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

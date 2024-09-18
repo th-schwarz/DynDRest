@@ -1,4 +1,4 @@
-package codes.thischwa.dyndrest.config;
+package codes.thischwa.dyndrest.model.config;
 
 import static org.junit.jupiter.api.Assertions.*;
 

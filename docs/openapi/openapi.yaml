@@ -41,6 +41,8 @@ paths:
           type: string
           description: "The 'apiToken', which must belong to the host'."
       responses:
+        "500":
+          description: If the zone info fails.
         "200":
           description: A JSON object with the IP settings of the 'host'.
           content:
@@ -48,13 +50,11 @@ paths:
               example:
                 ipv4: 127.1.2.4
                 ipv6: 2a03:4000:41:32:0:0:0:2
+        "404":
+          description: If the 'host' isn't configured.
         "403":
           description: "If the 'apiToken' doesn't belong to the host, IP addresses\
             \ aren't valid or the remote IP couldn't determine."
-        "500":
-          description: If the zone info fails.
-        "404":
-          description: If the 'host' isn't configured.
     put:
       tags:
       - api-controller
@@ -275,6 +275,8 @@ paths:
           type: string
           description: The 'admin-token' to authorize the operation.
       responses:
+        "403":
+          description: The 'adminToken' is wrong.
         "200":
           description: Zones listed successful.
           content:
@@ -283,8 +285,6 @@ paths:
               - name: mydomain.net
                 ns: a1.nameserver.net
                 changed: 2024-03-11T09:07:59.022057
-        "403":
-          description: The 'adminToken' is wrong.
   /admin/zones/{zoneName}/hosts:
     get:
       tags:

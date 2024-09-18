@@ -1,6 +1,6 @@
 package codes.thischwa.dyndrest.provider.impl.domainrobot;
 
-import codes.thischwa.dyndrest.config.AppConfig;
+import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.provider.Provider;
 import codes.thischwa.dyndrest.service.HostZoneService;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package codes.thischwa.dyndrest;
+package codes.thischwa.dyndrest.server;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.MediaType;

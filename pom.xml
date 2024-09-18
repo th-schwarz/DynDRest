@@ -23,10 +23,10 @@
         <project.build.sourceEncoding>${file.encoding}</project.build.sourceEncoding>
         <project.reporting.outputEncoding>${file.encoding}</project.reporting.outputEncoding>
 
-        <springdoc.version>2.3.0</springdoc.version>
+        <springdoc.version>2.5.0</springdoc.version>
         <domainrobot.version>0.2.8</domainrobot.version>
         <dnsjava.version>3.5.3</dnsjava.version>
-        <janino.version>3.1.11</janino.version>
+        <janino.version>3.1.12</janino.version>
 
         <fakerepo.dir>${project.basedir}/fake-repo</fakerepo.dir>
 

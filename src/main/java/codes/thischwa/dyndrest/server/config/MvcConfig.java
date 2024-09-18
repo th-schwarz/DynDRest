@@ -1,4 +1,4 @@
-package codes.thischwa.dyndrest.config;
+package codes.thischwa.dyndrest.server.config;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

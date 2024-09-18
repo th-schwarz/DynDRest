@@ -1,6 +1,6 @@
-package codes.thischwa.dyndrest;
+package codes.thischwa.dyndrest.server;
 
-import codes.thischwa.dyndrest.model.FullHost;
+import codes.thischwa.dyndrest.model.HostEnriched;
 import codes.thischwa.dyndrest.model.Zone;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -120,7 +120,7 @@ public interface AdminRoutes {
             content = @Content(schema = @Schema(hidden = true)))
       })
   @GetMapping(value = "/admin/zones/{zoneName}/hosts", produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<List<FullHost>> listHostsOfZone(
+  ResponseEntity<List<HostEnriched>> listHostsOfZone(
       @Schema(
               description = "The name of the zone for which the hosts are to be listed.",
               type = "string",

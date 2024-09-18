@@ -9,12 +9,12 @@ class HostTest {
 
   @Test
   void testGetFullHost() {
-    FullHost fullHost = new FullHost();
-    fullHost.setName("my4");
-    fullHost.setApiToken("08/15");
-    fullHost.setZoneId(2);
-    fullHost.setZone("zone.info");
-    assertEquals("my4.zone.info", fullHost.getFullHost());
+    HostEnriched hostEnriched = new HostEnriched();
+    hostEnriched.setName("my4");
+    hostEnriched.setApiToken("08/15");
+    hostEnriched.setZoneId(2);
+    hostEnriched.setZone("zone.info");
+    assertEquals("my4.zone.info", hostEnriched.getFullHost());
   }
 
   @Test
@@ -32,7 +32,7 @@ class HostTest {
     h2.setId(1);
     assertEquals(h1, h2);
 
-    FullHost h1Full = new FullHost();
+    HostEnriched h1Full = new HostEnriched();
     h1Full.setId(1);
     h1Full.setName("test1");
     h1Full.setZoneId(1);

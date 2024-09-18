@@ -3,7 +3,7 @@ package codes.thischwa.dyndrest.repository;
 import static org.junit.jupiter.api.Assertions.*;
 
 import codes.thischwa.dyndrest.AbstractIntegrationTest;
-import codes.thischwa.dyndrest.model.FullUpdateLog;
+import codes.thischwa.dyndrest.model.UpdateLogEnriched;
 import codes.thischwa.dyndrest.model.UpdateLog;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -19,19 +19,19 @@ class UpdateLogRepoTest extends AbstractIntegrationTest {
   @Test
   void testFindAllByStatus() {
     assertEquals(42, repo.findAll().size());
-    List<FullUpdateLog> logs = repo.findAllByStatus(UpdateLog.Status.failed);
+    List<UpdateLogEnriched> logs = repo.findAllByStatus(UpdateLog.Status.failed);
     assertEquals(2, logs.size());
   }
 
   @Test
   void testFindById() {
-    List<FullUpdateLog> logs = repo.findAllFullUpdateLogsByIds(List.of(41, 42));
+    List<UpdateLogEnriched> logs = repo.findAllFullUpdateLogsByIds(List.of(41, 42));
     assertEquals(2, logs.size());
   }
 
   @Test
   void testFindByHostId() {
-    List<FullUpdateLog> logs = repo.findByHostId(1);
+    List<UpdateLogEnriched> logs = repo.findByHostId(1);
     assertFalse(logs.isEmpty());
   }
 

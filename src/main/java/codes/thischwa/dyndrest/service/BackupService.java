@@ -1,6 +1,6 @@
 package codes.thischwa.dyndrest.service;
 
-import codes.thischwa.dyndrest.config.AppConfig;
+import codes.thischwa.dyndrest.model.config.AppConfig;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.file.Files;

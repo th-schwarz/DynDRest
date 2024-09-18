@@ -1,8 +1,10 @@
-package codes.thischwa.dyndrest.config;
+package codes.thischwa.dyndrest.server.config;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import codes.thischwa.dyndrest.model.config.AppConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
@@ -46,9 +48,9 @@ public class SecurityConfig {
   private final PasswordEncoder encoder =
       PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-  private final List<String> publicPaths = new ArrayList<>(List.of("/favicon.ico", "/error"));
-  private final String[] loguiPaths = {"/log-ui", "/log-ui/*"};
-  private final String adminPath = "/admin/**";
+  private static final List<String> publicPaths = new ArrayList<>(List.of("/favicon.ico", "/error"));
+  private static final String[] loguiPaths = {"/log-ui", "/log-ui/*"};
+  private static final String adminPath = "/admin/**";
 
   private final boolean updateLogEnabled;
 
@@ -180,7 +182,7 @@ public class SecurityConfig {
         req ->
             req.requestMatchers(buildMatchers(adminPath)).hasRole(ROLE_ADMIN))
               .sessionManagement(
-                      (session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                      session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
               .csrf(AbstractHttpConfigurer::disable);
     }
 
@@ -193,7 +195,7 @@ public class SecurityConfig {
     http.authorizeHttpRequests(req -> req.anyRequest().hasAnyRole(ROLE_USER))
         .httpBasic(Customizer.withDefaults())
         .sessionManagement(
-            (session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .csrf(AbstractHttpConfigurer::disable);
 
     return http.build();

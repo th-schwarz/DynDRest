@@ -1,6 +1,6 @@
 package codes.thischwa.dyndrest.repository;
 
-import codes.thischwa.dyndrest.model.FullHost;
+import codes.thischwa.dyndrest.model.HostEnriched;
 import codes.thischwa.dyndrest.model.Host;
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +18,7 @@ public interface HostRepo extends ListCrudRepository<Host, Integer> {
           + "from HOST h "
           + "join ZONE z on z.ID = h.ZONE_ID "
           + "order by h.id")
-  List<FullHost> findAllExtended();
+  List<HostEnriched> findAllExtended();
 
   @Query(
       "select h.id, h.NAME, concat(h.NAME, '.', z.NAME) full_host, h.API_TOKEN, h.ZONE_ID, "
@@ -26,7 +26,7 @@ public interface HostRepo extends ListCrudRepository<Host, Integer> {
           + "join PUBLIC.ZONE z on z.ID = h.ZONE_ID "
           + "where concat(h.NAME, '.', z.NAME) = :fullHost "
           + "order by h.id")
-  Optional<FullHost> findByFullHost(String fullHost);
+  Optional<HostEnriched> findByFullHost(String fullHost);
 
   @Query(
       "select h.id, h.NAME, concat(h.NAME, '.', z.NAME) full_host, h.API_TOKEN, h.ZONE_ID, "
@@ -34,5 +34,5 @@ public interface HostRepo extends ListCrudRepository<Host, Integer> {
           + "join PUBLIC.ZONE z on z.ID = h.ZONE_ID "
           + "where z.ID = :zoneId "
           + "order by h.id")
-  List<FullHost> findByZoneId(Integer zoneId);
+  List<HostEnriched> findByZoneId(Integer zoneId);
 }

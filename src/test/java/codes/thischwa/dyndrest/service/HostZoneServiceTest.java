@@ -3,7 +3,7 @@ package codes.thischwa.dyndrest.service;
 import static org.junit.jupiter.api.Assertions.*;
 
 import codes.thischwa.dyndrest.AbstractIntegrationTest;
-import codes.thischwa.dyndrest.model.FullHost;
+import codes.thischwa.dyndrest.model.HostEnriched;
 import codes.thischwa.dyndrest.model.Host;
 import codes.thischwa.dyndrest.model.Zone;
 import java.time.LocalDateTime;
@@ -40,9 +40,9 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
   @Order(1)
   @Test
   void testGetConfiguredHosts() {
-    List<FullHost> fullHosts = service.getConfiguredHosts();
-    assertEquals(4, fullHosts.size());
-    FullHost host = fullHosts.get(0);
+    List<HostEnriched> hostEnricheds = service.getConfiguredHosts();
+    assertEquals(4, hostEnricheds.size());
+    HostEnriched host = hostEnricheds.get(0);
     assertEquals(1, host.getId());
     assertEquals("my0.dynhost0.info", host.getFullHost());
     assertEquals("1234567890abcdef", host.getApiToken());
@@ -73,9 +73,9 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
   @Order(4)
   @Test
   void testGetHost() {
-    Optional<FullHost> optHost = service.getHost("my0.dynhost0.info");
+    Optional<HostEnriched> optHost = service.getHost("my0.dynhost0.info");
     assertTrue(optHost.isPresent());
-    FullHost host = optHost.get();
+    HostEnriched host = optHost.get();
     assertEquals(1, host.getId());
     assertEquals("my0.dynhost0.info", host.getFullHost());
     assertEquals("ns0.domain.info", host.getNs());
@@ -98,11 +98,11 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
   @Order(6)
   @Test
   void testFindHostsOfZone() {
-    Optional<List<FullHost>> optional = service.findHostsOfZone("dynhost0.info");
+    Optional<List<HostEnriched>> optional = service.findHostsOfZone("dynhost0.info");
     assertFalse(optional.isEmpty());
-    List<FullHost> hosts = optional.get();
+    List<HostEnriched> hosts = optional.get();
     assertEquals(2, hosts.size());
-    FullHost host = hosts.get(0);
+    HostEnriched host = hosts.get(0);
     assertEquals(1, host.getId());
     assertEquals("my0.dynhost0.info", host.getFullHost());
     assertEquals("ns0.domain.info", host.getNs());
@@ -162,17 +162,17 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
   @Order(9)
   @Test
   void testSaveFullHost() {
-    FullHost fullHost = new FullHost();
-    fullHost.setName("my4");
-    fullHost.setApiToken("08/15");
-    fullHost.setZoneId(2);
-    service.saveOrUpdate(fullHost);
-    assertTrue(fullHost.getId() != null && fullHost.getId() > 4);
-    assertNotNull(fullHost.getChanged());
+    HostEnriched hostEnriched = new HostEnriched();
+    hostEnriched.setName("my4");
+    hostEnriched.setApiToken("08/15");
+    hostEnriched.setZoneId(2);
+    service.saveOrUpdate(hostEnriched);
+    assertTrue(hostEnriched.getId() != null && hostEnriched.getId() > 4);
+    assertNotNull(hostEnriched.getChanged());
 
-    fullHost.setId(null);
+    hostEnriched.setId(null);
     try {
-      service.saveOrUpdate(fullHost);
+      service.saveOrUpdate(hostEnriched);
     } catch (Exception e) {
       assertEquals(DuplicateKeyException.class, e.getCause().getClass());
     }
@@ -210,7 +210,7 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
   @Order(12)
   @Test
   void testDeleteZone() {
-    Optional<FullHost> h = service.getHost("test0.dynhost0.info");
+    Optional<HostEnriched> h = service.getHost("test0.dynhost0.info");
     assertTrue(h.isPresent());
     Integer id = h.get().getId();
     Integer count =
@@ -240,15 +240,15 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     host.setApiToken("abcdef1234567890");
     host.setZoneId(z.getId());
     service.saveOrUpdate(host);
-    Optional<List<FullHost>> optHosts = service.findHostsOfZone(z.getName());
+    Optional<List<HostEnriched>> optHosts = service.findHostsOfZone(z.getName());
     assertTrue(optHosts.isPresent());
-    List<FullHost> hosts = optHosts.get();
+    List<HostEnriched> hosts = optHosts.get();
     assertEquals(hostCnt + 1, hosts.size());
-    Optional<FullHost> optFullHost =
+    Optional<HostEnriched> optFullHost =
         hosts.stream().filter(h -> h.getName().startsWith("my5")).findFirst();
     assertTrue(optFullHost.isPresent());
-    FullHost fullHost = optFullHost.get();
-    assertNotNull(fullHost.getId());
-    assertEquals(z.getId(), fullHost.getZoneId());
+    HostEnriched hostEnriched = optFullHost.get();
+    assertNotNull(hostEnriched.getId());
+    assertEquals(z.getId(), hostEnriched.getZoneId());
   }
 }

@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import codes.thischwa.dyndrest.AbstractIntegrationTest;
-import codes.thischwa.dyndrest.model.FullHost;
+import codes.thischwa.dyndrest.model.HostEnriched;
 import codes.thischwa.dyndrest.model.Host;
 import codes.thischwa.dyndrest.model.Zone;
 import codes.thischwa.dyndrest.service.HostZoneService;
@@ -70,7 +70,7 @@ class ConstraintTest extends AbstractIntegrationTest {
   @Order(Integer.MAX_VALUE)
   void testCascadeDelete() {
     Zone zone = zoneRepo.findByName("dynhost0.info");
-    Optional<List<FullHost>> fullHosts = service.findHostsOfZone(zone.getName());
+    Optional<List<HostEnriched>> fullHosts = service.findHostsOfZone(zone.getName());
     assertFalse(fullHosts.isEmpty());
     Integer hostId = fullHosts.get().get(0).getId();
     assertFalse(logRepo.findByHostId(hostId).isEmpty());

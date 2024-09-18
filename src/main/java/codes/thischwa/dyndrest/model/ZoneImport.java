@@ -18,10 +18,10 @@ public record ZoneImport(@Nullable List<ZoneImport.Zone> zones) {
    * @return A list of FullHost objects
    * @throws IllegalArgumentException if the host entry is not in the correct format
    */
-  public List<FullHost> getHosts() {
-    List<FullHost> fullHosts = new ArrayList<>();
+  public List<HostEnriched> getHosts() {
+    List<HostEnriched> hostEnricheds = new ArrayList<>();
     if (zones == null) {
-      return fullHosts;
+      return hostEnricheds;
     }
     for (ZoneImport.Zone zone : zones) {
       for (String hostRaw : zone.hosts()) {
@@ -31,15 +31,15 @@ public record ZoneImport(@Nullable List<ZoneImport.Zone> zones) {
               "The host entry must be in the following format: [sld|:[apiToken], but it was: "
                   + hostRaw);
         }
-        FullHost fullHost = new FullHost();
-        fullHost.setName(parts[0]);
-        fullHost.setApiToken(parts[1]);
-        fullHost.setZone(zone.name);
-        fullHost.setNs(zone.ns);
-        fullHosts.add(fullHost);
+        HostEnriched hostEnriched = new HostEnriched();
+        hostEnriched.setName(parts[0]);
+        hostEnriched.setApiToken(parts[1]);
+        hostEnriched.setZone(zone.name);
+        hostEnriched.setNs(zone.ns);
+        hostEnricheds.add(hostEnriched);
       }
     }
-    return fullHosts;
+    return hostEnricheds;
   }
 
   /**
