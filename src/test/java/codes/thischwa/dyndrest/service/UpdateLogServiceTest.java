@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import codes.thischwa.dyndrest.AbstractIntegrationTest;
-import codes.thischwa.dyndrest.model.FullUpdateLog;
+import codes.thischwa.dyndrest.model.UpdateLogEnriched;
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.model.UpdateLog;
 import java.net.UnknownHostException;
@@ -23,7 +23,7 @@ class UpdateLogServiceTest extends AbstractIntegrationTest {
   @Order(1)
   @Test
   void testGetPage() {
-    Page<FullUpdateLog> page = updateLogService.getPage(0);
+    Page<UpdateLogEnriched> page = updateLogService.getPage(0);
     assertNotNull(page);
     assertEquals(42, page.getTotalElements());
     assertEquals(4, page.getSize());
@@ -31,7 +31,7 @@ class UpdateLogServiceTest extends AbstractIntegrationTest {
     assertTrue(page.isFirst());
     assertEquals(0, page.getNumber());
 
-    FullUpdateLog log = page.getContent().get(0);
+    UpdateLogEnriched log = page.getContent().get(0);
     assertEquals(42, log.getId());
     assertEquals(2, log.getHostId());
     assertEquals("test0.dynhost0.info", log.getHost());

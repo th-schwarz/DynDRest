@@ -1,9 +1,9 @@
 package codes.thischwa.dyndrest.service;
 
-import codes.thischwa.dyndrest.config.AppConfig;
+import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.model.AbstractJdbcEntity;
-import codes.thischwa.dyndrest.model.FullHost;
-import codes.thischwa.dyndrest.model.FullUpdateLog;
+import codes.thischwa.dyndrest.model.HostEnriched;
+import codes.thischwa.dyndrest.model.UpdateLogEnriched;
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.model.UpdateLog;
 import codes.thischwa.dyndrest.repository.UpdateLogRepo;
@@ -48,11 +48,11 @@ public class UpdateLogService {
    * @param pageNo The page number to retrieve. Starts with 0.
    * @return A Page object containing FullUpdateLog objects.
    */
-  public Page<FullUpdateLog> getPage(int pageNo) {
+  public Page<UpdateLogEnriched> getPage(int pageNo) {
     Pageable pageable = create(pageNo);
     Page<UpdateLog> rawPage = logRepo.findAll(pageable);
     List<Integer> ids = rawPage.getContent().stream().map(AbstractJdbcEntity::getId).toList();
-    List<FullUpdateLog> updateLogs = logRepo.findAllFullUpdateLogsByIds(ids);
+    List<UpdateLogEnriched> updateLogs = logRepo.findAllFullUpdateLogsByIds(ids);
     return new PageImpl<>(updateLogs, create(pageNo), rawPage.getTotalElements());
   }
 
@@ -69,12 +69,12 @@ public class UpdateLogService {
    * @throws IllegalArgumentException If the host is not found.
    */
   public void log(String host, IpSetting reqIpSetting, UpdateLog.Status status) {
-    Optional<FullHost> opt = hostZoneService.getHost(host);
+    Optional<HostEnriched> opt = hostZoneService.getHost(host);
     if (opt.isPresent()) {
-      FullHost fullHost = opt.get();
+      HostEnriched hostEnriched = opt.get();
       UpdateLog updateLog =
           UpdateLog.getInstance(
-              fullHost.getId(), reqIpSetting, status, LocalDateTime.now(), LocalDateTime.now());
+              hostEnriched.getId(), reqIpSetting, status, LocalDateTime.now(), LocalDateTime.now());
       logRepo.save(updateLog);
     } else {
       // shouldn't be happened

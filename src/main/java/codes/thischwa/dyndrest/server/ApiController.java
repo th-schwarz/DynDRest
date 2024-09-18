@@ -1,6 +1,6 @@
-package codes.thischwa.dyndrest;
+package codes.thischwa.dyndrest.server;
 
-import codes.thischwa.dyndrest.config.AppConfig;
+import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.model.UpdateLog;
 import codes.thischwa.dyndrest.provider.Provider;

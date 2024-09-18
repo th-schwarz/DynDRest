@@ -1,4 +1,4 @@
-package codes.thischwa.dyndrest.config;
+package codes.thischwa.dyndrest.server.config;
 
 import java.util.Collection;
 import java.util.Collections;

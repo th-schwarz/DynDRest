@@ -12,13 +12,13 @@ class ZoneImportTest extends AbstractIntegrationTest {
 
   @Test
   final void testConfig() {
-    FullHost fullHost = zoneImport.getHosts().get(0);
-    assertNull(fullHost.getId());
-    assertNull(fullHost.getZoneId());
-    assertNull(fullHost.getChanged());
-    assertEquals("my3.dynhost0.info", fullHost.getFullHost());
-    assertEquals("dynhost0.info", fullHost.getZone());
-    assertEquals("ns0.domain.info", fullHost.getNs());
-    assertEquals("api1", fullHost.getApiToken());
+    HostEnriched hostEnriched = zoneImport.getHosts().get(0);
+    assertNull(hostEnriched.getId());
+    assertNull(hostEnriched.getZoneId());
+    assertNull(hostEnriched.getChanged());
+    assertEquals("my3.dynhost0.info", hostEnriched.getFullHost());
+    assertEquals("dynhost0.info", hostEnriched.getZone());
+    assertEquals("ns0.domain.info", hostEnriched.getNs());
+    assertEquals("api1", hostEnriched.getApiToken());
   }
 }

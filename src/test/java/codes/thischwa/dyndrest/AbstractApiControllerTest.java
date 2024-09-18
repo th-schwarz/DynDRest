@@ -2,8 +2,9 @@ package codes.thischwa.dyndrest;
 
 import static org.mockito.Mockito.mock;
 
-import codes.thischwa.dyndrest.config.AppConfig;
+import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.provider.Provider;
+import codes.thischwa.dyndrest.server.ApiController;
 import codes.thischwa.dyndrest.service.HostZoneService;
 import codes.thischwa.dyndrest.service.UpdateLogService;
 import org.junit.jupiter.api.BeforeAll;

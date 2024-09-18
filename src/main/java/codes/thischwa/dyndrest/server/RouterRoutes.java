@@ -1,4 +1,4 @@
-package codes.thischwa.dyndrest;
+package codes.thischwa.dyndrest.server;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 public interface RouterRoutes {
   /*+
-   * It's a duplicate of {@link codes.thischwa.dyndrest.ApiRoutes#updateHost} for routers which can't use the Put method.
+   * It's a duplicate of {@link codes.thischwa.dyndrest.server.ApiRoutes#updateHost} for routers which can't use the Put method.
    */
   @Operation(
       summary =

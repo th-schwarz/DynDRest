@@ -1,7 +1,7 @@
 package codes.thischwa.dyndrest.service;
 
 import codes.thischwa.dyndrest.model.AbstractJdbcEntity;
-import codes.thischwa.dyndrest.model.FullHost;
+import codes.thischwa.dyndrest.model.HostEnriched;
 import codes.thischwa.dyndrest.model.Host;
 import codes.thischwa.dyndrest.model.Zone;
 import codes.thischwa.dyndrest.model.ZoneImport;
@@ -39,7 +39,7 @@ public class HostZoneService {
    * @throws EmptyResultDataAccessException if the host cannot be found
    */
   public boolean validate(String fullHost, String apiToken) throws EmptyResultDataAccessException {
-    Optional<FullHost> optHost = hostRepo.findByFullHost(fullHost);
+    Optional<HostEnriched> optHost = hostRepo.findByFullHost(fullHost);
     if (optHost.isEmpty()) {
       throw new EmptyResultDataAccessException("Host not found: " + fullHost, 1);
     }
@@ -51,7 +51,7 @@ public class HostZoneService {
    *
    * @return the list of configured hosts
    */
-  public List<FullHost> getConfiguredHosts() {
+  public List<HostEnriched> getConfiguredHosts() {
     return hostRepo.findAllExtended();
   }
 
@@ -80,7 +80,7 @@ public class HostZoneService {
    * @param fullHostStr the full host to retrieve
    * @return the FullHost object for the given fullHost or null if not exists.
    */
-  public Optional<FullHost> getHost(String fullHostStr) {
+  public Optional<HostEnriched> getHost(String fullHostStr) {
     return hostRepo.findByFullHost(fullHostStr);
   }
 
@@ -100,27 +100,27 @@ public class HostZoneService {
    * be updated.
    */
   public void importOnStart() {
-    List<FullHost> hostsToImport = zoneImport.getHosts();
+    List<HostEnriched> hostsToImport = zoneImport.getHosts();
     if (hostsToImport.isEmpty()) {
       log.info("No zones found for import.");
       return;
     }
     log.debug("{} hosts found in the configuration for import.", hostsToImport.size());
 
-    List<FullHost> hostsToSave =
+    List<HostEnriched> hostsToSave =
         hostsToImport.stream().filter(fullHost -> !hostExists(fullHost.getFullHost())).toList();
-    for (FullHost fullHost : hostsToSave) {
-      Zone zone = getZone(fullHost.getZone());
+    for (HostEnriched hostEnriched : hostsToSave) {
+      Zone zone = getZone(hostEnriched.getZone());
       if (zone == null) {
         Zone tmpZone = new Zone();
-        tmpZone.setName(fullHost.getZone());
-        tmpZone.setNs(fullHost.getNs());
+        tmpZone.setName(hostEnriched.getZone());
+        tmpZone.setNs(hostEnriched.getNs());
         saveOrUpdate(tmpZone);
-        fullHost.setZoneId(tmpZone.getId());
+        hostEnriched.setZoneId(tmpZone.getId());
       } else {
-        fullHost.setZoneId(zone.getId());
+        hostEnriched.setZoneId(zone.getId());
       }
-      saveOrUpdate(fullHost);
+      saveOrUpdate(hostEnriched);
     }
     if (!hostsToSave.isEmpty()) {
       log.info("{} hosts successful imported.", hostsToSave.size());
@@ -202,7 +202,7 @@ public class HostZoneService {
    * @param zoneName the name of the zone to find hosts for
    * @return a list of FullHost objects representing the hosts in the specified zone
    */
-  public Optional<List<FullHost>> findHostsOfZone(String zoneName) {
+  public Optional<List<HostEnriched>> findHostsOfZone(String zoneName) {
     Zone zone = zoneRepo.findByName(zoneName);
     if (zone == null) {
       log.warn("Zone isn't configured: " + zoneName);

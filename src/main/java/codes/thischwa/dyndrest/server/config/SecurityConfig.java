@@ -1,8 +1,10 @@
-package codes.thischwa.dyndrest.config;
+package codes.thischwa.dyndrest.server.config;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import codes.thischwa.dyndrest.model.config.AppConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;

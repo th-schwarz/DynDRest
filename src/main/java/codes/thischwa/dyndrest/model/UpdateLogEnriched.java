@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class FullUpdateLog extends UpdateLog {
+public class UpdateLogEnriched extends UpdateLog {
 
   private String host;
 }

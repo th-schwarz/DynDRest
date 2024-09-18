@@ -1,7 +1,7 @@
 package codes.thischwa.dyndrest.provider.impl.domainrobot;
 
-import codes.thischwa.dyndrest.config.AppConfig;
-import codes.thischwa.dyndrest.model.FullHost;
+import codes.thischwa.dyndrest.model.config.AppConfig;
+import codes.thischwa.dyndrest.model.HostEnriched;
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.provider.impl.GenericProvider;
@@ -66,13 +66,13 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
 
   @Override
   public void removeHost(String host) throws ProviderException {
-    Optional<FullHost> optFullHost = hostZoneService.getHost(host);
+    Optional<HostEnriched> optFullHost = hostZoneService.getHost(host);
     if (!optFullHost.isPresent()) {
       throw new ProviderException("Host isn't configured: " + host);
     }
-    FullHost fullHost = optFullHost.get();
+    HostEnriched hostEnriched = optFullHost.get();
     Zone zone = zoneInfo(host);
-    zcw.removeSld(zone, fullHost.getName());
+    zcw.removeSld(zone, hostEnriched.getName());
     zcw.update(zone);
   }
 
@@ -90,12 +90,12 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
   }
 
   private void hostsOfZoneConfirmed(Zone zone) throws IllegalArgumentException {
-    Optional<List<FullHost>> opt = hostZoneService.findHostsOfZone(zone.getOrigin());
+    Optional<List<HostEnriched>> opt = hostZoneService.findHostsOfZone(zone.getOrigin());
     if (opt.isEmpty()) {
       log.warn("No hosts found for zone: {}", zone.getOrigin());
       return;
     }
-    for (FullHost host : opt.get()) {
+    for (HostEnriched host : opt.get()) {
       if (zcw.hasSubTld(zone, host.getName())) {
         log.info("Host confirmed: {}", host.getFullHost());
       } else {
@@ -113,13 +113,13 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
    * @throws IllegalArgumentException the illegal argument exception
    */
   Zone zoneInfo(String host) throws ProviderException, IllegalArgumentException {
-    Optional<FullHost> optFullHost = hostZoneService.getHost(host);
+    Optional<HostEnriched> optFullHost = hostZoneService.getHost(host);
     if (optFullHost.isEmpty()) {
       throw new IllegalArgumentException("Host isn't configured: " + host);
     }
-    FullHost fullHost = optFullHost.get();
-    String zone = fullHost.getZone();
-    String primaryNameServer = fullHost.getNs();
+    HostEnriched hostEnriched = optFullHost.get();
+    String zone = hostEnriched.getZone();
+    String primaryNameServer = hostEnriched.getNs();
     return zcw.info(zone, primaryNameServer);
   }
 

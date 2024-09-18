@@ -1,7 +1,7 @@
 package codes.thischwa.dyndrest.ui;
 
-import codes.thischwa.dyndrest.config.AppConfig;
-import codes.thischwa.dyndrest.model.FullUpdateLog;
+import codes.thischwa.dyndrest.model.config.AppConfig;
+import codes.thischwa.dyndrest.model.UpdateLogEnriched;
 import codes.thischwa.dyndrest.service.UpdateLogService;
 import codes.thischwa.dyndrest.util.NetUtil;
 import java.util.List;
@@ -51,7 +51,7 @@ public class UpdateLogController {
     String baseUrl = NetUtil.getBaseUrl(config.updateLogRestForceHttps());
     model.addAttribute("server_url", baseUrl + "/log-ui/");
 
-    Page<FullUpdateLog> pageLog = updateLogService.getPage(page);
+    Page<UpdateLogEnriched> pageLog = updateLogService.getPage(page);
     model.addAttribute("logDatePattern", config.updateLogDatePattern());
     model.addAttribute("logs", pageLog.getContent());
     model.addAttribute("page", page);

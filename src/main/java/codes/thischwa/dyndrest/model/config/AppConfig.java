@@ -1,4 +1,4 @@
-package codes.thischwa.dyndrest.config;
+package codes.thischwa.dyndrest.model.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.lang.Nullable;

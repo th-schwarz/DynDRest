@@ -1,7 +1,8 @@
-package codes.thischwa.dyndrest.config;
+package codes.thischwa.dyndrest.server.config;
 
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.model.UpdateLog;
+import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.repository.UpdateLogRepo;
 import codes.thischwa.dyndrest.service.HostZoneService;
 import java.time.LocalDateTime;
