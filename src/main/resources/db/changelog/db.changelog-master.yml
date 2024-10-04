@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0
+      author: thilo schwarz
+  - include:
+      file: 000/create-zone.sql
+      relativeToChangelogFile: true
+  - include:
+      file: 000/create-host.sql
+      relativeToChangelogFile: true
+  - include:
+      file: 000/create-update_log.sql
+      relativeToChangelogFile: true
