@@ -34,8 +34,7 @@ public class BackupService {
   private final AppConfig.Database database;
   private final AppConfig.Database.Backup backup;
 
-  @Nullable
-  private String dumpPath;
+  @Nullable private String dumpPath;
 
   /**
    * The BackupService class is responsible for performing database backups based on the provided

@@ -60,7 +60,7 @@ spring:
   config:
     import: optional:file:./dyndrest.yml
 
-## database related properties
+  ## database related properties
   # the datasource
   datasource:
     url: jdbc:h2:file:./dyndrest
