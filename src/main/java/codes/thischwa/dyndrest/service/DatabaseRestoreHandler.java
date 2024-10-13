@@ -30,9 +30,9 @@ public class DatabaseRestoreHandler extends BeanCollector {
 
   private final Environment env;
 
-  private JdbcTemplate jdbcTemplate;
+  @Nullable private JdbcTemplate jdbcTemplate;
 
-  private AppConfig appConfig;
+  @Nullable private AppConfig appConfig;
 
   private boolean dbExists;
 
