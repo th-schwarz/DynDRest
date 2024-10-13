@@ -13,18 +13,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.FatalBeanException;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 /** This class provides database restore functionality based on the provided configuration. */
-@Service
-@Profile({"!opendoc"})
+@Component
+@Profile({"!opendoc", "!test"})
 @Slf4j
 public class DatabaseRestoreHandler extends BeanCollector {
+
+  private final Environment env;
 
   private JdbcTemplate jdbcTemplate;
 
@@ -38,9 +42,18 @@ public class DatabaseRestoreHandler extends BeanCollector {
 
   @Nullable private Path restorePathBak = null;
 
-  @Override
+    public DatabaseRestoreHandler(Environment env) {
+        this.env = env;
+    }
+
+    @Override
   public void process(Collection<Object> wantedBeans) throws BeansException {
     log.info("entered #process");
+    // don't know while @Profil don't work
+    if (env.matchesProfiles("test", "opendoc")) {
+      log.info("skip processing");
+      return;
+    }
     setupRestorationParams(wantedBeans);
     if (restoreEnabled) {
       try {

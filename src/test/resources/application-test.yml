@@ -15,11 +15,13 @@ spring:
     username: dba
 
   liquibase:
-    enabled: false
+    change-log: classpath:/db/changelog/db.changelog-master.yml
+    drop-first: true
+    contexts: test
 
-  sql:
-    init:
-      schema-locations: classpath:/h2/dump.sql
+  #  sql:
+#    init:
+#      schema-locations: classpath:/h2/dump.sql
 
   jpa:
     show-sql: true

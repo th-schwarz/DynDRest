@@ -1,12 +1,16 @@
 package codes.thischwa.dyndrest;
 
+import codes.thischwa.dyndrest.model.Host;
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.model.UpdateLog;
+import codes.thischwa.dyndrest.model.Zone;
 import codes.thischwa.dyndrest.repository.UpdateLogRepo;
+import codes.thischwa.dyndrest.service.HostZoneService;
 import jakarta.annotation.PostConstruct;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +35,15 @@ public abstract class AbstractIntegrationTest {
 
   @Autowired protected TestRestTemplate restTemplate;
 
+  @Autowired private HostZoneService hostZoneService;
+
   @Autowired private UpdateLogRepo updateLogRepo;
+
+  protected LocalDate currentDate;
+
+  protected Integer z1ID;
+
+  protected Integer h1z1ID;
 
   @PostConstruct
   void initUpdateLogDatabase() {
@@ -39,6 +51,15 @@ public abstract class AbstractIntegrationTest {
       if (!updateLogRepo.findAll().isEmpty()) {
         return;
       }
+      Zone z1 = hostZoneService.addZone("dynhost0.info", "ns0.domain.info");
+      currentDate = z1.getChanged().toLocalDate();
+      z1ID = z1.getId();
+      Zone z2 = hostZoneService.addZone("dynhost1.info", "ns1.domain.info");
+      Host h1z1 = hostZoneService.addHost(z1, "my0", "1234567890abcdef");
+      h1z1ID = h1z1.getId();
+      Host h2z1 = hostZoneService.addHost(z1, "test0", "1234567890abcdex");
+      Host h1z2 = hostZoneService.addHost(z2, "my1", "1234567890abcdef");
+      Host h2z2 = hostZoneService.addHost(z1, "test1", "1234567890abcdex");
       LocalDateTime dateTime = START_DATETIME;
       updateLogRepo.save(
           UpdateLog.getInstance(
