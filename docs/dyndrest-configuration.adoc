@@ -14,7 +14,9 @@ Below all default settings are listed.
 
 [source,yaml]
 ----
-include::../src/main/resources/application.yml[]
+
+include::https://github.com/th-schwarz/DynDRest/raw/refs/heads/develop/src/main/resources/application.yml[]
+
 ----
 
 == Individual settings
