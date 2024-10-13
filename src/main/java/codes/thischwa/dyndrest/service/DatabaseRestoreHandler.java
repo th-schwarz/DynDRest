@@ -51,7 +51,7 @@ public class DatabaseRestoreHandler extends BeanCollector {
     log.info("entered #process");
     // don't know while @Profil don't work
     if (env.matchesProfiles("test", "opendoc")) {
-      log.info("skip processing");
+      log.info("Skip processing, not in production profile!");
       return;
     }
     setupRestorationParams(wantedBeans);

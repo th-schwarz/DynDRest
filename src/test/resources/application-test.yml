@@ -19,10 +19,6 @@ spring:
     drop-first: true
     contexts: test
 
-  #  sql:
-#    init:
-#      schema-locations: classpath:/h2/dump.sql
-
   jpa:
     show-sql: true
 
