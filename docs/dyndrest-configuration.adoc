@@ -13,9 +13,89 @@ Below all default settings are listed.
 
 
 [source,yaml]
+// include is disabled on github
+// 2024-10
 ----
+## server settings
+server:
+  address: 127.0.0.1
+  port: 8081
+  forward-headers-strategy: NATIVE
+  servlet:
+    context-path: /
+  shutdown: graceful
 
-include::https://github.com/th-schwarz/DynDRest/raw/refs/heads/develop/src/main/resources/application.yml[]
+## management
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      base-path: /manage
+  endpoint:
+    health:
+      enabled: false
+
+## dyndrest config
+dyndrest:
+  greeting-enabled: true
+  host-validation-enabled: true
+  # http status code for the case at least one IP has changed, e.g. 201
+  update-ip-changed-status: 200
+  update-log-page-enabled: false
+  update-log-page-size: 30
+  update-log-date-pattern: yyyy-MM-dd HH:mm:ss
+  # database config, credentials should be set at the individual properties
+  database:
+    backup:
+      enabled: false
+      path: ./backup
+    restore:
+      enabled: false
+      path: ./restore
+    dump-file: dump.sql
+
+## disable springdoc endpoints and swagger-ui by default
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+##  configuration for the domain robot sdk
+domainrobot:
+  default-ttl: 60
+  # connection properties
+  autodns:
+    context: 4
+    url: https://api.autodns.com/v1
+  # custom headers
+  custom-header:
+    X-Domainrobot-WS: NONE
+
+## import of the individual configuration settings
+spring:
+  config:
+    import: optional:file:./dyndrest.yml
+
+  ## database related properties
+  # the datasource
+  datasource:
+    url: jdbc:h2:file:./dyndrest
+    driverClassName: org.h2.Driver
+
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yml
+
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: none
+
+  h2:
+    console:
+      enabled: false
+      path: /h2
 
 ----
 
