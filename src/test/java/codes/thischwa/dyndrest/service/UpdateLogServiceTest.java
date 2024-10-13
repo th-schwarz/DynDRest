@@ -33,7 +33,7 @@ class UpdateLogServiceTest extends AbstractIntegrationTest {
 
     UpdateLogEnriched log = page.getContent().get(0);
     assertEquals(42, log.getId());
-    assertEquals(2, log.getHostId());
+    assertEquals(h2z1ID, log.getHostId());
     assertEquals("test0.dynhost0.info", log.getHost());
     assertEquals("198.0.2.20", log.getIpv4());
     assertEquals(UpdateLog.Status.success, log.getStatus());
@@ -42,7 +42,7 @@ class UpdateLogServiceTest extends AbstractIntegrationTest {
 
     log = page.getContent().get(3);
     assertEquals(39, log.getId());
-    assertEquals(2, log.getHostId());
+    assertEquals(h2z1ID, log.getHostId());
     assertEquals("test0.dynhost0.info", log.getHost());
     assertEquals("198.0.2.17", log.getIpv4());
     assertEquals(UpdateLog.Status.success, log.getStatus());
@@ -56,7 +56,7 @@ class UpdateLogServiceTest extends AbstractIntegrationTest {
 
     log = page.getContent().get(1);
     assertEquals(1, log.getId());
-    assertEquals(1, log.getHostId());
+    assertEquals(h1z1ID, log.getHostId());
     assertEquals("my0.dynhost0.info", log.getHost());
     assertEquals("198.0.1.0", log.getIpv4());
     assertEquals(UpdateLog.Status.failed, log.getStatus());

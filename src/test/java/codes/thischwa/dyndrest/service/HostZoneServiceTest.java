@@ -103,7 +103,7 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     List<HostEnriched> hosts = optional.get();
     assertTrue(hosts.size() >= 2);
     HostEnriched host = hosts.get(0);
-    assertEquals(1, host.getId());
+    assertEquals(h1z1ID, host.getId());
     assertEquals("my0.dynhost0.info", host.getFullHost());
     assertEquals("ns0.domain.info", host.getNs());
     assertEquals("1234567890abcdef", host.getApiToken());
@@ -131,7 +131,7 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     Host host = new Host();
     host.setName("my3");
     host.setApiToken("0987654321fedcba");
-    host.setZoneId(2);
+    host.setZoneId(h1z1ID);
     service.saveOrUpdate(host);
     Integer id = host.getId();
     assertTrue(id != null && id > 4);
@@ -165,7 +165,7 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     HostEnriched hostEnriched = new HostEnriched();
     hostEnriched.setName("my4");
     hostEnriched.setApiToken("08/15");
-    hostEnriched.setZoneId(2);
+    hostEnriched.setZoneId(z2ID);
     service.saveOrUpdate(hostEnriched);
     assertTrue(hostEnriched.getId() != null && hostEnriched.getId() > 4);
     assertNotNull(hostEnriched.getChanged());

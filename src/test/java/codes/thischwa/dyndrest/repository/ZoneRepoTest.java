@@ -15,7 +15,7 @@ class ZoneRepoTest extends AbstractIntegrationTest {
 
   @Test
   void testFindById() {
-    Optional<Zone> zoneOpt = repo.findById(1);
+    Optional<Zone> zoneOpt = repo.findById(z1ID);
     assertTrue(zoneOpt.isPresent());
     Zone zone = zoneOpt.get();
     assertEquals("dynhost0.info", zone.getName());
@@ -26,7 +26,7 @@ class ZoneRepoTest extends AbstractIntegrationTest {
   @Test
   void testFindByName() {
     Zone zone = repo.findByName("dynhost1.info");
-    assertEquals(2, zone.getId());
+    assertEquals(z2ID, zone.getId());
     assertEquals("ns1.domain.info", zone.getNs());
     assertEquals(currentDate, zone.getChanged().toLocalDate());
 
