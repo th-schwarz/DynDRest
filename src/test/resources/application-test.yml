@@ -14,9 +14,10 @@ spring:
     driverClassName: org.h2.Driver
     username: dba
 
-  sql:
-    init:
-      schema-locations: classpath:/h2/dump.sql
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yml
+    drop-first: true
+    contexts: test
 
   jpa:
     show-sql: true

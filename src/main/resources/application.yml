@@ -28,7 +28,6 @@ dyndrest:
   update-log-date-pattern: yyyy-MM-dd HH:mm:ss
   # database config, credentials should be set at the individual properties
   database:
-    file: ./dyndrest
     backup:
       enabled: false
       path: ./backup
@@ -60,12 +59,15 @@ spring:
   config:
     import: optional:file:./dyndrest.yml
 
-  ## the datasource
+  ## database related properties
+  # the datasource
   datasource:
     url: jdbc:h2:file:./dyndrest
     driverClassName: org.h2.Driver
 
-## database related properties
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yml
+
   jpa:
     show-sql: true
     database-platform: org.hibernate.dialect.H2Dialect

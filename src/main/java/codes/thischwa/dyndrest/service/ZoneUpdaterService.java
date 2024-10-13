@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
  * The ZoneUpdaterService class is responsible for updating zones on a schedule. It is a Spring
  * service that uses the scheduling feature of Spring Framework to run the update task at regular
  * intervals.
+ * For <a href="https://github.com/th-schwarz/DynDRest/issues/21">Issue 21</a>
  */
 @Service
 @EnableScheduling

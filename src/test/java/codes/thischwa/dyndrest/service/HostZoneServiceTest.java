@@ -101,13 +101,13 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     Optional<List<HostEnriched>> optional = service.findHostsOfZone("dynhost0.info");
     assertFalse(optional.isEmpty());
     List<HostEnriched> hosts = optional.get();
-    assertEquals(2, hosts.size());
+    assertTrue(hosts.size() >= 2);
     HostEnriched host = hosts.get(0);
-    assertEquals(1, host.getId());
+    assertEquals(h1z1ID, host.getId());
     assertEquals("my0.dynhost0.info", host.getFullHost());
     assertEquals("ns0.domain.info", host.getNs());
     assertEquals("1234567890abcdef", host.getApiToken());
-    assertEquals(1, host.getZoneId());
+    assertEquals(z1ID, host.getZoneId());
     assertEquals("dynhost0.info", host.getZone());
 
     optional = service.findHostsOfZone("unknown");
@@ -131,7 +131,7 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     Host host = new Host();
     host.setName("my3");
     host.setApiToken("0987654321fedcba");
-    host.setZoneId(2);
+    host.setZoneId(h1z1ID);
     service.saveOrUpdate(host);
     Integer id = host.getId();
     assertTrue(id != null && id > 4);
@@ -165,7 +165,7 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     HostEnriched hostEnriched = new HostEnriched();
     hostEnriched.setName("my4");
     hostEnriched.setApiToken("08/15");
-    hostEnriched.setZoneId(2);
+    hostEnriched.setZoneId(z2ID);
     service.saveOrUpdate(hostEnriched);
     assertTrue(hostEnriched.getId() != null && hostEnriched.getId() > 4);
     assertNotNull(hostEnriched.getChanged());
@@ -201,7 +201,7 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
   void testAddZone() {
     Zone z = service.addZone("zone2.org", "ns2.zone.org");
     assertNotNull(z.getId());
-    assertNotNull(z.getChanged());
+    assertEquals(currentDate, z.getChanged().toLocalDate());
 
     assertThrows(
         DbActionExecutionException.class, () -> service.addZone("zone2.org", "ns2.zone.org"));
