@@ -34,20 +34,13 @@ public abstract class AbstractIntegrationTest {
   protected int port;
 
   @Autowired protected TestRestTemplate restTemplate;
-
-  @Autowired private HostZoneService hostZoneService;
-
-  @Autowired private UpdateLogRepo updateLogRepo;
-
   protected LocalDate currentDate;
-
   protected Integer z1ID;
-
   protected Integer z2ID;
-
   protected Integer h1z1ID;
-
   protected Integer h2z1ID;
+  @Autowired private HostZoneService hostZoneService;
+  @Autowired private UpdateLogRepo updateLogRepo;
 
   @PostConstruct
   void initUpdateLogDatabase() {
@@ -65,8 +58,8 @@ public abstract class AbstractIntegrationTest {
       h1z1ID = h1z1.getId();
       Host h2z1 = hostZoneService.addHost(z1, "test0", "1234567890abcdex");
       h2z1ID = h2z1.getId();
-      Host h1z2 = hostZoneService.addHost(z2, "my1", "1234567890abcdef");
-      Host h2z2 = hostZoneService.addHost(z1, "test1", "1234567890abcdex");
+      hostZoneService.addHost(z2, "my1", "1234567890abcdef");
+      hostZoneService.addHost(z1, "test1", "1234567890abcdex");
       LocalDateTime dateTime = START_DATETIME;
       updateLogRepo.save(
           UpdateLog.getInstance(
@@ -79,7 +72,11 @@ public abstract class AbstractIntegrationTest {
         dateTime = dateTime.plusMinutes(10);
         updateLogRepo.save(
             UpdateLog.getInstance(
-                h1z1ID, new IpSetting("198.0.1." + i), UpdateLog.Status.success, dateTime, dateTime));
+                h1z1ID,
+                new IpSetting("198.0.1." + i),
+                UpdateLog.Status.success,
+                dateTime,
+                dateTime));
       }
       dateTime = dateTime.plusMinutes(10);
       updateLogRepo.save(
@@ -93,7 +90,11 @@ public abstract class AbstractIntegrationTest {
         dateTime = dateTime.plusMinutes(10);
         updateLogRepo.save(
             UpdateLog.getInstance(
-                h2z1ID, new IpSetting("198.0.2." + i), UpdateLog.Status.success, dateTime, dateTime));
+                h2z1ID,
+                new IpSetting("198.0.2." + i),
+                UpdateLog.Status.success,
+                dateTime,
+                dateTime));
       }
     } catch (UnknownHostException e) {
       throw new RuntimeException(e);
