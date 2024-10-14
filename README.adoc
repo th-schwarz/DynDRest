@@ -30,32 +30,23 @@ image::https://resources.jetbrains.com/storage/products/company/brand/logos/Inte
 
 == Preface
 
-DynDRest is a simple REST-service for dynamic DNS. The basic idea
-is to have multiple implementations of different dns providers.
-https://www.internetx.com/en/domains/autodns[AutoDNS] will be one of
+DynDRest is a simple REST-service for dynamic DNS. The basic idea is to have multiple implementations of different dns providers. https://www.internetx.com/en/domains/autodns[AutoDNS] will be one of
 them. +
 DynDRest is based on spring boot 3, that's why Java 17 or later is required!
 
-The restful-api can be used with many routers, for example the AVM
-Fritz!Box. DynDRest can be executed by `commandline`, `init.d` or
-`systemd`.
+The restful-api can be used with many routers, for example the AVM Fritz!Box. DynDRest can be executed by `commandline`, `init.d` or `systemd`.
 
-If you find a bug or certain features are missing, don’t hesitate to
-file an issue on https://github.com/th-schwarz/DynDRest/issues[Github].
+If you find a bug or certain features are missing, don’t hesitate to file an issue on https://github.com/th-schwarz/DynDRest/issues[Github].
 
 This project is also a playground for the author to try things out. That's why not all changes are really necessary to move the project forward!
 
 == Disclaimer
 
-I’m not responsible for any data loss, hardware damage or broken
-keyboards. This guide comes without any warranty!
+I’m not responsible for any data loss, hardware damage or broken keyboards. This guide comes without any warranty!
 
 == Big Picture
 
-DynDRest is running as a service. A client can access the service via
-url and basic-auth. Let’s assume DynDRest is running on `localhost`,
-then we can update the IPv4 and IPv6 address of the host
-_mydyndns.domain.com_ by calling the following curl command:
+DynDRest is running as a service. A client can access the service via url and basic-auth. Let’s assume DynDRest is running on `localhost`, then we can update the IPv4 and IPv6 address of the host _mydyndns.domain.com_ by calling the following curl command:
 
 [source,console]
 ----
@@ -63,16 +54,11 @@ curl -u dyndns:test123 -i \
    "http://localhost:8081/router/mydyndns.domain.com?apitoken=1234567890abcdf&ipv4=127.1.2.4&ipv6=2a03:4000:41:32::2"
 ----
 
-For each host an api-token must be defined. If the api-token does not
-match the host, the update will be failed. Due to this security feature,
-DynDRest can be used by different people. They can’t update the IPs each
-other.
+For each host an api-token must be defined. If the api-token does not match the host, the update will be failed. Due to this security feature, DynDRest can be used by different people. They can’t update the IPs each other.
 
 == Setup & Configuration
 
-DynDRest is a spring boot application, that’s why the application is
-extremely customizable just by configuration! Details of the
-configuration can be found here in https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#application-properties[Appendix A: Common Application Properties] of the spring boot reference documentation.
+DynDRest is a spring boot application, that’s why the application is extremely customizable just by configuration! Details of the configuration can be found here in https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#application-properties[Appendix A: Common Application Properties] of the spring boot reference documentation.
 
 NOTE: To avoid the use of the java keystore tool, DynDRest could be run behind a proxy. Corresponding headers are set by default.
 
@@ -108,8 +94,7 @@ AutoDNS should be defined in this file!
 
 === Minimal configuration example
 
-This is a minimal configuration example for your individual properties
-file `dyndrest.yml` using the provider _domainrobot_:
+This is a minimal configuration example for your individual properties file `dyndrest.yml` using the provider _domainrobot_:
 
 [source,yaml]
 ----
@@ -145,7 +130,12 @@ The `zones` section should be used for importing the hosts and zones configurati
 
 NOTE: This project uses _spring-doc_ to document the routes. The endpoints for this and the _swagger-ui_ are disabled by default!
 
-=== Backup and Restore of the Database
+=== Database
+
+The Database is currently h2. +
+If not configured otherwise, the database is expected in the current working directory. If there isn't a database, a new one with the current default schema will be created by https://www.liquibase.com/community[liquibase].
+
+==== Backup & Restore
 
 There are 2 very basic configurations:
 
@@ -157,9 +147,7 @@ For further info, see <<docs/dyndrest-configuration.adoc#backup_restore, Backup 
 
 === Suggested AutoDNS setup
 
-For security reasons, it makes sense to create a separate owner for the
-zones updated by DynDRest. This owner just needs the permission for
-zone-info and zone-updates!
+For security reasons, it makes sense to create a separate owner for the zones updated by DynDRest. This owner just needs the permission for  zone-info and zone-updates!
 
 == Start
 

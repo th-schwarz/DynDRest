@@ -11,10 +11,9 @@ DynDRest has a lot of configuration settings. Most of them has default settings,
 
 Below all default settings are listed.
 
-
 [source,yaml]
 // include is disabled on github
-// 2024-10
+// application.yml 2024-10
 ----
 ## server settings
 server:
