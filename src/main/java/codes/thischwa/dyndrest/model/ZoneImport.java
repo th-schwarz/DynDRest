@@ -19,9 +19,9 @@ public record ZoneImport(@Nullable List<ZoneImport.Zone> zones) {
    * @throws IllegalArgumentException if the host entry is not in the correct format
    */
   public List<HostEnriched> getHosts() {
-    List<HostEnriched> hostEnricheds = new ArrayList<>();
+    List<HostEnriched> enrichedHosts = new ArrayList<>();
     if (zones == null) {
-      return hostEnricheds;
+      return enrichedHosts;
     }
     for (ZoneImport.Zone zone : zones) {
       for (String hostRaw : zone.hosts()) {
@@ -36,10 +36,10 @@ public record ZoneImport(@Nullable List<ZoneImport.Zone> zones) {
         hostEnriched.setApiToken(parts[1]);
         hostEnriched.setZone(zone.name);
         hostEnriched.setNs(zone.ns);
-        hostEnricheds.add(hostEnriched);
+        enrichedHosts.add(hostEnriched);
       }
     }
-    return hostEnricheds;
+    return enrichedHosts;
   }
 
   /**
