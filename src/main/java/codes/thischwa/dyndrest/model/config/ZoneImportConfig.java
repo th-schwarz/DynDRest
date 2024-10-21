@@ -1,7 +1,9 @@
-package codes.thischwa.dyndrest.model;
+package codes.thischwa.dyndrest.model.config;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import codes.thischwa.dyndrest.model.HostEnriched;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.lang.Nullable;
 
@@ -10,7 +12,7 @@ import org.springframework.lang.Nullable;
  * Zone objects, which represent individual zones with their name, name server, and hosts.
  */
 @ConfigurationProperties
-public record ZoneImport(@Nullable List<ZoneImport.Zone> zones) {
+public record ZoneImportConfig(@Nullable List<ZoneImportConfig.Zone> zones) {
 
   /**
    * Returns a list of FullHost objects representing the hosts in the zone import configuration.
@@ -23,7 +25,7 @@ public record ZoneImport(@Nullable List<ZoneImport.Zone> zones) {
     if (zones == null) {
       return enrichedHosts;
     }
-    for (ZoneImport.Zone zone : zones) {
+    for (ZoneImportConfig.Zone zone : zones) {
       for (String hostRaw : zone.hosts()) {
         String[] parts = hostRaw.split(":");
         if (parts.length != 2) {

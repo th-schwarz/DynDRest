@@ -4,7 +4,7 @@ import codes.thischwa.dyndrest.model.AbstractJdbcEntity;
 import codes.thischwa.dyndrest.model.HostEnriched;
 import codes.thischwa.dyndrest.model.Host;
 import codes.thischwa.dyndrest.model.Zone;
-import codes.thischwa.dyndrest.model.ZoneImport;
+import codes.thischwa.dyndrest.model.config.ZoneImportConfig;
 import codes.thischwa.dyndrest.repository.HostRepo;
 import codes.thischwa.dyndrest.repository.ZoneRepo;
 import java.time.LocalDateTime;
@@ -19,14 +19,14 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class HostZoneService {
-  private final ZoneImport zoneImport;
+  private final ZoneImportConfig zoneImportConfig;
   private final HostRepo hostRepo;
   private final ZoneRepo zoneRepo;
 
   /** Constructor of the service for validating and maintaining hosts. */
-  public HostZoneService(HostRepo hostRepo, ZoneImport zoneImport, ZoneRepo zoneRepo) {
+  public HostZoneService(HostRepo hostRepo, ZoneImportConfig zoneImportConfig, ZoneRepo zoneRepo) {
     this.hostRepo = hostRepo;
-    this.zoneImport = zoneImport;
+    this.zoneImportConfig = zoneImportConfig;
     this.zoneRepo = zoneRepo;
   }
 
@@ -100,7 +100,7 @@ public class HostZoneService {
    * be updated.
    */
   public void importOnStart() {
-    List<HostEnriched> hostsToImport = zoneImport.getHosts();
+    List<HostEnriched> hostsToImport = zoneImportConfig.getHosts();
     if (hostsToImport.isEmpty()) {
       log.info("No zones found for import.");
       return;
