@@ -117,7 +117,8 @@ dyndrest:
   - name: dynhost.info
     ns: ns.domain.info
     hosts:
-      - myhost:1234567890abcdef
+      - sld: myhost
+        api-token: 1234567890abcdef
 
 domainrobot:
   autodns:
