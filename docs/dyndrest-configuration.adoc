@@ -53,13 +53,6 @@ dyndrest:
       path: ./restore
     dump-file: dump.sql
 
-## disable springdoc endpoints and swagger-ui by default
-springdoc:
-  api-docs:
-    enabled: false
-  swagger-ui:
-    enabled: false
-
 ##  configuration for the domain robot sdk
 domainrobot:
   default-ttl: 60
@@ -70,6 +63,13 @@ domainrobot:
   # custom headers
   custom-header:
     X-Domainrobot-WS: NONE
+
+## disable springdoc endpoints and swagger-ui by default
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
 
 ## import of the individual configuration settings
 spring:
@@ -117,12 +117,25 @@ spring:
 
 [source,yaml]
 ----
-spring:
-  security:
-    user:
-      name: oauthuser
-      password: oauthpasswd
+domainrobot:
+  autodns:
+    user: userName
+    password: secretPwd
 ----
+That's the minimal setting for the domainrobot-api. For further fine adjustments, the following settings can be  overwritten or changed:
+[source,yaml]
+----
+domainrobot:
+  default-ttl: 60
+  # connection properties
+  autodns:
+    context: 4
+    url: https://api.autodns.com/v1
+  # custom headers
+  custom-header:
+    X-Domainrobot-WS: NONE
+----
+
 [[backup_restore]]
 === Backup and Restore
 
