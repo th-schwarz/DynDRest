@@ -36,13 +36,6 @@ dyndrest:
       path: ./restore
     dump-file: dump.sql
 
-## disable springdoc endpoints and swagger-ui by default
-springdoc:
-  api-docs:
-    enabled: false
-  swagger-ui:
-    enabled: false
-
 ##  configuration for the domain robot sdk
 domainrobot:
   default-ttl: 60
@@ -53,6 +46,14 @@ domainrobot:
   # custom headers
   custom-header:
     X-Domainrobot-WS: NONE
+
+
+## disable springdoc endpoints and swagger-ui by default
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
 
 ## import of the individual configuration settings
 spring:

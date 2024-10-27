@@ -1,11 +1,7 @@
 package codes.thischwa.dyndrest.server.config;
 
-import codes.thischwa.dyndrest.model.IpSetting;
-import codes.thischwa.dyndrest.model.UpdateLog;
 import codes.thischwa.dyndrest.model.config.AppConfig;
-import codes.thischwa.dyndrest.repository.UpdateLogRepo;
 import codes.thischwa.dyndrest.service.HostZoneService;
-import java.time.LocalDateTime;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -30,7 +26,6 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
   private final Environment env;
 
   private final HostZoneService hostZoneService;
-  private final UpdateLogRepo updateLogRepo;
 
   /**
    * Initializes the application on startup.
@@ -38,17 +33,11 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
    * @param config the application configuration
    * @param env the application environment
    * @param hostZoneService the host zone service
-   * @param updateLogRepo the update log repository
    */
-  public ApplicationStartup(
-      AppConfig config,
-      Environment env,
-      HostZoneService hostZoneService,
-      UpdateLogRepo updateLogRepo) {
+  public ApplicationStartup(AppConfig config, Environment env, HostZoneService hostZoneService) {
     this.config = config;
     this.env = env;
     this.hostZoneService = hostZoneService;
-    this.updateLogRepo = updateLogRepo;
   }
 
   @Override
@@ -64,11 +53,8 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
     log.info("  - spring.h2.console.enabled: {}", env.getProperty("spring.h2.console.enabled"));
     log.info("  - spring.h2.console.path: {}", env.getProperty("spring.h2.console.path"));
     log.info("  - dyndrest.database.dump-file: {}", env.getProperty("dyndrest.database.dump-file"));
-    log.info("  - backup enabled: {}",
-        config.database().backup() != null && config.database().backup().enabled());
-    log.info(
-        "  - restore enabled: {}",
-        config.database().restore() != null && config.database().restore().enabled());
+    log.info("  - backup enabled: {}", env.getProperty("dyndrest.database.backup.enabled"));
+    log.info("  - restore enabled: {}", env.getProperty("dyndrest.database.restore.enabled"));
     log.info("*** Endpoints:");
 
     ApplicationContext applicationContext = event.getApplicationContext();
@@ -78,29 +64,5 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
     Map<RequestMappingInfo, HandlerMethod> map = requestMappingHandlerMapping.getHandlerMethods();
     map.forEach((key, value) -> log.info("  * {}", key));
     hostZoneService.importOnStart();
-    // buildDummyUpdateLogs();
-  }
-
-  private void buildDummyUpdateLogs() {
-    try {
-      LocalDateTime dateTime = LocalDateTime.now();
-      updateLogRepo.save(
-          UpdateLog.getInstance(
-              1,
-              new IpSetting("198.0.1.0", "2a03:4000:41:32:0:0:1:0"),
-              UpdateLog.Status.success,
-              dateTime,
-              dateTime));
-      for (int i = 1; i <= 150; i++) {
-        dateTime = dateTime.plusMinutes(10);
-        updateLogRepo.save(
-            UpdateLog.getInstance(
-                1, new IpSetting("198.0.1." + i), UpdateLog.Status.success, dateTime, dateTime));
-
-        log.info("Dummy logs created");
-      }
-    } catch (Exception e) {
-      log.error("Error creating dummy logs", e);
-    }
   }
 }

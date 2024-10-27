@@ -61,26 +61,27 @@ dyndrest:
   admin-user-password: adm1n
   admin-api-token: token123
   database:
-    password:
+    dump-file: dump.sql
     backup:
-      enabled: true
+      enabled: false
       path: ./backup
       cron: "0 30 4 * * SUN"
     restore:
       enabled: true
       path: ./restore
-    dump-file: dump.sql
-
-zones:
-  - name: dynhost0.info
-    ns: ns0.domain.info
-    hosts:
-      - my3:api1
-  - name: zone1.info
-    ns: ns1.domain.info
-    hosts:
-      - host1:abc
-      - host2:123
+  zones:
+    - name: dynhost0.info
+      ns: ns0.domain.info
+      hosts:
+        - sld: my3
+          api-token: api1
+    - name: zone1.info
+      ns: ns1.domain.info
+      hosts:
+        - sld: host1
+          api-token: abc
+        - sld: host2
+          api-token: 123
 
 domainrobot:
   default-ttl: 61

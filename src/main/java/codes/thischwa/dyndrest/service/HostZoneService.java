@@ -1,8 +1,8 @@
 package codes.thischwa.dyndrest.service;
 
 import codes.thischwa.dyndrest.model.AbstractJdbcEntity;
-import codes.thischwa.dyndrest.model.HostEnriched;
 import codes.thischwa.dyndrest.model.Host;
+import codes.thischwa.dyndrest.model.HostEnriched;
 import codes.thischwa.dyndrest.model.Zone;
 import codes.thischwa.dyndrest.model.config.ZoneImportConfig;
 import codes.thischwa.dyndrest.repository.HostRepo;
@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -98,6 +99,9 @@ public class HostZoneService {
   /**
    * Imports zones an application start. Just new hosts and zones will be saved! Existing ones won't
    * be updated.
+   *
+   * <p>It is called from {@link
+   * codes.thischwa.dyndrest.server.config.ApplicationStartup#onApplicationEvent(ApplicationReadyEvent)}
    */
   public void importOnStart() {
     List<HostEnriched> hostsToImport = zoneImportConfig.getHosts();
@@ -105,7 +109,6 @@ public class HostZoneService {
       log.info("No zones found for import.");
       return;
     }
-    log.debug("{} hosts found in the configuration for import.", hostsToImport.size());
 
     List<HostEnriched> hostsToSave =
         hostsToImport.stream().filter(fullHost -> !hostExists(fullHost.getFullHost())).toList();
@@ -116,15 +119,18 @@ public class HostZoneService {
         tmpZone.setName(hostEnriched.getZone());
         tmpZone.setNs(hostEnriched.getNs());
         saveOrUpdate(tmpZone);
+        log.debug("Zone imported successfully: {}", tmpZone.getName());
         hostEnriched.setZoneId(tmpZone.getId());
       } else {
         hostEnriched.setZoneId(zone.getId());
       }
       saveOrUpdate(hostEnriched);
+      log.debug("Host imported successfully: {}", hostEnriched.getFullHost());
     }
-    if (!hostsToSave.isEmpty()) {
-      log.info("{} hosts successful imported.", hostsToSave.size());
-    }
+    log.debug(
+        "{} hosts found in the configuration for import and {} host were imported successfully.",
+        hostsToImport.size(),
+        hostsToSave.size());
   }
 
   /**

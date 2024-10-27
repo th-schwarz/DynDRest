@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 class ZoneClientWrapperTest extends AbstractIntegrationTest {
 
-	private static int rrCount = 5;
+	private static final int rrCount = 5;
 
 	@Autowired
 	private DomainRobotConfigurator domainRobotConfigurator;

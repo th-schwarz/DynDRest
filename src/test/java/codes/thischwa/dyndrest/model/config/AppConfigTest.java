@@ -32,22 +32,4 @@ class AppConfigTest extends AbstractIntegrationTest {
     assertEquals("adm1n", appConfig.adminUserPassword());
     assertEquals("token123", appConfig.adminApiToken());
   }
-
-  @Test
-  final void testDatabase() {
-    AppConfig.Database db = appConfig.database();
-    assertNotNull(db);
-    assertEquals("dump.sql", db.dumpFile());
-
-    AppConfig.Database.Backup bck = db.backup();
-    assertNotNull(bck);
-    assertTrue(bck.enabled());
-    assertEquals("./backup", bck.path());
-    assertEquals("0 30 4 * * SUN", bck.cron());
-
-    AppConfig.Database.Restore rst = db.restore();
-    assertNotNull(rst);
-    assertTrue(rst.enabled());
-    assertEquals("./restore", rst.path());
-  }
 }

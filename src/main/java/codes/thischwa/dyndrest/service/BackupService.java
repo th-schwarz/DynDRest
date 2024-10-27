@@ -1,6 +1,7 @@
 package codes.thischwa.dyndrest.service;
 
-import codes.thischwa.dyndrest.model.config.AppConfig;
+import codes.thischwa.dyndrest.model.config.database.DatabaseBackupConfig;
+import codes.thischwa.dyndrest.model.config.database.DatabaseServiceConfig;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -29,33 +30,22 @@ import org.springframework.transaction.annotation.Transactional;
 public class BackupService {
 
   private final JdbcTemplate jdbcTemplate;
+  private final DatabaseBackupConfig backup;
 
-  private final boolean enabled;
-  private final AppConfig.Database database;
-  private final AppConfig.Database.Backup backup;
-
-  @Nullable private String dumpPath;
+  @Nullable private final String dumpPath;
 
   /**
    * The BackupService class is responsible for performing database backups based on the provided
    * configuration.
    */
-  public BackupService(AppConfig appConfig, JdbcTemplate jdbcTemplate) {
-    assert appConfig.database().backup() != null;
-    database = appConfig.database();
-    this.backup = appConfig.database().backup();
+  public BackupService(DatabaseServiceConfig databaseServiceConfig, DatabaseBackupConfig backupConfig, JdbcTemplate jdbcTemplate) {
+    dumpPath = Paths.get(backupConfig.path(), databaseServiceConfig.dumpFile()).toString();
     this.jdbcTemplate = jdbcTemplate;
-    enabled = backup.enabled();
+    this.backup = backupConfig;
   }
 
   @PostConstruct
   void init() {
-    if (enabled) {
-      log.info("Enabled with cron: {}, at {}", backup.cron(), backup.path());
-    } else {
-      log.info("Disabled");
-      return;
-    }
     Path backupPath = Paths.get(backup.path()).normalize();
     if (!Files.exists(backupPath)) {
       try {
@@ -65,7 +55,6 @@ public class BackupService {
         throw new RuntimeException("couldn't create backup path: " + backupPath.toAbsolutePath());
       }
     }
-    dumpPath = Paths.get(backupPath.toString(), database.dumpFile()).toString();
   }
 
   /**
@@ -75,9 +64,6 @@ public class BackupService {
   @Transactional
   @Scheduled(cron = "${dyndrest.database.backup.cron}")
   public void process() {
-    if (!enabled) {
-      return;
-    }
     String sql = String.format("SCRIPT DROP TO '%s';", dumpPath);
     jdbcTemplate.execute(sql);
     log.info("Database backup successful processed: {}", dumpPath);

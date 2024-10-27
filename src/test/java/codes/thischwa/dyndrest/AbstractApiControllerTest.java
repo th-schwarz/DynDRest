@@ -13,7 +13,7 @@ abstract class AbstractApiControllerTest {
 
   protected final Provider provider = mock(Provider.class);
   private final AppConfig appConfig =
-      new AppConfig("dummy", false, false, 200, 4, "", false, null, null, false, null, null, "admin", "adm1n", "admin123", null);
+      new AppConfig("dummy", false, false, 200, 4, "", false, null, null, false, null, null, "admin", "adm1n", "admin123");
   protected final UpdateLogService updateLogService = mock(UpdateLogService.class);
   protected final HostZoneService hostZoneService = mock(HostZoneService.class);
 

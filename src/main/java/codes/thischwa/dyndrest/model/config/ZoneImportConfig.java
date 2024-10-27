@@ -11,7 +11,7 @@ import org.springframework.lang.Nullable;
  * The ZoneImport class represents the base configuration of a zone import. It contains a list of
  * Zone objects, which represent individual zones with their name, name server, and hosts.
  */
-@ConfigurationProperties
+@ConfigurationProperties(prefix = "dyndrest")
 public record ZoneImportConfig(@Nullable List<ZoneImportConfig.Zone> zones) {
 
   /**
@@ -26,16 +26,10 @@ public record ZoneImportConfig(@Nullable List<ZoneImportConfig.Zone> zones) {
       return enrichedHosts;
     }
     for (ZoneImportConfig.Zone zone : zones) {
-      for (String hostRaw : zone.hosts()) {
-        String[] parts = hostRaw.split(":");
-        if (parts.length != 2) {
-          throw new IllegalArgumentException(
-              "The host entry must be in the following format: [sld|:[apiToken], but it was: "
-                  + hostRaw);
-        }
+      for (Host host : zone.hosts()) {
         HostEnriched hostEnriched = new HostEnriched();
-        hostEnriched.setName(parts[0]);
-        hostEnriched.setApiToken(parts[1]);
+        hostEnriched.setName(host.sld());
+        hostEnriched.setApiToken(host.apiToken());
         hostEnriched.setZone(zone.name);
         hostEnriched.setNs(zone.ns);
         enrichedHosts.add(hostEnriched);
@@ -51,5 +45,14 @@ public record ZoneImportConfig(@Nullable List<ZoneImportConfig.Zone> zones) {
    * @param ns name server
    * @param hosts host / subdomains
    */
-  public record Zone(String name, String ns, List<String> hosts) {}
+  public record Zone(String name, String ns, List<Host> hosts) {}
+
+
+  /**
+   * Represents a Host entity with an sld (second-level domain) and an apiToken.
+   *
+   * @param sld       The second-level domain associated with the host.
+   * @param apiToken  The API token for authentication or other purposes.
+   */
+  public record Host(String sld, String apiToken) {}
 }

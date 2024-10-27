@@ -113,17 +113,16 @@ logging:
 
 dyndrest:
   provider: domainrobot
+  zones:
+  - name: dynhost.info
+    ns: ns.domain.info
+    hosts:
+      - myhost:1234567890abcdef
 
 domainrobot:
   autodns:
     password: pwd_t
     user: user_t
-
-zones:
-- name: dynhost.info
-  ns: ns.domain.info
-  hosts:
-    - myhost:1234567890abcdef
 ----
 
 The `zones` section should be used for importing the hosts and zones configuration to the database initially. Existing data entries won't be updated. The example defines a host `myhost.dynhost.info` with the api-token `1234567890abcdef`.

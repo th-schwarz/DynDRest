@@ -1,6 +1,7 @@
 package codes.thischwa.dyndrest.service;
 
-import codes.thischwa.dyndrest.model.config.AppConfig;
+import codes.thischwa.dyndrest.model.config.database.DatabaseRestoreConfig;
+import codes.thischwa.dyndrest.model.config.database.DatabaseServiceConfig;
 import codes.thischwa.dyndrest.server.config.BeanCollector;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,7 +13,6 @@ import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.FatalBeanException;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -20,21 +20,20 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 /** This class provides database restore functionality based on the provided configuration. */
 @Component
-@Profile({"!opendoc", "!test"})
 @Slf4j
 public class DatabaseRestoreHandler extends BeanCollector {
+
+  private static final Class<?>[] wantedBeans =
+      new Class<?>[] {DatabaseServiceConfig.class, DatabaseRestoreConfig.class, DataSource.class};
 
   private final Environment env;
 
   @Nullable private JdbcTemplate jdbcTemplate;
 
-  @Nullable private AppConfig appConfig;
-
-  private boolean dbExists;
+    private boolean dbExists;
 
   private boolean restoreEnabled;
 
@@ -42,14 +41,14 @@ public class DatabaseRestoreHandler extends BeanCollector {
 
   @Nullable private Path restorePathBak = null;
 
-    public DatabaseRestoreHandler(Environment env) {
-        this.env = env;
-    }
+  public DatabaseRestoreHandler(Environment env) {
+    this.env = env;
+  }
 
-    @Override
+  @Override
   public void process(Collection<Object> wantedBeans) throws BeansException {
     log.info("entered #process");
-    // don't know while @Profil don't work
+    // don't know why @Profil don't work
     if (env.matchesProfiles("test", "opendoc")) {
       log.info("Skip processing, not in production profile!");
       return;
@@ -69,25 +68,38 @@ public class DatabaseRestoreHandler extends BeanCollector {
   }
 
   private void setupRestorationParams(Collection<Object> wantedBeans) {
-    appConfig = getAppConfig(wantedBeans);
     jdbcTemplate = new JdbcTemplate(getDataSource(wantedBeans));
     dbExists = !isDatabaseEmpty();
+    DatabaseServiceConfig databaseConfig = getDatabaseServiceConfig(wantedBeans);
+    DatabaseRestoreConfig databaseRestoreConfig = getDatabaseRestoreConfig(wantedBeans);
+    restoreEnabled = databaseRestoreConfig.enabled();
+    restorePath = Paths.get(databaseRestoreConfig.path(), databaseConfig.dumpFile()).normalize();
 
-    AppConfig.Database databaseConfig = appConfig.database();
-    AppConfig.Database.Restore dbRestore = databaseConfig.restore();
-    restoreEnabled = dbRestore != null && dbRestore.enabled();
-
-    if (restoreEnabled) {
-      setupRestorePath();
+    if (Files.exists(restorePath)) {
+      restorePathBak =
+          Paths.get(databaseRestoreConfig.path(), databaseConfig.dumpFile() + ".bak").normalize();
+      log.info("Database restore enabled and path exists: {}", restorePath);
+    } else {
+      log.warn("Database restore is enabled, but path does not exist: {}", restorePath);
+      restoreEnabled = false;
+      restorePath = null;
     }
   }
 
-  private AppConfig getAppConfig(Collection<Object> wantedBeans) {
-    return (AppConfig)
+  private DatabaseServiceConfig getDatabaseServiceConfig(Collection<Object> wantedBeans) {
+    return (DatabaseServiceConfig)
         wantedBeans.stream()
-            .filter(AppConfig.class::isInstance)
+            .filter(DatabaseServiceConfig.class::isInstance)
             .findFirst()
-            .orElseThrow(() -> new IllegalStateException("AppConfig not found."));
+            .orElseThrow(() -> new IllegalStateException("DatabaseServiceConfig not found."));
+  }
+
+  private DatabaseRestoreConfig getDatabaseRestoreConfig(Collection<Object> wantedBeans) {
+    return (DatabaseRestoreConfig)
+        wantedBeans.stream()
+            .filter(DatabaseRestoreConfig.class::isInstance)
+            .findFirst()
+            .orElseThrow(() -> new IllegalStateException("DatabaseRestoreConfig not found."));
   }
 
   private DataSource getDataSource(Collection<Object> wantedBeans) {
@@ -98,23 +110,6 @@ public class DatabaseRestoreHandler extends BeanCollector {
             .orElseThrow(() -> new IllegalStateException("Datasource not found."));
   }
 
-  private void setupRestorePath() {
-    AppConfig.Database databaseConfig = appConfig.database();
-    restorePath = Paths.get(databaseConfig.restore().path(), databaseConfig.dumpFile()).normalize();
-
-    if (Files.exists(restorePath)) {
-      restoreEnabled = true;
-      restorePathBak =
-          Paths.get(databaseConfig.restore().path(), databaseConfig.dumpFile() + ".bak")
-              .normalize();
-      log.info("Database restore enabled and path exists: {}", restorePath);
-    } else {
-      log.warn("Database restore is enabled, but path does not exist: {}", restorePath);
-      restoreEnabled = false;
-      restorePath = null;
-    }
-  }
-
   /**
    * Restores the embedded database. The dump file will be renamed.
    *
@@ -123,13 +118,9 @@ public class DatabaseRestoreHandler extends BeanCollector {
   public void restore() throws Exception {
     DataSource ds = jdbcTemplate.getDataSource();
     assert ds != null;
-    if (restoreEnabled) {
-      assert restorePath != null;
-      assert restorePathBak != null;
-      log.info("Database restore is enabled, try to restore it from the last dump.");
-      populate(ds);
-      renameDump();
-    }
+    log.info("Database restore is enabled, try to restore it from the last dump.");
+    populate(ds);
+    renameDump();
   }
 
   private void renameDump() throws IOException {
@@ -154,6 +145,6 @@ public class DatabaseRestoreHandler extends BeanCollector {
 
   @Override
   public Class<?>[] getWanted() {
-    return new Class<?>[] {AppConfig.class, DataSource.class};
+    return wantedBeans;
   }
 }
