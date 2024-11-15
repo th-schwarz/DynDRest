@@ -24,9 +24,8 @@ jobs:
         uses: actions/cache@v4.1.2
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          key: maven
+          restore-keys: maven
       - name: Build with Maven
         run: mvn -DtestClasspath=src/test/ verify
 
@@ -47,9 +46,8 @@ jobs:
         uses: actions/cache@v4.1.2
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          key: maven
+          restore-keys: maven
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
@@ -72,9 +70,8 @@ jobs:
         uses: actions/cache@v4.1.2
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          key: maven
+          restore-keys: maven
       - name: Install dependencies
         run: mvn install -Dmaven.javadoc.skip=true -B -V
       - name: Run tests and collect coverage
