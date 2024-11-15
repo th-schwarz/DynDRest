@@ -20,7 +20,13 @@ jobs:
         with:
           java-version: '17'
           distribution: 'corretto'
-          cache: maven
+      - name: Cache maven repository
+        uses: actions/cache@v4.1.2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
       - name: Build with Maven
         run: mvn -DtestClasspath=src/test/ verify
 
@@ -37,14 +43,13 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: '17'
-          overwrite-settings: false
-          cache: maven
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v4
+      - name: Cache maven repository
+        uses: actions/cache@v4.1.2
         with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
@@ -63,7 +68,13 @@ jobs:
         with:
           java-version: '17'
           distribution: 'corretto'
-          cache: maven
+      - name: Cache maven repository
+        uses: actions/cache@v4.1.2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
       - name: Install dependencies
         run: mvn install -Dmaven.javadoc.skip=true -B -V
       - name: Run tests and collect coverage
