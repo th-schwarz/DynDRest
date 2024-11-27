@@ -9,7 +9,6 @@ pom.xml.*
 
 # local files
 /info.txt
-/logback.xml
 /dyndrest**
 /log/
 /docs/openapi/.swagger-codegen**

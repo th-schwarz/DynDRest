@@ -13,7 +13,7 @@ Below all default settings are listed.
 
 [source,yaml]
 // include is disabled on github
-// application.yml 2024-10
+// application.yml 2024-11
 ----
 ## server settings
 server:
@@ -158,3 +158,13 @@ dyndrest:
 In this example every monday at 18:30 a database dump will be written to `./backup/dump.sql`. The file will be overwritten every time!
 
 If _restore_ is enabled and the file `./restore/dump.sql` exists at start, the dump will be restored and the file renamed to `./restore/dump.sql.bak`.
+
+=== Logging
+
+To set your individual log configuration use:
+
+[source,yaml]
+----
+logging:
+  config: file:./logback.xml
+----
