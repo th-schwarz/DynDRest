@@ -11,10 +11,6 @@ spring:
     driverClassName: org.h2.Driver
     username: dba
 
-  sql:
-    init:
-      schema-locations: classpath:/h2/schema.sql
-
   jpa:
     show-sql: true
 
