@@ -113,12 +113,13 @@ logging:
 
 dyndrest:
   provider: domainrobot
-  zones:
+
+zones:
   - name: dynhost.info
     ns: ns.domain.info
-    hosts:
-      - sld: myhost
-        api-token: 1234567890abcdef
+    -hosts:
+    - sld: myhost
+      api-token: 1234567890abcdef
 
 domainrobot:
   autodns:
