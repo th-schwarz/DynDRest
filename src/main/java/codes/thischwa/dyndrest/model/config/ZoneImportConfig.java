@@ -11,7 +11,7 @@ import org.springframework.lang.Nullable;
  * The ZoneImport class represents the base configuration of a zone import. It contains a list of
  * Zone objects, which represent individual zones with their name, name server, and hosts.
  */
-@ConfigurationProperties(prefix = "dyndrest")
+@ConfigurationProperties
 public record ZoneImportConfig(@Nullable List<ZoneImportConfig.Zone> zones) {
 
   /**

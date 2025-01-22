@@ -69,19 +69,20 @@ dyndrest:
     restore:
       enabled: true
       path: ./restore
-  zones:
-    - name: dynhost0.info
-      ns: ns0.domain.info
-      hosts:
-        - sld: my3
-          api-token: api1
-    - name: zone1.info
-      ns: ns1.domain.info
-      hosts:
-        - sld: host1
-          api-token: abc
-        - sld: host2
-          api-token: 123
+
+zones:
+- name: dynhost0.info
+  ns: ns0.domain.info
+  hosts:
+    - sld: my3
+      api-token: api1
+- name: zone1.info
+  ns: ns1.domain.info
+  hosts:
+    - sld: host1
+      api-token: abc
+    - sld: host2
+      api-token: 123
 
 domainrobot:
   default-ttl: 61
