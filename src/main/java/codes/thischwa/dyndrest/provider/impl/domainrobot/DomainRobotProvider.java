@@ -15,7 +15,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 /** The type Domain robot provider. */
 @Slf4j
-@ConditionalOnProperty(value = "dyndrest.provider", havingValue = "domainrobot")
 class DomainRobotProvider extends GenericProvider implements InitializingBean {
 
   private final AppConfig appConfig;
