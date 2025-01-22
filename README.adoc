@@ -70,8 +70,8 @@ Here is the suggested file structure:
 ----
 ├── /opt/dyndrest
 │   ├── dyndrest.yml
-│   ├── dyndrest-0.8.0.jar
-│   ├── dyndrest.jar -> dyndrest-0.8.0.jar
+│   ├── dyndrest-0.9.0.jar
+│   ├── dyndrest.jar -> dyndrest-0.9.0.jar
 │   ├── logback.xml    (logback configuration)
 │   ├── dyndrest.mv.db  (h2 database file)
 │   ├── /backup
