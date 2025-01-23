@@ -207,5 +207,4 @@ updated.
 * _Username / Password:_ The credentials for basic-auth.
 * _Update-URL:_
 [your-host:port]/router/<domain>?apiToken=[yourApiToken]&ipv4=<ipaddr>&ipv6=<ip6addr>
-If both IP parameters are omitted, an attempt is made to fetch the
-remote IP.
+If both IP parameters are omitted, an attempt is made to fetch the remote IP.
