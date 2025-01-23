@@ -1,16 +1,23 @@
 package codes.thischwa.dyndrest.server;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import codes.thischwa.dyndrest.model.config.AppConfig;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.server.ResponseStatusException;
 
 /** A simple controller that delivers a welcome page without basic-auth. */
 @Controller
-@ConditionalOnProperty(name = "dyndrest.greeting-enabled", matchIfMissing = true)
 public class GreetingController {
 
-  /**
+  private final AppConfig appConfig;
+
+    public GreetingController(AppConfig appConfig) {
+        this.appConfig = appConfig;
+    }
+
+    /**
    * Delivers a welcome page.
    *
    * @return the welcome page
@@ -18,6 +25,10 @@ public class GreetingController {
   @SuppressWarnings("SameReturnValue")
   @GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
   public String greeting() {
+    if (!appConfig.greetingEnabled()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
+
     return "about";
   }
 }
