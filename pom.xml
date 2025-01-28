@@ -29,6 +29,7 @@
 
         <fakerepo.dir>${project.basedir}/fake-repo</fakerepo.dir>
 
+        <!-- sonarQube cloud  -->
         <sonar.organization>th-schwarz</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.sourceEncoding>${file.encoding}</sonar.sourceEncoding>
@@ -37,9 +38,9 @@
             src/main/java/codes/thischwa/dyndrest/config/MvcConfig.java,
             src/main/java/codes/thischwa/dyndrest/config/SecurityConfig.java,
             src/main/java/codes/thischwa/dyndrest/config/DatabaseConfig.java,
-            src/main/java/codes/thischwa/dyndrest/Starter.java,
-            src/test/java/**/*
+            src/main/java/codes/thischwa/dyndrest/Starter.java
         </sonar.exclusions>
+        <sonar.test.exclusions>src/test/java/**/*</sonar.test.exclusions>
 
         <!-- openapi generation -->
         <openapi.outputDir>${project.basedir}/docs/openapi</openapi.outputDir>
