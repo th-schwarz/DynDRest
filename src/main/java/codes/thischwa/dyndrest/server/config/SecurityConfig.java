@@ -49,8 +49,8 @@ public class SecurityConfig {
       PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
   private static final List<String> publicPaths = new ArrayList<>(List.of("/", "/favicon.ico", "/error"));
-  private static final String[] loguiPaths = {"/log-ui", "/log-ui/*"};
-  private static final String adminPath = "/admin/**";
+  private final String[] loguiPaths = {"/log-ui", "/log-ui/*"};
+  private final String adminPath = "/admin/**";
 
   private final boolean updateLogEnabled;
 

@@ -37,7 +37,8 @@
             src/main/java/codes/thischwa/dyndrest/config/MvcConfig.java,
             src/main/java/codes/thischwa/dyndrest/config/SecurityConfig.java,
             src/main/java/codes/thischwa/dyndrest/config/DatabaseConfig.java,
-            src/main/java/codes/thischwa/dyndrest/Starter.java
+            src/main/java/codes/thischwa/dyndrest/Starter.java,
+            src/test/java/**/*
         </sonar.exclusions>
 
         <!-- openapi generation -->
