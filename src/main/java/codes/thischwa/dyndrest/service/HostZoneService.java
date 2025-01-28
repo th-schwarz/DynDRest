@@ -140,7 +140,7 @@ public class HostZoneService {
    */
   public void saveOrUpdate(Host host) {
     preSaveOrUpdate(host);
-    Host tmpHost = Host.getInstance(host);
+    Host tmpHost = getInstance(host);
     hostRepo.save(tmpHost);
     host.setId(tmpHost.getId());
     host.setChanged(tmpHost.getChanged());
@@ -248,5 +248,26 @@ public class HostZoneService {
       throw new IllegalArgumentException("Host id should not be null.");
     }
     hostRepo.deleteById(host.getId());
+  }
+
+  /**
+   * Creates and initializes a new instance of the Host class, if the desired host is an instance of
+   * {@link HostEnriched}.<br>
+   * Required for database processing.
+   *
+   * @param host the host instance
+   * @return A new instance of the Host class, if host is an instance of FullHost.
+   */
+  Host getInstance(Host host) {
+    if (!(host instanceof HostEnriched)) {
+      return host;
+    }
+    Host tmpHost = new Host();
+    tmpHost.setId(host.getId());
+    tmpHost.setName(host.getName());
+    tmpHost.setApiToken(host.getApiToken());
+    tmpHost.setZoneId(host.getZoneId());
+    tmpHost.setChanged(host.getChanged());
+    return tmpHost;
   }
 }
