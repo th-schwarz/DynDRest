@@ -105,7 +105,9 @@ public interface NetUtil {
   @Nullable
   private static org.xbill.DNS.Record lookup(String hostName, int type) throws IOException {
     try {
-      org.xbill.DNS.Record[] records = new Lookup(hostName, type).run();
+      Lookup lookup = new Lookup(hostName, type);
+      lookup.setCache(null);
+      org.xbill.DNS.Record[] records = lookup.run();
       return (records == null || records.length == 0) ? null : records[0];
     } catch (TextParseException e) {
       throw new IOException(String.format("Couldn't lookup for host %s", hostName), e);
