@@ -12,15 +12,20 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.xbill.DNS.AAAARecord;
 import org.xbill.DNS.ARecord;
+import org.xbill.DNS.DClass;
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Record;
 import org.xbill.DNS.TextParseException;
 import org.xbill.DNS.Type;
 
 /** Some network relevant utils. */
-public interface NetUtil {
+public class NetUtil {
 
-  static boolean isIp(String ipStr) {
+  private NetUtil() {
+    Lookup.getDefaultCache(DClass.IN).setMaxEntries(0);
+  }
+
+  public static boolean isIp(String ipStr) {
     return NetUtil.isIpv4(ipStr) || NetUtil.isIpv6(ipStr);
   }
 
@@ -73,7 +78,7 @@ public interface NetUtil {
    * @param forceHttps the force https
    * @return the base url
    */
-  static String getBaseUrl(boolean forceHttps) {
+  public static String getBaseUrl(boolean forceHttps) {
     ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentContextPath();
     if (forceHttps) {
       builder.scheme("https");
@@ -88,7 +93,7 @@ public interface NetUtil {
    * @return the ip setting
    * @throws IOException if the resolving fails
    */
-  static IpSetting resolve(String hostName) throws IOException {
+  public static IpSetting resolve(String hostName) throws IOException {
     IpSetting ipSetting = new IpSetting();
     Record rec = lookup(hostName, Type.A);
     if (rec != null) {
@@ -105,9 +110,7 @@ public interface NetUtil {
   @Nullable
   private static org.xbill.DNS.Record lookup(String hostName, int type) throws IOException {
     try {
-      Lookup lookup = new Lookup(hostName, type);
-      lookup.setCache(null);
-      org.xbill.DNS.Record[] records = lookup.run();
+      org.xbill.DNS.Record[] records = new Lookup(hostName, type).run();
       return (records == null || records.length == 0) ? null : records[0];
     } catch (TextParseException e) {
       throw new IOException(String.format("Couldn't lookup for host %s", hostName), e);
