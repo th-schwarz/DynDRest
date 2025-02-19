@@ -47,6 +47,9 @@ domainrobot:
   custom-header:
     X-Domainrobot-WS: NONE
 
+## configuration for cloudflare
+cloudflare:
+  base-url: https://api.cloudflare.com/client/v4
 
 ## disable springdoc endpoints and swagger-ui by default
 springdoc:
