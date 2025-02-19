@@ -167,6 +167,11 @@
             <systemPath>${project.basedir}/libs/sdk-client-0.2.8.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>codes.thischwa</groupId>
+            <artifactId>cloudflaredns</artifactId>
+            <version>0.1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <!-- required for conditional processing in logback -->
             <groupId>org.codehaus.janino</groupId>
             <artifactId>janino</artifactId>

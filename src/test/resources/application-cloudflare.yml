@@ -1,0 +1,77 @@
+spring:
+  main:
+    banner-mode: off
+  security:
+    user:
+      name: dyndns
+      password: test123
+
+  h2:
+    console.enabled: true
+
+  datasource:
+    url: jdbc:h2:mem:dyndrest;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false
+    driverClassName: org.h2.Driver
+    username: dba
+
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yml
+    drop-first: true
+    contexts: test
+
+  jpa:
+    show-sql: true
+
+server:
+  address: 127.0.0.1
+  port: 8081
+  servlet:
+    context-path: /
+
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      base-path: /manage
+  endpoint:
+    health:
+      enabled: true
+
+logging:
+  level:
+    org:
+      springframework:
+        jdbc:
+          core:
+            JdbcTemplate: DEBUG
+
+dyndrest:
+  provider: cloudflare
+  greeting-enabled: true
+  update-log-date-pattern: yyyy-MM-dd HH:mm:SSS
+  update-log-page-enabled: true
+  update-log-page-size: 4
+  update-log-user-name: log-dev
+  update-log-user-password: l0g-dev
+  update-ip-changed-status: 201
+  host-validation-enabled: false
+  healthcheck-user-name: health
+  healthcheck-user-password: hea1th
+  admin-user-name: admin
+  admin-user-password: adm1n
+  admin-api-token: token123
+  database:
+    dump-file: dump.sql
+    backup:
+      enabled: false
+      path: ./backup
+      cron: "0 30 4 * * SUN"
+    restore:
+      enabled: true
+      path: ./restore
+
+cloudflare:
+  base-url: https://api.cloudflare.com/client/v4
+  api-token: YQSn-xWAQiiEh9qM58wZNnyQS7FUdoqGIUAbrh7T
+  api-key: 12345678901234567890123456789
+  email: email@mydomain.com
