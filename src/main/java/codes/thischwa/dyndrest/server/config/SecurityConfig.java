@@ -1,10 +1,9 @@
 package codes.thischwa.dyndrest.server.config;
 
+import codes.thischwa.dyndrest.model.config.AppConfig;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import codes.thischwa.dyndrest.model.config.AppConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
@@ -43,12 +42,12 @@ public class SecurityConfig {
   static final String ROLE_LOGVIEWER = "LOGVIEWER";
   static final String ROLE_USER = "USER";
   static final String ROLE_HEALTH = "HEALTH";
+  private static final List<String> publicPaths =
+      new ArrayList<>(List.of("/", "/favicon.ico", "/error"));
   public final Environment env;
   private final AppConfig appConfig;
   private final PasswordEncoder encoder =
       PasswordEncoderFactories.createDelegatingPasswordEncoder();
-
-  private static final List<String> publicPaths = new ArrayList<>(List.of("/", "/favicon.ico", "/error"));
   private final String[] loguiPaths = {"/log-ui", "/log-ui/*"};
   private final String adminPath = "/admin/**";
 
@@ -65,8 +64,10 @@ public class SecurityConfig {
   @Value("${spring.h2.console.enabled}")
   private boolean h2ConsoleEnabled;
 
-  @Value("${management.endpoint.health.enabled}")
-  private boolean healthEnabled;
+  @Value("${management.endpoint.health.access}")
+  private String healthAccess;
+
+  private final boolean healthEnabled;
 
   /**
    * Constructs a SecurityConfig object with the given AppConfig and Environment.
@@ -77,6 +78,8 @@ public class SecurityConfig {
   public SecurityConfig(AppConfig appConfig, Environment env) {
     this.appConfig = appConfig;
     this.env = env;
+
+    healthEnabled = !"none".equals(healthAccess);
 
     // check if credentials for update-log-view exists
     boolean isUpdateLogCredentialsEmpty =
@@ -176,11 +179,10 @@ public class SecurityConfig {
     if (adminEnabled) {
       // enables security for the admin paths
       http.authorizeHttpRequests(
-        req ->
-            req.requestMatchers(buildMatchers(adminPath)).hasRole(ROLE_ADMIN))
-              .sessionManagement(
-                      session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-              .csrf(AbstractHttpConfigurer::disable);
+              req -> req.requestMatchers(buildMatchers(adminPath)).hasRole(ROLE_ADMIN))
+          .sessionManagement(
+              session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+          .csrf(AbstractHttpConfigurer::disable);
     }
 
     // public routes

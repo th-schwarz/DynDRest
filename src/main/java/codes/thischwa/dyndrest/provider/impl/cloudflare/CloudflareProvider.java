@@ -1,8 +1,9 @@
 package codes.thischwa.dyndrest.provider.impl.cloudflare;
 
 import codes.thischwa.cf.CfDnsClient;
-import codes.thischwa.cf.CfDnsUtils;
 import codes.thischwa.cf.CloudflareApiException;
+import codes.thischwa.cf.CloudflareNotFoundException;
+import codes.thischwa.cf.model.RecordType;
 import codes.thischwa.cf.model.ZoneEntity;
 import codes.thischwa.dyndrest.model.HostEnriched;
 import codes.thischwa.dyndrest.model.IpSetting;
@@ -11,7 +12,6 @@ import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.provider.impl.GenericProvider;
 import codes.thischwa.dyndrest.service.HostZoneService;
-
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -42,8 +42,9 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
   @Override
   public void update(String host, IpSetting ipSetting) throws ProviderException {
     ZoneEntity zone = fetchZoneFromHost(host);
+    String sld = getSldFromHost(host);
     try {
-      boolean updated = CfDnsUtils.updateHost(cfDnsClient, zone, host, ipSetting.ipv4ToString(), ipSetting.ipv6ToString());
+      boolean updated = cfDnsClient.sldCreateUpdateOrDeleteIp(zone, sld, ipSetting.getIpv4(), ipSetting.getIpv6());
       if (!updated) {
         log.info("*** No update required for host: {}", host);
       }
@@ -53,15 +54,28 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
   }
 
   @Override
-  public void addHost(String zoneName, String host) throws ProviderException {}
+  public void addHost(String zoneName, String host) throws ProviderException {
+    // not required for domainrobot. #update adds the required records.
+  }
 
   @Override
-  public void removeHost(String host) throws ProviderException {}
+  public void removeHost(String host) throws ProviderException {
+    ZoneEntity zone = fetchZoneFromHost(host);
+    Optional<HostEnriched> optFullHost = hostZoneService.getHost(host);
+    if (optFullHost.isEmpty()) {
+      throw new ProviderException("Host isn't configured: " + host);
+    }
+    try {
+      cfDnsClient.sldDelete(zone, host);
+    } catch (CloudflareApiException e) {
+      throw new ProviderException(e);
+    }
+  }
 
   private void zoneConfirmed(Zone myZone) throws IllegalArgumentException {
     ZoneEntity zone;
     try {
-      zone = cfDnsClient.getZone(myZone.getName());
+      zone = cfDnsClient.zoneInfo(myZone.getName());
       log.info("*** Zone confirmed: {}", zone.getName());
       hostsOfZoneConfirmed(zone);
     } catch (CloudflareApiException | ProviderException e) {
@@ -79,7 +93,7 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
     }
     for (HostEnriched host : opt.get()) {
       try {
-        if (CfDnsUtils.hasSubTld(cfDnsClient, zone, host.getFullHost())) {
+        if (hasSubTld(cfDnsClient, zone, host.getFullHost())) {
           log.info("Host confirmed: {}", host.getFullHost());
         } else {
           throw new IllegalArgumentException("Host not confirmed: " + host.getFullHost());
@@ -106,7 +120,7 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
     HostEnriched hostEnriched = optFullHost.get();
     String zone = hostEnriched.getZone();
     try {
-      return cfDnsClient.getZone(zone);
+      return cfDnsClient.zoneInfo(zone);
     } catch (CloudflareApiException e) {
       throw new ProviderException(e);
     }
@@ -115,5 +129,37 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
   @Override
   public void afterPropertiesSet() throws Exception {
     validateHostZoneConfiguration();
+  }
+
+  private String getSldFromHost(String host) {
+    return host.substring(0, host.indexOf("."));
+  }
+
+  private boolean hasSubTld(
+          CfDnsClient client, ZoneEntity zone, String host) throws CloudflareApiException {
+    String sld = getSldFromHost(host);
+    boolean aFound = false;
+    try {
+      client.sldInfo( zone, sld, RecordType.A);
+      aFound = true;
+    } catch (CloudflareApiException e) {
+      if (! (e instanceof CloudflareNotFoundException)) {
+        log.error("Error while getting host info of {}", host, e);
+        throw e;
+      }
+    }
+
+    boolean aaaaFound = false;
+    try {
+      client.sldInfo(zone, sld, RecordType.AAAA);
+      aaaaFound = true;
+    } catch (CloudflareApiException e) {
+      if (! (e instanceof CloudflareNotFoundException)) {
+        log.error("Error while getting host info of {}", host, e);
+        throw e;
+      }
+    }
+
+    return aFound || aaaaFound;
   }
 }
