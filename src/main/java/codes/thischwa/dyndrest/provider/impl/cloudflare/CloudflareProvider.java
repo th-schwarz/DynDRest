@@ -24,7 +24,7 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
   private final HostZoneService hostZoneService;
   private final CfDnsClient cfDnsClient;
 
-  public CloudflareProvider(
+  CloudflareProvider(
       AppConfig appConfig, CloudflareConfig config, HostZoneService hostZoneService) {
     this.appConfig = appConfig;
     this.hostZoneService = hostZoneService;
