@@ -48,8 +48,8 @@ public class SecurityConfig {
   private final AppConfig appConfig;
   private final PasswordEncoder encoder =
       PasswordEncoderFactories.createDelegatingPasswordEncoder();
-  private final String[] loguiPaths = {"/log-ui", "/log-ui/*"};
-  private final String adminPath = "/admin/**";
+  private static final String[] loguiPaths = {"/log-ui", "/log-ui/*"};
+  private static final String adminPath = "/admin/**";
 
   private final boolean updateLogEnabled;
 
