@@ -8,6 +8,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+
+import codes.thischwa.dyndrest.provider.impl.cloudflare.CloudflareProvider;
 import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.xbill.DNS.AAAARecord;
@@ -114,6 +116,24 @@ public class NetUtil {
       return (records == null || records.length == 0) ? null : records[0];
     } catch (TextParseException e) {
       throw new IOException(String.format("Couldn't lookup for host %s", hostName), e);
+    }
+  }
+
+  /**
+   * Compares two IP addresses for equality.
+   *
+   * @param ip1 the first IP address to compare, in string format
+   * @param ip2 the second IP address to compare, in string format
+   * @return true if both IP addresses are equal, false otherwise
+   * @throws IllegalArgumentException if either of the IP addresses is invalid
+   */
+  public static boolean ipEquals(String ip1, String ip2) {
+    try {
+      InetAddress a1 = InetAddress.getByName(ip1);
+      InetAddress a2 = InetAddress.getByName(ip2);
+      return a1.equals(a2);
+    } catch (UnknownHostException e) {
+      throw new IllegalArgumentException("Invalid IP address(es).", e);
     }
   }
 }

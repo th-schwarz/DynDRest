@@ -62,5 +62,5 @@ public interface Provider {
 
   void addHost(String zoneName, String host) throws ProviderException;
 
-  void removeHost(String host) throws ProviderException;
+  void removeHostIpSettings(String host) throws ProviderException;
 }
