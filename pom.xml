@@ -26,6 +26,7 @@
         <domainrobot.version>0.2.8</domainrobot.version>
         <dnsjava.version>3.6.2</dnsjava.version>
         <janino.version>3.1.12</janino.version>
+        <httpclient5.version>5.4.2</httpclient5.version>
 
         <fakerepo.dir>${project.basedir}/fake-repo</fakerepo.dir>
 
@@ -172,6 +173,12 @@
             <version>0.1.0-SNAPSHOT</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/libs/cloudflaredns-0.1.0-beta.1.jar</systemPath>
+        </dependency>
+        <dependency>
+            <!-- required for cloudflaredns -->
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <version>${httpclient5.version}</version>
         </dependency>
         <dependency>
             <!-- required for conditional processing in logback -->
