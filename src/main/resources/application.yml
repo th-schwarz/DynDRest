@@ -51,6 +51,7 @@ domainrobot:
 ## configuration for cloudflare
 cloudflare:
   base-url: https://api.cloudflare.com/client/v4
+  default-ttl: 60
 
 ## disable springdoc endpoints and swagger-ui by default
 springdoc:

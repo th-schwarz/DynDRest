@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.domainrobot.sdk.models.generated.Zone;
 import org.springframework.beans.factory.InitializingBean;
 
-/** The type Domain robot provider. */
+/** Provider implementation for the domainrobot sdk. */
 @Slf4j
 class DomainRobotProvider extends GenericProvider implements InitializingBean {
 
@@ -63,7 +63,7 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
   }
 
   @Override
-  public void removeHost(String host) throws ProviderException {
+  public void removeHostIpSettings(String host) throws ProviderException {
     Optional<HostEnriched> optFullHost = hostZoneService.getHost(host);
     if (optFullHost.isEmpty()) {
       throw new ProviderException("Host isn't configured: " + host);
