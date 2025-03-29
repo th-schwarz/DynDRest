@@ -13,3 +13,4 @@ pom.xml.*
 /log/
 /docs/openapi/.swagger-codegen**
 /zone.yml
+/zone-cloudflare.yml

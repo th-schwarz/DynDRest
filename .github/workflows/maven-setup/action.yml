@@ -1,0 +1,37 @@
+name: "Setup Maven with GitHub Packages"
+
+description: "Sets up JDK, caches Maven dependencies, and configures GitHub Packages for Maven repositories."
+
+inputs:
+  java-version:
+    description: "Java version to install"
+    default: "17"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up JDK
+      uses: actions/setup-java@v4.5.0
+      with:
+        distribution: corretto
+        java-version: ${{ inputs.java-version }}
+
+    - name: Cache Maven Repository
+      uses: actions/cache@v4.2.0
+      with:
+        path: ~/.m2/repository
+        key: maven
+        restore-keys: maven
+
+    - name: Set up Maven with GitHub Packages
+      run: |
+        echo "<settings>
+          <servers>
+            <server>
+              <id>github-cloudflaredns</id>
+              <username>th-schwarz</username>
+              <password>${{ secrets.GITHUB_TOKEN }}</password>
+            </server>
+          </servers>
+        </settings>" > ~/.m2/settings.xml
