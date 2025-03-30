@@ -8,6 +8,9 @@ on:
   pull_request:
     types: [ opened, synchronize, reopened ]
 
+defaults:
+  run:
+    shell: bash
 
 jobs:
 
@@ -20,6 +23,17 @@ jobs:
         with:
           java-version: '17'
           distribution: 'corretto'
+      - name: Set up Maven with GitHub Packages
+        run: |
+          echo "<settings>
+          <servers>
+          <server>
+          <id>github-cloudflaredns</id>
+          <username>th-schwarz</username>
+          <password>${{ secrets.GITHUB_TOKEN }}</password>
+          </server>
+          </servers>
+          </settings>" > ~/.m2/settings.xml
       - name: Cache maven repository
         uses: actions/cache@v4.2.0
         with:
@@ -42,6 +56,17 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: '17'
+      - name: Set up Maven with GitHub Packages
+        run: |
+          echo "<settings>
+          <servers>
+          <server>
+          <id>github-cloudflaredns</id>
+          <username>th-schwarz</username>
+          <password>${{ secrets.GITHUB_TOKEN }}</password>
+          </server>
+          </servers>
+          </settings>" > ~/.m2/settings.xml
       - name: Cache maven repository
         uses: actions/cache@v4.2.0
         with:
@@ -66,6 +91,17 @@ jobs:
         with:
           java-version: '17'
           distribution: 'corretto'
+      - name: Set up Maven with GitHub Packages
+        run: |
+          echo "<settings>
+          <servers>
+          <server>
+          <id>github-cloudflaredns</id>
+          <username>th-schwarz</username>
+          <password>${{ secrets.GITHUB_TOKEN }}</password>
+          </server>
+          </servers>
+          </settings>" > ~/.m2/settings.xml
       - name: Cache maven repository
         uses: actions/cache@v4.2.0
         with:
