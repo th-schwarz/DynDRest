@@ -30,8 +30,14 @@ image::https://resources.jetbrains.com/storage/products/company/brand/logos/Inte
 
 == Preface
 
-DynDRest is a simple REST-service for dynamic DNS. The basic idea is to have multiple implementations of different dns providers. https://www.internetx.com/en/domains/autodns[AutoDNS] will be one of
-them. +
+DynDRest is a simple REST-service for dynamic DNS. The basic idea is to have multiple implementations of different dns providers.
+
+There are currently the following implementations:
+
+- The JSON-API of https://www.internetx.com/en/domains/autodns[AutoDNS].
+- The JSON-API of https://www.cloudflare.com/[Cloudflare]. +
+  State of implementation if beta.
+
 DynDRest is based on spring boot 3, that's why Java 17 or later is required!
 
 The restful-api can be used with many routers, for example the AVM Fritz!Box. DynDRest can be executed by `commandline`, `init.d` or `systemd`.
@@ -117,7 +123,7 @@ dyndrest:
 zones:
   - name: dynhost.info
     ns: ns.domain.info
-    -hosts:
+    hosts:
     - sld: myhost
       api-token: 1234567890abcdef
 
@@ -128,6 +134,16 @@ domainrobot:
 ----
 
 The `zones` section should be used for importing the hosts and zones configuration to the database initially. Existing data entries won't be updated. The example defines a host `myhost.dynhost.info` with the api-token `1234567890abcdef`.
+
+If you want to use Cloudflare, the property `dyndrest.provider` has to be set to `cloudflare` and the following minimal configuration must be used:
+
+[source,yaml]
+----
+cloudflare:
+  api-token: YQSn-xWAQiiEh9qM58wZNnyQS7FUdoqGIUAbrh7T
+  api-key: 12345678901234567890123456789
+  email: email@mydomain.com
+----
 
 NOTE: This project uses _spring-doc_ to document the routes. The endpoints for this and the _swagger-ui_ are disabled by default!
 
@@ -194,7 +210,7 @@ basic-auth and can be configured by setting the two properties
 It is enabled by default, but it can be disabled by setting the property
 `dyndrest.update-log-page-enabled=false`.
 
-== Setup a router for dynamic DNS
+== Setup for a router for dynamic DNS
 
 As an example, let’s have a look at the setup of dynamic DNS in the
 https://service.avm.de/help/en/FRITZ-Box-7530/019p2/hilfe_dyndns[Fritz!Box
