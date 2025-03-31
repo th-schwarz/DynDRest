@@ -10,7 +10,5 @@ pom.xml.*
 # local files
 /info.txt
 /dyndrest**
-/log/
 /docs/openapi/.swagger-codegen**
-/zone.yml
-/zone-cloudflare.yml
+/zone*.yml

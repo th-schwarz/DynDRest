@@ -10,12 +10,13 @@ server:
 ## management
 management:
   endpoints:
-    enabled-by-default: false
     web:
       base-path: /manage
+    access:
+      default: none
   endpoint:
     health:
-      enabled: false
+      access: none
 
 ## dyndrest config
 dyndrest:
@@ -47,6 +48,10 @@ domainrobot:
   custom-header:
     X-Domainrobot-WS: NONE
 
+## configuration for cloudflare
+cloudflare:
+  base-url: https://api.cloudflare.com/client/v4
+  default-ttl: 60
 
 ## disable springdoc endpoints and swagger-ui by default
 springdoc:

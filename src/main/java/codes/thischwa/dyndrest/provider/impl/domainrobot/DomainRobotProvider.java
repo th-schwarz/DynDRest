@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.domainrobot.sdk.models.generated.Zone;
 import org.springframework.beans.factory.InitializingBean;
 
-/** The type Domain robot provider. */
+/** Provider implementation for the domainrobot sdk. */
 @Slf4j
 class DomainRobotProvider extends GenericProvider implements InitializingBean {
 
@@ -47,7 +47,7 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
     String sld = host.substring(0, host.indexOf("."));
 
     // set the IPs in the zone object
-    Zone zone = zoneInfo(host);
+    Zone zone = fetchZoneFromHost(host);
     if (!zcw.hasIpsChanged(zone, sld, ipSetting)) {
       return;
     }
@@ -63,13 +63,13 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
   }
 
   @Override
-  public void removeHost(String host) throws ProviderException {
+  public void removeHostIpSettings(String host) throws ProviderException {
     Optional<HostEnriched> optFullHost = hostZoneService.getHost(host);
-    if (!optFullHost.isPresent()) {
+    if (optFullHost.isEmpty()) {
       throw new ProviderException("Host isn't configured: " + host);
     }
     HostEnriched hostEnriched = optFullHost.get();
-    Zone zone = zoneInfo(host);
+    Zone zone = fetchZoneFromHost(host);
     zcw.removeSld(zone, hostEnriched.getName());
     zcw.update(zone);
   }
@@ -81,7 +81,7 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
       zone = zcw.info(myZone.getName(), myZone.getNs());
       log.info("*** Zone confirmed: {}", zone.getOrigin());
     } catch (ProviderException e) {
-      log.error("Error while getting zone info of " + myZone.getName(), e);
+      log.error("Error while getting zone info of {}", myZone.getName(), e);
       throw new IllegalArgumentException("Zone couldn't be confirmed.");
     }
     hostsOfZoneConfirmed(zone);
@@ -110,7 +110,7 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
    * @throws ProviderException the provider exception
    * @throws IllegalArgumentException the illegal argument exception
    */
-  Zone zoneInfo(String host) throws ProviderException, IllegalArgumentException {
+  Zone fetchZoneFromHost(String host) throws ProviderException, IllegalArgumentException {
     Optional<HostEnriched> optFullHost = hostZoneService.getHost(host);
     if (optFullHost.isEmpty()) {
       throw new IllegalArgumentException("Host isn't configured: " + host);

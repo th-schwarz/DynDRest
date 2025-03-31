@@ -129,7 +129,7 @@ public class AdminController implements AdminRoutes {
     }
     HostEnriched hostEnriched = optionalFullHost.get();
     try {
-      provider.removeHost(hostEnriched.getFullHost());
+      provider.removeHostIpSettings(hostEnriched.getFullHost());
     } catch (ProviderException e) {
       log.error("Failed to remove host: fullHost=" + hostEnriched.getFullHost(), e);
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());

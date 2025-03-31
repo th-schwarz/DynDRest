@@ -60,7 +60,7 @@ public interface Provider {
    */
   void processUpdate(String host, IpSetting ipSetting) throws ProviderException;
 
-  void addHost(String zaneName, String host) throws ProviderException;
+  void addHost(String zoneName, String host) throws ProviderException;
 
-  void removeHost(String host) throws ProviderException;
+  void removeHostIpSettings(String host) throws ProviderException;
 }

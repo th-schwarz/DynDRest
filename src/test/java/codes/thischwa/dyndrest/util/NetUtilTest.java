@@ -21,6 +21,34 @@ class NetUtilTest {
   }
 
   @Test
+  void testIpEquals_ValidIpsEqual() {
+    String ip1 = "188.68.45.198";
+    String ip2 = "188.68.45.198";
+    assertTrue(NetUtil.ipEquals(ip1, ip2));
+  }
+
+  @Test
+  void testIpEquals_ValidIpsNotEqual() {
+    String ip1 = "188.68.45.198";
+    String ip2 = "188.68.45.199";
+    assertFalse(NetUtil.ipEquals(ip1, ip2));
+  }
+
+  @Test
+  void testIpEquals_InvalidIps() {
+    String invalidIp1 = "188.68.45.265";
+    String invalidIp2 = "invalid-ip";
+    assertThrows(IllegalArgumentException.class, () -> NetUtil.ipEquals(invalidIp1, invalidIp2));
+  }
+
+  @Test
+  void testIpEquals_ipv6() {
+    String ip1 = "2a03:4000:41:32:0:0:0:2";
+    String ip2 = "2a03:4000:41:32::2";
+    assertTrue(NetUtil.ipEquals(ip1, ip2));
+  }
+
+  @Test
   void testIsIp() {
     assertTrue(isIp("188.68.45.198"));
     assertFalse(isIp("188.68.45.265"));

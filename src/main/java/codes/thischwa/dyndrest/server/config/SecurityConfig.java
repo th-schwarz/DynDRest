@@ -1,10 +1,9 @@
 package codes.thischwa.dyndrest.server.config;
 
+import codes.thischwa.dyndrest.model.config.AppConfig;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import codes.thischwa.dyndrest.model.config.AppConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
@@ -43,14 +42,14 @@ public class SecurityConfig {
   static final String ROLE_LOGVIEWER = "LOGVIEWER";
   static final String ROLE_USER = "USER";
   static final String ROLE_HEALTH = "HEALTH";
+  private static final List<String> PUBLIC_ENDPOINTS =
+      new ArrayList<>(List.of("/", "/favicon.ico", "/error"));
   public final Environment env;
   private final AppConfig appConfig;
-  private final PasswordEncoder encoder =
+  private static final PasswordEncoder PASSWORD_ENCODER =
       PasswordEncoderFactories.createDelegatingPasswordEncoder();
-
-  private static final List<String> publicPaths = new ArrayList<>(List.of("/", "/favicon.ico", "/error"));
-  private final String[] loguiPaths = {"/log-ui", "/log-ui/*"};
-  private final String adminPath = "/admin/**";
+  private static final String[] LOG_UI_ENDPOINTS = {"/log-ui", "/log-ui/*"};
+  private static final String ADMIN_ENDPOINT = "/admin/**";
 
   private final boolean updateLogEnabled;
 
@@ -65,8 +64,10 @@ public class SecurityConfig {
   @Value("${spring.h2.console.enabled}")
   private boolean h2ConsoleEnabled;
 
-  @Value("${management.endpoint.health.enabled}")
-  private boolean healthEnabled;
+  @Value("${management.endpoint.health.access}")
+  private String healthAccess;
+
+  private final boolean healthEnabled;
 
   /**
    * Constructs a SecurityConfig object with the given AppConfig and Environment.
@@ -77,6 +78,8 @@ public class SecurityConfig {
   public SecurityConfig(AppConfig appConfig, Environment env) {
     this.appConfig = appConfig;
     this.env = env;
+
+    healthEnabled = !"none".equals(healthAccess);
 
     // check if credentials for update-log-view exists
     boolean isUpdateLogCredentialsEmpty =
@@ -91,9 +94,9 @@ public class SecurityConfig {
             && StringUtils.hasText(appConfig.adminApiToken());
 
     if (Arrays.asList(env.getActiveProfiles()).contains("opendoc")) {
-      publicPaths.add("/v3/api-docs*");
+      PUBLIC_ENDPOINTS.add("/v3/api-docs*");
     }
-    log.info("Public paths: {}", String.join(",", publicPaths));
+    log.info("Public paths: {}", String.join(",", PUBLIC_ENDPOINTS));
   }
 
   /**
@@ -132,7 +135,7 @@ public class SecurityConfig {
     }
     udm.createUser(
         User.builder()
-            .passwordEncoder(encoder::encode)
+            .passwordEncoder(PASSWORD_ENCODER::encode)
             .username(userName)
             .password(password)
             .roles(role)
@@ -162,7 +165,7 @@ public class SecurityConfig {
     if (updateLogEnabled) {
       // enable security for the log-view
       http.authorizeHttpRequests(
-          req -> req.requestMatchers(buildMatchers(loguiPaths)).hasAnyRole(ROLE_LOGVIEWER));
+          req -> req.requestMatchers(buildMatchers(LOG_UI_ENDPOINTS)).hasAnyRole(ROLE_LOGVIEWER));
     }
 
     if (healthEnabled) {
@@ -176,16 +179,15 @@ public class SecurityConfig {
     if (adminEnabled) {
       // enables security for the admin paths
       http.authorizeHttpRequests(
-        req ->
-            req.requestMatchers(buildMatchers(adminPath)).hasRole(ROLE_ADMIN))
-              .sessionManagement(
-                      session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-              .csrf(AbstractHttpConfigurer::disable);
+              req -> req.requestMatchers(buildMatchers(ADMIN_ENDPOINT)).hasRole(ROLE_ADMIN))
+          .sessionManagement(
+              session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+          .csrf(AbstractHttpConfigurer::disable);
     }
 
     // public routes
     http.authorizeHttpRequests(
-        req -> req.requestMatchers(buildMatchers(publicPaths.toArray(new String[0]))).permitAll());
+        req -> req.requestMatchers(buildMatchers(PUBLIC_ENDPOINTS.toArray(new String[0]))).permitAll());
 
     // enable basic-auth and ROLE_USER for all other routes
     // it's a rest-api, so there is no need for session handling and csrf
