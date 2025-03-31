@@ -13,14 +13,12 @@ import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.provider.impl.GenericProvider;
 import codes.thischwa.dyndrest.service.HostZoneService;
-
+import codes.thischwa.dyndrest.util.NetUtil;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
-import codes.thischwa.dyndrest.util.NetUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.lang.Nullable;
@@ -56,8 +54,7 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
     String sld = getSldFromHost(host);
     try {
       boolean updated =
-          sldCreateUpdateOrDeleteIp(
-              zone, sld, ipSetting.getIpv4(), ipSetting.getIpv6());
+          sldCreateUpdateOrDeleteIp(zone, sld, ipSetting.getIpv4(), ipSetting.getIpv6());
       if (!updated) {
         log.info("*** No update required for host: {}", host);
       }
@@ -160,7 +157,6 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
     return host.substring(0, host.indexOf("."));
   }
 
-
   /**
    * Creates, updates, or deletes DNS A and AAAA records for a given second-level domain (SLD) in a
    * specified zone. If either the IPv4 or IPv6 address is null, the corresponding DNS record will
@@ -176,8 +172,8 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
    * @throws CloudflareApiException If an error occurs during the operation with the Cloudflare API.
    */
   private boolean sldCreateUpdateOrDeleteIp(
-          ZoneEntity zone, String sld, @Nullable Inet4Address ipv4, @Nullable Inet6Address ipv6)
-          throws CloudflareApiException {
+      ZoneEntity zone, String sld, @Nullable Inet4Address ipv4, @Nullable Inet6Address ipv6)
+      throws CloudflareApiException {
     boolean updated = false;
     String ipStr = ipv4 != null ? ipv4.getHostAddress() : null;
     updated |= sldCreateUpdateOrDeleteIp(zone, sld, ipStr, RecordType.A);
@@ -187,8 +183,8 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
   }
 
   private boolean sldCreateUpdateOrDeleteIp(
-          ZoneEntity zone, String sld, @Nullable String ip, RecordType type)
-          throws CloudflareApiException {
+      ZoneEntity zone, String sld, @Nullable String ip, RecordType type)
+      throws CloudflareApiException {
     try {
       RecordEntity rec = cfDnsClient.sldInfo(zone, sld, type);
       if (Objects.isNull(ip)) {
@@ -219,7 +215,7 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
       aFound = true;
     } catch (CloudflareApiException e) {
       if (!(e instanceof CloudflareNotFoundException)) {
-        log.error("Error while getting host info of {}", host, e);
+        log.error("Unexpected error while getting A record of host {}", host, e);
         throw e;
       }
     }
@@ -229,8 +225,11 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
       client.sldInfo(zone, sld, RecordType.AAAA);
       aaaaFound = true;
     } catch (CloudflareApiException e) {
+      if (!(e instanceof CloudflareNotFoundException)) {
+        log.error("Unexpected error while getting AAAA record of host {}", host, e);
+        throw e;
+      }
     }
-
     return aFound || aaaaFound;
   }
 }
