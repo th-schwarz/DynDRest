@@ -67,9 +67,8 @@
 
     <repositories>
         <repository>
-            <id>github-cloudflaredns</id>
-            <name>GitHub Maven Packages</name>
-            <url>https://maven.pkg.github.com/th-schwarz/CloudflareDNS-java</url>
+            <id>gitlab-cloudflare</id>
+            <url>https://gitlab.com/api/v4/projects/68509751/packages/maven</url>
         </repository>
     </repositories>
 
@@ -169,7 +168,7 @@
         <dependency>
             <groupId>codes.thischwa</groupId>
             <artifactId>cloudflaredns</artifactId>
-            <version>0.1.0-beta.1</version>
+            <version>0.1.0.beta-2</version>
         </dependency>
         <dependency>
             <!-- required for cloudflaredns -->
