@@ -5,4 +5,4 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConditionalOnProperty(name = "dyndrest.provider", havingValue = "cloudflare")
 @ConfigurationProperties(prefix = "cloudflare")
-record CloudflareConfig(String baseUrl, int defaultTtl, String apiToken, String apiKey, String email) {}
+record CloudflareConfig(String baseUrl, int defaultTtl, String apiKey, String email) {}

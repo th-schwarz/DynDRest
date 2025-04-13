@@ -73,6 +73,5 @@ dyndrest:
 
 cloudflare:
   base-url: https://api.cloudflare.com/client/v4
-  api-token: YQSn-xWAQiiEh9qM58wZNnyQS7FUdoqGIUAbrh7T
   api-key: 12345678901234567890123456789
   email: email@mydomain.com

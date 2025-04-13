@@ -38,7 +38,7 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
     this.hostZoneService = hostZoneService;
     this.defaultTtl = config.defaultTtl();
     cfDnsClient =
-        new CfDnsClient(config.baseUrl(), config.email(), config.apiKey(), config.apiToken());
+        new CfDnsClient(config.baseUrl(), config.email(), config.apiKey());
   }
 
   @Override
