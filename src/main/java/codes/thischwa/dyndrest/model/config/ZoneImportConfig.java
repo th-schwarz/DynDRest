@@ -28,7 +28,7 @@ public record ZoneImportConfig(@Nullable List<ZoneImportConfig.Zone> zones) {
     for (ZoneImportConfig.Zone zone : zones) {
       for (Host host : zone.hosts()) {
         HostEnriched hostEnriched = new HostEnriched();
-        hostEnriched.setName(host.sld());
+        hostEnriched.setSld(host.sld());
         hostEnriched.setApiToken(host.apiToken());
         hostEnriched.setZone(zone.name);
         hostEnriched.setNs(zone.ns);

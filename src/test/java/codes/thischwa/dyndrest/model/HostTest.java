@@ -9,7 +9,7 @@ class HostTest {
   @Test
   void testGetFullHost() {
     HostEnriched hostEnriched = new HostEnriched();
-    hostEnriched.setName("my4");
+    hostEnriched.setSld("my4");
     hostEnriched.setApiToken("08/15");
     hostEnriched.setZoneId(2);
     hostEnriched.setZone("zone.info");

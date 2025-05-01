@@ -11,6 +11,6 @@ public class HostEnriched extends Host {
   @EqualsAndHashCode.Exclude private String ns;
 
   public String getFullHost() {
-    return String.format("%s.%s", getName(), zone);
+    return String.format("%s.%s", getSld(), zone);
   }
 }

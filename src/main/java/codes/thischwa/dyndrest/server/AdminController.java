@@ -105,7 +105,7 @@ public class AdminController implements AdminRoutes {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
     Optional<List<HostEnriched>> fullHosts = hostZoneService.findHostsOfZone(zoneName);
-    if (fullHosts.isPresent() && fullHosts.get().stream().anyMatch(h -> h.getName().equals(host))) {
+    if (fullHosts.isPresent() && fullHosts.get().stream().anyMatch(h -> h.getSld().equals(host))) {
       log.error("Host {} already exists.", host);
       throw new ResponseStatusException(HttpStatus.CONFLICT);
     }

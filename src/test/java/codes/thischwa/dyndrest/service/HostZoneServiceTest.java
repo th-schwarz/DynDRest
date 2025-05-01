@@ -129,7 +129,7 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
   void testSaveUpdateHost() {
     int hostCnt = service.getConfiguredHosts().size();
     Host host = new Host();
-    host.setName("my3");
+    host.setSld("my3");
     host.setApiToken("0987654321fedcba");
     host.setZoneId(h1z1ID);
     service.saveOrUpdate(host);
@@ -163,7 +163,7 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
   @Test
   void testSaveFullHost() {
     HostEnriched hostEnriched = new HostEnriched();
-    hostEnriched.setName("my4");
+    hostEnriched.setSld("my4");
     hostEnriched.setApiToken("08/15");
     hostEnriched.setZoneId(z2ID);
     service.saveOrUpdate(hostEnriched);
@@ -236,7 +236,7 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     Zone z = service.getAllZones().get(0);
     int hostCnt = service.findHostsOfZone(z.getName()).orElse(new ArrayList<>()).size();
     Host host = new Host();
-    host.setName("my5");
+    host.setSld("my5");
     host.setApiToken("abcdef1234567890");
     host.setZoneId(z.getId());
     service.saveOrUpdate(host);
@@ -245,7 +245,7 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     List<HostEnriched> hosts = optHosts.get();
     assertEquals(hostCnt + 1, hosts.size());
     Optional<HostEnriched> optFullHost =
-        hosts.stream().filter(h -> h.getName().startsWith("my5")).findFirst();
+        hosts.stream().filter(h -> h.getSld().startsWith("my5")).findFirst();
     assertTrue(optFullHost.isPresent());
     HostEnriched hostEnriched = optFullHost.get();
     assertNotNull(hostEnriched.getId());
@@ -255,10 +255,10 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
   @Test
   void testEquals() {
     Host h1 = new Host();
-    h1.setName("test1");
+    h1.setSld("test1");
     h1.setZoneId(1);
     Host h2 = new Host();
-    h2.setName("test1");
+    h2.setSld("test1");
     h2.setZoneId(1);
     assertEquals(h1, h2);
 
@@ -269,7 +269,7 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
 
     HostEnriched h1Full = new HostEnriched();
     h1Full.setId(1);
-    h1Full.setName("test1");
+    h1Full.setSld("test1");
     h1Full.setZoneId(1);
     Host h1Tmp = service.getInstance(h1Full);
     assertEquals(h1, h1Tmp);
@@ -278,7 +278,7 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     assertNotEquals(h1, h2);
 
     Host h3 = new Host();
-    h3.setName("test2");
+    h3.setSld("test2");
     h3.setZoneId(2);
     assertNotEquals(h1, h3);
   }

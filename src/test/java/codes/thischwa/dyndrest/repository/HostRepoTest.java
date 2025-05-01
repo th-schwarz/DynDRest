@@ -21,7 +21,7 @@ class HostRepoTest extends AbstractIntegrationTest {
 
     Host host = hosts.get(0);
     assertEquals(h1z1ID, host.getId());
-    assertEquals("my0", host.getName());
+    assertEquals("my0", host.getSld());
     assertEquals("1234567890abcdef", host.getApiToken());
     assertEquals(z1ID, host.getZoneId());
     assertEquals(currentDate, host.getChanged().toLocalDate());
@@ -47,14 +47,14 @@ class HostRepoTest extends AbstractIntegrationTest {
 
     HostEnriched host1 = hosts.get(0);
     assertEquals(h1z1ID, host1.getId());
-    assertEquals("my0", host1.getName());
+    assertEquals("my0", host1.getSld());
     assertEquals("1234567890abcdef", host1.getApiToken());
     assertEquals(h1z1ID, host1.getZoneId());
     assertEquals(currentDate, host1.getChanged().toLocalDate());
 
     HostEnriched host2 = hosts.get(1);
     assertEquals(h2z1ID, host2.getId());
-    assertEquals("test0", host2.getName());
+    assertEquals("test0", host2.getSld());
 
     hosts = repo.findByZoneId(1000);
     assertTrue(hosts.isEmpty());

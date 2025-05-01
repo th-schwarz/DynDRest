@@ -42,27 +42,27 @@ class ConstraintTest extends AbstractIntegrationTest {
     try {
       service.saveOrUpdate(zone);
     } catch (DbActionExecutionException e) {
-      assertEquals(e.getCause().getClass(), DuplicateKeyException.class);
+      assertEquals(DuplicateKeyException.class, e.getCause().getClass());
     }
   }
 
   @Test
   void testDuplicateHost() {
     Host host = new Host();
-    host.setName("newhost1");
+    host.setSld("newhost1");
     host.setApiToken("token1");
     host.setZoneId(1);
     host.setChanged(LocalDateTime.now());
     service.saveOrUpdate(host);
     Host duplicateHost = new Host();
-    duplicateHost.setName("newhost1");
+    duplicateHost.setSld("newhost1");
     duplicateHost.setApiToken("token1");
     duplicateHost.setZoneId(1);
     duplicateHost.setChanged(LocalDateTime.now());
     try {
       service.saveOrUpdate(duplicateHost);
     } catch (DbActionExecutionException e) {
-      assertEquals(e.getCause().getClass(), DuplicateKeyException.class);
+      assertEquals(DuplicateKeyException.class, e.getCause().getClass());
     }
   }
 

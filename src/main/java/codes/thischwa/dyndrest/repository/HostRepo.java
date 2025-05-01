@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 public interface HostRepo extends ListCrudRepository<Host, Integer> {
 
   @Query(
-      "select h.id, h.NAME, h.API_TOKEN, concat(h.NAME, '.', z.NAME) full_host, "
+      "select h.id, h.SLD, h.API_TOKEN, concat(h.SLD, '.', z.NAME) full_host, "
           + "h.ZONE_ID, z.NAME as ZONE, z.NS, h.CHANGED "
           + "from HOST h "
           + "join ZONE z on z.ID = h.ZONE_ID "
@@ -21,15 +21,15 @@ public interface HostRepo extends ListCrudRepository<Host, Integer> {
   List<HostEnriched> findAllExtended();
 
   @Query(
-      "select h.id, h.NAME, concat(h.NAME, '.', z.NAME) full_host, h.API_TOKEN, h.ZONE_ID, "
+      "select h.id, h.SLD, concat(h.SLD, '.', z.NAME) full_host, h.API_TOKEN, h.ZONE_ID, "
           + " z.NAME as ZONE, z.NS, h.CHANGED from HOST h "
           + "join PUBLIC.ZONE z on z.ID = h.ZONE_ID "
-          + "where concat(h.NAME, '.', z.NAME) = :fullHost "
+          + "where concat(h.SLD, '.', z.NAME) = :fullHost "
           + "order by h.id")
   Optional<HostEnriched> findByFullHost(String fullHost);
 
   @Query(
-      "select h.id, h.NAME, concat(h.NAME, '.', z.NAME) full_host, h.API_TOKEN, h.ZONE_ID, "
+      "select h.id, h.SLD, concat(h.SLD, '.', z.NAME) full_host, h.API_TOKEN, h.ZONE_ID, "
           + " z.NAME as ZONE, z.NS, h.CHANGED from HOST h "
           + "join PUBLIC.ZONE z on z.ID = h.ZONE_ID "
           + "where z.ID = :zoneId "

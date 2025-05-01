@@ -58,7 +58,7 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
   }
 
   @Override
-  public void addHost(String zoneName, String host) throws ProviderException {
+  public void addHost(String zoneName, String host) {
     // not required for domainrobot. #update adds the required records.
   }
 
@@ -70,7 +70,7 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
     }
     HostEnriched hostEnriched = optFullHost.get();
     Zone zone = fetchZoneFromHost(host);
-    zcw.removeSld(zone, hostEnriched.getName());
+    zcw.removeSld(zone, hostEnriched.getSld());
     zcw.update(zone);
   }
 
@@ -94,7 +94,7 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
       return;
     }
     for (HostEnriched host : opt.get()) {
-      if (zcw.hasSubTld(zone, host.getName())) {
+      if (zcw.hasSubTld(zone, host.getSld())) {
         log.info("Host confirmed: {}", host.getFullHost());
       } else {
         throw new IllegalArgumentException("Host not confirmed: " + host.getFullHost());

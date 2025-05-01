@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 @Data
 public class Host extends AbstractJdbcEntity {
 
-  private String name;
+  private String sld;
 
   @EqualsAndHashCode.Exclude private String apiToken;
 

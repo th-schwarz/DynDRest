@@ -11,3 +11,13 @@ databaseChangeLog:
   - include:
       file: 000/create-update_log.sql
       relativeToChangelogFile: true
+
+  - changeSet:
+      id: 1
+      author: thilo schwarz
+      changes:
+        - renameColumn:
+            tableName: host
+            oldColumnName: name
+            newColumnName: sld
+            columnDataType: VARCHAR(112)
