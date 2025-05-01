@@ -20,7 +20,7 @@ public interface UpdateLogRepo
 
   @Query(
       "select u.ID, u.HOST_ID, u.IPV4, u.IPV6, u.CHANGED, u.CHANGED_UPDATE, u.STATUS, "
-          + "concat(h.NAME, '.', z.NAME) host "
+          + "concat(h.SLD, '.', z.NAME) host "
           + "from UPDATE_LOG u "
           + "join HOST h on h.ID = u.HOST_ID "
           + "join ZONE z on z.ID = h.ZONE_ID "
@@ -30,7 +30,7 @@ public interface UpdateLogRepo
 
   @Query(
       "select u.ID, u.HOST_ID, u.IPV4, u.IPV6, u.CHANGED, u.CHANGED_UPDATE, u.STATUS, "
-          + "concat(h.NAME, '.', z.NAME) host "
+          + "concat(h.SLD, '.', z.NAME) host "
           + "from UPDATE_LOG u "
           + "join HOST h on h.ID = u.HOST_ID "
           + "join ZONE z on z.ID = h.ZONE_ID "
@@ -40,7 +40,7 @@ public interface UpdateLogRepo
 
   @Query(
       "select u.ID, u.HOST_ID, u.IPV4, u.IPV6, u.CHANGED, u.CHANGED_UPDATE, u.STATUS, "
-          + "concat(h.NAME, '.', z.NAME) host "
+          + "concat(h.SLD, '.', z.NAME) host "
           + "from UPDATE_LOG u "
           + "join HOST h on h.ID = u.HOST_ID "
           + "join ZONE z on z.ID = h.ZONE_ID "
@@ -49,7 +49,7 @@ public interface UpdateLogRepo
 
   @Query(
           "select u.ID, u.HOST_ID, u.IPV4, u.IPV6, u.CHANGED, u.CHANGED_UPDATE, u.STATUS, "
-                  + "concat(h.NAME, '.', z.NAME) host "
+                  + "concat(h.SLD, '.', z.NAME) host "
                   + "from UPDATE_LOG u "
                   + "join HOST h on h.ID = u.HOST_ID "
                   + "join ZONE z on z.ID = h.ZONE_ID "
