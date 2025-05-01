@@ -153,13 +153,15 @@ public class SecurityConfig {
   @Order(Ordered.HIGHEST_PRECEDENCE)
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    // csrf not necessary for request-based authentication
+    http.csrf(AbstractHttpConfigurer::disable);
+
     if (h2ConsoleEnabled) {
       // h2 settings
       http.authorizeHttpRequests(
               auth -> auth.requestMatchers(PathRequest.toH2Console()).permitAll())
           .headers(
-              headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
-          .csrf(csrf -> csrf.ignoringRequestMatchers(PathRequest.toH2Console()));
+              headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
     }
 
     if (updateLogEnabled) {
@@ -181,8 +183,7 @@ public class SecurityConfig {
       http.authorizeHttpRequests(
               req -> req.requestMatchers(buildMatchers(ADMIN_ENDPOINT)).hasRole(ROLE_ADMIN))
           .sessionManagement(
-              session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-          .csrf(AbstractHttpConfigurer::disable);
+              session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
     }
 
     // public routes
@@ -194,8 +195,7 @@ public class SecurityConfig {
     http.authorizeHttpRequests(req -> req.anyRequest().hasAnyRole(ROLE_USER))
         .httpBasic(Customizer.withDefaults())
         .sessionManagement(
-            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .csrf(AbstractHttpConfigurer::disable);
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
     return http.build();
   }
