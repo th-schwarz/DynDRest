@@ -28,7 +28,7 @@
         <cloudflare-java.version>0.1.0-beta.3</cloudflare-java.version>
         <dnsjava.version>3.6.2</dnsjava.version>
         <janino.version>3.1.12</janino.version>
-        <httpclient5.version>5.4.2</httpclient5.version>
+        <httpclient5.version>5.4.3</httpclient5.version>
 
         <fakerepo.dir>${project.basedir}/fake-repo</fakerepo.dir>
 
