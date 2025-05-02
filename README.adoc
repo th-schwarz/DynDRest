@@ -22,7 +22,7 @@ image:https://img.shields.io/github/license/th-schwarz/DynDRest["License badge f
 
 Give it a try!
 https://github.com/th-schwarz/DynDRest/releases[image:https://img.shields.io/github/v/release/th-schwarz/DynDRest?include_prereleases[GitHub
-release (latest by date including pre-releases)]]    image:https://img.shields.io/github/downloads/th-schwarz/DynDRest/dyndrest.jar[GitHub Downloads (specific asset, all releases)]
+release (latest by date including pre-releases)]]    image:https://img.shields.io/github/downloads/th-schwarz/DynDRest/total[GitHub Downloads (all assets, all releases)]
 
 DynDRest is kindly supported by
 
@@ -196,14 +196,14 @@ as an init.d Service (System V)].
 
 == Routes
 
-All routes are secured by basic-auth. A detailed description of the
+Basic-auth secures all routes. A detailed description of the
 routes can be found at the https://th-schwarz.github.io/DynDRest/openapi-develop.html[OAS3 documentation].
 
 There are additional routes:
 
 * [/]: A simple html greeting page which is enabled by default. It can be disabled by setting
 the property `dyndrest.greeting-enabled=false`.
-* [/manage/health]: A very basic health check with an extra basic-auth user. It can be enabled and configured by setting `management.endpoint.health.enabled=true` and the both properties `dyndrest.healthcheck-user-name` and `dyndrest.healthcheck-user-password`.
+* [/manage/health]: A very basic health check with an extra basic-auth user. It can be enabled and configured by setting `management.endpoint.health.access=enabled` and the both properties `dyndrest.healthcheck-user-name` and `dyndrest.healthcheck-user-password`.
 * [/log-ui]: Delivers a  simple web page to view the zone update logs. It is secured by
 basic-auth and can be configured by setting the two properties
 `dyndrest.update-log-user-name` and `dyndrest.update-log-user-password`.
