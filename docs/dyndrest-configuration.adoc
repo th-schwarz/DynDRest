@@ -13,7 +13,7 @@ Below all default settings are listed.
 
 [source,yaml]
 // include is disabled on github
-// application.yml 2024-11
+// application.yml 2025-05
 ----
 ## server settings
 server:
@@ -27,12 +27,14 @@ server:
 ## management
 management:
   endpoints:
-    enabled-by-default: false
     web:
       base-path: /manage
+    access:
+      default: none
   endpoint:
     health:
-      enabled: false
+      access: none
+
 
 ## dyndrest config
 dyndrest:
