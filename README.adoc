@@ -22,7 +22,7 @@ image:https://img.shields.io/github/license/th-schwarz/DynDRest["License badge f
 
 Give it a try!
 https://github.com/th-schwarz/DynDRest/releases[image:https://img.shields.io/github/v/release/th-schwarz/DynDRest?include_prereleases[GitHub
-release (latest by date including pre-releases)]]
+release (latest by date including pre-releases)]]    image:https://img.shields.io/github/downloads/th-schwarz/DynDRest/dyndrest.jar[GitHub Downloads (specific asset, all releases)]
 
 DynDRest is kindly supported by
 
