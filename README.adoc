@@ -70,14 +70,14 @@ NOTE: To avoid the use of the java keystore tool, DynDRest could be run behind a
 
 === File Structure
 
+First, download the https://github.com/th-schwarz/DynDRest/releases[last release jar]. +
 Here is the suggested file structure:
 
 [source,bash]
 ----
 ├── /opt/dyndrest
 │   ├── dyndrest.yml
-│   ├── dyndrest-0.9.0.jar
-│   ├── dyndrest.jar -> dyndrest-0.9.0.jar
+│   ├── dyndrest.jar
 │   ├── logback.xml    (logback configuration)
 │   ├── dyndrest.mv.db  (h2 database file)
 │   ├── /backup
@@ -89,7 +89,7 @@ Here is the suggested file structure:
 ----
 
 *dyndrest.yml* defines the individual properties. The file is read by default and
-will be merged with the default properties in the classpath, therefore the file can be kept
+will be merged with the default properties in the classpath, therefore, the file can be kept
 as small as possible. A minimal configuration example can be found
 further below. If the file is inside the working directory, it is loaded
 automatically. The complete configuration settings can be found link:docs/dyndrest-configuration.adoc[here]. +
