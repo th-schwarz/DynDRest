@@ -10,6 +10,7 @@
 [Unit]
 Description=DynDRest - A simple REST-service for dynamic DNS.
 After=network.target
+Requires=network.target
 
 [Service]
 User=dyndrest
