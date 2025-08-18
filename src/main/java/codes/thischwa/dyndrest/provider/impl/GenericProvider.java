@@ -5,7 +5,6 @@ import codes.thischwa.dyndrest.provider.Provider;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.provider.UpdateHookException;
 import codes.thischwa.dyndrest.util.NetUtil;
-import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 
 /** Generic helper class provider implementations. */
@@ -15,12 +14,7 @@ public abstract class GenericProvider implements Provider {
 
   @Override
   public IpSetting info(String host) throws ProviderException {
-    try {
-      return NetUtil.resolve(host);
-    } catch (IOException e) {
-      log.error(host + " couldn't be resolved!", e);
-      throw new ProviderException(e);
-    }
+    return NetUtil.resolve(host);
   }
 
   @Override
