@@ -9,6 +9,7 @@ import java.net.IDN;
 import java.util.Base64;
 import org.junit.jupiter.api.Test;
 import org.xbill.DNS.Name;
+import org.xbill.DNS.Type;
 
 class NetUtilTest {
 
@@ -24,28 +25,28 @@ class NetUtilTest {
   void testIpEquals_ValidIpsEqual() {
     String ip1 = "188.68.45.198";
     String ip2 = "188.68.45.198";
-    assertTrue(NetUtil.ipEquals(ip1, ip2));
+    assertTrue(ipEquals(ip1, ip2));
   }
 
   @Test
   void testIpEquals_ValidIpsNotEqual() {
     String ip1 = "188.68.45.198";
     String ip2 = "188.68.45.199";
-    assertFalse(NetUtil.ipEquals(ip1, ip2));
+    assertFalse(ipEquals(ip1, ip2));
   }
 
   @Test
   void testIpEquals_InvalidIps() {
     String invalidIp1 = "188.68.45.265";
     String invalidIp2 = "invalid-ip";
-    assertThrows(IllegalArgumentException.class, () -> NetUtil.ipEquals(invalidIp1, invalidIp2));
+    assertThrows(IllegalArgumentException.class, () -> ipEquals(invalidIp1, invalidIp2));
   }
 
   @Test
   void testIpEquals_ipv6() {
     String ip1 = "2a03:4000:41:32:0:0:0:2";
     String ip2 = "2a03:4000:41:32::2";
-    assertTrue(NetUtil.ipEquals(ip1, ip2));
+    assertTrue(ipEquals(ip1, ip2));
   }
 
   @Test
@@ -73,9 +74,9 @@ class NetUtilTest {
   void testDnsjavaIdn() {
     String idn = "müller.de";
     String ascii = IDN.toASCII(idn);
-    assertEquals("m\\252ller.de", Name.fromConstantString(idn).toString());
     assertEquals("xn--mller-kva.de", ascii);
     assertEquals("xn--mller-kva.de", Name.fromConstantString(ascii).toString());
+    assertEquals("m\\252ller.de", Name.fromConstantString(idn).toString());
 
     idn = "平聲";
     ascii = IDN.toASCII(idn);
@@ -117,5 +118,10 @@ class NetUtilTest {
 
     // Assert that the expected output and actual output are equal
     assertEquals(expected, result);
+  }
+
+  @Test
+  void testLookupFails() {
+    assertThrows(IllegalArgumentException.class, () -> NetUtil.lookup("domain.unknowntld" , Type.A));
   }
 }

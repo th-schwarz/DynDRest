@@ -1,7 +1,6 @@
 package codes.thischwa.dyndrest.util;
 
 import codes.thischwa.dyndrest.model.IpSetting;
-import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -9,8 +8,6 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-import codes.thischwa.dyndrest.provider.impl.cloudflare.CloudflareProvider;
-import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.xbill.DNS.AAAARecord;
 import org.xbill.DNS.ARecord;
@@ -93,29 +90,39 @@ public class NetUtil {
    *
    * @param hostName the host name
    * @return the ip setting
-   * @throws IOException if the resolving fails
+   * @throws IllegalArgumentException if the resolving fails
    */
-  public static IpSetting resolve(String hostName) throws IOException {
+  public static IpSetting resolve(String hostName) throws IllegalArgumentException {
     IpSetting ipSetting = new IpSetting();
-    Record rec = lookup(hostName, Type.A);
-    if (rec != null) {
+    try {
+      Record rec = lookup(hostName, Type.A);
       ipSetting.setIpv4((Inet4Address) ((ARecord) rec).getAddress());
+    } catch (IllegalArgumentException e) {
+      // ignore
     }
 
-    rec = lookup(hostName, Type.AAAA);
-    if (rec != null) {
+    try {
+      Record rec = lookup(hostName, Type.AAAA);
       ipSetting.setIpv6((Inet6Address) ((AAAARecord) rec).getAddress());
+    } catch (IllegalArgumentException e) {
+      // ignore
+    }
+
+    if (ipSetting.isNotSet()) {
+      throw new IllegalArgumentException(String.format("Couldn't resolve IP for host %s", hostName));
     }
     return ipSetting;
   }
 
-  @Nullable
-  private static org.xbill.DNS.Record lookup(String hostName, int type) throws IOException {
+  static org.xbill.DNS.Record lookup(String hostName, int type) throws IllegalArgumentException {
     try {
       org.xbill.DNS.Record[] records = new Lookup(hostName, type).run();
-      return (records == null || records.length == 0) ? null : records[0];
+      if (records == null || records.length == 0) {
+        throw new IllegalArgumentException(String.format("Couldn't lookup for host %s", hostName));
+      }
+      return records[0];
     } catch (TextParseException e) {
-      throw new IOException(String.format("Couldn't lookup for host %s", hostName), e);
+      throw new IllegalArgumentException(String.format("Couldn't lookup for host %s", hostName), e);
     }
   }
 
