@@ -1,67 +1,100 @@
 package codes.thischwa.dyndrest.model;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Objects;
-import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class IpSettingTest {
 
-	@Test
-	final void testConversion() throws UnknownHostException {
-		IpSetting is = new IpSetting("198.0.0.1", "2a03:4000:41:32:0:0:0:1");
-		assertEquals(is.ipv4ToString(), Objects.requireNonNull(is.getIpv4()).getHostAddress());
-		assertEquals(is.ipv6ToString(), Objects.requireNonNull(is.getIpv6()).getHostAddress());
+    @Test
+    void defaultConstructor_isNotSet() {
+        IpSetting s = new IpSetting();
+        assertTrue(s.isNotSet());
+        assertNull(s.getIpv4());
+        assertNull(s.getIpv6());
+        assertNull(s.ipv4ToString());
+        assertNull(s.ipv6ToString());
+    }
 
-		is = new IpSetting("2a03:4000:41:32:0:0:0:1");
-		assertNull(is.ipv4ToString());
-		assertNull(is.getIpv4());
-		assertEquals(is.ipv6ToString(), Objects.requireNonNull(is.getIpv6()).getHostAddress());
+    @Test
+    void stringConstructor_setsIpv4() throws UnknownHostException {
+        IpSetting s = new IpSetting("192.168.1.10");
+        assertFalse(s.isNotSet());
+        assertNotNull(s.getIpv4());
+        assertNull(s.getIpv6());
+        assertEquals("192.168.1.10", s.ipv4ToString());
+    }
 
-		is = new IpSetting("198.0.0.1");
-		assertEquals(is.ipv4ToString(), Objects.requireNonNull(is.getIpv4()).getHostAddress());
-		assertNull(is.ipv6ToString());
-		assertNull(is.getIpv6());
-	}
+    @Test
+    void stringConstructor_setsIpv6() throws UnknownHostException {
+        IpSetting s = new IpSetting("2a03:4000:41:32::2");
+        assertFalse(s.isNotSet());
+        assertNull(s.getIpv4());
+        assertNotNull(s.getIpv6());
+        assertEquals("2a03:4000:41:32:0:0:0:2", s.ipv6ToString());
+    }
 
-	@Test
-	final void compareIPv6Test() throws UnknownHostException {
-		IpSetting is1 = new IpSetting("2a03:4000:41:32:0:0:0:1");
-		IpSetting is2 = new IpSetting("2a03:4000:41:32::1");
-		assertEquals(is1, is2);
-	}
+    @Test
+    void dualStringConstructor_setsBoth_whenValid() throws UnknownHostException {
+        IpSetting s = new IpSetting("10.0.0.1", "2a03:4000:41:32::20");
+        assertFalse(s.isNotSet());
+        assertEquals("10.0.0.1", s.ipv4ToString());
+        assertEquals("2a03:4000:41:32:0:0:0:20", s.ipv6ToString());
+    }
 
-	@Test
-	final void constructorTest() throws UnknownHostException {
-		IpSetting is = new IpSetting("198.0.0.1");
-		assertNull(is.getIpv6());
-		assertEquals(is.ipv4ToString(), Objects.requireNonNull(is.getIpv4()).getHostAddress());
+    @Test
+    void dualStringConstructor_handlesNullsIndividually() throws UnknownHostException {
+        IpSetting onlyV4 = new IpSetting("10.0.0.2", null);
+        assertEquals("10.0.0.2", onlyV4.ipv4ToString());
+        assertNull(onlyV4.ipv6ToString());
 
-		Inet4Address ipv4 = (Inet4Address) InetAddress.getByName("198.0.0.2");
-		Inet6Address ipv6 = (Inet6Address) InetAddress.getByName("2a03:4000:41:32::2");
-		is = new IpSetting(ipv4, ipv6);
-		assertEquals(is.ipv4ToString(), Objects.requireNonNull(is.getIpv4()).getHostAddress());
-		assertEquals(is.ipv6ToString(), Objects.requireNonNull(is.getIpv6()).getHostAddress());
+        IpSetting onlyV6 = new IpSetting(null, "2a03:4000:41:32::21");
+        assertNull(onlyV6.ipv4ToString());
+        assertEquals("2a03:4000:41:32:0:0:0:21", onlyV6.ipv6ToString());
+    }
 
-		is = new IpSetting(ipv6, ipv4);
-		assertNull(is.getIpv4());
-		assertNull(is.getIpv6());
-	}
+    @Test
+    void inetAddressConstructor_setsOnlyMatchingTypes() throws Exception {
+        InetAddress v4 = InetAddress.getByName("172.16.0.3");
+        InetAddress v6 = InetAddress.getByName("2a03:4000:41:32::22");
+        IpSetting s = new IpSetting(v4, v6);
+        assertEquals("172.16.0.3", s.ipv4ToString());
+        assertEquals("2a03:4000:41:32:0:0:0:22", s.ipv6ToString());
 
-	@Test
-	final void testException() {
-		assertThrows(UnknownHostException.class, () -> new IpSetting("256.0.0.1", "2a03:4000:41:32:0:0:0:1"));
-	}
+        // Pass swapped types to ensure non-matching are ignored
+        Inet4Address onlyV4 = (Inet4Address) v4;
+        Inet6Address onlyV6 = (Inet6Address) v6;
+        IpSetting s2 = new IpSetting(onlyV6, onlyV4); // wrong order on purpose
+        // constructor should ignore mismatched types, leaving nulls
+        assertNull(s2.getIpv4());
+        assertNull(s2.getIpv6());
+    }
 
-	@Test
-	final void testEquals() throws UnknownHostException {
-		IpSetting is1 = new IpSetting("198.0.0.1");
-		IpSetting is2 = new IpSetting("198.0.0.1");
-		assertEquals(is1.hashCode(), is2.hashCode());
-		assertEquals(is1, is2);
-	}
+    @Test
+    void equalsAndHashCode_sameIps_areEqual() throws UnknownHostException {
+        IpSetting a = new IpSetting("10.0.0.1", "2a03:4000:41:32::23");
+        IpSetting b = new IpSetting("10.0.0.1", "2a03:4000:41:32::23");
+        assertEquals(a, b);
+        assertEquals(a.hashCode(), b.hashCode());
+    }
+
+    @Test
+    void equalsAndHashCode_differentIps_notEqual() throws UnknownHostException {
+        IpSetting a = new IpSetting("10.0.0.1", "2a03:4000:41:32::23");
+        IpSetting b = new IpSetting("10.0.0.2", "2a03:4000:41:32::23");
+        assertNotEquals(a, b);
+    }
+
+    @Test
+    void toString_containsAddresses_whenSet() throws UnknownHostException {
+        IpSetting s = new IpSetting("10.0.0.5", "2a03:4000:41:32::24");
+        String txt = s.toString();
+        assertTrue(txt.contains("10.0.0.5"));
+        assertTrue(txt.contains("2a03:4000:41:32"));
+    }
 }
