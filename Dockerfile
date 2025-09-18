@@ -5,6 +5,7 @@ WORKDIR /build
 
 # Copy pom.xml and download dependencies first (for Docker cache)
 COPY pom.xml .
+COPY fake-repo ./fake-repo
 RUN mvn dependency:go-offline
 
 # Copy the full source tree and build the application
