@@ -12,6 +12,9 @@ RUN mvn dependency:go-offline
 COPY src ./src
 RUN mvn clean package -DskipTests
 
+# Debug: List the content of the target directory to verify JAR file was created
+RUN ls -la /build/target/
+
 # Stage 2: Minimal runtime image
 FROM amazoncorretto:17-alpine-jdk
 
@@ -20,16 +23,21 @@ WORKDIR /app
 # Optional: add tini to manage signals properly
 RUN apk add --no-cache tini
 
+# Create directories
+RUN mkdir -p /app/config /app/log
+
 # Create a non-root user
 RUN adduser -D dyndrest
+RUN chown -R dyndrest:dyndrest /app
 USER dyndrest
 
 # Copy the built jar from the builder stage
 COPY --from=builder /build/target/dyndrest*.jar /app/dyndrest.jar
 
-# Optionally copy default config
-# COPY dyndrest.yml .
-# COPY logback.xml .
+# Debug: Verify the JAR file exists
+RUN ls -la /app/
+
+EXPOSE 8081
 
 ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["java", "-jar", "dyndrest.jar"]
