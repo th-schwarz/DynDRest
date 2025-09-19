@@ -28,11 +28,12 @@ RUN mkdir -p /app/config /app/log
 
 # Create a non-root user
 RUN adduser -D dyndrest
-RUN chown -R dyndrest:dyndrest /app
 USER dyndrest
 
 # Copy the built jar from the builder stage
 COPY --from=builder /build/target/dyndrest*.jar /app/dyndrest.jar
+
+RUN chown -R dyndrest:dyndrest /app
 
 # Debug: Verify the JAR file exists
 RUN ls -la /app/
