@@ -26,11 +26,6 @@ RUN apk add --no-cache tini
 # Create directories
 RUN mkdir -p /app/config /app/log
 
-# Copy the built jar from the builder stage
-COPY --from=builder /build/target/dyndrest*.jar /app/dyndrest.jar
-
-# Debug: Verify the JAR file exists
-RUN ls -la /app/
 
 # Create a non-root user and change ownership
 RUN adduser -D dyndrest && \
@@ -39,6 +34,11 @@ RUN adduser -D dyndrest && \
 # Switch to non-root user
 USER dyndrest
 
+# Copy the built jar from the builder stage
+COPY --from=builder /build/target/dyndrest*.jar /app/dyndrest.jar
+
+# Debug: Verify the JAR file exists
+RUN ls -la /app/
 EXPOSE 8081
 
 ENTRYPOINT ["/sbin/tini", "--"]
