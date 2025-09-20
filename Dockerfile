@@ -33,7 +33,7 @@ USER dyndrest
 # Copy the built jar from the builder stage
 COPY --from=builder /build/target/dyndrest*.jar /app/dyndrest.jar
 
-RUN chown -R dyndrest:dyndrest /app
+RUN chown -Rv dyndrest:dyndrest /app
 
 # Debug: Verify the JAR file exists
 RUN ls -la /app/
