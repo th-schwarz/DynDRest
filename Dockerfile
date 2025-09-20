@@ -22,6 +22,7 @@ WORKDIR /app
 
 # Optional: add tini to manage signals properly
 RUN apk add --no-cache tini
+RUN apk add --no-cache useradd
 
 # Create directories
 RUN mkdir -p /app/config /app/log
