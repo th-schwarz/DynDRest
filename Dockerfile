@@ -26,17 +26,18 @@ RUN apk add --no-cache tini
 # Create directories
 RUN mkdir -p /app/config /app/log
 
-# Create a non-root user
-RUN adduser -D dyndrest
-USER dyndrest
-
 # Copy the built jar from the builder stage
 COPY --from=builder /build/target/dyndrest*.jar /app/dyndrest.jar
 
-RUN chown -Rv dyndrest:dyndrest /app
-
 # Debug: Verify the JAR file exists
 RUN ls -la /app/
+
+# Create a non-root user and change ownership
+RUN adduser -D dyndrest && \
+    chown -Rv dyndrest:dyndrest /app
+
+# Switch to non-root user
+USER dyndrest
 
 EXPOSE 8081
 
