@@ -30,6 +30,8 @@ RUN mkdir -p /app/config /app/log && \
 # Copy the built jar from the builder stage
 COPY --from=builder /build/target/dyndrest*.jar /app/dyndrest.jar
 
+user root
+
 # Set ownership before switching to non-root user
 RUN chown -Rv dyndrest:dyndrest /app/
 
