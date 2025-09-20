@@ -27,7 +27,7 @@ RUN apk add --no-cache tini
 RUN mkdir -p /app/config /app/log
 
 # Create a non-root user and change ownership
-RUN adduser -m dyndrest
+RUN useradd -m dyndrest
 
 # Switch to non-root user
 USER dyndrest
