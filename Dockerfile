@@ -32,8 +32,17 @@ COPY --from=builder /build/target/dyndrest*.jar /app/dyndrest.jar
 # Richtige Berechtigungen für die JAR-Datei setzen
 RUN chmod 755 /app/dyndrest.jar && chown dyndrest:dyndrest /app/dyndrest.jar
 
+# Debug: Verify the JAR file before user change
+RUN echo "JAR file before user change:" && ls -la /app/dyndrest.jar && file /app/dyndrest.jar
+
 # change to none-root user
 USER dyndrest
+
+# Set the working directory explicitly again to ensure no permission issues
+WORKDIR /app
+
+# Debug: Verify the JAR file exists and user has access
+RUN echo "JAR file after user change:" && ls -la /app/dyndrest.jar && whoami && pwd
 
 # Debug: Verify the JAR file exists
 RUN ls -la /app/
@@ -41,4 +50,4 @@ RUN ls -la /app/
 EXPOSE 8081
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
-CMD ["java", "-jar", "dyndrest.jar"]
+CMD ["java", "-jar", "/app/dyndrest.jar"]
