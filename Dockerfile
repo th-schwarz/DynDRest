@@ -1,5 +1,5 @@
 # Stage 1: Build the JAR using Maven
-FROM maven:3.9-amazoncorretto-17 AS builder
+FROM maven:3.9-eclipse-temurin-17 AS builder
 
 WORKDIR /build
 
@@ -16,30 +16,22 @@ RUN mvn clean package -DskipTests
 RUN ls -la /build/target/
 
 # Stage 2: Minimal runtime image
-FROM amazoncorretto:17-alpine-jdk
+FROM eclipse-temurin:17-jdk-jammy
 
 WORKDIR /app
 
 # Optional: add tini to manage signals properly
-RUN apk add --no-cache tini
+RUN apt-get update && apt-get install -y tini && rm -rf /var/lib/apt/lists/*
 
 # Create directories and a non-root user
-RUN mkdir -p /app/config /app/log && \
-    adduser -D dyndrest
+RUN useradd -m dyndrest
+USER dyndrest
 
 # Copy the built jar from the builder stage
 COPY --from=builder /build/target/dyndrest*.jar /app/dyndrest.jar
 
-user root
-
-# Set ownership before switching to non-root user
-RUN chown -Rv dyndrest:dyndrest /app/
-
 # Debug: Verify the JAR file exists
 RUN ls -la /app/
-
-# NOW switch to the non-root user
-USER dyndrest
 
 EXPOSE 8081
 
