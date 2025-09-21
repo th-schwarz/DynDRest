@@ -32,11 +32,8 @@ COPY --from=builder /build/target/dyndrest*.jar /app/dyndrest.jar
 # Richtige Berechtigungen für die JAR-Datei setzen
 RUN chmod 755 /app/dyndrest.jar && chown dyndrest:dyndrest /app/dyndrest.jar
 
-# Zum Benutzer dyndrest wechseln
+# change to none-root user
 USER dyndrest
-
-# Copy the built jar from the builder stage
-COPY --from=builder /build/target/dyndrest*.jar /app/dyndrest.jar
 
 # Debug: Verify the JAR file exists
 RUN ls -la /app/
