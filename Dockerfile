@@ -25,6 +25,14 @@ RUN apt-get update && apt-get install -y tini && rm -rf /var/lib/apt/lists/*
 
 # Create directories and a non-root user
 RUN useradd -m dyndrest
+
+# Copy the built jar from the builder stage
+COPY --from=builder /build/target/dyndrest*.jar /app/dyndrest.jar
+
+# Richtige Berechtigungen für die JAR-Datei setzen
+RUN chmod 755 /app/dyndrest.jar && chown dyndrest:dyndrest /app/dyndrest.jar
+
+# Zum Benutzer dyndrest wechseln
 USER dyndrest
 
 # Copy the built jar from the builder stage
