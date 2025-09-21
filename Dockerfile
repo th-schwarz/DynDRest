@@ -33,7 +33,7 @@ COPY --from=builder /build/target/dyndrest*.jar /app/dyndrest.jar
 RUN chmod 755 /app/dyndrest.jar && chown dyndrest:dyndrest /app/dyndrest.jar
 
 # Debug: Verify the JAR file before user change
-RUN echo "JAR file before user change:" && ls -la /app/dyndrest.jar && file /app/dyndrest.jar
+RUN echo "JAR file before user change:" && ls -la /app/dyndrest.jar
 
 # change to none-root user
 USER dyndrest
@@ -44,8 +44,8 @@ WORKDIR /app
 # Debug: Verify the JAR file exists and user has access
 RUN echo "JAR file after user change:" && ls -la /app/dyndrest.jar && whoami && pwd
 
-# Debug: Verify the JAR file exists
-RUN ls -la /app/
+# Debugging: Try to print Java version to ensure Java works for this user
+RUN java -version
 
 EXPOSE 8081
 
