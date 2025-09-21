@@ -35,5 +35,5 @@ RUN ls -la /app/
 
 EXPOSE 8081
 
-ENTRYPOINT ["/sbin/tini", "--"]
+ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["java", "-jar", "dyndrest.jar"]
