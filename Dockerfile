@@ -1,47 +1,32 @@
-# Stage 1: Build the JAR using Maven
-FROM maven:3.9-eclipse-temurin-17 AS builder
+# Multi-stage build: build the Spring Boot fat JAR, then run it on a slim JRE image
 
-WORKDIR /build
+# ---- Build stage ----
+FROM maven:3.9.8-eclipse-temurin-17 AS build
+WORKDIR /src
 
-# Copy pom.xml and download dependencies first (for Docker cache)
+# Copy pom and sources
 COPY pom.xml .
-COPY fake-repo ./fake-repo
-RUN mvn dependency:go-offline
-
-# Copy the full source tree and build the application
 COPY src ./src
-RUN mvn clean package -DskipTests
+# Project relies on a local fake repository used during build
+COPY fake-repo ./fake-repo
 
-# Debug: List the content of the target directory to verify JAR file was created
-RUN ls -la /build/target/
+# Build the application (skip tests for faster container build)
+RUN mvn -B -DskipTests package
 
-# Stage 2: Minimal runtime image
-FROM eclipse-temurin:17-jdk-jammy
+# ---- Runtime stage ----
+FROM eclipse-temurin:17-jre-alpine
 
+# Working directory for the application data and configs
+# Mount your host directory to /app to provide dyndrest.yml, zone.yml, and to persist the H2 DB files
 WORKDIR /app
 
-# Optional: add tini to manage signals properly
-RUN apt-get update && apt-get install -y tini && rm -rf /var/lib/apt/lists/*
+# Expose the default HTTP port used by DynDRest when running in container
+EXPOSE 8080
 
-# Create directories and a non-root user
-RUN useradd -m dyndrest
+# Copy the built Spring Boot fat JAR to a fixed path outside /app so mounting /app won't hide the JAR
+# Keep WORKDIR at /app with no subdirectories for config and H2 database files
+COPY --from=build /src/target/dyndrest-*.jar /dyndrest.jar
 
-# Copy the built jar from the builder stage
-COPY --from=builder /build/target/dyndrest*.jar /app/dyndrest.jar
-
-# Richtige Berechtigungen für die JAR-Datei setzen
-RUN chmod 755 /app/dyndrest.jar && chown dyndrest:dyndrest /app/dyndrest.jar
-
-# change to none-root user
-USER dyndrest
-
-# Set the working directory explicitly again to ensure no permission issues
-WORKDIR /app
-
-# Debug: Verify the JAR file exists and user has access
-RUN echo "JAR file after user change:" && ls -la /app/dyndrest.jar && whoami && pwd
-
-EXPOSE 8081
-
-# Simplified CMD without tini wrapper
-CMD ["java", "-jar", "/app/dyndrest.jar"]
+# By default Spring Boot loads external config from the working directory (/app)
+# The H2 URL in application.yml is jdbc:h2:file:./dyndrest so DB files will be created/used in /app
+ENTRYPOINT ["java","-jar","/dyndrest.jar"]
