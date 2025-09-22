@@ -1,0 +1,47 @@
+name: Build and Push to GHCR
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    env:
+      REGISTRY: ghcr.io
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute image and tag
+        run: |
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          image="$REGISTRY/$owner/dyndrest"
+
+          if [ "${GITHUB_REF_NAME}" = "main" ]; then
+            tag="latest"
+          else
+            tag="${GITHUB_REF_NAME,,}"
+            tag="${tag//\//-}"
+            tag="$(echo "$tag" | sed -E 's/[^a-z0-9._-]/-/g')"
+          fi
+
+          echo "IMAGE=$image" >> "$GITHUB_ENV"
+          echo "TAG=$tag" >> "$GITHUB_ENV"
+          echo "Will push $image:$tag"
+
+      - name: Build
+        run: docker build . -t "$IMAGE:$TAG"
+
+      - name: Push
+        run: docker push "$IMAGE:$TAG"

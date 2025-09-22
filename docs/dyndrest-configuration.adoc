@@ -159,7 +159,7 @@ dyndrest:
       path: ./backup
       cron: "0 30 18 * * MON"
     restore:
-      enabled: enabled
+      enabled: true
       path: ./restore
     dump-file: dump.sql
 ----
