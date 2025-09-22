@@ -21,8 +21,7 @@ image:https://img.shields.io/github/license/th-schwarz/DynDRest["License badge f
 {sonarSummaryURL}[image:https://sonarcloud.io/api/project_badges/measure?project=th-schwarz_DynDRest&metric=code_smells[Code Smells]]
 
 Give it a try!
-https://github.com/th-schwarz/DynDRest/releases[image:https://img.shields.io/github/v/release/th-schwarz/DynDRest?include_prereleases[GitHub
-release (latest by date including pre-releases)]]    image:https://img.shields.io/github/downloads/th-schwarz/DynDRest/total[GitHub Downloads (all assets, all releases)]
+https://github.com/th-schwarz/DynDRest/releases[image:https://img.shields.io/github/v/release/th-schwarz/DynDRest?include_prereleases[GitHub release (latest by date including pre-releases)]]    image:https://img.shields.io/github/downloads/th-schwarz/DynDRest/total[GitHub Downloads (all assets, all releases)]    image:https://ghcr-badge.elias.eu.org/shield/th-schwarz/DynDRest/dyndrest[]
 
 DynDRest is kindly supported by
 
@@ -192,7 +191,7 @@ The most convenient way to run DynDRest with Docker is using docker-compose. Cre
 ----
 services:
   dyndrest-dockerized:
-    image: ghcr.io/th-schwarz/dyndrest:docker
+    image: ghcr.io/th-schwarz/dyndrest:[tagged-version]
     restart: unless-stopped
     volumes:
       - /opt/dyndrest-dockerized/dyndrest.yml:/app/dyndrest.yml:ro
@@ -208,7 +207,14 @@ services:
       - "127.0.0.1:8081:8080"
 ----
 
-This configuration:
+Allowed values for `tagged-version`:
+
+- `latest` is built from the `main` branch.
+- `develop` is built from the `develop` branch.
+- `v0.11.0` is built from the tag `v0.11.0`.
+- `feature-xyz` is built from `feature/xyz` branch.
+
+Work steps:
 
 * Uses the official DynDRest Docker image from GitHub Container Registry
 * Sets up the necessary volume mounts for configuration files and persistent storage
@@ -271,27 +277,20 @@ docker run -d --name dyndrest \
   -e SPRING_DATASOURCE_URL=jdbc:h2:file:/app/dyndrest \
   -p 127.0.0.1:8081:8080 \
   --restart unless-stopped \
-  ghcr.io/th-schwarz/dyndrest:docker
+  ghcr.io/th-schwarz/dyndrest:latest
 ----
 
 === by systemd Service
 
-DynDRest can also be started easily as a systemd service. An example for
-the desired service configuration can be found at the documentation
-link:docs/systemd-configuration.adoc[systemd
-Service Configuration].
+DynDRest can also be started easily as a systemd service. An example for the desired service configuration can be found at the documentation link:docs/systemd-configuration.adoc[systemd Service Configuration].
 
 === by init.d Service
 
-Another possibility to start DynDRest is as `init.d` service. Further
-information can be found at the documentation of spring boot,
-https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#deployment.installing.nix-services.init-d[Installation
-as an init.d Service (System V)].
+Another possibility to start DynDRest is as `init.d` service. Further information can be found at the documentation of spring boot, https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#deployment.installing.nix-services.init-d[Installation as an init.d Service (System V)].
 
 == Routes
 
-Basic-auth secures all routes. A detailed description of the
-routes can be found at the https://th-schwarz.github.io/DynDRest/openapi-develop.html[OAS3 documentation].
+Basic-auth secures all routes. A detailed description of the routes can be found at the https://th-schwarz.github.io/DynDRest/openapi-develop.html[OAS3 documentation].
 
 There are additional routes:
 
