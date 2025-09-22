@@ -180,6 +180,100 @@ cd /opt/dyndrest/
 java -jar dyndrest.jar --logging.config=logback.xml
 ----
 
+=== by Docker
+
+DynDRest can be easily deployed using Docker, which simplifies the installation and configuration process. This method is especially useful for users who want to quickly set up DynDRest without installing Java directly on their system.
+
+==== Using Docker Compose
+
+The most convenient way to run DynDRest with Docker is using docker-compose. Create a file named `docker-compose.yml` with the following content:
+
+[source,yaml]
+----
+services:
+  dyndrest-dockerized:
+    image: ghcr.io/th-schwarz/dyndrest:docker
+    restart: unless-stopped
+    volumes:
+      - /opt/dyndrest-dockerized/dyndrest.yml:/app/dyndrest.yml:ro
+      - /opt/dyndrest-dockerized/logback.xml:/app/logback.xml:ro
+      - /opt/dyndrest-dockerized/log:/app/log
+      - /opt/dyndrest-dockerized:/app
+    environment:
+      - SERVER_ADDRESS=0.0.0.0
+      - SERVER_PORT=8080
+      - SPRING_CONFIG_IMPORT=file:/app/dyndrest.yml
+      - SPRING_DATASOURCE_URL=jdbc:h2:file:/app/dyndrest
+    ports:
+      - "127.0.0.1:8081:8080"
+----
+
+This configuration:
+
+* Uses the official DynDRest Docker image from GitHub Container Registry
+* Sets up the necessary volume mounts for configuration files and persistent storage
+* Configures the server to listen on all interfaces within the container
+* Maps port 8081 on localhost to port 8080 in the container
+* Ensures the service automatically restarts unless explicitly stopped
+
+Important settings:
+
+1. **Server Address / Server Port**: The `SERVER_ADDRESS=0.0.0.0` setting allows the application to accept connections from any IP address and to `SERVER_PORT=8080` within the container. This is necessary for the port mapping to work. The equivalent setting in `dyndrest.yml` should be removed.
+
+1. **Database Persistence**: The H2 database files will be stored in the mounted volume at `/opt/dyndrest-dockerized`, ensuring data persistence between container restarts.
+
+1. **Port Mapping**: The example maps to `127.0.0.1:8081`, which means the service is only accessible from the host machine.
+
+==== Directory Structure for Docker
+
+Before starting the container, create the following directory structure:
+
+[source,bash]
+----
+mkdir -p /opt/dyndrest-dockerized/log
+# optional
+mkdir -p /opt/dyndrest-dockerized/backup
+mkdir -p /opt/dyndrest-dockerized/restore
+----
+
+Next, place your `dyndrest.yml` and `logback.xml` configuration files in the `/opt/dyndrest-dockerized` directory. These files will be mounted into the container.
+
+==== Starting DynDRest with Docker Compose
+
+To start DynDRest using Docker Compose, navigate to the directory containing your `docker-compose.yml` file and run:
+
+[source,console]
+----
+docker-compose up -d
+----
+
+The `-d` flag runs the container in detached mode (background). You can check the logs with:
+
+[source,console]
+----
+docker-compose logs -f dyndrest-dockerized
+----
+
+==== Running DynDRest with Docker (without Compose)
+
+If you prefer to use Docker directly without docker-compose, you can run DynDRest with:
+
+[source,console]
+----
+docker run -d --name dyndrest \
+  -v /opt/dyndrest-dockerized/dyndrest.yml:/app/dyndrest.yml:ro \
+  -v /opt/dyndrest-dockerized/logback.xml:/app/logback.xml:ro \
+  -v /opt/dyndrest-dockerized/log:/app/log \
+  -v /opt/dyndrest-dockerized:/app \
+  -e SERVER_ADDRESS=0.0.0.0 \
+  -e SERVER_PORT=8080 \
+  -e SPRING_CONFIG_IMPORT=file:/app/dyndrest.yml \
+  -e SPRING_DATASOURCE_URL=jdbc:h2:file:/app/dyndrest \
+  -p 127.0.0.1:8081:8080 \
+  --restart unless-stopped \
+  ghcr.io/th-schwarz/dyndrest:docker
+----
+
 === by systemd Service
 
 DynDRest can also be started easily as a systemd service. An example for
