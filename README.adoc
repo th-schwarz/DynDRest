@@ -192,7 +192,7 @@ The most convenient way to run DynDRest with Docker is using docker-compose. Cre
 ----
 services:
   dyndrest-dockerized:
-    image: ghcr.io/th-schwarz/dyndrest:latest
+    image: ghcr.io/th-schwarz/dyndrest:[tagged-version]
     restart: unless-stopped
     volumes:
       - /opt/dyndrest-dockerized/dyndrest.yml:/app/dyndrest.yml:ro
@@ -208,7 +208,14 @@ services:
       - "127.0.0.1:8081:8080"
 ----
 
-This configuration:
+Allowed values for `tagged-version`:
+
+- `latest` is built from the `main` branch.
+- `develop` is built from the `develop` branch.
+- `v0.11.0` is built from the tag `v0.11.0`.
+- `feature-xyz` is built from `feature/xyz` branch.
+
+Work steps:
 
 * Uses the official DynDRest Docker image from GitHub Container Registry
 * Sets up the necessary volume mounts for configuration files and persistent storage
