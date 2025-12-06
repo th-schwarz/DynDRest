@@ -292,7 +292,7 @@ Another possibility to start DynDRest is as `init.d` service. Further informatio
 
 == Routes
 
-Basic-auth secures all routes. A detailed description of the routes can be found at the https://th-schwarz.github.io/DynDRest/openapi-develop.html[OAS3 documentation].
+BasicAuth secures all routes. A detailed description of the routes can be found at the https://th-schwarz.github.io/DynDRest/openapi-develop.html[OAS3 documentation].
 
 There are additional routes:
 

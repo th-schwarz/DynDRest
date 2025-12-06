@@ -111,6 +111,18 @@ spring:
 
 The individual configuration file `dyndrest.yml` should be inside the application directory.
 
+=== BasicAuth
+
+Used for all routes except health check and log-view.
+[source,yaml]
+----
+spring:
+  security:
+    user:
+      name: oauthuser
+      password: oauthpasswd
+----
+
 === Provider settings for AutoDNS (domainrobot-sdk)
 
 [source,yaml]
