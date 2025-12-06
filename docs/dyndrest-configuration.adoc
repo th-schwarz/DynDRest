@@ -111,17 +111,6 @@ spring:
 
 The individual configuration file `dyndrest.yml` should be inside the application directory.
 
-=== OAuth2
-
-[source,yaml]
-----
-spring:
-  security:
-    user:
-      name: oauthuser
-      password: oauthpasswd
-----
-
 === Provider settings for AutoDNS (domainrobot-sdk)
 
 [source,yaml]
