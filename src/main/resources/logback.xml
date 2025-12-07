@@ -13,6 +13,7 @@
     <logger name="org.springframework.web" level="info"/>
     <logger name="org.springframework.web.client.DefaultRestClient" level="debug"/>
     <logger name="org.springframework.beans.factory" level="info"/>
+    <logger name="org.eclipse.jetty" level="info"/>
     <logger name="org.thymeleaf" level="info"/>
     <logger name="com.zaxxer.hikari.pool" level="info"/>
 

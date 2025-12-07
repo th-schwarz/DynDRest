@@ -4,10 +4,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.Nullable;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.lang.Nullable;
 
 /**
  * BeanCollector is an abstract class that implements the BeanPostProcessor interface. It provides

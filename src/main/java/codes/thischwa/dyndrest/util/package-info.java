@@ -1,7 +1,4 @@
 /** Package for util classes. */
-@NonNullApi
-@NonNullFields
+@org.jspecify.annotations.NullMarked
 package codes.thischwa.dyndrest.util;
 
-import org.springframework.lang.NonNullApi;
-import org.springframework.lang.NonNullFields;

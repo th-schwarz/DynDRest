@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /** Object to hold the íp settings. */
 @Getter

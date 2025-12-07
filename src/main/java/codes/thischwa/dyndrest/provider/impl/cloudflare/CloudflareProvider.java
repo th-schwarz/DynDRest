@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.lang.Nullable;
 
 /** Implementation for the Cloudflare API */
 @Slf4j

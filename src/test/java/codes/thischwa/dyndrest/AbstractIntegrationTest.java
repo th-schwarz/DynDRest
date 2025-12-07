@@ -12,16 +12,20 @@ import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import liquibase.exception.LiquibaseException;
 import lombok.extern.slf4j.Slf4j;
+import liquibase.integration.spring.SpringLiquibase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestClient;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Import(LiquidBaseConf.class)
 @Transactional
 @ActiveProfiles("test")
 // causes the re-initialization of the database for each test class.
@@ -33,7 +37,7 @@ public abstract class AbstractIntegrationTest {
   @Value("${local.server.port}")
   protected int port;
 
-  @Autowired protected TestRestTemplate restTemplate;
+  protected RestClient restClient;
   protected LocalDate currentDate;
   protected Integer z1ID;
   protected Integer z2ID;
@@ -41,10 +45,25 @@ public abstract class AbstractIntegrationTest {
   protected Integer h2z1ID;
   @Autowired private HostZoneService hostZoneService;
   @Autowired private UpdateLogRepo updateLogRepo;
+  @Autowired(required = false) private SpringLiquibase springLiquibase;
 
   @PostConstruct
-  void initUpdateLogDatabase() {
+  void initTestData() {
+    restClient = RestClient.builder()
+        .baseUrl(getBaseUrl())
+        .build();
+
+    // Ensure Liquibase has run if available
+    if (springLiquibase != null) {
+      try {
+        springLiquibase.afterPropertiesSet();
+      } catch (LiquibaseException e) {
+        throw new RuntimeException("Failed to initialize Liquibase", e);
+      }
+    }
+
     try {
+      // Check if data already exists
       if (!updateLogRepo.findAll().isEmpty()) {
         return;
       }

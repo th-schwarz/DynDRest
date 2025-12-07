@@ -3,7 +3,7 @@ package codes.thischwa.dyndrest.model;
 import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springframework.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /** The UpdateLog class represents a log entry for a zone update operation. */
 @EqualsAndHashCode(callSuper = true)

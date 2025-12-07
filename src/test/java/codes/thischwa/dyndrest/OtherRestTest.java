@@ -1,10 +1,10 @@
 package codes.thischwa.dyndrest;
 
-
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -12,28 +12,33 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import codes.thischwa.dyndrest.util.NetUtil;
 import java.nio.charset.StandardCharsets;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-@AutoConfigureMockMvc
 @DisplayName("Integration tests: Rest - other")
 class OtherRestTest extends AbstractIntegrationTest{
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    @Autowired
+    @Autowired private WebApplicationContext context;
+
     private MockMvc mockMvc;
 
-    @BeforeAll
-    void init() {
-        initUpdateLogDatabase();
+    @BeforeEach
+    void setupMockMvc() {
+        if (mockMvc == null) {
+            mockMvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .apply(springSecurity())
+                .build();
+        }
     }
 
     @Test
@@ -72,7 +77,7 @@ class OtherRestTest extends AbstractIntegrationTest{
                 .andExpect(status().isOk())
                 .andExpect(
                         content().contentType(new MediaType("application", "vnd.spring-boot.actuator.v3+json")))
-                .andExpect(content().string(is("{\"status\":\"UP\"}")));
+                .andExpect(content().string(is("{\"groups\":[\"liveness\",\"readiness\"],\"status\":\"UP\"}")));
     }
 
     @Test
