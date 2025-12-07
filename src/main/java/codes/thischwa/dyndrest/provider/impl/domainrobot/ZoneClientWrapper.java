@@ -11,7 +11,7 @@ import org.domainrobot.sdk.client.clients.ZoneClient;
 import org.domainrobot.sdk.models.DomainrobotApiException;
 import org.domainrobot.sdk.models.generated.ResourceRecord;
 import org.domainrobot.sdk.models.generated.Zone;
-import org.springframework.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /** Encapsulate the {@link ZoneClient} and adds same useful util methods. */
 class ZoneClientWrapper {

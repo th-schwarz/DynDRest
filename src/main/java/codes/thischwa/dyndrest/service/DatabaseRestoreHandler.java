@@ -11,6 +11,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.Nullable;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.FatalBeanException;
 import org.springframework.core.env.Environment;
@@ -18,7 +19,6 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 /** This class provides database restore functionality based on the provided configuration. */

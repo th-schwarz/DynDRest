@@ -1,9 +1,9 @@
 package codes.thischwa.dyndrest.repository;
 
 import codes.thischwa.dyndrest.model.Zone;
+import org.jspecify.annotations.Nullable;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.ListCrudRepository;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
 /**

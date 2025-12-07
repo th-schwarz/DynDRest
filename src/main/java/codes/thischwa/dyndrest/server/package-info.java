@@ -1,7 +1,4 @@
 /** Miscellaneous configuration classes. */
-@NonNullApi
-@NonNullFields
+@org.jspecify.annotations.NullMarked
 package codes.thischwa.dyndrest.server;
 
-import org.springframework.lang.NonNullApi;
-import org.springframework.lang.NonNullFields;

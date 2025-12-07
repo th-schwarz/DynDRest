@@ -1,11 +1,10 @@
 package codes.thischwa.dyndrest.model.config;
 
+import codes.thischwa.dyndrest.model.HostEnriched;
 import java.util.ArrayList;
 import java.util.List;
-
-import codes.thischwa.dyndrest.model.HostEnriched;
+import org.jspecify.annotations.Nullable;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.lang.Nullable;
 
 /**
  * The ZoneImport class represents the base configuration of a zone import. It contains a list of
