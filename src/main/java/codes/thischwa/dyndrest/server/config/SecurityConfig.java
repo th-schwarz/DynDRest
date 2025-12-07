@@ -7,9 +7,6 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
-import org.springframework.boot.actuate.health.HealthEndpoint;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -147,7 +144,7 @@ public class SecurityConfig {
     if (h2ConsoleEnabled) {
       // h2 settings
       http.authorizeHttpRequests(
-          auth -> auth.requestMatchers(PathRequest.toH2Console()).permitAll()).headers(
+          auth -> auth.requestMatchers("/h2-console/**").permitAll()).headers(
           headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
     }
 
@@ -160,8 +157,7 @@ public class SecurityConfig {
     if (healthEnabled) {
       // enable security for the health check, all other management endpoints are disabled
       http.authorizeHttpRequests(
-          req -> req.requestMatchers(EndpointRequest.to(HealthEndpoint.class))
-              .hasAnyRole(ROLE_HEALTH));
+          req -> req.requestMatchers("/manage/health/**").hasAnyRole(ROLE_HEALTH));
     }
 
     if (adminEnabled) {

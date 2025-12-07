@@ -141,8 +141,8 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     host.setId(null);
     try {
       service.saveOrUpdate(host);
-    } catch (Exception e) {
-      assertEquals(DuplicateKeyException.class, e.getCause().getClass());
+    } catch (DuplicateKeyException e) {
+      assertEquals(DuplicateKeyException.class, e.getClass());
     }
 
     LocalDateTime oldChanged = host.getChanged();
@@ -173,8 +173,8 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     hostEnriched.setId(null);
     try {
       service.saveOrUpdate(hostEnriched);
-    } catch (Exception e) {
-      assertEquals(DuplicateKeyException.class, e.getCause().getClass());
+    } catch (DuplicateKeyException e) {
+      assertEquals(DuplicateKeyException.class, e.getClass());
     }
   }
 
@@ -191,8 +191,8 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     zone.setId(null);
     try {
       service.saveOrUpdate(zone);
-    } catch (Exception e) {
-      assertEquals(DuplicateKeyException.class, e.getCause().getClass());
+    } catch (DuplicateKeyException e) {
+      assertEquals(DuplicateKeyException.class, e.getClass());
     }
   }
 
@@ -204,7 +204,7 @@ class HostZoneServiceTest extends AbstractIntegrationTest {
     assertEquals(currentDate, z.getChanged().toLocalDate());
 
     assertThrows(
-        DbActionExecutionException.class, () -> service.addZone("zone2.org", "ns2.zone.org"));
+        DuplicateKeyException.class, () -> service.addZone("zone2.org", "ns2.zone.org"));
   }
 
   @Order(12)
