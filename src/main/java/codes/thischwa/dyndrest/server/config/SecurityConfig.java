@@ -34,14 +34,11 @@ import org.springframework.util.StringUtils;
 @EnableWebSecurity
 @Slf4j
 public class SecurityConfig {
-
   static final String ROLE_ADMIN = "ADMIN";
   static final String ROLE_LOGVIEWER = "LOGVIEWER";
   static final String ROLE_USER = "USER";
   static final String ROLE_HEALTH = "HEALTH";
-  private static final List<String> PUBLIC_ENDPOINTS =
-      new ArrayList<>(List.of("/", "/favicon.ico", "/error"));
-  public final Environment env;
+  private static final List<String> PUBLIC_ENDPOINTS = new ArrayList<>(List.of("/", "/favicon.ico", "/error"));
   private final AppConfig appConfig;
   private static final PasswordEncoder PASSWORD_ENCODER =
       PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -74,16 +71,15 @@ public class SecurityConfig {
    */
   public SecurityConfig(AppConfig appConfig, Environment env) {
     this.appConfig = appConfig;
-    this.env = env;
 
     healthEnabled = !"none".equals(healthAccess);
 
-    // check if credentials for update-log-view exists
+    // check if credentials for update-log-view exist
     boolean isUpdateLogCredentialsEmpty = !StringUtils.hasText(appConfig.updateLogUserName()) ||
         !StringUtils.hasText(appConfig.updateLogUserPassword());
     updateLogEnabled = appConfig.updateLogPageEnabled() && !isUpdateLogCredentialsEmpty;
 
-    // check if credentials for admin exits
+    // check if credentials for admin exit
     adminEnabled = StringUtils.hasText(appConfig.adminUserName()) &&
         StringUtils.hasText(appConfig.adminUserPassword()) &&
         StringUtils.hasText(appConfig.adminApiToken());
@@ -132,11 +128,10 @@ public class SecurityConfig {
    *
    * @param http the http
    * @return the security filter chain
-   * @throws Exception the exception
    */
   @Order(Ordered.HIGHEST_PRECEDENCE)
   @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+  public SecurityFilterChain filterChain(HttpSecurity http) {
     // csrf not necessary for request-based authentication
     http.csrf(AbstractHttpConfigurer::disable);
 
