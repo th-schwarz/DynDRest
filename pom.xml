@@ -29,7 +29,7 @@
         <cloudflare-java.version>0.1.0</cloudflare-java.version>
         <dnsjava.version>3.6.2</dnsjava.version>
         <janino.version>3.1.12</janino.version>
-        <httpclient5.version>5.4.3</httpclient5.version>
+        <jspecify.version>1.0.0</jspecify.version>
 
         <fakerepo.dir>${project.basedir}/fake-repo</fakerepo.dir>
 
@@ -93,13 +93,6 @@
     </scm>
 
     <dependencies>
-        <!-- Nullness annotations (JSpecify) -->
-        <dependency>
-            <groupId>org.jspecify</groupId>
-            <artifactId>jspecify</artifactId>
-            <version>1.0.0</version>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -183,16 +176,17 @@
             <version>${cloudflare-java.version}</version>
         </dependency>
         <dependency>
-            <!-- required for cloudflaredns -->
-            <groupId>org.apache.httpcomponents.client5</groupId>
-            <artifactId>httpclient5</artifactId>
-            <version>${httpclient5.version}</version>
-        </dependency>
-        <dependency>
             <!-- required for conditional processing in logback -->
             <groupId>org.codehaus.janino</groupId>
             <artifactId>janino</artifactId>
             <version>${janino.version}</version>
+        </dependency>
+        <dependency>
+            <!-- Nullness annotations (JSpecify) -->
+            <groupId>org.jspecify</groupId>
+            <artifactId>jspecify</artifactId>
+            <version>${jspecify.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

@@ -7,8 +7,6 @@ import codes.thischwa.dyndrest.model.Zone;
 import codes.thischwa.dyndrest.repository.UpdateLogRepo;
 import codes.thischwa.dyndrest.service.HostZoneService;
 import jakarta.annotation.PostConstruct;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -122,9 +120,5 @@ public abstract class AbstractIntegrationTest {
 
   String getBaseUrl() {
     return "http://localhost:" + port + "/";
-  }
-
-  URI getBaseUri() throws URISyntaxException {
-    return new URI(getBaseUrl());
   }
 }
