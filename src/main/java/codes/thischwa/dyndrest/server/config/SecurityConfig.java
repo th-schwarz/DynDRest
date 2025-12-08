@@ -5,17 +5,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-
+import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
-import org.springframework.boot.actuate.health.HealthEndpoint;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
-import org.springframework.lang.Nullable;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -38,14 +34,11 @@ import org.springframework.util.StringUtils;
 @EnableWebSecurity
 @Slf4j
 public class SecurityConfig {
-
   static final String ROLE_ADMIN = "ADMIN";
   static final String ROLE_LOGVIEWER = "LOGVIEWER";
   static final String ROLE_USER = "USER";
   static final String ROLE_HEALTH = "HEALTH";
-  private static final List<String> PUBLIC_ENDPOINTS =
-      new ArrayList<>(List.of("/", "/favicon.ico", "/error"));
-  public final Environment env;
+  private static final List<String> PUBLIC_ENDPOINTS = new ArrayList<>(List.of("/", "/favicon.ico", "/error"));
   private final AppConfig appConfig;
   private static final PasswordEncoder PASSWORD_ENCODER =
       PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -78,16 +71,15 @@ public class SecurityConfig {
    */
   public SecurityConfig(AppConfig appConfig, Environment env) {
     this.appConfig = appConfig;
-    this.env = env;
 
     healthEnabled = !"none".equals(healthAccess);
 
-    // check if credentials for update-log-view exists
+    // check if credentials for update-log-view exist
     boolean isUpdateLogCredentialsEmpty = !StringUtils.hasText(appConfig.updateLogUserName()) ||
         !StringUtils.hasText(appConfig.updateLogUserPassword());
     updateLogEnabled = appConfig.updateLogPageEnabled() && !isUpdateLogCredentialsEmpty;
 
-    // check if credentials for admin exits
+    // check if credentials for admin exit
     adminEnabled = StringUtils.hasText(appConfig.adminUserName()) &&
         StringUtils.hasText(appConfig.adminUserPassword()) &&
         StringUtils.hasText(appConfig.adminApiToken());
@@ -136,18 +128,17 @@ public class SecurityConfig {
    *
    * @param http the http
    * @return the security filter chain
-   * @throws Exception the exception
    */
   @Order(Ordered.HIGHEST_PRECEDENCE)
   @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+  public SecurityFilterChain filterChain(HttpSecurity http) {
     // csrf not necessary for request-based authentication
     http.csrf(AbstractHttpConfigurer::disable);
 
     if (h2ConsoleEnabled) {
       // h2 settings
       http.authorizeHttpRequests(
-          auth -> auth.requestMatchers(PathRequest.toH2Console()).permitAll()).headers(
+          auth -> auth.requestMatchers("/h2-console/**").permitAll()).headers(
           headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
     }
 
@@ -160,8 +151,7 @@ public class SecurityConfig {
     if (healthEnabled) {
       // enable security for the health check, all other management endpoints are disabled
       http.authorizeHttpRequests(
-          req -> req.requestMatchers(EndpointRequest.to(HealthEndpoint.class))
-              .hasAnyRole(ROLE_HEALTH));
+          req -> req.requestMatchers("/manage/health/**").hasAnyRole(ROLE_HEALTH));
     }
 
     if (adminEnabled) {

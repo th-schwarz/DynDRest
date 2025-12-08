@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -54,14 +53,12 @@ public class AdminController implements AdminRoutes {
     }
     try {
       hostZoneService.addZone(zoneName, ns);
-    } catch (DbActionExecutionException e) {
-      if (e.getCause() instanceof DuplicateKeyException) {
-        log.error("Zone with name {} already exists.", zoneName);
-        throw new ResponseStatusException(HttpStatus.CONFLICT);
-      } else {
-        log.error("Failed to add zone: name={}, ns={}", zoneName, ns, e);
-        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-      }
+    } catch (DuplicateKeyException e) {
+      log.error("Zone with name {} already exists.", zoneName);
+      throw new ResponseStatusException(HttpStatus.CONFLICT);
+    } catch (Exception e) {
+      log.error("Failed to add zone: name={}, ns={}", zoneName, ns, e);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
     return ResponseEntity.ok().build();
   }

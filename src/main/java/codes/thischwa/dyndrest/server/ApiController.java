@@ -1,8 +1,8 @@
 package codes.thischwa.dyndrest.server;
 
-import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.model.UpdateLog;
+import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.provider.Provider;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.service.HostZoneService;
@@ -12,11 +12,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.Nullable;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;

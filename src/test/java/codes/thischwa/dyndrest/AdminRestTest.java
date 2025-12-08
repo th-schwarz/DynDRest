@@ -3,6 +3,7 @@ package codes.thischwa.dyndrest;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -11,26 +12,31 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import codes.thischwa.dyndrest.model.Host;
 import codes.thischwa.dyndrest.model.Zone;
 import codes.thischwa.dyndrest.service.HostZoneService;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
-@AutoConfigureMockMvc
 @DisplayName("Integration tests: Rest - '/admin/'")
 class AdminRestTest extends AbstractIntegrationTest {
 
-  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-  @Autowired private MockMvc mockMvc;
-
+  @Autowired private WebApplicationContext context;
   @Autowired private HostZoneService hostZoneService;
 
-  @BeforeAll
-  void init() {
-    initUpdateLogDatabase();
+  private MockMvc mockMvc;
+
+  @BeforeEach
+  void setupMockMvc() {
+    if (mockMvc == null) {
+      mockMvc = MockMvcBuilders
+          .webAppContextSetup(context)
+          .apply(springSecurity())
+          .build();
+    }
   }
 
   @Test

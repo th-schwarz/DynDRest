@@ -1,7 +1,7 @@
 package codes.thischwa.dyndrest.model.config;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.lang.Nullable;
 
 /** The base configuration of the application. */
 @ConfigurationProperties(prefix = "dyndrest")

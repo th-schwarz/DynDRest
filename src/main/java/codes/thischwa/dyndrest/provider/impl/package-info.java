@@ -1,7 +1,4 @@
 /** Main package for the implementations of the provider interface and generic helper. */
-@NonNullApi
-@NonNullFields
+@org.jspecify.annotations.NullMarked
 package codes.thischwa.dyndrest.provider.impl;
 
-import org.springframework.lang.NonNullApi;
-import org.springframework.lang.NonNullFields;
