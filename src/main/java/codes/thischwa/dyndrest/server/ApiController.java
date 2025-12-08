@@ -1,5 +1,6 @@
 package codes.thischwa.dyndrest.server;
 
+import codes.thischwa.dyndrest.model.HostEnriched;
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.model.UpdateLog;
 import codes.thischwa.dyndrest.model.config.AppConfig;
@@ -11,17 +12,22 @@ import codes.thischwa.dyndrest.util.NetUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-/** The 'main' api controller. */
+/**
+ * The 'main' api controller.
+ */
 @RestController
 @Slf4j
 public class ApiController implements ApiRoutes, RouterRoutes {
@@ -37,10 +43,10 @@ public class ApiController implements ApiRoutes, RouterRoutes {
   /**
    * Instantiates a new Api controller.
    *
-   * @param provider the provider
-   * @param config the app config
+   * @param provider         the provider
+   * @param config           the app config
    * @param updateLogService the update log service
-   * @param hostZoneService the service for maintaining hosts and zones
+   * @param hostZoneService  the service for maintaining hosts and zones
    */
   public ApiController(
       Provider provider,
@@ -62,7 +68,7 @@ public class ApiController implements ApiRoutes, RouterRoutes {
       HttpServletRequest req) {
     log.debug(
         "entered #update: host={}, apiToken={}, ipv4={}, ipv6={}", host, apiToken, ipv4, ipv6);
-    return updateIpAddresses(host, apiToken, ipv4, ipv6, req);
+    return updateIpAddressesApiToken(host, apiToken, ipv4, ipv6, req);
   }
 
   @Override
@@ -83,23 +89,51 @@ public class ApiController implements ApiRoutes, RouterRoutes {
 
   @Override
   public ResponseEntity<Void> routerUpdateHost(
-      String host, String apiToken, InetAddress ipv4, InetAddress ipv6, HttpServletRequest req) {
+      @AuthenticationPrincipal UserDetails userDetails, String host, InetAddress ipv4, InetAddress ipv6, HttpServletRequest req) {
     log.debug(
-        "entered #routerUpdateHost: host={}, apiToken={}, ipv4={}, ipv6={}",
+        "entered #routerUpdateHost: host={}, ipv4={}, ipv6={}",
         host,
-        apiToken,
         ipv4,
         ipv6);
-    return updateIpAddresses(host, apiToken, ipv4, ipv6, req);
+    return updateIpAddressesUser(host, userDetails, ipv4, ipv6, req);
   }
 
-  private ResponseEntity<Void> updateIpAddresses(
+  private ResponseEntity<Void> updateIpAddressesUser(
+      String host,
+      UserDetails userDetails,
+      @Nullable InetAddress ipv4,
+      @Nullable InetAddress ipv6,
+      HttpServletRequest req) {
+    // Check if the host exists
+    Optional<HostEnriched> optHost = hostZoneService.getHost(host);
+    if (optHost.isEmpty()) {
+      log.warn("Host not found: {}", host);
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    // CRITICAL: Check if the authenticated username matches the host in the path
+    String authenticatedUsername = userDetails.getUsername();
+    if (!authenticatedUsername.equals(host)) {
+      log.warn("Authorization failed: User {} attempted to update host {}", authenticatedUsername, host);
+      return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    }
+
+    log.debug("Authorization successful: User {} updating host {}", authenticatedUsername, host);
+    return processIpUpdate(host, ipv4, ipv6, req);
+  }
+
+  private ResponseEntity<Void> updateIpAddressesApiToken(
       String host,
       String apiToken,
       @Nullable InetAddress ipv4,
       @Nullable InetAddress ipv6,
       HttpServletRequest req) {
     validateHost(host, apiToken);
+    return processIpUpdate(host, ipv4, ipv6, req);
+  }
+
+  private ResponseEntity<Void> processIpUpdate(String host, @Nullable InetAddress ipv4,
+                                               @Nullable InetAddress ipv6, HttpServletRequest req) {
     IpSetting reqIpSetting = new IpSetting(ipv4, ipv6);
     if (reqIpSetting.isNotSet()) {
       log.debug("Both IP parameters are null, try to fetch the remote IP.");

@@ -7,6 +7,7 @@ import codes.thischwa.dyndrest.model.Zone;
 import codes.thischwa.dyndrest.model.config.ZoneImportConfig;
 import codes.thischwa.dyndrest.repository.HostRepo;
 import codes.thischwa.dyndrest.repository.ZoneRepo;
+import codes.thischwa.dyndrest.server.config.DynamicSecurityChainManager;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -16,19 +17,26 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-/** Service for validating and maintaining hosts. */
+/**
+ * Service for validating and maintaining hosts.
+ */
 @Service
 @Slf4j
 public class HostZoneService {
   private final ZoneImportConfig zoneImportConfig;
   private final HostRepo hostRepo;
   private final ZoneRepo zoneRepo;
+  private final DynamicSecurityChainManager securityChainManager;
 
-  /** Constructor of the service for validating and maintaining hosts. */
-  public HostZoneService(HostRepo hostRepo, ZoneImportConfig zoneImportConfig, ZoneRepo zoneRepo) {
+  /**
+   * Constructor of the service for validating and maintaining hosts.
+   */
+  public HostZoneService(HostRepo hostRepo, ZoneImportConfig zoneImportConfig, ZoneRepo zoneRepo,
+                         DynamicSecurityChainManager securityChainManager) {
     this.hostRepo = hostRepo;
     this.zoneImportConfig = zoneImportConfig;
     this.zoneRepo = zoneRepo;
+    this.securityChainManager = securityChainManager;
   }
 
   /**
@@ -144,6 +152,11 @@ public class HostZoneService {
     hostRepo.save(tmpHost);
     host.setId(tmpHost.getId());
     host.setChanged(tmpHost.getChanged());
+
+    Zone zone = zoneRepo.findById(host.getZoneId()).get();
+    String fqdn = getFqdn(host.getSld(), zone);
+    Optional<HostEnriched> optHostEnriched = hostRepo.findByFullHost(fqdn);
+    optHostEnriched.ifPresent(securityChainManager::addOrUpdateHost);
   }
 
   /**
@@ -160,7 +173,7 @@ public class HostZoneService {
    * Adds a new Zone with the specified name and name server to the system.
    *
    * @param name The name of the Zone.
-   * @param ns The name server of the Zone.
+   * @param ns   The name server of the Zone.
    * @return The newly created Zone.
    */
   public Zone addZone(String name, String ns) {
@@ -178,7 +191,7 @@ public class HostZoneService {
   /**
    * Adds a new host to the specified zone.
    *
-   * @param zone the zone for the host
+   * @param zone     the zone for the host
    * @param hostname the hostname of the host
    * @param apiToken the API token for the host
    * @return the newly created host
@@ -189,6 +202,9 @@ public class HostZoneService {
     host.setSld(hostname);
     host.setApiToken(apiToken);
     saveOrUpdate(host);
+    String fqdn = getFqdn(hostname, zone);
+    Optional<HostEnriched> optHostEnriched = hostRepo.findByFullHost(fqdn);
+    optHostEnriched.ifPresent(securityChainManager::addOrUpdateHost);
     return host;
   }
 
@@ -247,6 +263,9 @@ public class HostZoneService {
     if (host.getId() == null) {
       throw new IllegalArgumentException("Host id should not be null.");
     }
+    Zone zone = zoneRepo.findById(host.getZoneId()).get();
+    String fqdn = getFqdn(host.getSld(), zone);
+    securityChainManager.removeHost(fqdn);
     hostRepo.deleteById(host.getId());
   }
 
@@ -269,5 +288,9 @@ public class HostZoneService {
     tmpHost.setZoneId(host.getZoneId());
     tmpHost.setChanged(host.getChanged());
     return tmpHost;
+  }
+
+  static String getFqdn(String sld, Zone zone) {
+    return sld + "." + zone.getName();
   }
 }

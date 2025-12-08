@@ -12,6 +12,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class GenericProvider implements Provider {
 
+  /**
+   * Resolves the IP address of the given host via a name server request.<br/>
+   * Should be implemented by the deriving class to fetch the real zone data.
+   *
+   * @param host the host
+   * @return the IP setting
+   * @throws ProviderException if the resolution fails
+   */
   @Override
   public IpSetting info(String host) throws ProviderException {
     return NetUtil.resolve(host);

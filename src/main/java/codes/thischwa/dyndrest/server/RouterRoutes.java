@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,18 +42,18 @@ public interface RouterRoutes {
       })
   @GetMapping(value = "/router/{host}")
   ResponseEntity<Void> routerUpdateHost(
-      @Schema(
+      @AuthenticationPrincipal UserDetails userDetails, @Schema(
               description =
                   "The host, for which the IPs must be updated. It has to be a full domain name.",
               type = "string",
               example = "mydyndns.domain.com")
           @PathVariable
           String host,
-      @Schema(
-              description = "The 'apiToken' to authenticate the changes of the IPs for this host.",
-              type = "string")
-          @RequestParam
-          String apiToken,
+//      @Schema(
+//              description = "The 'apiToken' to authenticate the changes of the IPs for this host.",
+//              type = "string")
+//          @RequestParam
+//          String apiToken,
       @Schema(description = "An IPv4 address.", type = "string", examples = "127.1.2.4")
           @RequestParam(name = "ipv4", required = false)
           InetAddress ipv4,

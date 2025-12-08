@@ -12,6 +12,7 @@ import codes.thischwa.dyndrest.model.Zone;
 import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.provider.impl.GenericProvider;
+import codes.thischwa.dyndrest.server.config.DynamicSecurityChainManager;
 import codes.thischwa.dyndrest.service.HostZoneService;
 import codes.thischwa.dyndrest.util.NetUtil;
 import java.net.Inet4Address;
@@ -31,12 +32,15 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
   private final HostZoneService hostZoneService;
   private final CfDnsClient cfDnsClient;
   private final int defaultTtl;
+  private final DynamicSecurityChainManager securityChainManager;
 
   CloudflareProvider(
-      AppConfig appConfig, CloudflareConfig config, HostZoneService hostZoneService) {
+      AppConfig appConfig, CloudflareConfig config, HostZoneService hostZoneService,
+      DynamicSecurityChainManager securityChainManager) {
     this.appConfig = appConfig;
     this.hostZoneService = hostZoneService;
     this.defaultTtl = config.defaultTtl();
+    this.securityChainManager = securityChainManager;
     cfDnsClient =
         new CfDnsClient(config.baseUrl(), config.email(), config.apiKey());
   }
@@ -46,6 +50,20 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
     if (appConfig.hostValidationEnabled()) {
       hostZoneService.getConfiguredZones().forEach(this::zoneConfirmed);
     }
+    // Register all configured hosts for authentication
+    registerHostsForAuthentication();
+  }
+
+  /**
+   * Registers all configured hosts for authentication.
+   * Each host will be authenticated with hostname=user and apiToken=password.
+   */
+  private void registerHostsForAuthentication() {
+    List<HostEnriched> hosts = hostZoneService.getConfiguredHosts();
+    for (HostEnriched host : hosts) {
+      securityChainManager.addOrUpdateHost(host);
+    }
+    log.info("Registered {} hosts for authentication", hosts.size());
   }
 
   @Override
@@ -64,8 +82,32 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
   }
 
   @Override
+  public IpSetting info(String host) throws ProviderException {
+    ZoneEntity zone = fetchZoneFromHost(host);
+    String sld = getSldFromHost(host);
+    IpSetting ipSetting = new IpSetting();
+    try {
+      RecordEntity recA = cfDnsClient.sldInfo(zone, sld, RecordType.A);
+      if (recA != null) {
+        ipSetting.setIpv4(recA.getContent());
+      }
+    } catch (CloudflareApiException e) {
+      log.warn("Error while getting A record of host {}", host, e);
+    }
+    try {
+      RecordEntity recAAAA = cfDnsClient.sldInfo(zone, sld, RecordType.AAAA);
+      if (recAAAA != null) {
+        ipSetting.setIpv6(recAAAA.getContent());
+      }
+    } catch (CloudflareApiException e) {
+      log.warn("Error while getting AAAA record of host {}", host, e);
+    }
+    return ipSetting;
+  }
+
+  @Override
   public void addHost(String zoneName, String host) throws ProviderException {
-    // not required for domainrobot. #update adds the required records.
+    // not required for cloudflare. #update adds the required records.
   }
 
   @Override

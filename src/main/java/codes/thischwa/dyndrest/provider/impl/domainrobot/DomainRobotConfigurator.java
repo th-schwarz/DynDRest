@@ -2,6 +2,7 @@ package codes.thischwa.dyndrest.provider.impl.domainrobot;
 
 import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.provider.Provider;
+import codes.thischwa.dyndrest.server.config.DynamicSecurityChainManager;
 import codes.thischwa.dyndrest.service.HostZoneService;
 import lombok.extern.slf4j.Slf4j;
 import org.domainrobot.sdk.client.Domainrobot;
@@ -19,19 +20,22 @@ class DomainRobotConfigurator {
   private final HostZoneService hostZoneService;
   private final DomainRobotConfig.Autodns autoDnsConfig;
   private final DomainRobotConfig domainRobotConfig;
+  private final DynamicSecurityChainManager securityChainManager;
 
   public DomainRobotConfigurator(
-      AppConfig appConfig, HostZoneService hostZoneService, DomainRobotConfig domainRobotConfig) {
+      AppConfig appConfig, HostZoneService hostZoneService, DomainRobotConfig domainRobotConfig,
+      DynamicSecurityChainManager securityChainManager) {
     this.appConfig = appConfig;
     this.hostZoneService = hostZoneService;
     this.autoDnsConfig = domainRobotConfig.autodns();
     this.domainRobotConfig = domainRobotConfig;
+    this.securityChainManager = securityChainManager;
   }
 
   @Bean
   Provider provider() {
     final ZoneClientWrapper zcw = buildZoneClientWrapper();
-    return new DomainRobotProvider(appConfig, hostZoneService, zcw);
+    return new DomainRobotProvider(appConfig, hostZoneService, zcw, securityChainManager);
   }
 
   ZoneClientWrapper buildZoneClientWrapper() {

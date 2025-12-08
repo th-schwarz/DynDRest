@@ -87,4 +87,36 @@ public class IpSetting {
   public @Nullable String ipv6ToString() {
     return ipv6 == null ? null : ipv6.getHostAddress();
   }
+
+  public void setIpv4(@Nullable String value) {
+    if (value == null) {
+      this.ipv4 = null;
+      return;
+    }
+    try {
+      this.ipv4 = (Inet4Address) InetAddress.getByName(value);
+    } catch (UnknownHostException e) {
+      throw new IllegalArgumentException("Invalid IPv4 address: " + value, e);
+    }
+  }
+
+  public void setIpv6(@Nullable String value) {
+    if (value == null) {
+      this.ipv6 = null;
+      return;
+    }
+    try {
+      this.ipv6 = (Inet6Address) InetAddress.getByName(value);
+    } catch (UnknownHostException e) {
+      throw new IllegalArgumentException("Invalid IPv6 address: " + value, e);
+    }
+  }
+
+  public void setIpv4(@Nullable Inet4Address ipv4) {
+    this.ipv4 = ipv4;
+  }
+
+  public void setIpv6(@Nullable Inet6Address ipv6) {
+    this.ipv6 = ipv6;
+  }
 }

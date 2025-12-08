@@ -38,6 +38,7 @@ public class SecurityConfig {
   static final String ROLE_LOGVIEWER = "LOGVIEWER";
   static final String ROLE_USER = "USER";
   static final String ROLE_HEALTH = "HEALTH";
+  static final String ROLE_HOST = "HOST";
   private static final List<String> PUBLIC_ENDPOINTS = new ArrayList<>(List.of("/", "/favicon.ico", "/error"));
   private final AppConfig appConfig;
   private static final PasswordEncoder PASSWORD_ENCODER =
@@ -92,11 +93,12 @@ public class SecurityConfig {
 
   /**
    * Instantiates the UserDetailsService with different users reading from the properties.
+   * Returns an InMemoryUserDetailsManager to allow dynamic user management for host-specific authentication.
    *
-   * @return the UserDetailsService
+   * @return the InMemoryUserDetailsManager
    */
   @Bean
-  public UserDetailsService userDetailsService() {
+  public InMemoryUserDetailsManager userDetailsService() {
     InMemoryUserDetailsManager userManager = new InMemoryUserDetailsManager();
     build(userManager, userName, password, ROLE_USER);
     if (updateLogEnabled) {
@@ -160,6 +162,11 @@ public class SecurityConfig {
           .sessionManagement(
               session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
     }
+
+    // host-specific authentication for /router/{host} routes
+    // hostname=user, apiToken=password, requires ROLE_HOST
+    http.authorizeHttpRequests(
+        req -> req.requestMatchers("/router/**").hasAnyRole(ROLE_HOST));
 
     // public routes
     http.authorizeHttpRequests(
