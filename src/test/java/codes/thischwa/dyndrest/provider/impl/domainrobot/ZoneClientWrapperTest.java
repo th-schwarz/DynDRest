@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import codes.thischwa.dyndrest.AbstractIntegrationTest;
 import codes.thischwa.dyndrest.model.IpSetting;
-import codes.thischwa.dyndrest.provider.impl.domainrobot.ZoneClientWrapper.ResouceRecordTypeIp;
+import codes.thischwa.dyndrest.provider.impl.domainrobot.ZoneClientWrapper.ResourceRecordTypeIp;
 import java.util.Objects;
 import org.domainrobot.sdk.client.JsonUtils;
 import org.domainrobot.sdk.models.generated.JsonResponseDataZone;
@@ -41,7 +41,7 @@ class ZoneClientWrapperTest extends AbstractIntegrationTest {
 		zcw.process(zone, "sub", new IpSetting("128.0.0.1"));
 		// AAAA is removed
 		assertEquals(rrCount - 1, zone.getResourceRecords().size());
-		ResourceRecord rr = zcw.searchResourceRecord(zone, "sub", ResouceRecordTypeIp.A);
+		ResourceRecord rr = zcw.searchResourceRecord(zone, "sub", ResourceRecordTypeIp.A);
 		assertNotNull(rr);
 		assertEquals("128.0.0.1", rr.getValue());
 	}
@@ -52,7 +52,7 @@ class ZoneClientWrapperTest extends AbstractIntegrationTest {
 		zcw.process(zone, "sub", new IpSetting("2a03:4000:41:32::20"));
 		// A is removed
 		assertEquals(rrCount - 1, zone.getResourceRecords().size());
-		ResourceRecord rr = zcw.searchResourceRecord(zone, "sub", ResouceRecordTypeIp.AAAA);
+		ResourceRecord rr = zcw.searchResourceRecord(zone, "sub", ResourceRecordTypeIp.AAAA);
 		assertNotNull(rr);
 		assertEquals("2a03:4000:41:32:0:0:0:20", rr.getValue());
 	}
@@ -62,7 +62,7 @@ class ZoneClientWrapperTest extends AbstractIntegrationTest {
 		assertEquals(rrCount, zone.getResourceRecords().size());
 		zcw.process(zone, "sub1", new IpSetting("128.0.0.1"));
 		assertEquals(rrCount + 1, zone.getResourceRecords().size());
-		ResourceRecord rr = zcw.searchResourceRecord(zone, "sub1", ResouceRecordTypeIp.A);
+		ResourceRecord rr = zcw.searchResourceRecord(zone, "sub1", ResourceRecordTypeIp.A);
 		assertNotNull(rr);
 		assertEquals("128.0.0.1", rr.getValue());
 	}
@@ -72,7 +72,7 @@ class ZoneClientWrapperTest extends AbstractIntegrationTest {
 		assertEquals(rrCount, zone.getResourceRecords().size());
 		zcw.process(zone, "sub1", new IpSetting("2a03:4000:41:32::20"));
 		assertEquals(rrCount + 1, zone.getResourceRecords().size());
-		ResourceRecord rr = zcw.searchResourceRecord(zone, "sub1", ResouceRecordTypeIp.AAAA);
+		ResourceRecord rr = zcw.searchResourceRecord(zone, "sub1", ResourceRecordTypeIp.AAAA);
 		assertNotNull(rr);
 		assertEquals("2a03:4000:41:32:0:0:0:20", rr.getValue());
 	}
@@ -101,7 +101,7 @@ class ZoneClientWrapperTest extends AbstractIntegrationTest {
 
 	@Test
 	void testSearch() {
-		ResourceRecord rr = zcw.searchResourceRecord(zone, "sub", ResouceRecordTypeIp.A);
+		ResourceRecord rr = zcw.searchResourceRecord(zone, "sub", ResourceRecordTypeIp.A);
         assert rr != null;
         assertEquals("85.209.51.215", rr.getValue());
 	}

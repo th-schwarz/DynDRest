@@ -64,8 +64,32 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
   }
 
   @Override
+  public IpSetting info(String host) throws ProviderException {
+    ZoneEntity zone = fetchZoneFromHost(host);
+    String sld = getSldFromHost(host);
+    IpSetting ipSetting = new IpSetting();
+    try {
+      RecordEntity recA = cfDnsClient.sldInfo(zone, sld, RecordType.A);
+      if (recA != null) {
+        ipSetting.setIpv4(recA.getContent());
+      }
+    } catch (CloudflareApiException e) {
+      log.warn("Error while getting A record of host {}", host, e);
+    }
+    try {
+      RecordEntity recAAAA = cfDnsClient.sldInfo(zone, sld, RecordType.AAAA);
+      if (recAAAA != null) {
+        ipSetting.setIpv6(recAAAA.getContent());
+      }
+    } catch (CloudflareApiException e) {
+      log.warn("Error while getting AAAA record of host {}", host, e);
+    }
+    return ipSetting;
+  }
+
+  @Override
   public void addHost(String zoneName, String host) throws ProviderException {
-    // not required for domainrobot. #update adds the required records.
+    // not required for cloudflare. #update adds the required records.
   }
 
   @Override

@@ -58,6 +58,12 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
   }
 
   @Override
+  public IpSetting info(String host) throws ProviderException {
+    Zone zone = fetchZoneFromHost(host);
+    return zcw.info(zone, host.substring(0, host.indexOf(".")));
+  }
+
+  @Override
   public void addHost(String zoneName, String host) {
     // not required for domainrobot. #update adds the required records.
   }
