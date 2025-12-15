@@ -34,14 +34,9 @@ import org.springframework.util.StringUtils;
 @EnableWebSecurity
 @Slf4j
 public class SecurityConfig {
-  static final String ROLE_ADMIN = "ADMIN";
-  static final String ROLE_LOGVIEWER = "LOGVIEWER";
-  static final String ROLE_USER = "USER";
-  static final String ROLE_HEALTH = "HEALTH";
-  static final String ROLE_HOST = "HOST";
   private static final List<String> PUBLIC_ENDPOINTS = new ArrayList<>(List.of("/", "/favicon.ico", "/error"));
   private final AppConfig appConfig;
-  private static final PasswordEncoder PASSWORD_ENCODER =
+  static final PasswordEncoder PASSWORD_ENCODER =
       PasswordEncoderFactories.createDelegatingPasswordEncoder();
   private static final String[] LOG_UI_ENDPOINTS = {"/log-ui", "/log-ui/*"};
   private static final String ADMIN_ENDPOINT = "/admin/**";
@@ -100,17 +95,17 @@ public class SecurityConfig {
   @Bean
   public InMemoryUserDetailsManager userDetailsService() {
     InMemoryUserDetailsManager userManager = new InMemoryUserDetailsManager();
-    build(userManager, userName, password, ROLE_USER);
+    build(userManager, userName, password, Roles.ROLE_USER);
     if (updateLogEnabled) {
       build(userManager, appConfig.updateLogUserName(), appConfig.updateLogUserPassword(),
-          ROLE_LOGVIEWER);
+          Roles.ROLE_LOGVIEWER);
     }
     if (healthEnabled) {
       build(userManager, appConfig.healthCheckUserName(), appConfig.healthCheckUserPassword(),
-          ROLE_HEALTH);
+          Roles.ROLE_HEALTH);
     }
     if (adminEnabled) {
-      build(userManager, appConfig.adminUserName(), appConfig.adminUserPassword(), ROLE_ADMIN);
+      build(userManager, appConfig.adminUserName(), appConfig.adminUserPassword(), Roles.ROLE_ADMIN);
     }
     return userManager;
   }
@@ -147,18 +142,18 @@ public class SecurityConfig {
     if (updateLogEnabled) {
       // enable security for the log-view
       http.authorizeHttpRequests(
-          req -> req.requestMatchers(LOG_UI_ENDPOINTS).hasAnyRole(ROLE_LOGVIEWER));
+          req -> req.requestMatchers(LOG_UI_ENDPOINTS).hasAnyRole(Roles.ROLE_LOGVIEWER));
     }
 
     if (healthEnabled) {
       // enable security for the health check, all other management endpoints are disabled
       http.authorizeHttpRequests(
-          req -> req.requestMatchers("/manage/health/**").hasAnyRole(ROLE_HEALTH));
+          req -> req.requestMatchers("/manage/health/**").hasAnyRole(Roles.ROLE_HEALTH));
     }
 
     if (adminEnabled) {
       // enables security for the admin paths
-      http.authorizeHttpRequests(req -> req.requestMatchers(ADMIN_ENDPOINT).hasRole(ROLE_ADMIN))
+      http.authorizeHttpRequests(req -> req.requestMatchers(ADMIN_ENDPOINT).hasRole(Roles.ROLE_ADMIN))
           .sessionManagement(
               session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
     }
@@ -166,7 +161,7 @@ public class SecurityConfig {
     // host-specific authentication for /router/{host} routes
     // hostname=user, apiToken=password, requires ROLE_HOST
     http.authorizeHttpRequests(
-        req -> req.requestMatchers("/router/**").hasAnyRole(ROLE_HOST));
+        req -> req.requestMatchers("/router/**").hasAnyRole(Roles.ROLE_HOST));
 
     // public routes
     http.authorizeHttpRequests(
@@ -174,7 +169,7 @@ public class SecurityConfig {
 
     // enable basic-auth and ROLE_USER for all other routes
     // it's a rest-api, so there is no need for session handling and csrf
-    http.authorizeHttpRequests(req -> req.anyRequest().hasAnyRole(ROLE_USER))
+    http.authorizeHttpRequests(req -> req.anyRequest().hasAnyRole(Roles.ROLE_USER))
         .httpBasic(Customizer.withDefaults()).sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 

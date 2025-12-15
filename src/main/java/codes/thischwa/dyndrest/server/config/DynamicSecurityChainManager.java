@@ -1,13 +1,14 @@
 package codes.thischwa.dyndrest.server.config;
 
+import static codes.thischwa.dyndrest.server.config.SecurityConfig.PASSWORD_ENCODER;
+import static codes.thischwa.dyndrest.server.config.Roles.ROLE_HOST;
+
 import codes.thischwa.dyndrest.model.HostEnriched;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Component;
 
@@ -18,9 +19,6 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class DynamicSecurityChainManager {
-  static final String ROLE_HOST = "HOST";
-  private static final PasswordEncoder PASSWORD_ENCODER =
-      PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
   private final InMemoryUserDetailsManager userDetailsManager;
 
@@ -34,8 +32,6 @@ public class DynamicSecurityChainManager {
    */
   public DynamicSecurityChainManager(InMemoryUserDetailsManager userDetailsManager) {
     this.userDetailsManager = userDetailsManager;
-    log.info("DynamicSecurityChainManager initialized with UserDetailsManager: {}",
-        userDetailsManager.getClass().getSimpleName());
   }
 
   /**
@@ -49,7 +45,7 @@ public class DynamicSecurityChainManager {
     String password = host.getApiToken();
 
     log.debug("Attempting to register host: {} with apiToken: {}", username,
-        password != null ? password.substring(0, Math.min(4, password.length())) + "***" : "null");
+        password.substring(0, Math.min(4, password.length())) + "***");
 
     if (registeredHosts.containsKey(username)) {
       // Update existing user

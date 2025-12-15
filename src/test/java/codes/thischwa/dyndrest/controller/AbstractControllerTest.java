@@ -1,16 +1,18 @@
-package codes.thischwa.dyndrest;
+package codes.thischwa.dyndrest.controller;
 
 import static org.mockito.Mockito.mock;
 
 import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.provider.Provider;
-import codes.thischwa.dyndrest.server.ApiController;
+import codes.thischwa.dyndrest.server.controller.ApiController;
+import codes.thischwa.dyndrest.service.ControllerService;
+import codes.thischwa.dyndrest.server.controller.RouterController;
 import codes.thischwa.dyndrest.server.config.DynamicSecurityChainManager;
 import codes.thischwa.dyndrest.service.HostZoneService;
 import codes.thischwa.dyndrest.service.UpdateLogService;
 import org.junit.jupiter.api.BeforeAll;
 
-abstract class AbstractApiControllerTest {
+abstract class AbstractControllerTest {
 
   protected final Provider provider = mock(Provider.class);
   private final AppConfig appConfig =
@@ -18,12 +20,15 @@ abstract class AbstractApiControllerTest {
   protected final UpdateLogService updateLogService = mock(UpdateLogService.class);
   protected final HostZoneService hostZoneService = mock(HostZoneService.class);
   protected final DynamicSecurityChainManager dynamicSecurityChainManager = mock(DynamicSecurityChainManager.class);
+  protected final ControllerService controllerService = mock(ControllerService.class);
 
   protected ApiController apiController;
+  protected RouterController routerController;
 
   @BeforeAll
   void init() {
-    apiController = new ApiController(provider, appConfig, updateLogService, hostZoneService);
+    apiController = new ApiController(provider, hostZoneService, controllerService);
+    routerController = new RouterController(controllerService, hostZoneService, dynamicSecurityChainManager);
   }
 
   private int hostCount = 0;

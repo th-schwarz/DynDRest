@@ -1,4 +1,4 @@
-package codes.thischwa.dyndrest;
+package codes.thischwa.dyndrest.controller;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -6,14 +6,16 @@ import static org.mockito.Mockito.*;
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
+@DisplayName("Integration tests: controller - api-info")
 @Slf4j
-class ApiControllerInfoTest extends AbstractApiControllerTest {
+class ApiControllerInfoTest extends AbstractControllerTest {
 
   @Test
   void testSuccess() throws Exception {
@@ -50,7 +52,7 @@ class ApiControllerInfoTest extends AbstractApiControllerTest {
   }
 
   @Test
-  void testWithInvalidApitoken() throws Exception {
+  void testWithInvalidApiToken() throws Exception {
     String host = buildHostName("domain.info");
     log.debug("entered #testWithInvalidApitoken: {}", host);
     String apiToken = "invalid_token";

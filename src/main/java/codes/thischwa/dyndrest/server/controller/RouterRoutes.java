@@ -1,4 +1,4 @@
-package codes.thischwa.dyndrest.server;
+package codes.thischwa.dyndrest.server.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 public interface RouterRoutes {
   /*+
-   * It's a duplicate of {@link codes.thischwa.dyndrest.server.ApiRoutes#updateHost} for routers which can't use the Put method.
+   * It's a duplicate of {@link codes.thischwa.dyndrest.server.controller.ApiRoutes#updateHost} for routers which can't use the Put method.
    */
   @Operation(
       summary =
@@ -49,11 +49,6 @@ public interface RouterRoutes {
               example = "mydyndns.domain.com")
           @PathVariable
           String host,
-//      @Schema(
-//              description = "The 'apiToken' to authenticate the changes of the IPs for this host.",
-//              type = "string")
-//          @RequestParam
-//          String apiToken,
       @Schema(description = "An IPv4 address.", type = "string", examples = "127.1.2.4")
           @RequestParam(name = "ipv4", required = false)
           InetAddress ipv4,

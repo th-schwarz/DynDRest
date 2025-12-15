@@ -1,7 +1,8 @@
-package codes.thischwa.dyndrest;
+package codes.thischwa.dyndrest.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import codes.thischwa.dyndrest.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
