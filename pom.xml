@@ -345,7 +345,6 @@
                         <!-- generates the openapi docu -->
                         <groupId>org.springdoc</groupId>
                         <artifactId>springdoc-openapi-maven-plugin</artifactId>
-                        <version>1.4</version>
                         <configuration>
                             <apiDocsUrl>http://localhost:8080/v3/api-docs.yaml</apiDocsUrl>
                             <outputDir>${openapi.outputDir}</outputDir>

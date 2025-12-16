@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
         @Info(
             title = "A Dynamic DNS REST Service.",
             description = "The routes of the dynamic DNS API",
-            version = "0.2",
+            version = "0.3",
             contact =
                 @Contact(
                     name = "Thilo Schwarz",
