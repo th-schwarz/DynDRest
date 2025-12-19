@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.0</version>
-        <relativePath />
+        <version>4.0.1</version>
+        <relativePath/>
     </parent>
     <groupId>codes.thischwa</groupId>
     <artifactId>dyndrest</artifactId>
@@ -52,9 +53,10 @@
         <openapi.outputFile>${openapi.outputFile.extless}.yaml</openapi.outputFile>
 
         <!-- checkstyle -->
-        <checkstyle.version>10.8.1</checkstyle.version>
-        <checkstyle.plugin.version>3.3.1</checkstyle.plugin.version>
-        <checkstyle.config.location>google_checks.xml</checkstyle.config.location>
+        <checkstyle.version>12.3.0</checkstyle.version>
+        <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
+        <checkstyle.config.location>${project.basedir}/src/checkstyle/google_custom_checks.xml
+        </checkstyle.config.location>
         <checkstyle.suppressions.location>
             ${project.basedir}/src/checkstyle/checkstyle-suppressions.xml
         </checkstyle.suppressions.location>
@@ -343,7 +345,6 @@
                         <!-- generates the openapi docu -->
                         <groupId>org.springdoc</groupId>
                         <artifactId>springdoc-openapi-maven-plugin</artifactId>
-                        <version>1.4</version>
                         <configuration>
                             <apiDocsUrl>http://localhost:8080/v3/api-docs.yaml</apiDocsUrl>
                             <outputDir>${openapi.outputDir}</outputDir>

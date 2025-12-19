@@ -1,4 +1,4 @@
-package codes.thischwa.dyndrest.server;
+package codes.thischwa.dyndrest.server.controller;
 
 import codes.thischwa.dyndrest.model.config.AppConfig;
 import org.springframework.http.HttpStatus;

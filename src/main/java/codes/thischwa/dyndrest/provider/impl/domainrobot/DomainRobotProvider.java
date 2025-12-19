@@ -5,6 +5,7 @@ import codes.thischwa.dyndrest.model.HostEnriched;
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.provider.impl.GenericProvider;
+import codes.thischwa.dyndrest.server.config.DynamicSecurityChainManager;
 import codes.thischwa.dyndrest.service.HostZoneService;
 import java.util.List;
 import java.util.Optional;
@@ -22,17 +23,22 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
 
   private final ZoneClientWrapper zcw;
 
+  private final DynamicSecurityChainManager securityChainManager;
+
   /**
    * Instantiates a new Domain robot provider.
    *
    * @param appConfig the app config
    * @param hostZoneService the host zone service
    * @param zcw the zcw
+   * @param securityChainManager the dynamic security chain manager
    */
-  DomainRobotProvider(AppConfig appConfig, HostZoneService hostZoneService, ZoneClientWrapper zcw) {
+  DomainRobotProvider(AppConfig appConfig, HostZoneService hostZoneService, ZoneClientWrapper zcw,
+      DynamicSecurityChainManager securityChainManager) {
     this.appConfig = appConfig;
     this.hostZoneService = hostZoneService;
     this.zcw = zcw;
+    this.securityChainManager = securityChainManager;
   }
 
   @Override
@@ -40,6 +46,20 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
     if (appConfig.hostValidationEnabled()) {
       hostZoneService.getConfiguredZones().forEach(this::zoneConfirmed);
     }
+    // Register all configured hosts for authentication
+    registerHostsForAuthentication();
+  }
+
+  /**
+   * Registers all configured hosts for authentication.
+   * Each host will be authenticated with hostname=user and apiToken=password.
+   */
+  private void registerHostsForAuthentication() {
+    List<HostEnriched> hosts = hostZoneService.getConfiguredHosts();
+    for (HostEnriched host : hosts) {
+      securityChainManager.addOrUpdateHost(host);
+    }
+    log.info("Registered {} hosts for authentication", hosts.size());
   }
 
   @Override

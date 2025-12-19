@@ -25,7 +25,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 @DisplayName("Integration tests: Rest - other")
-class OtherRestTest extends AbstractIntegrationTest{
+class OtherRestMockTest extends AbstractIntegrationTest{
 
     @Autowired private WebApplicationContext context;
 
