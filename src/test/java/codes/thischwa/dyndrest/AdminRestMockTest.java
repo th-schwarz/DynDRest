@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 @DisplayName("Integration tests: Rest - '/admin/'")
-class AdminRestTest extends AbstractIntegrationTest {
+class AdminRestMockTest extends AbstractIntegrationTest {
 
   @Autowired private WebApplicationContext context;
   @Autowired private HostZoneService hostZoneService;
