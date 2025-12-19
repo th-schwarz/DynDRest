@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.0</version>
+        <version>4.0.1</version>
         <relativePath/>
     </parent>
     <groupId>codes.thischwa</groupId>
@@ -53,8 +53,8 @@
         <openapi.outputFile>${openapi.outputFile.extless}.yaml</openapi.outputFile>
 
         <!-- checkstyle -->
-        <checkstyle.version>10.8.1</checkstyle.version>
-        <checkstyle.plugin.version>3.3.1</checkstyle.plugin.version>
+        <checkstyle.version>12.3.0</checkstyle.version>
+        <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
         <checkstyle.config.location>${project.basedir}/src/checkstyle/google_custom_checks.xml
         </checkstyle.config.location>
         <checkstyle.suppressions.location>
