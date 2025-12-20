@@ -77,8 +77,7 @@ public class SecurityConfig {
 
     // check if credentials for admin exit
     adminEnabled = StringUtils.hasText(appConfig.adminUserName()) &&
-        StringUtils.hasText(appConfig.adminUserPassword()) &&
-        StringUtils.hasText(appConfig.adminApiToken());
+        StringUtils.hasText(appConfig.adminUserPassword());
 
     if (Arrays.asList(env.getActiveProfiles()).contains("opendoc")) {
       PUBLIC_ENDPOINTS.add("/v3/api-docs*");

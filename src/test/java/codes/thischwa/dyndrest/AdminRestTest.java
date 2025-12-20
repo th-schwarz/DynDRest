@@ -51,25 +51,15 @@ class AdminRestTest extends AbstractIntegrationTest {
     mockMvc
       .perform(
         post("/admin/zones/my.info/ns.my.info")
-          .param("adminToken", "token123")
           .with(httpBasic("admin", "adm1n")))
       .andExpect(status().isOk());
     Zone z = hostZoneService.getZone("my.info");
     assertNotNull(z);
 
-    // test forbidden
-    mockMvc
-      .perform(
-        post("/admin/zones/my1.info/ns.my.info")
-          .param("adminToken", "token123_")
-          .with(httpBasic("admin", "adm1n")))
-      .andExpect(status().isUnauthorized());
-
     // test duplicate
     mockMvc
       .perform(
         post("/admin/zones/my.info/ns.my.info")
-          .param("adminToken", "token123")
           .with(httpBasic("admin", "adm1n")))
       .andExpect(status().isConflict());
 
@@ -77,7 +67,6 @@ class AdminRestTest extends AbstractIntegrationTest {
     mockMvc
       .perform(
         post("/admin/zones/my.info/ns,my.info")
-          .param("adminToken", "token123")
           .with(httpBasic("admin", "adm1n")))
       .andExpect(status().isBadRequest());
   }
@@ -87,7 +76,6 @@ class AdminRestTest extends AbstractIntegrationTest {
     mockMvc
       .perform(
         delete("/admin/zones/dynhost1.info")
-          .param("adminToken", "token123")
           .with(httpBasic("admin", "adm1n")))
       .andExpect(status().isOk());
     Zone z = hostZoneService.getZone("dynhost1.info");
@@ -97,7 +85,6 @@ class AdminRestTest extends AbstractIntegrationTest {
     mockMvc
       .perform(
         delete("/admin/zones/unknown.info")
-          .param("adminToken", "token123")
           .with(httpBasic("admin", "adm1n")))
       .andExpect(status().isBadRequest());
   }
@@ -106,7 +93,6 @@ class AdminRestTest extends AbstractIntegrationTest {
   void testListZones() throws Exception {
     mockMvc
       .perform(get("/admin/zones")
-        .param("adminToken", "token123")
         .with(httpBasic("admin", "adm1n")))
       .andExpect(status().isOk())
       .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -116,20 +102,10 @@ class AdminRestTest extends AbstractIntegrationTest {
       .andExpect(jsonPath("$[1].name").value("dynhost1.info"))
       .andExpect(jsonPath("$[1].ns").value("ns1.domain.info"));
 
-
-    // wrong admin token
-    mockMvc
-      .perform(
-        get("/admin/zones")
-          .param("adminToken", "wrongToken")
-          .with(httpBasic("admin", "adm1n")))
-      .andExpect(status().isForbidden());
-
     // wrong basic-auth
     mockMvc
       .perform(
         get("/admin/zones")
-          .param("adminToken", "token123")
           .with(httpBasic("admin", "wrongPassword")))
       .andExpect(status().isUnauthorized());
   }
@@ -139,7 +115,6 @@ class AdminRestTest extends AbstractIntegrationTest {
     mockMvc
       .perform(
         get("/admin/zones/dynhost0.info/hosts")
-          .param("adminToken", "token123")
           .with(httpBasic("admin", "adm1n")))
       .andExpect(status().isOk())
       .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -150,19 +125,10 @@ class AdminRestTest extends AbstractIntegrationTest {
       .andExpect(jsonPath("$[1].fullHost").value("test0.dynhost0.info"))
       .andExpect(jsonPath("$[1].apiToken").value("1234567890abcdex"));
 
-    // test wrong adminToken
-    mockMvc
-      .perform(
-        get("/admin/zones/dynhost0.info/hosts")
-          .param("adminToken", "wrongToken")
-          .with(httpBasic("admin", "adm1n")))
-      .andExpect(status().isForbidden());
-
     // test wrong basic-auth
     mockMvc
       .perform(
         get("/admin/zones/dynhost0.info/hosts")
-          .param("adminToken", "token123")
           .with(httpBasic("admin", "wrongPassword")))
       .andExpect(status().isUnauthorized());
   }
@@ -172,7 +138,6 @@ class AdminRestTest extends AbstractIntegrationTest {
     mockMvc
       .perform(
         post("/admin/zones/dynhost0.info/hosts/mynew")
-          .param("adminToken", "token123")
           .param("apiToken", "token123")
           .with(httpBasic("admin", "adm1n")))
       .andExpect(status().isOk());
@@ -183,7 +148,6 @@ class AdminRestTest extends AbstractIntegrationTest {
     mockMvc
       .perform(
         post("/admin/zones/dynhost0.info/hosts/mynew")
-          .param("adminToken", "token123")
           .param("apiToken", "token123")
           .with(httpBasic("admin", "adm1n")))
       .andExpect(status().isConflict());
@@ -192,7 +156,6 @@ class AdminRestTest extends AbstractIntegrationTest {
     mockMvc
       .perform(
         post("/admin/zones/dynhost0.info/hosts/mynew1.dynhost0.info")
-          .param("adminToken", "token123_")
           .with(httpBasic("admin", "adm1n")))
       .andExpect(status().isBadRequest());
 
@@ -200,7 +163,6 @@ class AdminRestTest extends AbstractIntegrationTest {
     mockMvc
       .perform(
         post("/admin/zones/dynhost0.info/hosts/my,dynhost0.info")
-          .param("adminToken", "token123")
           .with(httpBasic("admin", "adm1n")))
       .andExpect(status().isBadRequest());
   }

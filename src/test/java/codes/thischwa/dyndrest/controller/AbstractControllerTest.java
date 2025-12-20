@@ -16,7 +16,7 @@ abstract class AbstractControllerTest {
 
   protected final Provider provider = mock(Provider.class);
   private final AppConfig appConfig =
-      new AppConfig("dummy", false, false, 200, 4, "", false, null, null, false, null, null, "admin", "adm1n", "admin123");
+      new AppConfig("dummy", false, false, 200, 4, "", false, null, null, false, null, null, "admin", "adm1n");
   protected final UpdateLogService updateLogService = mock(UpdateLogService.class);
   protected final HostZoneService hostZoneService = mock(HostZoneService.class);
   protected final DynamicSecurityChainManager dynamicSecurityChainManager = mock(DynamicSecurityChainManager.class);

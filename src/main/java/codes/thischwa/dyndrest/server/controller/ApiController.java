@@ -73,9 +73,6 @@ public class ApiController implements ApiRoutes {
     return ResponseEntity.ok(ipSetting);
   }
 
-
-
-
   private void validateHost(String host, String apiToken) {
     try {
       boolean valid = hostZoneService.validate(host, apiToken);

@@ -40,13 +40,8 @@ public class AdminController implements AdminRoutes {
   }
 
   @Override
-  public ResponseEntity<Void> addZone(String zoneName, String ns, String adminToken) {
+  public ResponseEntity<Void> addZone(String zoneName, String ns) {
     log.debug("entered #addZone: name={}, ns={}", zoneName, ns);
-    assert config.adminApiToken() != null;
-    if (!config.adminApiToken().equals(adminToken)) {
-      log.error("Invalid admin token.");
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-    }
     if (!domainNameValidator.isValidDomainNames(zoneName, ns)) {
       log.error("Domain name ({}) or nameserver ({}) is malformed.", zoneName, ns);
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -64,9 +59,8 @@ public class AdminController implements AdminRoutes {
   }
 
   @Override
-  public ResponseEntity<Void> deleteZone(String name, String adminToken) {
+  public ResponseEntity<Void> deleteZone(String name) {
     log.debug("entered #deleteZone: name={}", name);
-    checkAdminToken(adminToken);
     Zone zone = hostZoneService.getZone(name);
     if (zone == null) {
       log.error("Zone with name {} not found.", name);
@@ -77,26 +71,23 @@ public class AdminController implements AdminRoutes {
   }
 
   @Override
-  public ResponseEntity<List<Zone>> listZones(String adminToken) {
+  public ResponseEntity<List<Zone>> listZones() {
     log.debug("entered #listZones.");
-    checkAdminToken(adminToken);
     List<Zone> zones = hostZoneService.getAllZones();
     return ResponseEntity.ok(zones);
   }
 
   @Override
-  public ResponseEntity<List<HostEnriched>> listHostsOfZone(String zoneName, String adminToken) {
+  public ResponseEntity<List<HostEnriched>> listHostsOfZone(String zoneName) {
     log.debug("entered #listHostsOfZone.");
-    checkAdminToken(adminToken);
     Optional<List<HostEnriched>> hosts = hostZoneService.findHostsOfZone(zoneName);
     return hosts.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
   }
 
   @Override
   public ResponseEntity<Void> addHost(
-      String zoneName, String host, String apiToken, String adminToken) {
+      String zoneName, String host, String apiToken) {
     log.debug("entered #addHost: name={}, host={}", zoneName, host);
-    checkAdminToken(adminToken);
     Zone zone = hostZoneService.getZone(zoneName);
     if (zone == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -117,9 +108,8 @@ public class AdminController implements AdminRoutes {
   }
 
   @Override
-  public ResponseEntity<Void> deleteHost(String host, String adminToken) {
+  public ResponseEntity<Void> deleteHost(String host) {
     log.debug("entered #deleteHost: fullHost={}", host);
-    checkAdminToken(adminToken);
     Optional<HostEnriched> optionalFullHost = hostZoneService.getHost(host);
     if (optionalFullHost.isEmpty()) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -135,10 +125,5 @@ public class AdminController implements AdminRoutes {
     return ResponseEntity.ok().build();
   }
 
-  private void checkAdminToken(String adminToken) {
-    assert config.adminApiToken() != null;
-    if (!config.adminApiToken().equals(adminToken)) {
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid admin token");
-    }
-  }
+
 }

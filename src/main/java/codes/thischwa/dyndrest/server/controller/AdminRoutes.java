@@ -17,6 +17,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/**
+ * Interface defining administrative routes for managing zones and hosts, such as adding,
+ * listing, and deleting zones and hosts within the system. These routes are protected
+ * by an admin token for authorization.
+ */
 public interface AdminRoutes {
   @Operation(summary = "Adds a zone with the specified name and name server.")
   @ApiResponses(
@@ -24,7 +29,6 @@ public interface AdminRoutes {
         @ApiResponse(
             responseCode = "200",
             description = "The desired Zone was successfully created."),
-        @ApiResponse(responseCode = "403", description = "The 'adminToken' is wrong."),
         @ApiResponse(
             responseCode = "409",
             description = "A zone with the specified name already exists.")
@@ -42,17 +46,13 @@ public interface AdminRoutes {
               type = "string",
               example = "ns1.domain.info")
           @PathVariable
-          String ns,
-      @Schema(description = "The 'admin-token' to authorize the operation.", type = "string")
-          @RequestParam
-          String adminToken);
+          String ns);
 
   @Operation(summary = "Deletes the zone with the specified name.")
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "200", description = "The Zone deleted successful."),
-        @ApiResponse(responseCode = "404", description = "The zone doesn't exists."),
-        @ApiResponse(responseCode = "403", description = "The 'adminToken' is wrong."),
+        @ApiResponse(responseCode = "404", description = "The zone doesn't exists.")
       })
   @DeleteMapping(value = "/admin/zones/{name}")
   ResponseEntity<Void> deleteZone(
@@ -61,10 +61,7 @@ public interface AdminRoutes {
               type = "string",
               example = "domain.com")
           @PathVariable
-          String name,
-      @Schema(description = "The 'admin-token' to authorize the operation.", type = "string")
-          @RequestParam
-          String adminToken);
+          String name);
 
   @Operation(summary = "Returns a list of all configured zones.")
   @ApiResponses(
@@ -82,17 +79,10 @@ public interface AdminRoutes {
                                     + "    \"name\": \"mydomain.net\",\n"
                                     + "    \"ns\": \"a1.nameserver.net\",\n"
                                     + "    \"changed\": \"2024-03-11T09:07:59.022057\"\n"
-                                    + "  }]"))),
-        @ApiResponse(
-            responseCode = "403",
-            description = "The 'adminToken' is wrong.",
-            content = @Content(schema = @Schema(hidden = true))),
+                                    + "  }]")))
       })
   @GetMapping(value = "/admin/zones", produces = MediaType.APPLICATION_JSON_VALUE)
-  ResponseEntity<List<Zone>> listZones(
-      @Schema(description = "The 'admin-token' to authorize the operation.", type = "string")
-          @RequestParam
-          String adminToken);
+  ResponseEntity<List<Zone>> listZones();
 
   @Operation(summary = "Returns a list of hosts of the desired zone.")
   @ApiResponses(
@@ -113,11 +103,7 @@ public interface AdminRoutes {
                                     + "    \"ns\": \"a1.nameserver.net\",\n"
                                     + "    \"fullHost\": \"master.mydomain.net\",\n"
                                     + "    \"changed\": \"2024-03-11T09:07:59.037688\"\n"
-                                    + "  }]"))),
-        @ApiResponse(
-            responseCode = "403",
-            description = "The 'adminToken' is wrong.",
-            content = @Content(schema = @Schema(hidden = true)))
+                                    + "  }]")))
       })
   @GetMapping(value = "/admin/zones/{zoneName}/hosts", produces = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<List<HostEnriched>> listHostsOfZone(
@@ -126,10 +112,7 @@ public interface AdminRoutes {
               type = "string",
               example = "domain.com")
           @PathVariable
-          String zoneName,
-      @Schema(description = "The 'admin-token' to authorize the operation.", type = "string")
-          @RequestParam
-          String adminToken);
+          String zoneName);
 
   @Operation(summary = "Adds a host with the specified host for the desired zone.")
   @ApiResponses(
@@ -137,7 +120,6 @@ public interface AdminRoutes {
         @ApiResponse(
             responseCode = "200",
             description = "The desired host was successfully created."),
-        @ApiResponse(responseCode = "403", description = "The 'adminToken' is wrong."),
         @ApiResponse(responseCode = "404", description = "The zone doesn't exists."),
         @ApiResponse(responseCode = "409", description = "The desired host already exists."),
         @ApiResponse(responseCode = "500", description = "If the operation has failed.")
@@ -161,10 +143,7 @@ public interface AdminRoutes {
                   "The 'api-token' to authenticate IP changes of the created host. Should be a strong one!",
               type = "string")
           @RequestParam
-          String apiToken,
-      @Schema(description = "The 'admin-token' to authorize the operation.", type = "string")
-          @RequestParam
-          String adminToken);
+          String apiToken);
 
   @Operation(summary = "Deletes the host with the specified host name.")
   @ApiResponses(
@@ -172,7 +151,6 @@ public interface AdminRoutes {
         @ApiResponse(
             responseCode = "200",
             description = "The desired host was successfully deleted."),
-        @ApiResponse(responseCode = "403", description = "The 'adminToken' is wrong."),
         @ApiResponse(responseCode = "404", description = "The desired host doesn't exists."),
         @ApiResponse(responseCode = "500", description = "If the operation has failed.")
       })
@@ -180,8 +158,5 @@ public interface AdminRoutes {
   ResponseEntity<Void> deleteHost(
       @Schema(description = "The full name of the host.", example = "mydyndns.domain.com")
           @PathVariable
-          String host,
-      @Schema(description = "The 'admin-token' to authorize the operation.", type = "string")
-          @RequestParam
-          String adminToken);
+          String host);
 }

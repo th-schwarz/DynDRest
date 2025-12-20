@@ -21,6 +21,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/**
+ * This interface defines the API routes for a dynamic DNS REST service.
+ * It provides endpoints to update and fetch IP settings for specific hosts.
+ *
+ * <p> The API is designed to handle requests related to host IP management,
+ * where users can either update their IP configurations or retrieve the
+ * current settings of a host.
+ *
+ * <p>The API implements basic REST principles and makes use of OpenAPI
+ * annotations for improved documentation and usability.
+ */
+
 // @formatter:off
 @OpenAPIDefinition(
     info =
@@ -42,7 +54,7 @@ import org.springframework.web.bind.annotation.RequestParam;
             description = "DynDRest on Github",
             url = "https://github.com/th-schwarz/DynDRest"))
 // @formatter:on
-// naming conventions: https://restfulapi.net/resource-naming/
+// naming conventions: https://restfulapi.net/resource-naming/V
 interface ApiRoutes {
 
   @Operation(
