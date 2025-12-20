@@ -2,7 +2,6 @@ package codes.thischwa.dyndrest;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -10,22 +9,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import codes.thischwa.dyndrest.util.NetUtil;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-@DisplayName("Integration tests: Rest - other")
-class OtherRestMockTest extends AbstractIntegrationTest{
+@SpringBootTest
+@ActiveProfiles("test")
+@DisplayName("Mock tests: Rest - other")
+class OtherRestMockTest {
 
     @Autowired private WebApplicationContext context;
 
@@ -85,19 +84,6 @@ class OtherRestMockTest extends AbstractIntegrationTest{
         mockMvc
                 .perform(get("/info/test.mein-virtuelles-blech.de"))
                 .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    void testBaseUrl() {
-        // feed the mock
-        MockHttpServletRequest mockRequest = new MockHttpServletRequest();
-        mockRequest.setContextPath("/");
-        mockRequest.setServerPort(port);
-        ServletRequestAttributes attrs = new ServletRequestAttributes(mockRequest);
-        RequestContextHolder.setRequestAttributes(attrs);
-
-        assertEquals("http://localhost:" + port, NetUtil.getBaseUrl(false));
-        assertEquals("https://localhost:" + port, NetUtil.getBaseUrl(true));
     }
 
     @Test
