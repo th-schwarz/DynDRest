@@ -143,4 +143,19 @@ public class NetUtil {
       throw new IllegalArgumentException("Invalid IP address(es).", e);
     }
   }
+
+  /**
+   * Converts the given string representation of an IP address into an {@link InetAddress} object.
+   *
+   * @param ip the string representation of the IP address to convert
+   * @return the {@link InetAddress} object representing the given IP address
+   * @throws IllegalArgumentException if the input string is not a valid IP address
+   */
+  public static InetAddress convert(String ip) {
+    try {
+      return InetAddress.getByName(ip);
+    } catch (UnknownHostException e) {
+      throw new IllegalArgumentException("Invalid IP address: " + ip, e);
+    }
+  }
 }

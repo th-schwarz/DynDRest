@@ -24,23 +24,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.InitializingBean;
 
-/** Implementation for the Cloudflare API */
+/** Implementation for the Cloudflare API. */
 @Slf4j
 public class CloudflareProvider extends GenericProvider implements InitializingBean {
 
-  private final AppConfig appConfig;
-  private final HostZoneService hostZoneService;
   private final CfDnsClient cfDnsClient;
   private final int defaultTtl;
-  private final DynamicSecurityChainManager securityChainManager;
 
   CloudflareProvider(
       AppConfig appConfig, CloudflareConfig config, HostZoneService hostZoneService,
       DynamicSecurityChainManager securityChainManager) {
-    this.appConfig = appConfig;
-    this.hostZoneService = hostZoneService;
+    super(appConfig, securityChainManager, hostZoneService);
     this.defaultTtl = config.defaultTtl();
-    this.securityChainManager = securityChainManager;
     cfDnsClient =
         new CfDnsClient(config.baseUrl(), config.email(), config.apiKey());
   }

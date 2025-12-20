@@ -141,6 +141,7 @@ class ApiControllerUpdateTest extends AbstractControllerTest {
     String host = "valid-host";
     InetAddress ipv4 = InetAddress.getByName("192.168.1.1");
     InetAddress ipv6 = InetAddress.getByName("::1");
+    IpSetting ipSetting = new IpSetting(ipv4, ipv6);
     HttpServletRequest req = mock(HttpServletRequest.class);
     UserDetails userDetails = mock(UserDetails.class);
 
@@ -152,7 +153,7 @@ class ApiControllerUpdateTest extends AbstractControllerTest {
     ResponseEntity<Void> response = routerController.routerUpdateHost(userDetails, host, ipv4, ipv6, req);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
-    verify(controllerService).processIpUpdate(host, ipv4, ipv6, req);
+    verify(controllerService, times(1)).processIpUpdate(host, ipv4, ipv6, req);
   }
 
   @Test

@@ -1,11 +1,19 @@
 package codes.thischwa.dyndrest.util;
 
-import static codes.thischwa.dyndrest.util.NetUtil.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static codes.thischwa.dyndrest.util.NetUtil.ipEquals;
+import static codes.thischwa.dyndrest.util.NetUtil.isIp;
+import static codes.thischwa.dyndrest.util.NetUtil.isIpv4;
+import static codes.thischwa.dyndrest.util.NetUtil.isIpv6;
+import static codes.thischwa.dyndrest.util.NetUtil.resolve;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import codes.thischwa.dyndrest.model.IpSetting;
 import java.io.IOException;
 import java.net.IDN;
+import java.net.InetAddress;
 import java.util.Base64;
 import org.junit.jupiter.api.Test;
 import org.xbill.DNS.Name;
@@ -123,5 +131,29 @@ class NetUtilTest {
   @Test
   void testLookupFails() {
     assertThrows(IllegalArgumentException.class, () -> NetUtil.lookup("domain.unknowntld" , Type.A));
+  }
+
+  @Test
+  void testConvert_ValidIp() {
+    // Test valid IPv4 address
+    String validIpv4 = "192.168.1.1";
+    InetAddress resultIpv4 = NetUtil.convert(validIpv4);
+    assertEquals(validIpv4, resultIpv4.getHostAddress());
+
+    // Test valid IPv6 address
+    String validIpv6 = "2001:db8:85a3:0:0:8a2e:370:7334";
+    InetAddress resultIpv6 = NetUtil.convert(validIpv6);
+    assertEquals(validIpv6, resultIpv6.getHostAddress());
+  }
+
+  @Test
+  void testConvert_InvalidIp() {
+    // Test invalid IPv4 address
+    String invalidIpv4 = "192.168.1.999";
+    assertThrows(IllegalArgumentException.class, () -> NetUtil.convert(invalidIpv4));
+
+    // Test invalid IPv6 address
+    String invalidIpv6 = "2001:db8:85a3::zzz";
+    assertThrows(IllegalArgumentException.class, () -> NetUtil.convert(invalidIpv6));
   }
 }
