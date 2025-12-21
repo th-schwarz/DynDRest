@@ -1,6 +1,7 @@
 package codes.thischwa.dyndrest.server.config;
 
 import codes.thischwa.dyndrest.util.NetUtil;
+import jakarta.annotation.Nullable;
 import java.net.InetAddress;
 import org.springframework.boot.convert.ApplicationConversionService;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +24,7 @@ public class MvcConfig implements WebMvcConfigurer {
   private static class InetAdrConverter implements Converter<String, InetAddress> {
 
     @Override
-    public InetAddress convert(String source) {
+    public@Nullable InetAddress convert(String source) {
       if (ObjectUtils.isEmpty(source)) {
         return null;
       }
