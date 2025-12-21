@@ -24,7 +24,7 @@ public class MvcConfig implements WebMvcConfigurer {
   private static class InetAdrConverter implements Converter<String, InetAddress> {
 
     @Override
-    public@Nullable InetAddress convert(String source) {
+    public @Nullable InetAddress convert(String source) {
       if (ObjectUtils.isEmpty(source)) {
         return null;
       }
