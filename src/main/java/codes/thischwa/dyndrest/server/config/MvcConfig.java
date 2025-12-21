@@ -2,12 +2,10 @@ package codes.thischwa.dyndrest.server.config;
 
 import codes.thischwa.dyndrest.util.NetUtil;
 import java.net.InetAddress;
-import org.jspecify.annotations.Nullable;
 import org.springframework.boot.convert.ApplicationConversionService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /** The mvc config. */
@@ -24,10 +22,7 @@ public class MvcConfig implements WebMvcConfigurer {
   private static class InetAdrConverter implements Converter<String, InetAddress> {
 
     @Override
-    public @Nullable InetAddress convert(String source) {
-      if (ObjectUtils.isEmpty(source)) {
-        return null;
-      }
+    public InetAddress convert(String source) {
       return NetUtil.convert(source);
     }
   }
