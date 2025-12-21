@@ -16,7 +16,11 @@ class GenericProviderTest {
         boolean throwBefore = false;
         boolean throwAfter = false;
 
-        @Override
+      private RecordingProvider() {
+        super();
+      }
+
+      @Override
         public void validateHostZoneConfiguration() throws IllegalArgumentException {
             // not relevant for these tests
         }

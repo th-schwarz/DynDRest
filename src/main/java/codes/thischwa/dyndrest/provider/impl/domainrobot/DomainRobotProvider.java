@@ -17,13 +17,7 @@ import org.springframework.beans.factory.InitializingBean;
 @Slf4j
 class DomainRobotProvider extends GenericProvider implements InitializingBean {
 
-  private final AppConfig appConfig;
-
-  private final HostZoneService hostZoneService;
-
   private final ZoneClientWrapper zcw;
-
-  private final DynamicSecurityChainManager securityChainManager;
 
   /**
    * Instantiates a new Domain robot provider.
@@ -35,10 +29,8 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
    */
   DomainRobotProvider(AppConfig appConfig, HostZoneService hostZoneService, ZoneClientWrapper zcw,
       DynamicSecurityChainManager securityChainManager) {
-    this.appConfig = appConfig;
-    this.hostZoneService = hostZoneService;
+    super(appConfig, securityChainManager, hostZoneService);
     this.zcw = zcw;
-    this.securityChainManager = securityChainManager;
   }
 
   @Override

@@ -1,9 +1,12 @@
 package codes.thischwa.dyndrest.provider.impl;
 
 import codes.thischwa.dyndrest.model.IpSetting;
+import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.provider.Provider;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.provider.UpdateHookException;
+import codes.thischwa.dyndrest.server.config.DynamicSecurityChainManager;
+import codes.thischwa.dyndrest.service.HostZoneService;
 import codes.thischwa.dyndrest.util.NetUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,6 +14,20 @@ import lombok.extern.slf4j.Slf4j;
 @SuppressWarnings("RedundantThrows")
 @Slf4j
 public abstract class GenericProvider implements Provider {
+
+  protected final AppConfig appConfig;
+  protected final DynamicSecurityChainManager securityChainManager;
+  protected final HostZoneService hostZoneService;
+
+  protected GenericProvider() {
+    this(null, null, null);
+  }
+
+  protected GenericProvider(AppConfig appConfig, DynamicSecurityChainManager securityChainManager, HostZoneService hostZoneService) {
+    this.appConfig = appConfig;
+    this.securityChainManager = securityChainManager;
+    this.hostZoneService = hostZoneService;
+  }
 
   /**
    * Resolves the IP address of the given host via a name server request.<br/>

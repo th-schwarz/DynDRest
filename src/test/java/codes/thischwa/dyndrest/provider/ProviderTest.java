@@ -21,6 +21,10 @@ class ProviderTest extends AbstractIntegrationTest {
 
   private static class TestProvider extends GenericProvider {
 
+    private TestProvider() {
+      super();
+    }
+
     @Override
     public void validateHostZoneConfiguration() throws IllegalArgumentException {}
 

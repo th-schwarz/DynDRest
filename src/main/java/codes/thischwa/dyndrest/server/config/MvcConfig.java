@@ -2,6 +2,7 @@ package codes.thischwa.dyndrest.server.config;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import org.jspecify.annotations.Nullable;
 import org.springframework.boot.convert.ApplicationConversionService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -22,6 +23,7 @@ public class MvcConfig implements WebMvcConfigurer {
 
   private static class InetAdrConverter implements Converter<String, InetAddress> {
 
+    @Nullable
     @Override
     public InetAddress convert(String source) {
       if (ObjectUtils.isEmpty(source)) {
