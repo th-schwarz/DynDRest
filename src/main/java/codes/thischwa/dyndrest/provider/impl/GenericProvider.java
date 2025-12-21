@@ -19,10 +19,6 @@ public abstract class GenericProvider implements Provider {
   protected final DynamicSecurityChainManager securityChainManager;
   protected final HostZoneService hostZoneService;
 
-  protected GenericProvider() {
-    this(null, null, null);
-  }
-
   protected GenericProvider(AppConfig appConfig, DynamicSecurityChainManager securityChainManager, HostZoneService hostZoneService) {
     this.appConfig = appConfig;
     this.securityChainManager = securityChainManager;

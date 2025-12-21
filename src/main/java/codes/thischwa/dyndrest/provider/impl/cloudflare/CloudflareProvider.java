@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.InitializingBean;
 
-/** Implementation for the Cloudflare API */
+/** Implementation for the Cloudflare API. */
 @Slf4j
 public class CloudflareProvider extends GenericProvider implements InitializingBean {
 
