@@ -34,27 +34,6 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
   }
 
   @Override
-  public void validateHostZoneConfiguration() throws IllegalArgumentException {
-    if (appConfig.hostValidationEnabled()) {
-      hostZoneService.getConfiguredZones().forEach(this::zoneConfirmed);
-    }
-    // Register all configured hosts for authentication
-    registerHostsForAuthentication();
-  }
-
-  /**
-   * Registers all configured hosts for authentication.
-   * Each host will be authenticated with hostname=user and apiToken=password.
-   */
-  private void registerHostsForAuthentication() {
-    List<HostEnriched> hosts = hostZoneService.getConfiguredHosts();
-    for (HostEnriched host : hosts) {
-      securityChainManager.addOrUpdateHost(host);
-    }
-    log.info("Registered {} hosts for authentication", hosts.size());
-  }
-
-  @Override
   public void update(String host, IpSetting ipSetting) throws ProviderException {
     String sld = host.substring(0, host.indexOf("."));
 
@@ -92,7 +71,9 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
     zcw.update(zone);
   }
 
-  private void zoneConfirmed(codes.thischwa.dyndrest.model.Zone myZone)
+
+  @Override
+  public void confirmZone(codes.thischwa.dyndrest.model.Zone myZone)
       throws IllegalArgumentException {
     Zone zone;
     try {

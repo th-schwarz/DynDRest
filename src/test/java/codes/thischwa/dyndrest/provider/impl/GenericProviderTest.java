@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import codes.thischwa.dyndrest.model.IpSetting;
+import codes.thischwa.dyndrest.model.Zone;
 import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.provider.UpdateHookException;
@@ -115,13 +116,15 @@ class GenericProviderTest {
     }
 
     @Override
+    public void confirmZone(Zone zone) {
+    }
+
+    @Override
     public void validateHostZoneConfiguration() throws IllegalArgumentException {
-      // Test implementation
     }
 
     @Override
     public void update(String host, IpSetting ipSetting) throws ProviderException {
-      // Test implementation
     }
 
     @Override

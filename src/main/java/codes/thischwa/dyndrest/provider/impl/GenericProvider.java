@@ -1,5 +1,6 @@
 package codes.thischwa.dyndrest.provider.impl;
 
+import codes.thischwa.dyndrest.model.HostEnriched;
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.provider.Provider;
@@ -8,6 +9,7 @@ import codes.thischwa.dyndrest.provider.UpdateHookException;
 import codes.thischwa.dyndrest.server.config.DynamicSecurityChainManager;
 import codes.thischwa.dyndrest.service.HostZoneService;
 import codes.thischwa.dyndrest.util.NetUtil;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
 /** Generic helper class provider implementations. */
@@ -23,6 +25,27 @@ public abstract class GenericProvider implements Provider {
     this.appConfig = appConfig;
     this.securityChainManager = securityChainManager;
     this.hostZoneService = hostZoneService;
+  }
+
+  @Override
+  public void validateHostZoneConfiguration() throws IllegalArgumentException {
+    if (appConfig.hostValidationEnabled()) {
+      hostZoneService.getConfiguredZones().forEach(this::confirmZone);
+    }
+    // Register all configured hosts for authentication
+    registerHostsForAuthentication();
+  }
+
+  /**
+   * Registers all configured hosts for authentication.
+   * Each host will be authenticated with hostname=user and apiToken=password.
+   */
+  protected void registerHostsForAuthentication() {
+    List<HostEnriched> hosts = hostZoneService.getConfiguredHosts();
+    for (HostEnriched host : hosts) {
+      securityChainManager.addOrUpdateHost(host);
+    }
+    log.info("Registered {} hosts for authentication", hosts.size());
   }
 
   /**

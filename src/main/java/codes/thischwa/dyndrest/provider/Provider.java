@@ -1,6 +1,7 @@
 package codes.thischwa.dyndrest.provider;
 
 import codes.thischwa.dyndrest.model.IpSetting;
+import codes.thischwa.dyndrest.model.Zone;
 import codes.thischwa.dyndrest.provider.impl.GenericProvider;
 
 /**
@@ -10,6 +11,13 @@ import codes.thischwa.dyndrest.provider.impl.GenericProvider;
  */
 @SuppressWarnings("EmptyMethod")
 public interface Provider {
+
+  /**
+   * Confirms the specified DNS zone during configuration validation.
+   *
+   * @param zone the DNS zone to be confirmed
+   */
+  void confirmZone(Zone zone);
 
   /** Validates the host configuration. */
   void validateHostZoneConfiguration() throws IllegalArgumentException;

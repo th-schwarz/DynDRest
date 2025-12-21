@@ -24,7 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.InitializingBean;
 
-/** Implementation for the Cloudflare API. */
+/**
+ * Implementation for the Cloudflare API.
+ */
 @Slf4j
 public class CloudflareProvider extends GenericProvider implements InitializingBean {
 
@@ -38,27 +40,6 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
     this.defaultTtl = config.defaultTtl();
     cfDnsClient =
         new CfDnsClient(config.baseUrl(), config.email(), config.apiKey());
-  }
-
-  @Override
-  public void validateHostZoneConfiguration() throws IllegalArgumentException {
-    if (appConfig.hostValidationEnabled()) {
-      hostZoneService.getConfiguredZones().forEach(this::zoneConfirmed);
-    }
-    // Register all configured hosts for authentication
-    registerHostsForAuthentication();
-  }
-
-  /**
-   * Registers all configured hosts for authentication.
-   * Each host will be authenticated with hostname=user and apiToken=password.
-   */
-  private void registerHostsForAuthentication() {
-    List<HostEnriched> hosts = hostZoneService.getConfiguredHosts();
-    for (HostEnriched host : hosts) {
-      securityChainManager.addOrUpdateHost(host);
-    }
-    log.info("Registered {} hosts for authentication", hosts.size());
   }
 
   @Override
@@ -123,7 +104,7 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
    * Deletes specified DNS records of types A and AAAA if they exist for a given zone and subdomain.
    *
    * @param zone The zone entity that represents the DNS zone where the records should be deleted.
-   * @param sld The second-level domain (subdomain) for which the DNS records should be deleted.
+   * @param sld  The second-level domain (subdomain) for which the DNS records should be deleted.
    * @throws CloudflareApiException If an error occurs while interacting with the Cloudflare API.
    */
   private void sldDeleteIpSettings(ZoneEntity zone, String sld) throws CloudflareApiException {
@@ -131,7 +112,8 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
     cfDnsClient.recordDeleteTypeIfExists(zone, sld, RecordType.AAAA);
   }
 
-  private void zoneConfirmed(Zone myZone) throws IllegalArgumentException {
+  @Override
+  public void confirmZone(Zone myZone) throws IllegalArgumentException {
     ZoneEntity zone;
     try {
       zone = cfDnsClient.zoneInfo(myZone.getName());
@@ -168,7 +150,7 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
    *
    * @param host the host
    * @return the zone
-   * @throws ProviderException the provider exception
+   * @throws ProviderException        the provider exception
    * @throws IllegalArgumentException the illegal argument exception
    */
   ZoneEntity fetchZoneFromHost(String host) throws ProviderException, IllegalArgumentException {
@@ -200,11 +182,11 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
    * be deleted.
    *
    * @param zone The ZoneEntity object representing the DNS zone where the operation is performed.
-   * @param sld The second-level domain (SLD) for which the DNS record is being managed.
+   * @param sld  The second-level domain (SLD) for which the DNS record is being managed.
    * @param ipv4 An optional IPv4 address for the DNS A record. If null, the A record will be
-   *     deleted.
+   *             deleted.
    * @param ipv6 An optional IPv6 address for the DNS AAAA record. If null, the AAAA record will be
-   *     deleted.
+   *             deleted.
    * @return A boolean indicating whether any DNS record was created, updated, or deleted.
    * @throws CloudflareApiException If an error occurs during the operation with the Cloudflare API.
    */
