@@ -1,8 +1,8 @@
 package codes.thischwa.dyndrest.server.controller;
 
 import codes.thischwa.dyndrest.model.HostEnriched;
-import codes.thischwa.dyndrest.service.ControllerService;
 import codes.thischwa.dyndrest.server.config.DynamicSecurityChainManager;
+import codes.thischwa.dyndrest.service.ControllerService;
 import codes.thischwa.dyndrest.service.HostZoneService;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
@@ -36,8 +36,8 @@ public class RouterController implements RouterRoutes {
   }
 
   @Override
-  public ResponseEntity<Void> routerUpdateHost(
-      @AuthenticationPrincipal UserDetails userDetails, String host, InetAddress ipv4, InetAddress ipv6, HttpServletRequest req) {
+  public ResponseEntity<Void> routerUpdateHost(@AuthenticationPrincipal UserDetails userDetails, String host, InetAddress ipv4,
+                                               InetAddress ipv6, HttpServletRequest req) {
     log.debug(
         "entered #routerUpdateHost: host={}, ipv4={}, ipv6={}",
         host,
@@ -47,17 +47,18 @@ public class RouterController implements RouterRoutes {
     Optional<HostEnriched> optHost = hostZoneService.getHost(host);
     if (optHost.isEmpty()) {
       log.warn("Host not found: {}", host);
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     // CRITICAL: Check if the authenticated username matches the host in the path
     String authenticatedUsername = userDetails.getUsername();
     if (!authenticatedUsername.equals(host) || !securityChainManager.isHostRegistered(host)) {
       log.warn("Authorization failed: User {} attempted to update host {}", authenticatedUsername, host);
-      return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     log.debug("Authorization successful: User {} updating host {}", authenticatedUsername, host);
-    return controllerService.processIpUpdate(host, ipv4, ipv6, req);
+    ResponseEntity<Void> response = controllerService.processIpUpdate(host, ipv4, ipv6, req);
+    return response;
   }
 }

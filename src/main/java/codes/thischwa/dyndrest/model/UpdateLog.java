@@ -49,6 +49,7 @@ public class UpdateLog extends AbstractJdbcEntity {
   /** The Status enum represents the possible statuses for an update log entry. */
   public enum Status {
     failed,
+    waiting,
     success
   }
 }

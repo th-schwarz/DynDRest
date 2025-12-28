@@ -1,6 +1,7 @@
 package codes.thischwa.dyndrest.util;
 
 import codes.thischwa.dyndrest.model.IpSetting;
+import jakarta.servlet.http.HttpServletRequest;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -157,5 +158,21 @@ public class NetUtil {
     } catch (UnknownHostException e) {
       throw new IllegalArgumentException("Invalid IP address: " + ip, e);
     }
+  }
+
+  /**
+   * Retrieves the remote address of a client making the request. If the "X-FORWARDED-FOR" header is present,
+   * it uses the value of that header. Otherwise, it falls back to the `getRemoteAddr` method of the request.
+   *
+   * @param request the {@link HttpServletRequest} object from which the remote address is extracted
+   * @return an {@link InetAddress} object representing the remote address of the client
+   * @throws IllegalArgumentException if the retrieved address is not a valid IP address
+   */
+  public static InetAddress fetchRemoteAddress(HttpServletRequest request) {
+    String remoteAddr = request.getHeader("X-FORWARDED-FOR");
+    if (remoteAddr == null) {
+      remoteAddr = request.getRemoteAddr();
+    }
+    return convert(remoteAddr);
   }
 }

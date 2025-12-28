@@ -1,25 +1,25 @@
 package codes.thischwa.dyndrest.service;
 
+import codes.thischwa.dyndrest.model.HostEnriched;
+import codes.thischwa.dyndrest.model.HostInfoHolder;
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.model.UpdateLog;
 import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.provider.Provider;
-import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.util.NetUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Service class that handles IP update processing for a given host.
- *
+ * <p>
  * The {@code ControllerService} is responsible for orchestrating the validation and update of IP
  * settings associated with a host. It integrates with a DNS provider implementation, application
  * configuration, and a logging service to ensure that updates are processed correctly and recorded
@@ -35,48 +35,52 @@ public class ControllerService {
 
   private final UpdateLogService updateLogService;
 
-  public ControllerService(Provider provider, AppConfig config, UpdateLogService updateLogService) {
+  private final HostOrderService hostOrderService;
+
+  private final HostZoneService hostZoneService;
+
+  public ControllerService(Provider provider, AppConfig config, UpdateLogService updateLogService, ZoneUpdaterScheduler zoneUpdaterScheduler,
+                           HostOrderService hostOrderService, HostZoneService hostZoneService) {
     this.provider = provider;
     this.config = config;
     this.updateLogService = updateLogService;
+    this.hostOrderService = hostOrderService;
+    this.hostZoneService = hostZoneService;
   }
 
   public ResponseEntity<Void> processIpUpdate(String host, @Nullable InetAddress ipv4,
                                               @Nullable InetAddress ipv6, HttpServletRequest req) {
+    Optional<HostEnriched> optHost = hostZoneService.getHost(host);
+    if (optHost.isEmpty()) {
+      return ResponseEntity.notFound().build();
+    }
     IpSetting reqIpSetting = new IpSetting(ipv4, ipv6);
     if (reqIpSetting.isNotSet()) {
       log.debug("Both IP parameters are null, try to fetch the remote IP.");
-      String remoteIp = req.getRemoteAddr();
-      if (remoteIp == null || !NetUtil.isIp(remoteIp)) {
+      InetAddress remoteIp;
+      try {
+        remoteIp = NetUtil.fetchRemoteAddress(req);
+      } catch (Exception e) {
         log.error("Couldn't determine the remote ip!");
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
       }
-      log.debug("Fetched remote IP: {}", remoteIp);
+      log.debug("Fetched remote IP: {}", remoteIp.getHostAddress());
       try {
         reqIpSetting = new IpSetting(remoteIp);
-      } catch (UnknownHostException e) {
-        log.error("Remote ip isn't valid: {}", remoteIp);
+      } catch (IllegalArgumentException e) {
+        log.error("Remote ip isn't valid: {}", remoteIp.getHostAddress());
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
       }
     }
 
-    // processing the update
-    try {
-      IpSetting current = provider.info(host);
-      if (current.equals(reqIpSetting)) {
-        log.debug("IPs didn't changed for {}, no update required!", host);
-      } else {
-        provider.processUpdate(host, reqIpSetting);
-        log.info("Updated host {} successful with: {}", host, reqIpSetting);
-        // building the update log
-        updateLogService.log(host, reqIpSetting, UpdateLog.Status.success);
-        return new ResponseEntity<>(HttpStatusCode.valueOf(config.updateIpChangedStatus()));
-      }
-    } catch (ProviderException e) {
-      log.error("Updated host failed: " + host, e);
-      updateLogService.log(host, reqIpSetting, UpdateLog.Status.failed);
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    // add host order
+    HostInfoHolder hostInfoHolder = HostInfoHolder.of(optHost.get(), reqIpSetting);
+    processIpUpdate(hostInfoHolder);
     return ResponseEntity.ok().build();
+  }
+
+  public void processIpUpdate(HostInfoHolder hostInfoHolder) {
+    updateLogService.log(hostInfoHolder.getFullHost(), hostInfoHolder.getIpSetting(), UpdateLog.Status.waiting);
+    hostOrderService.addOrUpdateHost(hostInfoHolder);
   }
 }

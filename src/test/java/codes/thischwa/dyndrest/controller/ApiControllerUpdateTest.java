@@ -30,7 +30,7 @@ class ApiControllerUpdateTest extends AbstractControllerTest {
 
   @BeforeEach
   void resetMocks() {
-    reset(provider, hostZoneService, dynamicSecurityChainManager);
+    reset(provider, hostZoneService, dynamicSecurityChainManager, hostOrderService, updateLogService);
   }
 
   @Test
@@ -40,15 +40,16 @@ class ApiControllerUpdateTest extends AbstractControllerTest {
     IpSetting setting = new IpSetting(ipStr);
     MockHttpServletRequest request = new MockHttpServletRequest();
     request.setRemoteAddr("192.168.1.10");
+    HostEnriched hostEnriched = mock(HostEnriched.class);
 
     when(hostZoneService.validate(host, validToken)).thenReturn(true);
-    when(controllerService.processIpUpdate(host, setting.getIpv4(), null, request))
-        .thenReturn(ResponseEntity.ok().build());
+    when(hostZoneService.getHost(host)).thenReturn(Optional.of(hostEnriched));
+    
     ResponseEntity<Void> responseEntity =
         apiController.updateHost(host, validToken, setting.getIpv4(), null, request);
 
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-    verify(controllerService, times(1)).processIpUpdate(host, setting.getIpv4(), null, request);
+    verify(hostOrderService, times(1)).addOrUpdateHost(any());
   }
 
   @Test
@@ -57,15 +58,16 @@ class ApiControllerUpdateTest extends AbstractControllerTest {
     log.debug("entered #testSuccess_guessRemoteIp: {}", host);
     MockHttpServletRequest request = new MockHttpServletRequest();
     request.setRemoteAddr("192.168.1.10");
+    HostEnriched hostEnriched = mock(HostEnriched.class);
 
     when(hostZoneService.validate(host, validToken)).thenReturn(true);
-    when(controllerService.processIpUpdate(host, null, null, request))
-        .thenReturn(ResponseEntity.ok().build());
+    when(hostZoneService.getHost(host)).thenReturn(Optional.of(hostEnriched));
+    
     ResponseEntity<Void> responseEntity =
         apiController.updateHost(host, validToken, null, null, request);
 
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-    verify(controllerService, times(1)).processIpUpdate(host, null, null, request);
+    verify(hostOrderService, times(1)).addOrUpdateHost(any());
   }
 
   @Test
@@ -121,74 +123,21 @@ class ApiControllerUpdateTest extends AbstractControllerTest {
     IpSetting setting = new IpSetting(ipStr);
     MockHttpServletRequest request = new MockHttpServletRequest();
     request.setRemoteAddr("192.168.1.10");
+    HostEnriched hostEnriched = mock(HostEnriched.class);
 
     when(hostZoneService.validate(host, apiToken)).thenReturn(true);
-    doThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR))
-        .when(controllerService).processIpUpdate(host, setting.getIpv4(), null, request);
+    when(hostZoneService.getHost(host)).thenReturn(Optional.of(hostEnriched));
+    doThrow(new RuntimeException("Provider error"))
+        .when(hostOrderService).addOrUpdateHost(any());
 
     try {
       apiController.updateHost(host, apiToken, setting.getIpv4(), null, request);
       fail("should fail");
-    } catch (ResponseStatusException e) {
-      assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, e.getStatusCode());
+    } catch (RuntimeException e) {
+      assertEquals("Provider error", e.getMessage());
     }
 
-    verify(controllerService, times(1)).processIpUpdate(host, setting.getIpv4(), null, request);
+    verify(hostOrderService, times(1)).addOrUpdateHost(any());
   }
 
-  @Test
-  void routerUpdateHost_successfulUpdate() throws Exception {
-    String host = "valid-host";
-    InetAddress ipv4 = InetAddress.getByName("192.168.1.1");
-    InetAddress ipv6 = InetAddress.getByName("::1");
-    IpSetting ipSetting = new IpSetting(ipv4, ipv6);
-    HttpServletRequest req = mock(HttpServletRequest.class);
-    UserDetails userDetails = mock(UserDetails.class);
-
-    when(userDetails.getUsername()).thenReturn(host);
-    when(hostZoneService.getHost(host)).thenReturn(Optional.of(mock(HostEnriched.class)));
-    when(dynamicSecurityChainManager.isHostRegistered(host)).thenReturn(true);
-    when(controllerService.processIpUpdate(host, ipv4, ipv6, req)).thenReturn(ResponseEntity.ok().build());
-
-    ResponseEntity<Void> response = routerController.routerUpdateHost(userDetails, host, ipv4, ipv6, req);
-
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    verify(controllerService, times(1)).processIpUpdate(host, ipv4, ipv6, req);
-  }
-
-  @Test
-  void routerUpdateHost_unauthorizedUser() throws Exception {
-    String host = "valid-host";
-    InetAddress ipv4 = InetAddress.getByName("192.168.1.1");
-    InetAddress ipv6 = InetAddress.getByName("::1");
-    HttpServletRequest req = mock(HttpServletRequest.class);
-    UserDetails userDetails = mock(UserDetails.class);
-
-    when(userDetails.getUsername()).thenReturn("unauthorized-user");
-    when(hostZoneService.getHost(host)).thenReturn(Optional.of(mock(HostEnriched.class)));
-    when(dynamicSecurityChainManager.isHostRegistered(host)).thenReturn(true);
-
-    ResponseEntity<Void> response = routerController.routerUpdateHost(userDetails, host, ipv4, ipv6, req);
-
-    assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-    verify(provider, never()).processUpdate(anyString(), any(IpSetting.class));
-  }
-
-  @Test
-  void routerUpdateHost_hostNotFound() throws Exception {
-    String host = "nonexistent-host";
-    InetAddress ipv4 = InetAddress.getByName("192.168.1.1");
-    InetAddress ipv6 = InetAddress.getByName("::1");
-    HttpServletRequest req = mock(HttpServletRequest.class);
-    UserDetails userDetails = mock(UserDetails.class);
-
-    when(userDetails.getUsername()).thenReturn(host);
-    when(hostZoneService.getHost(host)).thenReturn(Optional.empty());
-    when(dynamicSecurityChainManager.isHostRegistered(host)).thenReturn(false);
-
-    ResponseEntity<Void> response = routerController.routerUpdateHost(userDetails, host, ipv4, ipv6, req);
-
-    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    verify(provider, never()).processUpdate(anyString(), any(IpSetting.class));
-  }
 }

@@ -19,5 +19,6 @@ public record AppConfig(
     @Nullable String healthCheckUserName,
     @Nullable String healthCheckUserPassword,
     @Nullable String adminUserName,
-    @Nullable String adminUserPassword) {
+    @Nullable String adminUserPassword,
+    int updateIntervalSeconds) {
 }

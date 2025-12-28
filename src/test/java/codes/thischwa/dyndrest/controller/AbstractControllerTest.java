@@ -1,35 +1,61 @@
 package codes.thischwa.dyndrest.controller;
 
-import static org.mockito.Mockito.mock;
-
 import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.provider.Provider;
-import codes.thischwa.dyndrest.server.controller.ApiController;
-import codes.thischwa.dyndrest.service.ControllerService;
-import codes.thischwa.dyndrest.server.controller.RouterController;
 import codes.thischwa.dyndrest.server.config.DynamicSecurityChainManager;
+import codes.thischwa.dyndrest.server.controller.ApiController;
+import codes.thischwa.dyndrest.server.controller.RouterController;
+import codes.thischwa.dyndrest.service.ControllerService;
+import codes.thischwa.dyndrest.service.HostOrderService;
 import codes.thischwa.dyndrest.service.HostZoneService;
 import codes.thischwa.dyndrest.service.UpdateLogService;
-import org.junit.jupiter.api.BeforeAll;
+import codes.thischwa.dyndrest.service.ZoneUpdaterScheduler;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
+@SpringBootTest
 abstract class AbstractControllerTest {
 
-  protected final Provider provider = mock(Provider.class);
-  private final AppConfig appConfig =
-      new AppConfig("dummy", false, false, 200, 4, "", false, null, null, false, null, null, "admin", "adm1n");
-  protected final UpdateLogService updateLogService = mock(UpdateLogService.class);
-  protected final HostZoneService hostZoneService = mock(HostZoneService.class);
-  protected final DynamicSecurityChainManager dynamicSecurityChainManager = mock(DynamicSecurityChainManager.class);
-  protected final ControllerService controllerService = mock(ControllerService.class);
+  @TestConfiguration
+  static class TestConfig {
+    @Bean
+    public AppConfig appConfig() {
+      return new AppConfig("dummy", false, false, 200, 4, "", false, null, null, false, null, null, "admin", "adm1n", 0);
+    }
+  }
 
+  @MockitoBean
+  protected Provider provider;
+
+  @MockitoBean
+  protected UpdateLogService updateLogService;
+
+  @MockitoBean
+  protected HostZoneService hostZoneService;
+
+  @MockitoBean
+  protected DynamicSecurityChainManager dynamicSecurityChainManager;
+
+  @Autowired
+  protected ControllerService controllerService;
+
+  @MockitoBean
+  protected ZoneUpdaterScheduler zoneUpdaterScheduler;
+
+  @MockitoBean
+  protected HostOrderService hostOrderService;
+
+  @Autowired
   protected ApiController apiController;
+
+  @Autowired
   protected RouterController routerController;
 
-  @BeforeAll
-  void init() {
-    apiController = new ApiController(provider, hostZoneService, controllerService);
-    routerController = new RouterController(controllerService, hostZoneService, dynamicSecurityChainManager);
-  }
+  @Autowired
+  protected AppConfig appConfig;
 
   private int hostCount = 0;
 

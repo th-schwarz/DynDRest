@@ -36,6 +36,7 @@ dyndrest:
       enabled: false
       path: ./restore
     dump-file: dump.sql
+  update-interval-seconds: 30
 
 ##  configuration for the domain robot sdk
 domainrobot:

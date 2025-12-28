@@ -30,5 +30,7 @@ class AppConfigTest extends AbstractIntegrationTest {
 
     assertEquals("admin", appConfig.adminUserName());
     assertEquals("adm1n", appConfig.adminUserPassword());
+
+    assertEquals(1, appConfig.updateIntervalSeconds());
   }
 }
