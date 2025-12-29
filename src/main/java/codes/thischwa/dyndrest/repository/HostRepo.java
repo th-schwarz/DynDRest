@@ -1,7 +1,7 @@
 package codes.thischwa.dyndrest.repository;
 
-import codes.thischwa.dyndrest.model.HostEnriched;
 import codes.thischwa.dyndrest.model.Host;
+import codes.thischwa.dyndrest.model.HostEnriched;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jdbc.repository.query.Query;

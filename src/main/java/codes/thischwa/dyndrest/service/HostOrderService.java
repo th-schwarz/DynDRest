@@ -1,11 +1,9 @@
 package codes.thischwa.dyndrest.service;
 
-import codes.thischwa.dyndrest.model.HostEnriched;
 import codes.thischwa.dyndrest.model.HostInfoHolder;
 import codes.thischwa.dyndrest.model.UpdateLog;
 import codes.thischwa.dyndrest.util.ZoneStringUtil;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;

@@ -1,8 +1,8 @@
 package codes.thischwa.dyndrest.provider.impl.domainrobot;
 
-import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.model.HostEnriched;
 import codes.thischwa.dyndrest.model.IpSetting;
+import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.provider.impl.GenericProvider;
 import codes.thischwa.dyndrest.server.config.DynamicSecurityChainManager;

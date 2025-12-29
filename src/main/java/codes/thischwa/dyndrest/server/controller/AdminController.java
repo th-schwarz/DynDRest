@@ -1,8 +1,8 @@
 package codes.thischwa.dyndrest.server.controller;
 
-import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.model.HostEnriched;
 import codes.thischwa.dyndrest.model.Zone;
+import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.provider.Provider;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.service.HostZoneService;

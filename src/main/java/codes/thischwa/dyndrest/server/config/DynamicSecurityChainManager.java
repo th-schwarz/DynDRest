@@ -1,7 +1,7 @@
 package codes.thischwa.dyndrest.server.config;
 
-import static codes.thischwa.dyndrest.server.config.SecurityConfig.PASSWORD_ENCODER;
 import static codes.thischwa.dyndrest.server.config.Roles.ROLE_HOST;
+import static codes.thischwa.dyndrest.server.config.SecurityConfig.PASSWORD_ENCODER;
 
 import codes.thischwa.dyndrest.model.HostEnriched;
 import java.util.HashMap;

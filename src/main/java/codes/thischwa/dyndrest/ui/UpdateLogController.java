@@ -1,7 +1,7 @@
 package codes.thischwa.dyndrest.ui;
 
-import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.model.UpdateLogEnriched;
+import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.service.UpdateLogService;
 import codes.thischwa.dyndrest.util.NetUtil;
 import java.util.List;

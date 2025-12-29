@@ -1,7 +1,7 @@
 package codes.thischwa.dyndrest.repository;
 
-import codes.thischwa.dyndrest.model.UpdateLogEnriched;
 import codes.thischwa.dyndrest.model.UpdateLog;
+import codes.thischwa.dyndrest.model.UpdateLogEnriched;
 import java.util.List;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.ListCrudRepository;
