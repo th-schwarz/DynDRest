@@ -8,6 +8,7 @@ import codes.thischwa.dyndrest.model.config.ZoneImportConfig;
 import codes.thischwa.dyndrest.repository.HostRepo;
 import codes.thischwa.dyndrest.repository.ZoneRepo;
 import codes.thischwa.dyndrest.server.config.DynamicSecurityChainManager;
+import codes.thischwa.dyndrest.util.ZoneStringUtil;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -154,7 +155,7 @@ public class HostZoneService {
     host.setChanged(tmpHost.getChanged());
 
     Zone zone = zoneRepo.findById(host.getZoneId()).get();
-    String fqdn = getFqdn(host.getSld(), zone);
+    String fqdn = ZoneStringUtil.getFqdn(host.getSld(), zone);
     Optional<HostEnriched> optHostEnriched = hostRepo.findByFullHost(fqdn);
     optHostEnriched.ifPresent(securityChainManager::addOrUpdateHost);
   }
@@ -202,7 +203,7 @@ public class HostZoneService {
     host.setSld(hostname);
     host.setApiToken(apiToken);
     saveOrUpdate(host);
-    String fqdn = getFqdn(hostname, zone);
+    String fqdn = ZoneStringUtil.getFqdn(hostname, zone);
     Optional<HostEnriched> optHostEnriched = hostRepo.findByFullHost(fqdn);
     optHostEnriched.ifPresent(securityChainManager::addOrUpdateHost);
     return host;
@@ -264,7 +265,7 @@ public class HostZoneService {
       throw new IllegalArgumentException("Host id should not be null.");
     }
     Zone zone = zoneRepo.findById(host.getZoneId()).get();
-    String fqdn = getFqdn(host.getSld(), zone);
+    String fqdn = ZoneStringUtil.getFqdn(host.getSld(), zone);
     securityChainManager.removeHost(fqdn);
     hostRepo.deleteById(host.getId());
   }
@@ -290,7 +291,4 @@ public class HostZoneService {
     return tmpHost;
   }
 
-  static String getFqdn(String sld, Zone zone) {
-    return sld + "." + zone.getName();
-  }
 }

@@ -1,11 +1,12 @@
 package codes.thischwa.dyndrest.service;
 
+import codes.thischwa.dyndrest.model.HostEnriched;
 import codes.thischwa.dyndrest.model.HostInfoHolder;
 import codes.thischwa.dyndrest.model.UpdateLog;
+import codes.thischwa.dyndrest.util.ZoneStringUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,10 +23,10 @@ public class HostOrderService {
   private Map<String, HostInfoHolder> currentHosts = new ConcurrentHashMap<>();
 
   @Getter
-  private List<HostInfoHolder> hostsToUpdate = Collections.synchronizedList(new ArrayList<>());
+  private Map<String, List<HostInfoHolder>> hostsPerZoneToUpdate = new ConcurrentHashMap<>();
 
   @Getter
-  private List<String> hostsToDelete = Collections.synchronizedList(new ArrayList<>());
+  private Map<String, List<String>> hostsPerZoneToDelete = new ConcurrentHashMap<>();
 
   public HostOrderService(UpdateLogService updateLogService) {
     this.updateLogService = updateLogService;
@@ -37,38 +38,48 @@ public class HostOrderService {
 
   public void removeFromCurrentHosts(String host) {
     currentHosts.remove(host);
-    hostsToDelete.add(host);
   }
 
   public void addOrUpdateHost(HostInfoHolder... hosts) {
     for (HostInfoHolder host : hosts) {
-      if (!currentHosts.containsKey(host.getFullHost())) {
+      String zoneStr = host.getZone();
+      if (!hostExists(host.getFullHost())) {
+        List<HostInfoHolder> hostsToUpdate = hostsPerZoneToUpdate.computeIfAbsent(zoneStr, k -> new ArrayList<>());
         hostsToUpdate.add(host);
         log.debug("Added new host: {}", host);
-        return;
-      }
-      HostInfoHolder existing = currentHosts.get(host.getFullHost());
-      if (!existing.getIpSetting().equals(host.getIpSetting())) {
-        hostsToUpdate.add(host);
-        log.debug("Added host to update: {}", host);
       } else {
-        log.debug("Host already up to date: {}", host);
+        HostInfoHolder existing = currentHosts.get(host.getFullHost());
+        if (!existing.getIpSetting().equals(host.getIpSetting())) {
+          List<HostInfoHolder> hostsToUpdate = hostsPerZoneToUpdate.computeIfAbsent(zoneStr, k -> new ArrayList<>());
+          hostsToUpdate.stream().filter(h -> h.getFullHost().equals(host.getFullHost())).findFirst().ifPresent(hostsToUpdate::remove);
+          hostsToUpdate.add(host);
+          log.debug("Added host to update: {}", host);
+        } else {
+          log.debug("Host already up to date: {}", host);
+        }
       }
-      updateLogService.log(host.getFullHost(), host.getIpSetting(), UpdateLog.Status.success);
     }
   }
 
   public void deleteHost(String... hosts) {
-    hostsToDelete.addAll(Arrays.asList(hosts));
+    for (String host : hosts) {
+      String zone = ZoneStringUtil.getZoneName(host);
+      hostsPerZoneToDelete.computeIfAbsent(zone, k -> new ArrayList<>()).add(host);
+    }
   }
 
   public void afterUpdate(HostInfoHolder... hosts) {
     for (HostInfoHolder host : hosts) {
+      String zoneStr = host.getZone();
       String fullHost = host.getFullHost();
       currentHosts.put(fullHost, host);
+      List<HostInfoHolder> hostsToUpdate = hostsPerZoneToUpdate.get(zoneStr);
       hostsToUpdate.removeIf(h -> h.getFullHost().equals(fullHost));
+      updateLogService.log(host.getFullHost(), host.getIpSetting(), UpdateLog.Status.success);
+
+      List<String> hostsToDelete = hostsPerZoneToDelete.get(zoneStr);
+      hostsToDelete.remove(fullHost);
     }
-    hostsToDelete.clear();
   }
 
   public boolean hostExists(String host) {

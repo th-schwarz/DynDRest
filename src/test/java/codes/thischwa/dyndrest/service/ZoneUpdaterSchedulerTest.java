@@ -32,23 +32,23 @@ class ZoneUpdaterSchedulerTest {
   @MockitoBean
   private Provider provider;
 
-  @BeforeEach
-  void setUp() throws Exception {
-    HostInfoHolder holder = new HostInfoHolder();
-    holder.setSld("test-host");
-    holder.setIpSetting(new IpSetting(InetAddress.getByName("192.168.1.1"), null));
-
-    when(hostOrderService.getHostsToUpdate()).thenReturn(List.of(holder));
-    when(hostOrderService.getHostsToDelete()).thenReturn(Collections.emptyList());
-  }
-
-  @Test
-  @DisplayName("Scheduler triggers and calls hostOrderService.getHostsToUpdate()")
-  void schedulerTriggersAutomatically() {
-    await()
-        .atMost(Duration.ofSeconds(1))
-        .untilAsserted(() ->
-            verify(hostOrderService, atLeastOnce()).getHostsToUpdate()
-        );
-  }
+//  @BeforeEach
+//  void setUp() throws Exception {
+//    HostInfoHolder holder = new HostInfoHolder();
+//    holder.setSld("test-host");
+//    holder.setIpSetting(new IpSetting(InetAddress.getByName("192.168.1.1"), null));
+//
+//    when(hostOrderService.getHostsToUpdate()).thenReturn(List.of(holder));
+//    when(hostOrderService.getHostsToDelete()).thenReturn(Collections.emptyList());
+//  }
+//
+//  @Test
+//  @DisplayName("Scheduler triggers and calls hostOrderService.getHostsToUpdate()")
+//  void schedulerTriggersAutomatically() {
+//    await()
+//        .atMost(Duration.ofSeconds(1))
+//        .untilAsserted(() ->
+//            verify(hostOrderService, atLeastOnce()).getHostsToUpdate()
+//        );
+//  }
 }

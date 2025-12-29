@@ -5,6 +5,7 @@ import codes.thischwa.dyndrest.provider.Provider;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -30,8 +31,9 @@ public class ZoneUpdaterScheduler {
 
   @Scheduled(fixedDelayString = "${dyndrest.update-interval-seconds}", timeUnit = TimeUnit.SECONDS)
   void process() {
-    List<HostInfoHolder> hostsToUpdate = hostOrderService.getHostsToUpdate();
-    List<String> hostsToDelete = hostOrderService.getHostsToDelete();
+    // TODO must be processed per zone
+    List<HostInfoHolder> hostsToUpdate = hostOrderService.getHostsPerZoneToUpdate().values().stream().flatMap(List::stream).toList();
+    List<String> hostsToDelete = hostOrderService.getHostsPerZoneToDelete().values().stream().flatMap(List::stream).toList();
 
     if (hostsToUpdate.isEmpty() && hostsToDelete.isEmpty()) {
       log.debug("No zone updates found.");
@@ -44,7 +46,6 @@ public class ZoneUpdaterScheduler {
     for (HostInfoHolder host : hostsToUpdate) {
       try {
         provider.processUpdate(host.getFullHost(), host.getIpSetting());
-        hostOrderService.afterUpdate(host);
         log.info("Successfully updated host: {}", host.getFullHost());
       } catch (ProviderException e) {
         log.error("Failed to update host: {}", host.getFullHost(), e);
@@ -59,5 +60,7 @@ public class ZoneUpdaterScheduler {
         log.error("Failed to delete host: {}", host, e);
       }
     }
+
+    hostOrderService.afterUpdate(hostsToUpdate.toArray(new HostInfoHolder[0]));
   }
 }

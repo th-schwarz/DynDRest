@@ -21,3 +21,12 @@ databaseChangeLog:
             oldColumnName: name
             newColumnName: sld
             columnDataType: VARCHAR(112)
+
+  - changeSet:
+      id: 2
+      author: thilo schwarz
+      changes:
+        - modifyDataType:
+            tableName: update_log
+            columnName: status
+            newDataType: ENUM('success', 'failed', 'waiting')

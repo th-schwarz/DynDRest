@@ -8,7 +8,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.xbill.DNS.AAAARecord;
 import org.xbill.DNS.ARecord;
@@ -18,7 +17,9 @@ import org.xbill.DNS.Record;
 import org.xbill.DNS.TextParseException;
 import org.xbill.DNS.Type;
 
-/** Some network relevant utils. */
+/**
+ * Some network relevant utils.
+ */
 public class NetUtil {
 
   private NetUtil() {
@@ -61,7 +62,7 @@ public class NetUtil {
    * Build a basic auth string for the desired user and password.
    *
    * @param user the user
-   * @param pwd the pwd
+   * @param pwd  the pwd
    * @return the basic auth string
    */
   static String buildBasicAuth(String user, String pwd) {
