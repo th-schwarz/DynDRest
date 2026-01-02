@@ -9,6 +9,7 @@ import codes.thischwa.dyndrest.server.config.DynamicSecurityChainManager;
 import codes.thischwa.dyndrest.service.HostZoneService;
 import java.util.List;
 import java.util.Optional;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.domainrobot.sdk.models.generated.Zone;
 import org.springframework.beans.factory.InitializingBean;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.InitializingBean;
 @Slf4j
 class DomainRobotProvider extends GenericProvider implements InitializingBean {
 
+  @Getter
   private final ZoneClientWrapper zcw;
 
   /**
