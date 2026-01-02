@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import lombok.Data;
 import org.jspecify.annotations.Nullable;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 
 /**
  * AbstractJdbcModel is an abstract base class that provides common fields for JDBC models. It
@@ -18,4 +19,7 @@ public abstract class AbstractJdbcEntity {
   private Integer id;
 
   private LocalDateTime changed;
+
+  @Nullable @Transient
+  private String providerId;
 }

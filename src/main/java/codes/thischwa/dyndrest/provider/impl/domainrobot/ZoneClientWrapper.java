@@ -13,7 +13,9 @@ import org.domainrobot.sdk.models.generated.ResourceRecord;
 import org.domainrobot.sdk.models.generated.Zone;
 import org.jspecify.annotations.Nullable;
 
-/** Encapsulate the {@link ZoneClient} and adds same useful util methods. */
+/**
+ * Encapsulate the {@link ZoneClient} and adds same useful util methods.
+ */
 class ZoneClientWrapper {
 
   enum ResourceRecordTypeIp {
@@ -36,7 +38,7 @@ class ZoneClientWrapper {
         .anyMatch(
             rr ->
                 (rr.getType().equals(ResourceRecordTypeIp.A.toString())
-                        || rr.getType().equals(ResourceRecordTypeIp.AAAA.toString()))
+                    || rr.getType().equals(ResourceRecordTypeIp.AAAA.toString()))
                     && rr.getName().equals(sld));
   }
 
@@ -89,10 +91,24 @@ class ZoneClientWrapper {
     }
   }
 
+
+  /**
+   * Processes the ip settings for the desired zone and subtld, The corresponding resource record
+   * will be updated or removed if null.
+   *
+   * @param zone      the zone
+   * @param sld       the sld
+   * @param ipSetting the ip setting
+   */
+  void process(Zone zone, String sld, IpSetting ipSetting) {
+    processIpv4(zone, sld, ipSetting.getIpv4());
+    processIpv6(zone, sld, ipSetting.getIpv6());
+  }
+
   /**
    * Processes a zone-info for 'zone' and 'primaryNameServer'.
    *
-   * @param zone the zone to process the info
+   * @param zone              the zone to process the info
    * @param primaryNameServer the primary NS of the zone
    * @return the complete zone object from the domainrobot sdk
    * @throws ProviderException if an exception happens while processing the zone-info
@@ -108,27 +124,14 @@ class ZoneClientWrapper {
   }
 
   /**
-   * Processes the ip settings for the desired zone and subtld, The corresponding resource record
-   * will be updated or removed if null.
-   *
-   * @param zone the zone
-   * @param sld the sld
-   * @param ipSetting the ip setting
-   */
-  void process(Zone zone, String sld, IpSetting ipSetting) {
-    processIpv4(zone, sld, ipSetting.getIpv4());
-    processIpv6(zone, sld, ipSetting.getIpv6());
-  }
-
-  /**
    * Retrieves the IP settings for the given zone and second-level domain (SLD).
    * The method searches for resource records of type A (IPv4) and AAAA (IPv6) within the zone
    * and updates the corresponding IP settings.
    *
    * @param zone the zone in which to search for resource records
-   * @param sld the second-level domain to look up IP settings for
+   * @param sld  the second-level domain to look up IP settings for
    * @return an {@link IpSetting} object containing the IPv4 and/or IPv6 address, or an empty
-   *         {@code IpSetting} if no matching resource records are found
+   * {@code IpSetting} if no matching resource records are found
    */
   IpSetting info(Zone zone, String sld) {
     IpSetting ipSetting = new IpSetting();

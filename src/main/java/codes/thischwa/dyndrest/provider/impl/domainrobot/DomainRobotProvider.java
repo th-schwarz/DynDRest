@@ -1,34 +1,41 @@
 package codes.thischwa.dyndrest.provider.impl.domainrobot;
 
 import codes.thischwa.dyndrest.model.HostEnriched;
+import codes.thischwa.dyndrest.model.HostInfoHolder;
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.provider.impl.GenericProvider;
 import codes.thischwa.dyndrest.server.config.DynamicSecurityChainManager;
 import codes.thischwa.dyndrest.service.HostZoneService;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.domainrobot.sdk.models.generated.Zone;
+import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.InitializingBean;
 
-/** Provider implementation for the domainrobot sdk. */
+/**
+ * Provider implementation for the domainrobot sdk.
+ */
 @Slf4j
 class DomainRobotProvider extends GenericProvider implements InitializingBean {
 
+  @Getter
   private final ZoneClientWrapper zcw;
 
   /**
    * Instantiates a new Domain robot provider.
    *
-   * @param appConfig the app config
-   * @param hostZoneService the host zone service
-   * @param zcw the zcw
+   * @param appConfig            the app config
+   * @param hostZoneService      the host zone service
+   * @param zcw                  the zcw
    * @param securityChainManager the dynamic security chain manager
    */
   DomainRobotProvider(AppConfig appConfig, HostZoneService hostZoneService, ZoneClientWrapper zcw,
-      DynamicSecurityChainManager securityChainManager) {
+                      DynamicSecurityChainManager securityChainManager) {
     super(appConfig, securityChainManager, hostZoneService);
     this.zcw = zcw;
   }
@@ -71,6 +78,31 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
     zcw.update(zone);
   }
 
+  @Override
+  public void patch(String zoneStr, @Nullable List<HostInfoHolder> creates, @Nullable List<HostInfoHolder> updates,
+                    @Nullable List<String> deletes) throws ProviderException {
+    codes.thischwa.dyndrest.model.Zone zoneDb = hostZoneService.getZone(zoneStr);
+    Zone zone = zcw.info(zoneDb.getName(), zoneDb.getNs());
+    List<HostInfoHolder> hostsToProcess = new ArrayList<>();
+
+    if (creates != null) {
+      hostsToProcess.addAll(creates);
+    }
+    if (updates != null) {
+      hostsToProcess.addAll(updates);
+    }
+    if (!hostsToProcess.isEmpty()) {
+      for (HostInfoHolder create : hostsToProcess) {
+        zcw.process(zone, create.getSld(), create.getIpSetting());
+      }
+    }
+    if (deletes != null) {
+      for (String delete : deletes) {
+        zcw.removeSld(zone, delete);
+      }
+    }
+    zcw.update(zone);
+  }
 
   @Override
   public void confirmZone(codes.thischwa.dyndrest.model.Zone myZone)
@@ -106,7 +138,7 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
    *
    * @param host the host
    * @return the zone
-   * @throws ProviderException the provider exception
+   * @throws ProviderException        the provider exception
    * @throws IllegalArgumentException the illegal argument exception
    */
   Zone fetchZoneFromHost(String host) throws ProviderException, IllegalArgumentException {

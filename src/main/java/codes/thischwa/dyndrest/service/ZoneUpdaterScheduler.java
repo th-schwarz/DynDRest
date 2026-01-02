@@ -20,46 +20,32 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ZoneUpdaterScheduler {
 
-  private final HostOrderService hostOrderService;
+  private final ZoneUpdateOrderService zoneUpdateOrderService;
   private final Provider provider;
 
-  public ZoneUpdaterScheduler(HostOrderService hostOrderService, Provider provider) {
-    this.hostOrderService = hostOrderService;
+  public ZoneUpdaterScheduler(ZoneUpdateOrderService zoneUpdateOrderService, Provider provider) {
+    this.zoneUpdateOrderService = zoneUpdateOrderService;
     this.provider = provider;
   }
 
   @Scheduled(fixedDelayString = "${dyndrest.update-interval-seconds}", timeUnit = TimeUnit.SECONDS)
   void process() {
-    // TODO must be processed per zone
-    List<HostInfoHolder> hostsToUpdate = hostOrderService.getHostsPerZoneToUpdate().values().stream().flatMap(List::stream).toList();
-    List<String> hostsToDelete = hostOrderService.getHostsPerZoneToDelete().values().stream().flatMap(List::stream).toList();
-
-    if (hostsToUpdate.isEmpty() && hostsToDelete.isEmpty()) {
-      log.debug("No zone updates found.");
-      return;
-    }
-
-    log.info("Processing zone updates: {} hosts to update, {} hosts to delete",
-        hostsToUpdate.size(), hostsToDelete.size());
-
-    for (HostInfoHolder host : hostsToUpdate) {
+    for (String zone : zoneUpdateOrderService.getZones()) {
+      List<HostInfoHolder> hostsPerZoneToCreate = zoneUpdateOrderService.getHostsPerZoneToCreate().get(zone);
+      List<HostInfoHolder> hostsPerZoneToUpdate = zoneUpdateOrderService.getHostsPerZoneToUpdate().get(zone);
+      List<String> hostsPerZoneToDelete = zoneUpdateOrderService.getHostsPerZoneToDelete().get(zone);
+      if (hostsPerZoneToCreate == null && hostsPerZoneToUpdate == null && hostsPerZoneToDelete == null) {
+        log.debug("No changes found for zone: {}", zone);
+        continue;
+      }
       try {
-        provider.processUpdate(host.getFullHost(), host.getIpSetting());
-        log.info("Successfully updated host: {}", host.getFullHost());
+        provider.patch(zone, hostsPerZoneToCreate, hostsPerZoneToUpdate, hostsPerZoneToDelete);
+        if (hostsPerZoneToUpdate != null) {
+          zoneUpdateOrderService.afterUpdate(hostsPerZoneToUpdate.toArray(new HostInfoHolder[0]));
+        }
       } catch (ProviderException e) {
-        log.error("Failed to update host: {}", host.getFullHost(), e);
+        log.error("Error while updating zone: {}", zone, e);
       }
     }
-
-    for (String host : hostsToDelete) {
-      try {
-        provider.removeHostIpSettings(host);
-        log.info("Successfully deleted host: {}", host);
-      } catch (ProviderException e) {
-        log.error("Failed to delete host: {}", host, e);
-      }
-    }
-
-    hostOrderService.afterUpdate(hostsToUpdate.toArray(new HostInfoHolder[0]));
   }
 }

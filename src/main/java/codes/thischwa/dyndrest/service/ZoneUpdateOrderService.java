@@ -5,8 +5,10 @@ import codes.thischwa.dyndrest.model.UpdateLog;
 import codes.thischwa.dyndrest.util.ZoneStringUtil;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -14,11 +16,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class HostOrderService {
+public class ZoneUpdateOrderService {
 
   private final UpdateLogService updateLogService;
 
-  private Map<String, HostInfoHolder> currentHosts = new ConcurrentHashMap<>();
+  private final Map<String, HostInfoHolder> currentHosts = new ConcurrentHashMap<>();
+
+  @Getter
+  private Map<String, List<HostInfoHolder>> hostsPerZoneToCreate = new ConcurrentHashMap<>();
 
   @Getter
   private Map<String, List<HostInfoHolder>> hostsPerZoneToUpdate = new ConcurrentHashMap<>();
@@ -26,7 +31,7 @@ public class HostOrderService {
   @Getter
   private Map<String, List<String>> hostsPerZoneToDelete = new ConcurrentHashMap<>();
 
-  public HostOrderService(UpdateLogService updateLogService) {
+  public ZoneUpdateOrderService(UpdateLogService updateLogService) {
     this.updateLogService = updateLogService;
   }
 
@@ -42,8 +47,8 @@ public class HostOrderService {
     for (HostInfoHolder host : hosts) {
       String zoneStr = host.getZone();
       if (!hostExists(host.getFullHost())) {
-        List<HostInfoHolder> hostsToUpdate = hostsPerZoneToUpdate.computeIfAbsent(zoneStr, k -> new ArrayList<>());
-        hostsToUpdate.add(host);
+        List<HostInfoHolder> hostsToCreate = hostsPerZoneToCreate.computeIfAbsent(zoneStr, k -> new ArrayList<>());
+        hostsToCreate.add(host);
         log.debug("Added new host: {}", host);
       } else {
         HostInfoHolder existing = currentHosts.get(host.getFullHost());
@@ -82,5 +87,13 @@ public class HostOrderService {
 
   public boolean hostExists(String host) {
     return currentHosts.containsKey(host);
+  }
+
+  public Set<String> getZones() {
+    Set<String> zones = new HashSet<>();
+    zones.addAll(hostsPerZoneToCreate.keySet());
+    zones.addAll(hostsPerZoneToUpdate.keySet());
+    zones.addAll(hostsPerZoneToDelete.keySet());
+    return zones;
   }
 }

@@ -7,6 +7,7 @@ import codes.thischwa.cf.model.RecordEntity;
 import codes.thischwa.cf.model.RecordType;
 import codes.thischwa.cf.model.ZoneEntity;
 import codes.thischwa.dyndrest.model.HostEnriched;
+import codes.thischwa.dyndrest.model.HostInfoHolder;
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.model.Zone;
 import codes.thischwa.dyndrest.model.config.AppConfig;
@@ -17,6 +18,8 @@ import codes.thischwa.dyndrest.service.HostZoneService;
 import codes.thischwa.dyndrest.util.NetUtil;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -63,17 +66,17 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
     String sld = getSldFromHost(host);
     IpSetting ipSetting = new IpSetting();
     try {
-      RecordEntity recA = cfDnsClient.sldInfo(zone, sld, RecordType.A);
-      if (recA != null) {
-        ipSetting.setIpv4(recA.getContent());
+      List<RecordEntity> recsA = cfDnsClient.sldInfo(zone, sld, RecordType.A);
+      if (!recsA.isEmpty()) {
+        ipSetting.setIpv4(recsA.get(0).getContent());
       }
     } catch (CloudflareApiException e) {
       log.warn("Error while getting A record of host {}", host, e);
     }
     try {
-      RecordEntity recAAAA = cfDnsClient.sldInfo(zone, sld, RecordType.AAAA);
-      if (recAAAA != null) {
-        ipSetting.setIpv6(recAAAA.getContent());
+      List<RecordEntity> recAAAA = cfDnsClient.sldInfo(zone, sld, RecordType.AAAA);
+      if (!recAAAA.isEmpty()) {
+        ipSetting.setIpv6(recAAAA.get(0).getContent());
       }
     } catch (CloudflareApiException e) {
       log.warn("Error while getting AAAA record of host {}", host, e);
@@ -98,6 +101,60 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
     } catch (CloudflareApiException e) {
       throw new ProviderException(e);
     }
+  }
+
+  @Override
+  public void patch(String zone, @Nullable List<HostInfoHolder> creates, @Nullable List<HostInfoHolder> updates,
+                    @Nullable List<String> deletes) throws ProviderException {
+    ZoneEntity zoneEntity;
+    try {
+      zoneEntity = cfDnsClient.zoneInfo(zone);
+    } catch (CloudflareApiException e) {
+      log.error("Error while getting zone info of {}", zone, e);
+      throw new ProviderException(e);
+    }
+
+    List<RecordEntity> posts;
+    if (creates == null) {
+      posts = null;
+    } else {
+      posts = new ArrayList<>();
+      creates.forEach(record -> {
+        IpSetting ipSetting = record.getIpSetting();
+        if (ipSetting.getIpv4() != null) {
+          posts.add(convert(record.getSld(), RecordType.A, ipSetting.getIpv4()));
+        }
+        if (ipSetting.getIpv6() != null) {
+          posts.add(convert(record.getSld(), RecordType.AAAA, ipSetting.getIpv6()));
+        }
+      });
+    }
+    List<RecordEntity> puts;
+    if (updates == null) {
+      puts = null;
+    } else {
+      puts = new ArrayList<>();
+      updates.forEach(record -> {
+        IpSetting ipSetting = record.getIpSetting();
+        if (ipSetting.getIpv4() != null) {
+          puts.add(convert(record.getSld(), RecordType.A, ipSetting.getIpv4()));
+        }
+        if (ipSetting.getIpv6() != null) {
+          puts.add(convert(record.getSld(), RecordType.AAAA, ipSetting.getIpv6()));
+        }
+      });
+    }
+    //cfDnsClient.recordBatch(zoneEntity, posts, puts, null, deletes);
+  }
+
+
+  private RecordEntity convert(String sld, RecordType recordType, InetAddress ip) {
+    RecordEntity rec = new RecordEntity();
+    rec.setTtl(defaultTtl);
+    rec.setType(recordType.getType());
+    rec.setName(sld);
+    rec.setContent(ip.getHostAddress());
+    return rec;
   }
 
   /**
@@ -205,7 +262,8 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
       ZoneEntity zone, String sld, @Nullable String ip, RecordType type)
       throws CloudflareApiException {
     try {
-      RecordEntity rec = cfDnsClient.sldInfo(zone, sld, type);
+      List<RecordEntity> recs = cfDnsClient.sldInfo(zone, sld, type);
+      RecordEntity rec = recs.get(0);
       if (Objects.isNull(ip)) {
         cfDnsClient.recordDelete(zone, rec);
         return true;

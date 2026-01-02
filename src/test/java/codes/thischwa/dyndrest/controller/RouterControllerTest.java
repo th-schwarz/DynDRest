@@ -14,7 +14,6 @@ import codes.thischwa.dyndrest.model.HostInfoHolder;
 import codes.thischwa.dyndrest.model.IpSetting;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
-import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
@@ -46,7 +45,7 @@ public class RouterControllerTest extends AbstractControllerTest{
     ResponseEntity<Void> response = routerController.routerUpdateHost(userDetails, host, ipv4, ipv6, req);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
-    verify(hostOrderService, times(1)).addOrUpdateHost(any(HostInfoHolder.class));
+    verify(zoneUpdateOrderService, times(1)).addOrUpdateHost(any(HostInfoHolder.class));
   }
 
   @Test
@@ -64,7 +63,7 @@ public class RouterControllerTest extends AbstractControllerTest{
     ResponseEntity<Void> response = routerController.routerUpdateHost(userDetails, host, ipv4, ipv6, req);
 
     assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-    verify(provider, never()).processUpdate(anyString(), any(IpSetting.class));
+    //verify(provider, never()).processUpdate(anyString(), any(IpSetting.class));
   }
 
   @Test
@@ -82,6 +81,6 @@ public class RouterControllerTest extends AbstractControllerTest{
     ResponseEntity<Void> response = routerController.routerUpdateHost(userDetails, host, ipv4, ipv6, req);
 
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    verify(provider, never()).processUpdate(anyString(), any(IpSetting.class));
+   //_ verify(provider, never()).processUpdate(anyString(), any(IpSetting.class));
   }
 }

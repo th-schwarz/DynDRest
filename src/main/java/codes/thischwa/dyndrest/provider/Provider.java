@@ -1,15 +1,18 @@
 package codes.thischwa.dyndrest.provider;
 
+import codes.thischwa.dyndrest.model.HostInfoHolder;
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.model.Zone;
 import codes.thischwa.dyndrest.provider.impl.GenericProvider;
+import java.util.List;
+import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Defines the functionality of a dns provider. <br>
  * A new provider implementation should be extended from {@link GenericProvider}. It already
  * implements some basic functions.
  */
-@SuppressWarnings("EmptyMethod")
 public interface Provider {
 
   /**
@@ -19,33 +22,20 @@ public interface Provider {
    */
   void confirmZone(Zone zone);
 
-  /** Validates the host configuration. */
-  void validateHostZoneConfiguration() throws IllegalArgumentException;
-
   /**
-   * Hook before update.
-   *
-   * @param host the host
-   * @param ipSetting the ip setting
+   * Validates the host configuration.
    */
-  void updateBeforeHook(String host, IpSetting ipSetting) throws UpdateHookException;
+  void validateHostZoneConfiguration() throws IllegalArgumentException;
 
   /**
    * Update the desired 'host' with the desired IP setting.
    *
-   * @param host the host
+   * @param host      the host
    * @param ipSetting the ip setting
    * @throws ProviderException the provider exception
    */
+  @Deprecated
   void update(String host, IpSetting ipSetting) throws ProviderException;
-
-  /**
-   * Hook after update.
-   *
-   * @param host the host
-   * @param ipSetting the ip setting
-   */
-  void updateAfterHook(String host, IpSetting ipSetting) throws UpdateHookException;
 
   /**
    * Determine the IPs of the 'host'.
@@ -56,19 +46,9 @@ public interface Provider {
    */
   IpSetting info(String host) throws ProviderException;
 
-  /**
-   * Updates the desired 'host' with the desired IP setting with consideration of the before- and
-   * after-hooks. <br>
-   * Hint: There is no need to implement this, if the implementation derives from {@link
-   * GenericProvider}!
-   *
-   * @param host the host
-   * @param ipSetting the ip setting
-   * @throws ProviderException the provider exception
-   */
-  void processUpdate(String host, IpSetting ipSetting) throws ProviderException;
-
   void addHost(String zoneName, String host) throws ProviderException;
 
   void removeHostIpSettings(String host) throws ProviderException;
+
+  void patch(String zone, @Nullable List<HostInfoHolder> creates, @Nullable List<HostInfoHolder> updates, @Nullable List<String> deletes) throws ProviderException;
 }

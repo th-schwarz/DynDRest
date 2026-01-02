@@ -61,16 +61,6 @@ public abstract class GenericProvider implements Provider {
     return NetUtil.resolve(host);
   }
 
-  @Override
-  public void updateBeforeHook(String host, IpSetting ipSetting) throws UpdateHookException {
-    // can be implemented from the deriving class
-  }
-
-  @Override
-  public void updateAfterHook(String host, IpSetting ipSetting) throws UpdateHookException {
-    // can be implemented from the deriving class
-  }
-
   /**
    * A wrapper for {@link #update(String, IpSetting)} with respect of hooks before and after.
    *
@@ -79,17 +69,6 @@ public abstract class GenericProvider implements Provider {
    * @throws ProviderException can be thrown while provider calls
    */
   public final void processUpdate(String host, IpSetting ipSetting) throws ProviderException {
-    // TODO reconsider the exception handling for hooks
-    try {
-      updateBeforeHook(host, ipSetting);
-    } catch (UpdateHookException e) {
-      log.error("Exception while before-update-hook!", e);
-    }
     update(host, ipSetting);
-    try {
-      updateAfterHook(host, ipSetting);
-    } catch (UpdateHookException e) {
-      log.error("Exception while after-update-hook!", e);
-    }
   }
 }

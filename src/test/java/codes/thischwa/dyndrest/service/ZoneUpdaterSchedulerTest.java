@@ -2,21 +2,10 @@ package codes.thischwa.dyndrest.service;
 
 import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-import codes.thischwa.dyndrest.model.HostInfoHolder;
-import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.provider.Provider;
-import java.net.InetAddress;
-import java.time.Duration;
-import java.util.Collections;
-import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -27,7 +16,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 class ZoneUpdaterSchedulerTest {
 
   @MockitoBean
-  private HostOrderService hostOrderService;
+  private ZoneUpdateOrderService zoneUpdateOrderService;
 
   @MockitoBean
   private Provider provider;

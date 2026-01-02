@@ -6,7 +6,7 @@ import codes.thischwa.dyndrest.server.config.DynamicSecurityChainManager;
 import codes.thischwa.dyndrest.server.controller.ApiController;
 import codes.thischwa.dyndrest.server.controller.RouterController;
 import codes.thischwa.dyndrest.service.ControllerService;
-import codes.thischwa.dyndrest.service.HostOrderService;
+import codes.thischwa.dyndrest.service.ZoneUpdateOrderService;
 import codes.thischwa.dyndrest.service.HostZoneService;
 import codes.thischwa.dyndrest.service.UpdateLogService;
 import codes.thischwa.dyndrest.service.ZoneUpdaterScheduler;
@@ -46,7 +46,7 @@ abstract class AbstractControllerTest {
   protected ZoneUpdaterScheduler zoneUpdaterScheduler;
 
   @MockitoBean
-  protected HostOrderService hostOrderService;
+  protected ZoneUpdateOrderService zoneUpdateOrderService;
 
   @Autowired
   protected ApiController apiController;

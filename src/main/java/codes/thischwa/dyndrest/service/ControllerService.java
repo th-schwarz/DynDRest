@@ -35,16 +35,16 @@ public class ControllerService {
 
   private final UpdateLogService updateLogService;
 
-  private final HostOrderService hostOrderService;
+  private final ZoneUpdateOrderService zoneUpdateOrderService;
 
   private final HostZoneService hostZoneService;
 
   public ControllerService(Provider provider, AppConfig config, UpdateLogService updateLogService, ZoneUpdaterScheduler zoneUpdaterScheduler,
-                           HostOrderService hostOrderService, HostZoneService hostZoneService) {
+                           ZoneUpdateOrderService zoneUpdateOrderService, HostZoneService hostZoneService) {
     this.provider = provider;
     this.config = config;
     this.updateLogService = updateLogService;
-    this.hostOrderService = hostOrderService;
+    this.zoneUpdateOrderService = zoneUpdateOrderService;
     this.hostZoneService = hostZoneService;
   }
 
@@ -81,6 +81,6 @@ public class ControllerService {
 
   public void processIpUpdate(HostInfoHolder hostInfoHolder) {
     updateLogService.log(hostInfoHolder.getFullHost(), hostInfoHolder.getIpSetting(), UpdateLog.Status.waiting);
-    hostOrderService.addOrUpdateHost(hostInfoHolder);
+    zoneUpdateOrderService.addOrUpdateHost(hostInfoHolder);
   }
 }
