@@ -9,6 +9,7 @@ import codes.thischwa.dyndrest.AbstractIntegrationTest;
 import codes.thischwa.dyndrest.provider.Provider;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import org.domainrobot.sdk.models.generated.Zone;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -19,6 +20,15 @@ public class DomainRobotProviderTest extends AbstractIntegrationTest {
   private static final String zoneName = "mein-virtuelles-blech.de";
   private static final String primaryNS = "a.ns14.net";
 
+  private static final String DOMAINROBOT_USER = System.getenv("DOMAINROBOT_USER");
+  private static final String DOMAINROBOT_PASSWORD = System.getenv("DOMAINROBOT_PASSWORD");
+
+  @BeforeAll
+  static void checkEnv() {
+    assertNotNull(DOMAINROBOT_USER, "DOMAINROBOT_USER environment variable must be set");
+    assertNotNull(DOMAINROBOT_PASSWORD, "DOMAINROBOT_PASSWORD environment variable must be set");
+  }
+
   @Autowired
   private Provider provider;
 
@@ -26,16 +36,13 @@ public class DomainRobotProviderTest extends AbstractIntegrationTest {
   static void configureProperties(DynamicPropertyRegistry registry) {
     registry.add("domainrobot.autodns.user", () -> System.getenv("DOMAINROBOT_USER"));
     registry.add("domainrobot.autodns.password", () -> System.getenv("DOMAINROBOT_PASSWORD"));
-    registry.add("domainrobot.autodns.url", () -> "https://api.autodns.com");
-    registry.add("domainrobot.autodns.context", () -> 4);
-    registry.add("domainrobot.defaultTtl", () -> 3600);
   }
 
   @Test
   void testZoneInfo() throws ProviderException {
     assertInstanceOf(DomainRobotProvider.class, provider);
-    DomainRobotProvider dwc = (DomainRobotProvider) provider;
-    ZoneClientWrapper zcw = dwc.getZcw();
+    DomainRobotProvider domainRobotProvider = (DomainRobotProvider) provider;
+    ZoneClientWrapper zcw = domainRobotProvider.getZcw();
 
     Zone zone = zcw.info(zoneName, primaryNS);
 
