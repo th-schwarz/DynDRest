@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import codes.thischwa.dyndrest.AbstractIntegrationTest;
 import codes.thischwa.dyndrest.provider.Provider;
 import codes.thischwa.dyndrest.provider.ProviderException;
+import jakarta.annotation.PostConstruct;
 import org.domainrobot.sdk.models.generated.Zone;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -23,14 +24,21 @@ public class DomainRobotProviderTest extends AbstractIntegrationTest {
   private static final String DOMAINROBOT_USER = System.getenv("DOMAINROBOT_USER");
   private static final String DOMAINROBOT_PASSWORD = System.getenv("DOMAINROBOT_PASSWORD");
 
+  @Autowired
+  private Provider provider;
+
+  private DomainRobotProvider domainRobotProvider;
+
+  @PostConstruct
+  void init() {
+    domainRobotProvider = (DomainRobotProvider) provider;
+  }
+
   @BeforeAll
   static void checkEnv() {
     assertNotNull(DOMAINROBOT_USER, "DOMAINROBOT_USER environment variable must be set");
     assertNotNull(DOMAINROBOT_PASSWORD, "DOMAINROBOT_PASSWORD environment variable must be set");
   }
-
-  @Autowired
-  private Provider provider;
 
   @DynamicPropertySource
   static void configureProperties(DynamicPropertyRegistry registry) {
@@ -40,10 +48,7 @@ public class DomainRobotProviderTest extends AbstractIntegrationTest {
 
   @Test
   void testZoneInfo() throws ProviderException {
-    assertInstanceOf(DomainRobotProvider.class, provider);
-    DomainRobotProvider domainRobotProvider = (DomainRobotProvider) provider;
     ZoneClientWrapper zcw = domainRobotProvider.getZcw();
-
     Zone zone = zcw.info(zoneName, primaryNS);
 
     assertNotNull(zone);
