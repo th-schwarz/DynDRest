@@ -41,6 +41,9 @@ jobs:
           key: maven
           restore-keys: maven
       - name: Build with Maven
+        env:
+          DOMAINROBOT_USER: ${{ secrets.DOMAINROBOT_USER }}
+          DOMAINROBOT_PASSWORD: ${{ secrets.DOMAINROBOT_PASSWORD }}
         run: mvn -DtestClasspath=src/test/ verify
 
   sonarcloud-scan:
@@ -77,6 +80,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          DOMAINROBOT_USER: ${{ secrets.DOMAINROBOT_USER }}
+          DOMAINROBOT_PASSWORD: ${{ secrets.DOMAINROBOT_PASSWORD }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=th-schwarz_DynDRest
 
   codecov-scan:
@@ -111,6 +116,9 @@ jobs:
       - name: Install dependencies
         run: mvn install -Dmaven.javadoc.skip=true -B -V
       - name: Run tests and collect coverage
+        env:
+          DOMAINROBOT_USER: ${{ secrets.DOMAINROBOT_USER }}
+          DOMAINROBOT_PASSWORD: ${{ secrets.DOMAINROBOT_PASSWORD }}
         run: mvn -B test
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
