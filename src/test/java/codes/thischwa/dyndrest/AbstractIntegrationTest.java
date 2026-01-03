@@ -41,7 +41,7 @@ public abstract class AbstractIntegrationTest {
   protected Integer z2ID;
   protected Integer h1z1ID;
   protected Integer h2z1ID;
-  @Autowired private HostZoneService hostZoneService;
+  @Autowired protected HostZoneService hostZoneService;
   @Autowired private UpdateLogRepo updateLogRepo;
   @Autowired(required = false) private SpringLiquibase springLiquibase;
 

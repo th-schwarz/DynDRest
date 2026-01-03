@@ -51,7 +51,7 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
   }
 
   @Override
-  public IpSetting info(String host) throws ProviderException {
+  public IpSetting  info(String host) throws ProviderException {
     Zone zone = fetchZoneFromHost(host);
     return zcw.info(zone, host.substring(0, host.indexOf(".")));
   }
@@ -106,15 +106,15 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
   /**
    * Zone info zone.
    *
-   * @param host the host
+   * @param fqdn the host
    * @return the zone
    * @throws ProviderException the provider exception
    * @throws IllegalArgumentException the illegal argument exception
    */
-  Zone fetchZoneFromHost(String host) throws ProviderException, IllegalArgumentException {
-    Optional<HostEnriched> optFullHost = hostZoneService.getHost(host);
+  Zone fetchZoneFromHost(String fqdn) throws ProviderException, IllegalArgumentException {
+    Optional<HostEnriched> optFullHost = hostZoneService.getHost(fqdn);
     if (optFullHost.isEmpty()) {
-      throw new IllegalArgumentException("Host isn't configured: " + host);
+      throw new IllegalArgumentException("Host isn't configured: " + fqdn);
     }
     HostEnriched hostEnriched = optFullHost.get();
     String zone = hostEnriched.getZone();
