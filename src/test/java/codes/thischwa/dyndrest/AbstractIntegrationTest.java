@@ -4,7 +4,6 @@ import codes.thischwa.dyndrest.model.Host;
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.model.UpdateLog;
 import codes.thischwa.dyndrest.model.Zone;
-import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.repository.UpdateLogRepo;
 import codes.thischwa.dyndrest.service.HostZoneService;
 import jakarta.annotation.PostConstruct;
@@ -42,8 +41,7 @@ public abstract class AbstractIntegrationTest {
   protected Integer z2ID;
   protected Integer h1z1ID;
   protected Integer h2z1ID;
-  @Autowired protected AppConfig appConfig;
-  @Autowired private HostZoneService hostZoneService;
+  @Autowired protected HostZoneService hostZoneService;
   @Autowired private UpdateLogRepo updateLogRepo;
   @Autowired(required = false) private SpringLiquibase springLiquibase;
 
