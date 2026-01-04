@@ -62,13 +62,13 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
   }
 
   @Override
-  public void removeHostIpSettings(String host) throws ProviderException {
-    Optional<HostEnriched> optFullHost = hostZoneService.getHost(host);
+  public void removeHostIpSettings(String fqdn) throws ProviderException {
+    Optional<HostEnriched> optFullHost = hostZoneService.getHost(fqdn);
     if (optFullHost.isEmpty()) {
-      throw new ProviderException("Host isn't configured: " + host);
+      throw new ProviderException("Host isn't configured: " + fqdn);
     }
     HostEnriched hostEnriched = optFullHost.get();
-    Zone zone = fetchZoneFromHost(host);
+    Zone zone = fetchZoneFromHost(fqdn);
     zcw.removeSld(zone, hostEnriched.getSld());
     zcw.update(zone);
   }
