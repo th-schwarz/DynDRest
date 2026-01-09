@@ -1,5 +1,6 @@
 package codes.thischwa.dyndrest.provider;
 
+import codes.thischwa.dyndrest.model.HostEnriched;
 import codes.thischwa.dyndrest.model.HostInfoHolder;
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.model.Zone;
@@ -21,6 +22,18 @@ public interface Provider {
    * @param zone the DNS zone to be confirmed
    */
   void confirmZone(Zone zone);
+
+  /**
+   * Retrieves the current configuration of hosts by enriching the provided list of {@code HostEnriched} objects
+   * with the IP settings.
+   *
+   * @param hostsEnriched the list of enriched host entities for which the current configuration
+   *                      details need to be retrieved
+   * @return a list of {@code HostInfoHolder} objects containing detailed configuration information
+   *         for each host, including IP settings
+   * @throws ProviderException if there is an error while retrieving the current configured hosts
+   */
+  List<HostInfoHolder> getCurrentConfiguredHosts(List<HostEnriched> hostsEnriched) throws ProviderException;
 
   /**
    * Validates the host configuration.

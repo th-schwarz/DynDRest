@@ -2,6 +2,7 @@ package codes.thischwa.dyndrest.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -36,9 +37,10 @@ class ZoneUpdateOrderServiceTest {
 
     zoneUpdateOrderService.addOrUpdateHost(host);
 
-    List<HostInfoHolder> hostsToUpdate = zoneUpdateOrderService.getHostsPerZoneToUpdate().get(EXAMPLE_ZONE);
-    assertEquals(1, hostsToUpdate.size());
-    assertEquals("www.example.com", hostsToUpdate.get(0).getFullHost());
+    List<HostInfoHolder> hostsToCreate = zoneUpdateOrderService.getHostsPerZoneToCreate().get(EXAMPLE_ZONE);
+    assertEquals(1, hostsToCreate.size());
+    assertEquals("www.example.com", hostsToCreate.get(0).getFullHost());
+    assertNull(zoneUpdateOrderService.getHostsPerZoneToUpdate().get(EXAMPLE_ZONE));
   }
 
   @Test

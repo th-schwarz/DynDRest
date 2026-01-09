@@ -38,34 +38,36 @@ public class DynamicSecurityChainManager {
    * Adds or updates authentication for a specific host.
    * The hostname becomes the username and the apiToken becomes the password.
    *
-   * @param host the host enriched object containing hostname and apiToken
+   * @param hosts the host enriched object containing hostname and apiToken
    */
-  public void addOrUpdateHost(HostEnriched host) {
-    String username = host.getFullHost();
-    String password = host.getApiToken();
+  public void addOrUpdateHost(HostEnriched... hosts) {
+    for (HostEnriched host : hosts) {
+      String username = host.getFullHost();
+      String password = host.getApiToken();
 
-    log.debug("Attempting to register host: {} with apiToken: {}", username,
-        password.substring(0, Math.min(4, password.length())) + "***");
+      log.debug("Attempting to register host: {} with apiToken: {}", username,
+          password.substring(0, Math.min(4, password.length())) + "***");
 
-    if (registeredHosts.containsKey(username)) {
-      // Update existing user
-      if (userDetailsManager.userExists(username)) {
-        userDetailsManager.deleteUser(username);
+      if (registeredHosts.containsKey(username)) {
+        // Update existing user
+        if (userDetailsManager.userExists(username)) {
+          userDetailsManager.deleteUser(username);
+        }
+        registeredHosts.remove(username);
       }
-      registeredHosts.remove(username);
+
+      // Create new user with HOST role
+      UserDetails userDetails = User.builder()
+          .passwordEncoder(PASSWORD_ENCODER::encode)
+          .username(username)
+          .password(password)
+          .roles(ROLE_HOST)
+          .build();
+
+      userDetailsManager.createUser(userDetails);
+      registeredHosts.put(username, password);
+      log.info("Host authentication registered: {} with role {}", username, ROLE_HOST);
     }
-
-    // Create new user with HOST role
-    UserDetails userDetails = User.builder()
-        .passwordEncoder(PASSWORD_ENCODER::encode)
-        .username(username)
-        .password(password)
-        .roles(ROLE_HOST)
-        .build();
-
-    userDetailsManager.createUser(userDetails);
-    registeredHosts.put(username, password);
-    log.info("Host authentication registered: {} with role {}", username, ROLE_HOST);
   }
 
   /**

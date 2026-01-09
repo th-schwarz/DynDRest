@@ -4,8 +4,6 @@ import codes.thischwa.dyndrest.model.HostEnriched;
 import codes.thischwa.dyndrest.model.HostInfoHolder;
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.model.UpdateLog;
-import codes.thischwa.dyndrest.model.config.AppConfig;
-import codes.thischwa.dyndrest.provider.Provider;
 import codes.thischwa.dyndrest.util.NetUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
@@ -19,8 +17,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Service class that handles IP update processing for a given host.
- * <p>
- * The {@code ControllerService} is responsible for orchestrating the validation and update of IP
+ *
+ * <p>The {@code ControllerService} is responsible for orchestrating the validation and update of IP
  * settings associated with a host. It integrates with a DNS provider implementation, application
  * configuration, and a logging service to ensure that updates are processed correctly and recorded
  * accordingly.
@@ -29,20 +27,14 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class ControllerService {
 
-  private final Provider provider;
-
-  private final AppConfig config;
-
   private final UpdateLogService updateLogService;
 
   private final ZoneUpdateOrderService zoneUpdateOrderService;
 
   private final HostZoneService hostZoneService;
 
-  public ControllerService(Provider provider, AppConfig config, UpdateLogService updateLogService, ZoneUpdaterScheduler zoneUpdaterScheduler,
+  public ControllerService(UpdateLogService updateLogService,
                            ZoneUpdateOrderService zoneUpdateOrderService, HostZoneService hostZoneService) {
-    this.provider = provider;
-    this.config = config;
     this.updateLogService = updateLogService;
     this.zoneUpdateOrderService = zoneUpdateOrderService;
     this.hostZoneService = hostZoneService;

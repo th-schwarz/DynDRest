@@ -39,6 +39,12 @@ public class ZoneUpdateOrderService {
     return currentHosts.values();
   }
 
+  public void addCurrentHosts(HostInfoHolder... hosts) {
+    for (HostInfoHolder host : hosts) {
+      currentHosts.put(host.getFullHost(), host);
+    }
+  }
+
   public void removeFromCurrentHosts(String host) {
     currentHosts.remove(host);
   }
@@ -77,11 +83,14 @@ public class ZoneUpdateOrderService {
       String fullHost = host.getFullHost();
       currentHosts.put(fullHost, host);
       List<HostInfoHolder> hostsToUpdate = hostsPerZoneToUpdate.get(zoneStr);
-      hostsToUpdate.removeIf(h -> h.getFullHost().equals(fullHost));
+      if (hostsToUpdate != null) {
+        hostsToUpdate.removeIf(h -> h.getFullHost().equals(fullHost));
+      }
       updateLogService.log(host.getFullHost(), host.getIpSetting(), UpdateLog.Status.success);
 
       List<String> hostsToDelete = hostsPerZoneToDelete.get(zoneStr);
-      hostsToDelete.remove(fullHost);
+      if (hostsToDelete != null)
+        hostsToDelete.remove(fullHost);
     }
   }
 

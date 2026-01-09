@@ -2,6 +2,7 @@ package codes.thischwa.dyndrest.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Represents an entity that holds detailed information about a host,
@@ -24,7 +25,7 @@ public class HostInfoHolder extends HostEnriched {
   private IpSetting ipSetting;
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(@Nullable Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
@@ -41,6 +42,7 @@ public class HostInfoHolder extends HostEnriched {
     HostInfoHolder hostInfoHolder = new HostInfoHolder();
     hostInfoHolder.setZoneId(host.getZoneId());
     hostInfoHolder.setZone(host.getZone());
+    hostInfoHolder.setNs(host.getNs());
     hostInfoHolder.setSld(host.getSld());
     hostInfoHolder.setIpSetting(ipSetting);
     return hostInfoHolder;

@@ -8,11 +8,18 @@ import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.provider.impl.GenericProvider;
 import codes.thischwa.dyndrest.server.config.DynamicSecurityChainManager;
 import codes.thischwa.dyndrest.service.HostZoneService;
+import codes.thischwa.dyndrest.service.ZoneUpdateOrderService;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.domainrobot.sdk.models.generated.IpRestriction;
 import org.domainrobot.sdk.models.generated.Zone;
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.InitializingBean;
@@ -34,9 +41,9 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
    * @param zcw                  the zcw
    * @param securityChainManager the dynamic security chain manager
    */
-  DomainRobotProvider(AppConfig appConfig, HostZoneService hostZoneService, ZoneClientWrapper zcw,
+  DomainRobotProvider(AppConfig appConfig, HostZoneService hostZoneService, ZoneUpdateOrderService zoneUpdateOrderService, ZoneClientWrapper zcw,
                       DynamicSecurityChainManager securityChainManager) {
-    super(appConfig, securityChainManager, hostZoneService);
+    super(appConfig, securityChainManager,hostZoneService,zoneUpdateOrderService);
     this.zcw = zcw;
   }
 
@@ -56,9 +63,9 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
   }
 
   @Override
-  public IpSetting  info(String host) throws ProviderException {
-    Zone zone = fetchZoneFromHost(host);
-    return zcw.info(zone, host.substring(0, host.indexOf(".")));
+  public IpSetting  info(String fqdn) throws ProviderException {
+    Zone zone = fetchZoneFromHost(fqdn);
+    return zcw.info(zone, fqdn.substring(0, fqdn.indexOf(".")));
   }
 
   @Override
@@ -116,6 +123,25 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
       throw new IllegalArgumentException("Zone couldn't be confirmed.");
     }
     hostsOfZoneConfirmed(zone);
+  }
+
+  @Override
+  public List<HostInfoHolder> getCurrentConfiguredHosts(List<HostEnriched> hostsEnriched) throws ProviderException {
+    Map<String, Zone> knownRealZones = new HashMap<>();
+    List<HostInfoHolder> hosts = new ArrayList<>();
+
+    for (HostEnriched host : hostsEnriched) {
+      if (!knownRealZones.containsKey(host.getZone())) {
+          Zone zone = zcw.info(host.getZone(), host.getNs());
+          knownRealZones.put(host.getZone(), zone);
+      }
+
+      Zone zone = knownRealZones.get(host.getZone());
+      HostInfoHolder hostInfoHolder = HostInfoHolder.of(host, zcw.info(zone, host.getSld()));
+      hosts.add(hostInfoHolder);
+    }
+
+    return hosts;
   }
 
   private void hostsOfZoneConfirmed(Zone zone) throws IllegalArgumentException {

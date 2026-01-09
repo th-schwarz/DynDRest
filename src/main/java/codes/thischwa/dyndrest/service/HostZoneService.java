@@ -125,6 +125,7 @@ public class HostZoneService {
       Zone zone = getZone(hostEnriched.getZone());
       if (zone == null) {
         Zone tmpZone = new Zone();
+        tmpZone.setId(hostEnriched.getZoneId());
         tmpZone.setName(hostEnriched.getZone());
         tmpZone.setNs(hostEnriched.getNs());
         saveOrUpdate(tmpZone);
@@ -205,7 +206,7 @@ public class HostZoneService {
     saveOrUpdate(host);
     String fqdn = ZoneStringUtil.getFqdn(hostname, zone);
     Optional<HostEnriched> optHostEnriched = hostRepo.findByFullHost(fqdn);
-    optHostEnriched.ifPresent(securityChainManager::addOrUpdateHost);
+    optHostEnriched.ifPresent(host1 -> securityChainManager.addOrUpdateHost(host1));
     return host;
   }
 

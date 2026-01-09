@@ -15,14 +15,18 @@ import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.provider.impl.GenericProvider;
 import codes.thischwa.dyndrest.server.config.DynamicSecurityChainManager;
 import codes.thischwa.dyndrest.service.HostZoneService;
+import codes.thischwa.dyndrest.service.ZoneUpdateOrderService;
 import codes.thischwa.dyndrest.util.NetUtil;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.InitializingBean;
@@ -33,16 +37,19 @@ import org.springframework.beans.factory.InitializingBean;
 @Slf4j
 public class CloudflareProvider extends GenericProvider implements InitializingBean {
 
-  private final CfDnsClient cfDnsClient;
+  CfDnsClient cfDnsClient;
   private final int defaultTtl;
 
   CloudflareProvider(
-      AppConfig appConfig, CloudflareConfig config, HostZoneService hostZoneService,
+      AppConfig appConfig, CloudflareConfig config, HostZoneService hostZoneService, ZoneUpdateOrderService zoneUpdateOrderService,
       DynamicSecurityChainManager securityChainManager) {
-    super(appConfig, securityChainManager, hostZoneService);
+    super(appConfig, securityChainManager, hostZoneService, zoneUpdateOrderService);
     this.defaultTtl = config.defaultTtl();
-    cfDnsClient =
-        new CfDnsClient(config.baseUrl(), config.email(), config.apiKey());
+    if (config.baseUrl() != null) {
+      cfDnsClient = new CfDnsClient(config.baseUrl(), config.email(), config.apiKey());
+    } else {
+      cfDnsClient = new CfDnsClient(config.email(), config.apiKey());
+    }
   }
 
   @Override
@@ -61,25 +68,25 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
   }
 
   @Override
-  public IpSetting info(String host) throws ProviderException {
-    ZoneEntity zone = fetchZoneFromHost(host);
-    String sld = getSldFromHost(host);
+  public IpSetting info(String fqdn) throws ProviderException {
+    ZoneEntity zone = fetchZoneFromHost(fqdn);
+    String sld = getSldFromHost(fqdn);
     IpSetting ipSetting = new IpSetting();
     try {
-      List<RecordEntity> recsA = cfDnsClient.sldInfo(zone, sld, RecordType.A);
+      List<RecordEntity> recsA = cfDnsClient.recordList(zone, sld, RecordType.A);
       if (!recsA.isEmpty()) {
         ipSetting.setIpv4(recsA.get(0).getContent());
       }
     } catch (CloudflareApiException e) {
-      log.warn("Error while getting A record of host {}", host, e);
+      log.warn("Error while getting A record of host {}", fqdn, e);
     }
     try {
-      List<RecordEntity> recAAAA = cfDnsClient.sldInfo(zone, sld, RecordType.AAAA);
+      List<RecordEntity> recAAAA = cfDnsClient.recordList(zone, sld, RecordType.AAAA);
       if (!recAAAA.isEmpty()) {
         ipSetting.setIpv6(recAAAA.get(0).getContent());
       }
     } catch (CloudflareApiException e) {
-      log.warn("Error while getting AAAA record of host {}", host, e);
+      log.warn("Error while getting AAAA record of host {}", fqdn, e);
     }
     return ipSetting;
   }
@@ -108,45 +115,50 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
                     @Nullable List<String> deletes) throws ProviderException {
     ZoneEntity zoneEntity;
     try {
-      zoneEntity = cfDnsClient.zoneInfo(zone);
+      zoneEntity = cfDnsClient.zoneGet(zone);
     } catch (CloudflareApiException e) {
       log.error("Error while getting zone info of {}", zone, e);
       throw new ProviderException(e);
     }
 
-    List<RecordEntity> posts;
+    List<RecordEntity> recordsToCreate;
     if (creates == null) {
-      posts = null;
+      recordsToCreate = null;
     } else {
-      posts = new ArrayList<>();
+      recordsToCreate = new ArrayList<>();
       creates.forEach(record -> {
         IpSetting ipSetting = record.getIpSetting();
         if (ipSetting.getIpv4() != null) {
-          posts.add(convert(record.getSld(), RecordType.A, ipSetting.getIpv4()));
+          recordsToCreate.add(convert(record.getSld(), RecordType.A, ipSetting.getIpv4()));
         }
         if (ipSetting.getIpv6() != null) {
-          posts.add(convert(record.getSld(), RecordType.AAAA, ipSetting.getIpv6()));
+          recordsToCreate.add(convert(record.getSld(), RecordType.AAAA, ipSetting.getIpv6()));
         }
       });
     }
-    List<RecordEntity> puts;
+    List<RecordEntity> recordsToUpdate;
     if (updates == null) {
-      puts = null;
+      recordsToUpdate = null;
     } else {
-      puts = new ArrayList<>();
+      recordsToUpdate = new ArrayList<>();
       updates.forEach(record -> {
         IpSetting ipSetting = record.getIpSetting();
         if (ipSetting.getIpv4() != null) {
-          puts.add(convert(record.getSld(), RecordType.A, ipSetting.getIpv4()));
+          recordsToUpdate.add(convert(record.getSld(), RecordType.A, ipSetting.getIpv4()));
         }
         if (ipSetting.getIpv6() != null) {
-          puts.add(convert(record.getSld(), RecordType.AAAA, ipSetting.getIpv6()));
+          recordsToUpdate.add(convert(record.getSld(), RecordType.AAAA, ipSetting.getIpv6()));
         }
       });
     }
-    //cfDnsClient.recordBatch(zoneEntity, posts, puts, null, deletes);
+    List<RecordEntity> recordsToDelete = null;
+    List<RecordEntity> recordsToReplace = null;
+    try {
+      cfDnsClient.recordBatch(zoneEntity, recordsToCreate, recordsToUpdate, recordsToReplace, recordsToDelete);
+    } catch (CloudflareApiException e) {
+      throw new RuntimeException(e);
+    }
   }
-
 
   private RecordEntity convert(String sld, RecordType recordType, InetAddress ip) {
     RecordEntity rec = new RecordEntity();
@@ -165,21 +177,84 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
    * @throws CloudflareApiException If an error occurs while interacting with the Cloudflare API.
    */
   private void sldDeleteIpSettings(ZoneEntity zone, String sld) throws CloudflareApiException {
-    cfDnsClient.recordDeleteTypeIfExists(zone, sld, RecordType.A);
-    cfDnsClient.recordDeleteTypeIfExists(zone, sld, RecordType.AAAA);
+    cfDnsClient.recordDeleteTypeIfExists(zone, sld, RecordType.A, RecordType.AAAA);
   }
 
   @Override
   public void confirmZone(Zone myZone) throws IllegalArgumentException {
     ZoneEntity zone;
     try {
-      zone = cfDnsClient.zoneInfo(myZone.getName());
+      zone = cfDnsClient.zoneGet(myZone.getName());
       log.info("*** Zone confirmed: {}", zone.getName());
       hostsOfZoneConfirmed(zone);
     } catch (CloudflareApiException | ProviderException e) {
       log.error("Error while getting zone info of {}", myZone.getName(), e);
       throw new IllegalArgumentException("Zone couldn't be confirmed.");
     }
+  }
+
+  @Override
+  public List<HostInfoHolder> getCurrentConfiguredHosts(List<HostEnriched> hostsEnriched) throws ProviderException {
+    Map<String, ZoneEntity> knownRealZones = new HashMap<>();
+    Map<String, HostEnriched> hostsByString = new HashMap<>();
+    List<HostInfoHolder> hosts = new ArrayList<>();
+
+    // collect base data
+    for (HostEnriched host : hostsEnriched) {
+      hostsByString.put(host.getFullHost(), host);
+      if (!knownRealZones.containsKey(host.getZone())) {
+        try {
+          ZoneEntity zone = cfDnsClient.zoneGet(host.getZone());
+          knownRealZones.put(host.getZone(), zone);
+        } catch (CloudflareApiException e) {
+          throw new ProviderException("Failed to get zone: " + host.getZone(), e);
+        }
+      }
+    }
+
+    // fetch data from cloudflare
+    for (ZoneEntity zone : knownRealZones.values()) {
+      Map<String, IpSetting> result = fetchIpSettingOfZone(zone, hostsByString.keySet());
+      for (String fqdn : result.keySet()) {
+        HostEnriched host = hostsByString.get(fqdn);
+        IpSetting ipSetting = result.get(fqdn);
+        hosts.add(HostInfoHolder.of(host, ipSetting));
+      }
+    }
+
+    return hosts;
+  }
+
+  private Map<String, IpSetting> fetchIpSettingOfZone(ZoneEntity zone, Set<String> relevantHosts) {
+    Map<String, IpSetting> result = new HashMap<>();
+    try {
+      List<RecordEntity> records = cfDnsClient.recordList(zone, RecordType.A, RecordType.AAAA);
+      Map<String, List<RecordEntity>> recordsByHost = CfDnsClient.groupRecordsByFqdn(records);
+      for (String fqdn : recordsByHost.keySet()) {
+        if (relevantHosts.contains(fqdn)) {
+          IpSetting ipSetting = new IpSetting();
+          List<RecordEntity> recs = recordsByHost.get(fqdn);
+          if (recs.isEmpty()) {
+          continue;
+          }
+          String ipv4Str = null;
+          String ipv6Str = null;
+          for (RecordEntity rec : recs) {
+            if (RecordType.A.getType().equals(rec.getType())) {
+              ipv4Str = rec.getContent();
+            } else if (RecordType.AAAA.getType().equals(rec.getType())) {
+              ipv6Str = rec.getContent();
+            }
+          }
+          ipSetting.setIpv4(ipv4Str);
+          ipSetting.setIpv6(ipv6Str);
+          result.put(fqdn, ipSetting);
+        }
+      }
+    } catch (CloudflareApiException e) {
+      throw new RuntimeException(e);
+    }
+    return result;
   }
 
   private void hostsOfZoneConfirmed(ZoneEntity zone)
@@ -218,7 +293,7 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
     HostEnriched hostEnriched = optFullHost.get();
     String zone = hostEnriched.getZone();
     try {
-      return cfDnsClient.zoneInfo(zone);
+      return cfDnsClient.zoneGet(zone);
     } catch (CloudflareApiException e) {
       throw new ProviderException(e);
     }
@@ -261,24 +336,25 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
   private boolean sldCreateUpdateOrDeleteIp(
       ZoneEntity zone, String sld, @Nullable String ip, RecordType type)
       throws CloudflareApiException {
-    try {
-      List<RecordEntity> recs = cfDnsClient.sldInfo(zone, sld, type);
-      RecordEntity rec = recs.get(0);
-      if (Objects.isNull(ip)) {
-        cfDnsClient.recordDelete(zone, rec);
-        return true;
-      }
-      if (!NetUtil.ipEquals(rec.getContent(), ip)) {
-        rec.setContent(ip);
-        cfDnsClient.recordUpdate(zone, rec);
-        return true;
-      }
-    } catch (CloudflareNotFoundException e) {
+    List<RecordEntity> recs = cfDnsClient.recordList(zone, sld, type);
+    if (recs.isEmpty()) {
       if (ip != null) {
         cfDnsClient.recordCreate(zone, RecordEntity.build(sld, type, defaultTtl, ip));
         log.debug("Created new record successful for host {} of type {} with IP {}", sld, type, ip);
         return true;
       }
+      return false;
+    }
+
+    RecordEntity rec = recs.get(0);
+    if (Objects.isNull(ip)) {
+      cfDnsClient.recordDelete(zone, rec);
+      return true;
+    }
+    if (!NetUtil.ipEquals(rec.getContent(), ip)) {
+      rec.setContent(ip);
+      cfDnsClient.recordUpdate(zone, rec);
+      return true;
     }
     return false;
   }
@@ -286,27 +362,12 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
   private boolean hasSubTld(CfDnsClient client, ZoneEntity zone, String host)
       throws CloudflareApiException {
     String sld = getSldFromHost(host);
-    boolean aFound = false;
     try {
-      client.sldInfo(zone, sld, RecordType.A);
-      aFound = true;
+      List<RecordEntity> recsA = client.recordList(zone, sld, RecordType.A, RecordType.AAAA);
+      return!recsA.isEmpty();
     } catch (CloudflareApiException e) {
-      if (!(e instanceof CloudflareNotFoundException)) {
-        log.error("Unexpected error while getting A record of host {}", host, e);
-        throw e;
-      }
+      log.error("Unexpected error while getting A record of host {}", host, e);
+      throw e;
     }
-
-    boolean aaaaFound = false;
-    try {
-      client.sldInfo(zone, sld, RecordType.AAAA);
-      aaaaFound = true;
-    } catch (CloudflareApiException e) {
-      if (!(e instanceof CloudflareNotFoundException)) {
-        log.error("Unexpected error while getting AAAA record of host {}", host, e);
-        throw e;
-      }
-    }
-    return aFound || aaaaFound;
   }
 }

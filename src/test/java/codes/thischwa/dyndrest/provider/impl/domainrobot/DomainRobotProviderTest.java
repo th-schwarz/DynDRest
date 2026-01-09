@@ -33,7 +33,7 @@ public class DomainRobotProviderTest extends AbstractIntegrationTest {
   private static final String DOMAINROBOT_USER = System.getenv("DOMAINROBOT_USER");
   private static final String DOMAINROBOT_PASSWORD = System.getenv("DOMAINROBOT_PASSWORD");
   private static final String SLD_PREFIX = "it-";
-  private static String DEFAULT_SLD = SLD_PREFIX + "default";
+  private static final String DEFAULT_SLD = SLD_PREFIX + "default";
   private static final String DEFAULT_FQDN = DEFAULT_SLD + "." + ZONE_NAME;
   private static final List<String> SLDS_TO_USE = List.of("host1", "host2", "host3", "host4");
 

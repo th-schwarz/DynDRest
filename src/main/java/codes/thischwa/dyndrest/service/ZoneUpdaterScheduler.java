@@ -30,6 +30,7 @@ public class ZoneUpdaterScheduler {
 
   @Scheduled(fixedDelayString = "${dyndrest.update-interval-seconds}", timeUnit = TimeUnit.SECONDS)
   void process() {
+    log.debug("Starting zone update...");
     for (String zone : zoneUpdateOrderService.getZones()) {
       List<HostInfoHolder> hostsPerZoneToCreate = zoneUpdateOrderService.getHostsPerZoneToCreate().get(zone);
       List<HostInfoHolder> hostsPerZoneToUpdate = zoneUpdateOrderService.getHostsPerZoneToUpdate().get(zone);
