@@ -9,3 +9,4 @@
 
 Version: ${application.version}
 :: Spring Boot${spring-boot.formatted-version} ::
+running on java ${java.version}

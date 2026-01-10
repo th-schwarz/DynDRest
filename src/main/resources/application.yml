@@ -1,21 +1,57 @@
 ## server settings
 server:
   address: 127.0.0.1
-  forward-headers-strategy: NATIVE
   port: 8081
+  forward-headers-strategy: NATIVE
   servlet:
     context-path: /
   shutdown: graceful
+
+## management
+management:
+  endpoints:
+    web:
+      base-path: /manage
+    access:
+      default: none
+  endpoint:
+    health:
+      access: none
 
 ## dyndrest config
 dyndrest:
   greeting-enabled: true
   host-validation-enabled: true
+  # http status code for the case at least one IP has changed, e.g. 201
+  update-ip-changed-status: 200
   update-log-page-enabled: false
   update-log-page-size: 30
-  update-log-pattern: (.*)\s+-\s+([a-zA-Z\.-]*)\s+(\S*)\s+(\S*)
-  update-log-date-pattern: yyyy-MM-dd HH:mm:SSS
-  update-log-file-pattern: ./dyndrest-update*
+  update-log-date-pattern: yyyy-MM-dd HH:mm:ss
+  # database config, credentials should be set at the individual properties
+  database:
+    backup:
+      enabled: false
+      path: ./backup
+    restore:
+      enabled: false
+      path: ./restore
+    dump-file: dump.sql
+
+##  configuration for the domain robot sdk
+domainrobot:
+  default-ttl: 60
+  # connection properties
+  autodns:
+    context: 4
+    url: https://api.autodns.com/v1
+  # custom headers
+  custom-header:
+    X-Domainrobot-WS: NONE
+
+## configuration for cloudflare
+cloudflare:
+  base-url: https://api.cloudflare.com/client/v4
+  default-ttl: 60
 
 ## disable springdoc endpoints and swagger-ui by default
 springdoc:
@@ -24,21 +60,27 @@ springdoc:
   swagger-ui:
     enabled: false
 
-domainrobot:
-  default-ttl: 60
-  ## credentials for the domainrobot sdk
-  autodns:
-    context: 4
-    url: https://api.autodns.com/v1
-
-## import individual config
+## import of the individual configuration settings
 spring:
   config:
     import: optional:file:./dyndrest.yml
 
-# must be set by the individual properties file
-## spring security
-#  security:
-#    user:
-#      name: dyndns
-#      password: test123
+  ## database related properties
+  # the datasource
+  datasource:
+    url: jdbc:h2:file:./dyndrest
+    driverClassName: org.h2.Driver
+
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yml
+
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: none
+
+  h2:
+    console:
+      enabled: false
+      path: /h2

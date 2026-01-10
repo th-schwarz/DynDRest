@@ -1,0 +1,180 @@
+:source-highlighter: highlightjs
+:highlightjs-languages: yaml
+:toc:
+:toc-title:
+
+= DynDRest Configuration
+
+== Default settings
+
+DynDRest has a lot of configuration settings. Most of them has default settings, but they can be overwritten by the individual configuration file.
+
+Below all default settings are listed.
+
+[source,yaml]
+// include is disabled on github
+// application.yml 2025-05
+----
+## server settings
+server:
+  address: 127.0.0.1
+  port: 8081
+  forward-headers-strategy: NATIVE
+  servlet:
+    context-path: /
+  shutdown: graceful
+
+## management
+management:
+  endpoints:
+    web:
+      base-path: /manage
+    access:
+      default: none
+  endpoint:
+    health:
+      access: none
+
+
+## dyndrest config
+dyndrest:
+  greeting-enabled: true
+  host-validation-enabled: true
+  # http status code for the case at least one IP has changed, e.g. 201
+  update-ip-changed-status: 200
+  update-log-page-enabled: false
+  update-log-page-size: 30
+  update-log-date-pattern: yyyy-MM-dd HH:mm:ss
+  # database config, credentials should be set at the individual properties
+  database:
+    backup:
+      enabled: false
+      path: ./backup
+    restore:
+      enabled: false
+      path: ./restore
+    dump-file: dump.sql
+
+##  configuration for the domain robot sdk
+domainrobot:
+  default-ttl: 60
+  # connection properties
+  autodns:
+    context: 4
+    url: https://api.autodns.com/v1
+  # custom headers
+  custom-header:
+    X-Domainrobot-WS: NONE
+
+## configuration for the cloudflare API
+cloudflare:
+  base-url: https://api.cloudflare.com/client/v4
+  api-token: YQSn-xWAQiiEh9qM58wZNnyQS7FUdoqGIUAbrh7T
+  api-key: 12345678901234567890123456789
+  email: email@mydomain.com
+
+## disable springdoc endpoints and swagger-ui by default
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+## import of the individual configuration settings
+spring:
+  config:
+    import: optional:file:./dyndrest.yml
+
+  ## database related properties
+  # the datasource
+  datasource:
+    url: jdbc:h2:file:./dyndrest
+    driverClassName: org.h2.Driver
+
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yml
+
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: none
+
+  h2:
+    console:
+      enabled: false
+      path: /h2
+
+----
+
+== Individual settings
+
+The individual configuration file `dyndrest.yml` should be inside the application directory.
+
+=== BasicAuth
+
+Used for all routes except health check and log-view.
+[source,yaml]
+----
+spring:
+  security:
+    user:
+      name: oauthuser
+      password: oauthpasswd
+----
+
+=== Provider settings for AutoDNS (domainrobot-sdk)
+
+[source,yaml]
+----
+domainrobot:
+  autodns:
+    user: userName
+    password: secretPwd
+----
+That's the minimal setting for the domainrobot-api. For further fine adjustments, the following settings can be  overwritten or changed:
+[source,yaml]
+----
+domainrobot:
+  default-ttl: 60
+  # connection properties
+  autodns:
+    context: 4
+    url: https://api.autodns.com/v1
+  # custom headers
+  custom-header:
+    X-Domainrobot-WS: NONE
+----
+
+[[backup_restore]]
+=== Backup and Restore
+
+There is a very simple cron-triggered service to dump the database regular, it's part of the database configuration:
+
+[source,yaml]
+----
+dyndrest:
+  database:
+    backup:
+      enabled: true
+      path: ./backup
+      cron: "0 30 18 * * MON"
+    restore:
+      enabled: true
+      path: ./restore
+    dump-file: dump.sql
+----
+
+In this example every monday at 18:30 a database dump will be written to `./backup/dump.sql`. The file will be overwritten every time!
+
+If _restore_ is enabled and the file `./restore/dump.sql` exists at start, the dump will be restored and the file renamed to `./restore/dump.sql.bak`.
+
+=== Logging
+
+To set your individual log configuration use:
+
+[source,yaml]
+----
+logging:
+  config: file:./logback.xml
+----

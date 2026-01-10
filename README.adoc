@@ -1,0 +1,322 @@
+:toc:
+:toclevels: 3
+:toc-title:
+:source-highlighter: highlightjs
+:highlightjs-languages: yaml,console
+
+= DynDRest :: A Simple Dynamic DNS Rest Service
+
+image:https://github.com/th-schwarz/DynDRest/actions/workflows/build-and-analyse.yml/badge.svg["GitHub CI Build Status",link="https://github.com/th-schwarz/DynDRest/actions/workflows/build-and-analyse.yml"]
+image:https://img.shields.io/github/license/th-schwarz/DynDRest["License badge for DynDRest",link="https://github.com/th-schwarz/DynDRest/blob/develop/LICENSE"]
+
+:codecovURL: https://codecov.io/gh/th-schwarz/DynDRest
+:sonarURL: https://sonarcloud.io/dashboard?id=th-schwarz_DynDRest
+:sonarSummaryURL: https://sonarcloud.io/summary/new_code?id=th-schwarz_DynDRest
+
+{codecovURL}[image:{codecovURL}/graph/badge.svg?token=ARXPZ8IDMZ[codecov]] +
+{sonarURL}[image:https://sonarcloud.io/api/project_badges/measure?project=th-schwarz_DynDRest&metric=alert_status[Quality Gate Status]]
+{sonarURL}[image:https://sonarcloud.io/api/project_badges/measure?project=th-schwarz_DynDRest&metric=security_rating[Security Rating]]
+{sonarSummaryURL}[image:https://sonarcloud.io/api/project_badges/measure?project=th-schwarz_DynDRest&metric=coverage[Coverage]]
+{sonarURL}[image:https://sonarcloud.io/api/project_badges/measure?project=th-schwarz_DynDRest&metric=ncloc[Lines of Code]]
+{sonarSummaryURL}[image:https://sonarcloud.io/api/project_badges/measure?project=th-schwarz_DynDRest&metric=code_smells[Code Smells]]
+
+Give it a try!
+https://github.com/th-schwarz/DynDRest/releases[image:https://img.shields.io/github/v/release/th-schwarz/DynDRest?include_prereleases[GitHub release (latest by date including pre-releases)]]
+image:https://img.shields.io/github/downloads/th-schwarz/DynDRest/total[GitHub Downloads (all assets, all releases)]
+image:https://ghcr-badge.elias.eu.org/shield/th-schwarz/DynDRest/dyndrest[]
+
+DynDRest is kindly supported by
+
+image::https://resources.jetbrains.com/storage/products/company/brand/logos/IntelliJ_IDEA.png[IntelliJ IDEA logo,250,link="https://jb.gg/OpenSourceSupport"]
+
+== Preface
+
+DynDRest is a simple REST-service for dynamic DNS. The basic idea is to have multiple implementations of different dns providers.
+
+There are currently the following implementations:
+
+- The JSON-API of https://www.internetx.com/en/domains/autodns[AutoDNS].
+- The JSON-API of https://www.cloudflare.com/[Cloudflare]. +
+  Implemented by https://gitlab.com/thischwa/CloudflareDNS-java.git[CloudflareDNS-java].
+
+DynDRest is based on spring boot 3, that's why Java 17 or later is required!
+
+The restful-api can be used with many routers, for example the AVM Fritz!Box. DynDRest can be executed by `commandline`, `init.d` or `systemd`.
+
+If you find a bug or certain features are missing, don’t hesitate to file an issue on https://github.com/th-schwarz/DynDRest/issues[Github].
+
+This project is also a playground for the author to try things out. That's why not all changes are really necessary to move the project forward!
+
+== Disclaimer
+
+I’m not responsible for any data loss, hardware damage or broken keyboards. This guide comes without any warranty!
+
+== Big Picture
+
+DynDRest is running as a service. A client can access the service via url and basic-auth. Let’s assume DynDRest is running on `localhost`, then we can update the IPv4 and IPv6 address of the host _mydyndns.domain.com_ by calling the following curl command:
+
+[source,console]
+----
+curl -u dyndns:test123 -i \
+   "http://localhost:8081/router/mydyndns.domain.com?apitoken=1234567890abcdf&ipv4=127.1.2.4&ipv6=2a03:4000:41:32::2"
+----
+
+For each host an api-token must be defined. If the api-token does not match the host, the update will be failed. Due to this security feature, DynDRest can be used by different people. They can’t update the IPs each other.
+
+== Setup & Configuration
+
+DynDRest is a spring boot application, that’s why the application is extremely customizable just by configuration! Details of the configuration can be found here in https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#application-properties[Appendix A: Common Application Properties] of the spring boot reference documentation.
+
+NOTE: To avoid the use of the java keystore tool, DynDRest could be run behind a proxy. Corresponding headers are set by default.
+
+=== File Structure
+
+First, download the https://github.com/th-schwarz/DynDRest/releases[last release jar]. +
+Here is the suggested file structure:
+
+[source,bash]
+----
+├── /opt/dyndrest
+│   ├── dyndrest.yml
+│   ├── dyndrest.jar
+│   ├── logback.xml    (logback configuration)
+│   ├── dyndrest.mv.db  (h2 database file)
+│   ├── /backup
+│       ├── dump.sql   (optional backup of the database)
+│   ├── /restore
+│       ├── dump.sql   (optional dump of the database to restore)
+│   ├── /log
+│       ├── dyndrest.log   (application log)
+----
+
+*dyndrest.yml* defines the individual properties. The file is read by default and
+will be merged with the default properties in the classpath, therefore, the file can be kept
+as small as possible. A minimal configuration example can be found
+further below. If the file is inside the working directory, it is loaded
+automatically. The complete configuration settings can be found link:docs/dyndrest-configuration.adoc[here]. +
+Important: The basic-auth, the api-tokens and the credentials for
+AutoDNS should be defined in this file!
+
+*logback.xml* is the configuration file of Logback.
+
+=== Minimal configuration example
+
+This is a minimal configuration example for your individual properties file `dyndrest.yml` using the provider _domainrobot_:
+
+[source,yaml]
+----
+spring:
+  security:
+    user:
+      name: dyndns
+      password: test123
+
+  datasource:
+    username: dba
+    password: secretpwd
+
+logging:
+  config: file:./logback.xml
+
+dyndrest:
+  provider: domainrobot
+
+zones:
+  - name: dynhost.info
+    ns: ns.domain.info
+    hosts:
+    - sld: myhost
+      api-token: 1234567890abcdef
+
+domainrobot:
+  autodns:
+    password: pwd_t
+    user: user_t
+----
+
+The `zones` section should be used for importing the hosts and zones configuration to the database initially. Existing data entries won't be updated. The example defines a host `myhost.dynhost.info` with the api-token `1234567890abcdef`.
+
+If you want to use Cloudflare, the property `dyndrest.provider` has to be set to `cloudflare` and the following minimal configuration must be used:
+
+[source,yaml]
+----
+cloudflare:
+  api-token: YQSn-xWAQiiEh9qM58wZNnyQS7FUdoqGIUAbrh7T
+  api-key: 12345678901234567890123456789
+  email: email@mydomain.com
+----
+
+NOTE: This project uses _spring-doc_ to document the routes. The endpoints for this and the _swagger-ui_ are disabled by default!
+
+=== Database
+
+The Database is currently h2. +
+If not configured otherwise, the database is expected in the current working directory. If there isn't a database, a new one with the current default schema will be created by https://www.liquibase.com/community[liquibase].
+
+==== Backup & Restore
+
+There are 2 very basic configurations:
+
+- Backup: A cron-triggered service to dump the database regular.
+
+- Restore: Very basic strategy, if _restore_ is enabled and the file `./restore/dump.sql` exists at start, the dump will be restored and the file renamed to `./restore/dump.sql.bak`.
+
+For further info, see <<docs/dyndrest-configuration.adoc#backup_restore, Backup & Restore>>
+
+=== Suggested AutoDNS setup
+
+For security reasons, it makes sense to create a separate owner for the zones updated by DynDRest. This owner just needs the permission for  zone-info and zone-updates!
+
+== Start
+
+The fully executable jar can be executed in different ways.
+
+=== by Command Line
+
+The start by command line looks like:
+
+[source,bash]
+----
+cd /opt/dyndrest/
+java -jar dyndrest.jar --logging.config=logback.xml
+----
+
+=== by Docker
+
+DynDRest can be easily deployed using Docker, which simplifies the installation and configuration process. This method is especially useful for users who want to quickly set up DynDRest without installing Java directly on their system.
+
+==== Using Docker Compose
+
+The most convenient way to run DynDRest with Docker is using docker-compose. Create a file named `docker-compose.yml` with the following content:
+
+[source,yaml]
+----
+services:
+  dyndrest-dockerized:
+    image: ghcr.io/th-schwarz/dyndrest:[tagged-version]
+    restart: unless-stopped
+    volumes:
+      - /opt/dyndrest-dockerized/dyndrest.yml:/app/dyndrest.yml:ro
+      - /opt/dyndrest-dockerized/logback.xml:/app/logback.xml:ro
+      - /opt/dyndrest-dockerized/log:/app/log
+      - /opt/dyndrest-dockerized:/app
+    environment:
+      - SERVER_ADDRESS=0.0.0.0
+      - SERVER_PORT=8080
+      - SPRING_CONFIG_IMPORT=file:/app/dyndrest.yml
+      - SPRING_DATASOURCE_URL=jdbc:h2:file:/app/dyndrest
+    ports:
+      - "127.0.0.1:8081:8080"
+----
+
+Allowed values for `tagged-version`:
+
+- `latest` is built from the `main` branch.
+- `develop` is built from the `develop` branch.
+- `v0.11.0` is built from the tag `v0.11.0`.
+- `feature-xyz` is built from `feature/xyz` branch.
+
+Work steps:
+
+* Uses the official DynDRest Docker image from GitHub Container Registry
+* Sets up the necessary volume mounts for configuration files and persistent storage
+* Configures the server to listen on all interfaces within the container
+* Maps port 8081 on localhost to port 8080 in the container
+* Ensures the service automatically restarts unless explicitly stopped
+
+Important settings:
+
+1. **Server Address / Server Port**: The `SERVER_ADDRESS=0.0.0.0` setting allows the application to accept connections from any IP address and to `SERVER_PORT=8080` within the container. This is necessary for the port mapping to work. The equivalent setting in `dyndrest.yml` should be removed.
+
+1. **Database Persistence**: The H2 database files will be stored in the mounted volume at `/opt/dyndrest-dockerized`, ensuring data persistence between container restarts.
+
+1. **Port Mapping**: The example maps to `127.0.0.1:8081`, which means the service is only accessible from the host machine.
+
+==== Directory Structure for Docker
+
+Before starting the container, create the following directory structure:
+
+[source,bash]
+----
+mkdir -p /opt/dyndrest-dockerized/log
+# optional
+mkdir -p /opt/dyndrest-dockerized/backup
+mkdir -p /opt/dyndrest-dockerized/restore
+----
+
+Next, place your `dyndrest.yml` and `logback.xml` configuration files in the `/opt/dyndrest-dockerized` directory. These files will be mounted into the container.
+
+==== Starting DynDRest with Docker Compose
+
+To start DynDRest using Docker Compose, navigate to the directory containing your `docker-compose.yml` file and run:
+
+[source,console]
+----
+docker-compose up -d
+----
+
+The `-d` flag runs the container in detached mode (background). You can check the logs with:
+
+[source,console]
+----
+docker-compose logs -f dyndrest-dockerized
+----
+
+==== Running DynDRest with Docker (without Compose)
+
+If you prefer to use Docker directly without docker-compose, you can run DynDRest with:
+
+[source,console]
+----
+docker run -d --name dyndrest \
+  -v /opt/dyndrest-dockerized/dyndrest.yml:/app/dyndrest.yml:ro \
+  -v /opt/dyndrest-dockerized/logback.xml:/app/logback.xml:ro \
+  -v /opt/dyndrest-dockerized/log:/app/log \
+  -v /opt/dyndrest-dockerized:/app \
+  -e SERVER_ADDRESS=0.0.0.0 \
+  -e SERVER_PORT=8080 \
+  -e SPRING_CONFIG_IMPORT=file:/app/dyndrest.yml \
+  -e SPRING_DATASOURCE_URL=jdbc:h2:file:/app/dyndrest \
+  -p 127.0.0.1:8081:8080 \
+  --restart unless-stopped \
+  ghcr.io/th-schwarz/dyndrest:latest
+----
+
+=== by systemd Service
+
+DynDRest can also be started easily as a systemd service. An example for the desired service configuration can be found at the documentation link:docs/systemd-configuration.adoc[systemd Service Configuration].
+
+=== by init.d Service
+
+Another possibility to start DynDRest is as `init.d` service. Further information can be found at the documentation of spring boot, https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#deployment.installing.nix-services.init-d[Installation as an init.d Service (System V)].
+
+== Routes
+
+All routes are secured by BasicAuth with the properties `spring.security.user` and `spring.security.password` except for _/router/{host}_, it uses the full-hostname as user and the 'apiToken' for password.  A detailed description of the routes can be found at the https://th-schwarz.github.io/DynDRest/openapi-develop.html[OAS3 documentation].
+
+There are additional routes:
+
+* [/]: A simple html greeting page which is enabled by default. It can be disabled by setting
+the property `dyndrest.greeting-enabled=false`.
+* [/manage/health]: A very basic health check with an extra basic-auth user. It can be enabled and configured by setting `management.endpoint.health.access=enabled` and the both properties `dyndrest.healthcheck-user-name` and `dyndrest.healthcheck-user-password`.
+* [/log-ui]: Delivers a  simple web page to view the zone update logs. It is secured by
+basic-auth and can be configured by setting the two properties
+`dyndrest.update-log-user-name` and `dyndrest.update-log-user-password`.
+It is enabled by default, but it can be disabled by setting the property
+`dyndrest.update-log-page-enabled=false`.
+
+== Setup for a router for dynamic DNS
+
+As an example, let’s have a look at the setup of dynamic DNS in the
+https://service.avm.de/help/en/FRITZ-Box-7530/019p2/hilfe_dyndns[Fritz!Box
+7590]. The following settings are required:
+
+* _DynDNS Provider:_
+User-defined
+* _Domain name:_ The hostname for which the IPs should be
+updated.
+* _Username / Password:_ The credentials for basic-auth.
+* _Update-URL:_
+[your-host:port]/router/<domain>?apiToken=[yourApiToken]&ipv4=<ipaddr>&ipv6=<ip6addr>
+If both IP parameters are omitted, an attempt is made to fetch the remote IP.
+

@@ -1,22 +1,31 @@
-#
-# Build stage
-#
-FROM maven:3.6.0-jdk-11-slim AS build
-# copy sourcecode
-COPY src /opt/dyndrest/src
-COPY pom.xml /opt/dyndrest/
-# copy fake-repo dependency
-COPY fake-repo /opt/dyndrest/fake-repo
-# do the build
-RUN mvn -f /opt/dyndrest/pom.xml clean package
+# Multi-stage build: build the Spring Boot fat JAR, then run it on a slim JRE image
 
-#
-# Package stage
-#
-FROM openjdk:11-jre-slim
-# get the compiled JAR
-COPY --from=build /opt/dyndrest/target/dyndrest-0.2-SNAPSHOT.jar /opt/dyndrest/dyndrest.jar
+# ---- Build stage ----
+FROM maven:3.9-amazoncorretto-17 AS build
+WORKDIR /src
 
-WORKDIR /opt/dyndrest
-EXPOSE 8081
-ENTRYPOINT ["java","-jar","/opt/dyndrest/dyndrest.jar"]
+# Copy pom and sources
+COPY pom.xml .
+COPY src ./src
+# Project relies on a local fake repository used during build
+COPY fake-repo ./fake-repo
+
+# Build the application (skip tests for faster container build)
+RUN mvn -B -DskipTests package
+
+# ---- Runtime stage ----
+FROM eclipse-temurin:17-jre-jammy
+
+# curl install curl for an easier health check
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Expose the default HTTP port used by DynDRest when running in container
+EXPOSE 8080
+
+# Copy the built Spring Boot fat JAR to a fixed path outside /app so mounting /app won't hide the JAR
+# Keep WORKDIR at /app with no subdirectories for config and H2 database files
+COPY --from=build /src/target/dyndrest-*.jar /dyndrest.jar
+
+ENTRYPOINT ["java","-jar","/dyndrest.jar"]

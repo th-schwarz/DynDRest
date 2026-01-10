@@ -1,0 +1,97 @@
+spring:
+  main:
+    banner-mode: off
+  security:
+    user:
+      name: dyndns
+      password: test123
+
+  h2:
+    console.enabled: true
+
+  datasource:
+    url: jdbc:h2:mem:dyndrest;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false
+    driverClassName: org.h2.Driver
+    username: dba
+
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yml
+    drop-first: true
+    contexts: test
+
+  jpa:
+    show-sql: true
+
+server:
+  address: 127.0.0.1
+  port: 8081
+  servlet:
+    context-path: /
+
+management:
+  endpoints:
+    web:
+      base-path: /manage
+    access:
+      default: read_only
+  endpoint:
+    health:
+      access: read_only
+
+logging:
+  level:
+    org:
+      springframework:
+        jdbc:
+          core:
+            JdbcTemplate: DEBUG
+
+dyndrest:
+  provider: domainrobot
+  greeting-enabled: true
+  update-log-date-pattern: yyyy-MM-dd HH:mm:SSS
+  update-log-page-enabled: true
+  update-log-page-size: 4
+  update-log-user-name: log-dev
+  update-log-user-password: l0g-dev
+  update-ip-changed-status: 201
+  host-validation-enabled: false
+  healthcheck-user-name: health
+  healthcheck-user-password: hea1th
+  admin-user-name: admin
+  admin-user-password: adm1n
+  admin-api-token: token123
+  database:
+    dump-file: dump.sql
+    backup:
+      enabled: false
+      path: ./backup
+      cron: "0 30 4 * * SUN"
+    restore:
+      enabled: true
+      path: ./restore
+
+zones:
+- name: dynhost0.info
+  ns: ns0.domain.info
+  hosts:
+    - sld: my3
+      api-token: api1
+- name: zone1.info
+  ns: ns1.domain.info
+  hosts:
+    - sld: host1
+      api-token: abc
+    - sld: host2
+      api-token: 123
+
+domainrobot:
+  default-ttl: 61
+  autodns:
+    url: https://api.autodns.com/v1
+    context: 4
+    user: user_t
+    password: pwd_t
+  custom-header:
+    X-Domainrobot-WS: NONE
+    X-Domainrobot-Stid: my-stid-123

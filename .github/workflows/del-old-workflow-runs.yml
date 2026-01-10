@@ -10,6 +10,7 @@ jobs:
         uses: MajorScruffy/delete-old-workflow-runs@v0.3.0
         with:
           repository: th-schwarz/DynDRest   # replace this with your own repository
-          older-than-seconds: 604800        # remove all workflow runs older than 7 day
+          #older-than-seconds: 604800        # remove all workflow runs older than 7 day
+          older-than-seconds: 14515200        # remove all workflow runs older than 6 month
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
