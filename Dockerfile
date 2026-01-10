@@ -1,7 +1,7 @@
 # Multi-stage build: build the Spring Boot fat JAR, then run it on a slim JRE image
 
 # ---- Build stage ----
-FROM maven:3.9-amazoncorretto-17 AS build
+FROM maven:3-eclipse-temurin-17 AS build
 WORKDIR /src
 
 # Copy pom and sources
@@ -14,10 +14,10 @@ COPY fake-repo ./fake-repo
 RUN mvn -B -DskipTests package
 
 # ---- Runtime stage ----
-FROM eclipse-temurin:17-jre-jammy
+FROM eclipse-temurin:17-jre-noble
 
 # curl install curl for an easier health check
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y curl && apt-get full-upgrade -y && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
