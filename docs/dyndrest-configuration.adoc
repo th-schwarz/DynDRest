@@ -123,6 +123,20 @@ spring:
       password: oauthpasswd
 ----
 
+=== Zone Settings
+
+[source,yaml]
+----
+zones:
+  - name: dynhost.info
+    ns: ns.domain.info
+    hosts:
+    - sld: myhost
+      api-token: 1234567890abcdef
+-----
+
+NOTE: The api-token have max lenth of 20 chars
+
 === Provider settings for AutoDNS (domainrobot-sdk)
 
 [source,yaml]
