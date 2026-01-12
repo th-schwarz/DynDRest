@@ -206,7 +206,7 @@ public class HostZoneService {
     saveOrUpdate(host);
     String fqdn = ZoneStringUtil.getFqdn(hostname, zone);
     Optional<HostEnriched> optHostEnriched = hostRepo.findByFullHost(fqdn);
-    optHostEnriched.ifPresent(host1 -> securityChainManager.addOrUpdateHost(host1));
+    optHostEnriched.ifPresent(securityChainManager::addOrUpdateHost);
     return host;
   }
 

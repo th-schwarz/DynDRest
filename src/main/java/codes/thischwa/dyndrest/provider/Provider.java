@@ -6,7 +6,6 @@ import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.model.Zone;
 import codes.thischwa.dyndrest.provider.impl.GenericProvider;
 import java.util.List;
-import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -47,7 +46,6 @@ public interface Provider {
    * @param ipSetting the ip setting
    * @throws ProviderException the provider exception
    */
-  @Deprecated
   void update(String host, IpSetting ipSetting) throws ProviderException;
 
   /**

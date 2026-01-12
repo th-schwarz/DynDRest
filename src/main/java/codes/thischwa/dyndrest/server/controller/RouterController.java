@@ -58,7 +58,6 @@ public class RouterController implements RouterRoutes {
     }
 
     log.debug("Authorization successful: User {} updating host {}", authenticatedUsername, host);
-    ResponseEntity<Void> response = controllerService.processIpUpdate(host, ipv4, ipv6, req);
-    return response;
+    return controllerService.processIpUpdate(host, ipv4, ipv6, req);
   }
 }

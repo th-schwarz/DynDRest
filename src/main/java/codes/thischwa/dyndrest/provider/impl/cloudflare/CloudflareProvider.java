@@ -146,22 +146,21 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
       recordsToUpdate = null;
     } else {
       recordsToUpdate = new ArrayList<>();
-      updates.forEach(record -> {
-        IpSetting ipSetting = record.getIpSetting();
+      updates.forEach(rec -> {
+        IpSetting ipSetting = rec.getIpSetting();
         if (ipSetting.getIpv4() != null) {
-          recordsToUpdate.add(convert(record.getSld(), RecordType.A, ipSetting.getIpv4()));
+          recordsToUpdate.add(convert(rec.getSld(), RecordType.A, ipSetting.getIpv4()));
         }
         if (ipSetting.getIpv6() != null) {
-          recordsToUpdate.add(convert(record.getSld(), RecordType.AAAA, ipSetting.getIpv6()));
+          recordsToUpdate.add(convert(rec.getSld(), RecordType.AAAA, ipSetting.getIpv6()));
         }
       });
     }
-    List<RecordEntity> recordsToDelete = null;
-    List<RecordEntity> recordsToReplace = null;
+
     try {
-      cfDnsClient.recordBatch(zoneEntity, recordsToCreate, recordsToUpdate, recordsToReplace, recordsToDelete);
+      cfDnsClient.recordBatch(zoneEntity, recordsToCreate, recordsToUpdate, null, null);
     } catch (CloudflareApiException e) {
-      throw new RuntimeException(e);
+      throw new ProviderException(e);
     }
   }
 
@@ -232,32 +231,36 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
 
   private Map<String, IpSetting> fetchIpSettingOfZone(ZoneEntity zone, Set<String> relevantHosts) {
     Map<String, IpSetting> result = new HashMap<>();
+    List<RecordEntity> records;
     try {
-      List<RecordEntity> records = cfDnsClient.recordList(zone, RecordType.A, RecordType.AAAA);
-      Map<String, List<RecordEntity>> recordsByHost = CfDnsClient.groupRecordsByFqdn(records);
-      for (String fqdn : recordsByHost.keySet()) {
-        if (relevantHosts.contains(fqdn)) {
-          IpSetting ipSetting = new IpSetting();
-          List<RecordEntity> recs = recordsByHost.get(fqdn);
-          if (recs.isEmpty()) {
-            continue;
-          }
-          String ipv4Str = null;
-          String ipv6Str = null;
-          for (RecordEntity rec : recs) {
-            if (RecordType.A.getType().equals(rec.getType())) {
-              ipv4Str = rec.getContent();
-            } else if (RecordType.AAAA.getType().equals(rec.getType())) {
-              ipv6Str = rec.getContent();
-            }
-          }
-          ipSetting.setIpv4(ipv4Str);
-          ipSetting.setIpv6(ipv6Str);
-          result.put(fqdn, ipSetting);
-        }
-      }
+      records = cfDnsClient.recordList(zone, RecordType.A, RecordType.AAAA);
     } catch (CloudflareApiException e) {
+      log.error("Error while getting records of zone {}", zone.getName(), e);
       throw new RuntimeException(e);
+    }
+
+    Map<String, List<RecordEntity>> recordsByHost = CfDnsClient.groupRecordsByFqdn(records);
+    for (Map.Entry<String, List<RecordEntity>> recByHost : recordsByHost.entrySet()) {
+      String fqdn = recByHost.getKey();
+      if (relevantHosts.contains(fqdn)) {
+        IpSetting ipSetting = new IpSetting();
+        List<RecordEntity> recs = recByHost.getValue();
+        if (recs.isEmpty()) {
+          continue;
+        }
+        String ipv4Str = null;
+        String ipv6Str = null;
+        for (RecordEntity rec : recs) {
+          if (RecordType.A.getType().equals(rec.getType())) {
+            ipv4Str = rec.getContent();
+          } else if (RecordType.AAAA.getType().equals(rec.getType())) {
+            ipv6Str = rec.getContent();
+          }
+        }
+        ipSetting.setIpv4(ipv4Str);
+        ipSetting.setIpv6(ipv6Str);
+        result.put(fqdn, ipSetting);
+      }
     }
     return result;
   }
