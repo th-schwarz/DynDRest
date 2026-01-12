@@ -44,6 +44,8 @@ jobs:
         env:
           DOMAINROBOT_USER: ${{ secrets.DOMAINROBOT_USER }}
           DOMAINROBOT_PASSWORD: ${{ secrets.DOMAINROBOT_PASSWORD }}
+          CF_API_EMAIL: ${{ secrets.CF_API_EMAIL }}
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
         run: mvn -DtestClasspath=src/test/ verify
 
   sonarcloud-scan:
@@ -82,6 +84,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           DOMAINROBOT_USER: ${{ secrets.DOMAINROBOT_USER }}
           DOMAINROBOT_PASSWORD: ${{ secrets.DOMAINROBOT_PASSWORD }}
+          CF_API_EMAIL: ${{ secrets.CF_API_EMAIL }}
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=th-schwarz_DynDRest
 
   codecov-scan:
@@ -119,6 +123,8 @@ jobs:
         env:
           DOMAINROBOT_USER: ${{ secrets.DOMAINROBOT_USER }}
           DOMAINROBOT_PASSWORD: ${{ secrets.DOMAINROBOT_PASSWORD }}
+          CF_API_EMAIL: ${{ secrets.CF_API_EMAIL }}
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
         run: mvn -B test
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
