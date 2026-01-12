@@ -200,7 +200,9 @@ public class HostZoneService {
    */
   public Host addHost(Zone zone, String hostname, String apiToken) {
     Host host = new Host();
-    host.setZoneId(zone.getId());
+    if (zone.getId() != null) {
+      host.setZoneId(zone.getId());
+    }
     host.setSld(hostname);
     host.setApiToken(apiToken);
     saveOrUpdate(host);
