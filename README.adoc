@@ -56,7 +56,7 @@ DynDRest is running as a service. A client can access the service via url and ba
 [source,console]
 ----
 curl -u dyndns:test123 -i \
-   "http://localhost:8081/router/mydyndns.domain.com?apitoken=1234567890abcdf&ipv4=127.1.2.4&ipv6=2a03:4000:41:32::2"
+   "http://localhost:8081/router/mydyndns.domain.com?apiToken=1234567890abcdf&ipv4=127.1.2.4&ipv6=2a03:4000:41:32::2"
 ----
 
 For each host an api-token must be defined. If the api-token does not match the host, the update will be failed. Due to this security feature, DynDRest can be used by different people. They can’t update the IPs each other.
@@ -133,6 +133,8 @@ domainrobot:
 ----
 
 The `zones` section should be used for importing the hosts and zones configuration to the database initially. Existing data entries won't be updated. The example defines a host `myhost.dynhost.info` with the api-token `1234567890abcdef`.
+
+NOTE: api-token is 20 chars max.
 
 If you want to use Cloudflare, the property `dyndrest.provider` has to be set to `cloudflare` and the following minimal configuration must be used:
 
