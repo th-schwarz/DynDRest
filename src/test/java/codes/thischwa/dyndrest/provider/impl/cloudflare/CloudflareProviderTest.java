@@ -58,6 +58,9 @@ public class CloudflareProviderTest extends AbstractCloudflareTest {
     try {
       DEFAULT_IP_SETTING = new IpSetting("192.0.0.1", "2001:db8::1");
       DEFAULT_ZONE_MODEL = hostZoneService.getZone(ZONE_NAME);
+      if (DEFAULT_ZONE_MODEL == null) {
+        DEFAULT_ZONE_MODEL = hostZoneService.addZone(ZONE_NAME, "ns1.cloudflare.com");
+      }
       DEFAULT_ZONE_CF = cloudflareProvider.cfDnsClient.zoneGet(ZONE_NAME);
       cleanupDefaultHosts();
     } catch (Exception e) {
