@@ -60,7 +60,6 @@ dyndrest:
   healthcheck-user-password: hea1th
   admin-user-name: admin
   admin-user-password: adm1n
-  admin-api-token: token123
   database:
     dump-file: dump.sql
     backup:

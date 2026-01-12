@@ -2,7 +2,6 @@ package codes.thischwa.dyndrest.provider.impl.cloudflare;
 
 import codes.thischwa.cf.CfDnsClient;
 import codes.thischwa.cf.CloudflareApiException;
-import codes.thischwa.cf.CloudflareNotFoundException;
 import codes.thischwa.cf.model.RecordEntity;
 import codes.thischwa.cf.model.RecordType;
 import codes.thischwa.cf.model.ZoneEntity;
@@ -98,13 +97,19 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
 
   @Override
   public void removeHostIpSettings(String host) throws ProviderException {
-    ZoneEntity zone = fetchZoneFromHost(host);
+    ZoneEntity zone;
+    try {
+      zone = fetchZoneFromHost(host);
+    } catch (IllegalArgumentException e) {
+      throw new ProviderException(e);
+    }
     Optional<HostEnriched> optFullHost = hostZoneService.getHost(host);
     if (optFullHost.isEmpty()) {
-      throw new ProviderException("Host isn't configured: " + host);
+      throw new IllegalArgumentException("Host isn't configured: " + host);
     }
+    String sld = getSldFromHost(host);
     try {
-      sldDeleteIpSettings(zone, host);
+      sldDeleteIpSettings(zone, sld);
     } catch (CloudflareApiException e) {
       throw new ProviderException(e);
     }
@@ -235,7 +240,7 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
           IpSetting ipSetting = new IpSetting();
           List<RecordEntity> recs = recordsByHost.get(fqdn);
           if (recs.isEmpty()) {
-          continue;
+            continue;
           }
           String ipv4Str = null;
           String ipv6Str = null;
@@ -278,17 +283,18 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
   }
 
   /**
-   * Zone info zone.
+   * Retrieves the associated DNS zone for the given fully qualified domain name (FQDN).
    *
-   * @param host the host
-   * @return the zone
-   * @throws ProviderException        the provider exception
-   * @throws IllegalArgumentException the illegal argument exception
+   * @param fqdn The fully qualified domain name for which the DNS zone should be retrieved.
+   *             Must be a valid, non-null string.
+   * @return The ZoneEntity object representing the DNS zone associated with the given FQDN.
+   * @throws ProviderException        If an error occurs while interacting with the Cloudflare API.
+   * @throws IllegalArgumentException If the specified FQDN cannot be found.
    */
-  ZoneEntity fetchZoneFromHost(String host) throws ProviderException, IllegalArgumentException {
-    Optional<HostEnriched> optFullHost = hostZoneService.getHost(host);
+  ZoneEntity fetchZoneFromHost(String fqdn) throws ProviderException, IllegalArgumentException {
+    Optional<HostEnriched> optFullHost = hostZoneService.getHost(fqdn);
     if (optFullHost.isEmpty()) {
-      throw new IllegalArgumentException("Host isn't configured: " + host);
+      throw new IllegalArgumentException("Host can't be found: " + fqdn);
     }
     HostEnriched hostEnriched = optFullHost.get();
     String zone = hostEnriched.getZone();
@@ -364,7 +370,7 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
     String sld = getSldFromHost(host);
     try {
       List<RecordEntity> recsA = client.recordList(zone, sld, RecordType.A, RecordType.AAAA);
-      return!recsA.isEmpty();
+      return !recsA.isEmpty();
     } catch (CloudflareApiException e) {
       log.error("Unexpected error while getting A record of host {}", host, e);
       throw e;
