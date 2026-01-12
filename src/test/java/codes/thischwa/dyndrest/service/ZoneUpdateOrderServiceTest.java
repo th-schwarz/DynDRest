@@ -68,7 +68,7 @@ class ZoneUpdateOrderServiceTest {
     zoneUpdateOrderService.addOrUpdateHost(host);
 
     List<HostInfoHolder> hostsToUpdate = zoneUpdateOrderService.getHostsPerZoneToUpdate().get(EXAMPLE_ZONE);
-    assertTrue(hostsToUpdate.isEmpty());
+    assertNull(hostsToUpdate);
   }
 
   @Test

@@ -14,10 +14,11 @@ public class HostEnriched extends Host {
     return String.format("%s.%s", getSld(), zone);
   }
 
-  public void assignValuesOf(HostEnriched hostEnriched) {
-    setZoneId(hostEnriched.getZoneId());
-    setZone(hostEnriched.getZone());
-    setNs(hostEnriched.getNs());
-    setSld(hostEnriched.getSld());
+  @Override
+  public String toString() {
+    return "HostEnriched{" +
+        "zone='" + zone + '\'' +
+        ", ns='" + ns + '\'' +
+        "} " + super.toString();
   }
 }

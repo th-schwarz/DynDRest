@@ -74,6 +74,18 @@ public class ZoneUpdateOrderService {
     for (String host : hosts) {
       String zone = ZoneStringUtil.getZoneName(host);
       hostsPerZoneToDelete.computeIfAbsent(zone, k -> new ArrayList<>()).add(host);
+      if (hostsPerZoneToCreate.get(zone) != null) {
+        hostsPerZoneToCreate.get(zone).removeIf(h -> h.getFullHost().equals(host));
+        if (hostsPerZoneToCreate.get(zone).isEmpty()) {
+          hostsPerZoneToCreate.remove(zone);
+        }
+      }
+      if (hostsPerZoneToUpdate.get(zone) != null) {
+        hostsPerZoneToUpdate.get(zone).removeIf(h -> h.getFullHost().equals(host));
+        if (hostsPerZoneToUpdate.get(zone).isEmpty()) {
+          hostsPerZoneToUpdate.remove(zone);
+        }
+      }
     }
   }
 
@@ -85,6 +97,9 @@ public class ZoneUpdateOrderService {
       List<HostInfoHolder> hostsToUpdate = hostsPerZoneToUpdate.get(zoneStr);
       if (hostsToUpdate != null) {
         hostsToUpdate.removeIf(h -> h.getFullHost().equals(fullHost));
+        if (hostsToUpdate.isEmpty()) {
+          hostsPerZoneToUpdate.remove(zoneStr);
+        }
       }
       updateLogService.log(host.getFullHost(), host.getIpSetting(), UpdateLog.Status.success);
 
