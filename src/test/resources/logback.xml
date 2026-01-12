@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false">
+
+        <property name="log_path" value="/var/log"/>
+
+        <!-- daily rolling update log, retention period 30d -->
+        <appender name="update"
+                class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <file>${log_path}/dyndrest-update.log</file>
+                <encoder>
+                        <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n</pattern>
+                </encoder>
+
+                <rollingPolicy
+                        class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                        <fileNamePattern>${log_path}/dyndrest-update-%d{yyyy-MM}.log.gz</fileNamePattern>
+                        <maxHistory>1</maxHistory>
+                </rollingPolicy>
+        </appender>
+
+        <logger
+                name="UpdateLogger"
+                additivity="false"
+                level="info">
+                <appender-ref ref="update" />
+        </logger>
+
+        <!-- daily rolling application log, retention period 30d -->
+        <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <file>${log_path}/dyndrest.log</file>
+                <encoder>
+                        <pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{50} - %msg%n</pattern>
+                </encoder>
+                <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                        <fileNamePattern>${log_path}/dyndrest-%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+                        <maxHistory>30</maxHistory>
+                </rollingPolicy>
+        </appender>
+
+        <logger name="org.hibernate" level="info"/>
+        <logger name="org.eclipse.jetty" level="info"/>
+        <logger name="org.springframework.boot.autoconfigure.logging" level="info"/>
+        <logger name="org.springframework.context.annotation.ClassPathBeanDefinitionScanner" level="info"/>
+        <logger name="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" level="trace"/>
+        <logger name="org.springframework.web" level="info"/>
+        <logger name="org.springframework.beans" level="info"/>
+        <logger name="org.thymeleaf" level="info"/>
+
+        <root level="debug">
+                <appender-ref ref="file"/>
+        </root>
+</configuration>
