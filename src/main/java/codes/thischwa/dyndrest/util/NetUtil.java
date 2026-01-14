@@ -26,6 +26,13 @@ public class NetUtil {
     Lookup.getDefaultCache(DClass.IN).setMaxEntries(0);
   }
 
+  /**
+   * Determines whether a given string represents a valid IP address.
+   * This method checks if the input string is either a valid IPv4 or IPv6 address.
+   *
+   * @param ipStr the string representing the IP address to be validated
+   * @return {@code true} if the string is a valid IP address (IPv4 or IPv6), {@code false} otherwise
+   */
   public static boolean isIp(String ipStr) {
     return NetUtil.isIpv4(ipStr) || NetUtil.isIpv6(ipStr);
   }

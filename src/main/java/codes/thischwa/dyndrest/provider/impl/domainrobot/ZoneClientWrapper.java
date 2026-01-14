@@ -91,7 +91,6 @@ class ZoneClientWrapper {
     }
   }
 
-
   /**
    * Processes the ip settings for the desired zone and subtld, The corresponding resource record
    * will be updated or removed if null.
@@ -131,7 +130,7 @@ class ZoneClientWrapper {
    * @param zone the zone in which to search for resource records
    * @param sld  the second-level domain to look up IP settings for
    * @return an {@link IpSetting} object containing the IPv4 and/or IPv6 address, or an empty
-   * {@code IpSetting} if no matching resource records are found
+   *     {@code IpSetting} if no matching resource records are found
    */
   IpSetting info(Zone zone, String sld) {
     IpSetting ipSetting = new IpSetting();

@@ -14,6 +14,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ZoneRepo extends ListCrudRepository<Zone, Integer> {
 
+  /**
+   * Finds a zone by its name.
+   *
+   * @param name the zone name to search for
+   * @return the zone with the specified name, or null if not found
+   */
   @Query("select z.ID, NAME, NS, CHANGED from ZONE as z where NAME=:name")
   @Nullable
   Zone findByName(String name);

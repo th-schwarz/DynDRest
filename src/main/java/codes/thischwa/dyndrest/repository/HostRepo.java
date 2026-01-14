@@ -12,6 +12,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface HostRepo extends ListCrudRepository<Host, Integer> {
 
+  /**
+   * Finds all hosts with enriched information including zone details.
+   *
+   * @return a list of all enriched hosts
+   */
   @Query(
       "select h.id, h.SLD, h.API_TOKEN, concat(h.SLD, '.', z.NAME) full_host, "
           + "h.ZONE_ID, z.NAME as ZONE, z.NS, h.CHANGED "
@@ -20,6 +25,12 @@ public interface HostRepo extends ListCrudRepository<Host, Integer> {
           + "order by h.id")
   List<HostEnriched> findAllExtended();
 
+  /**
+   * Finds a host by its full host name.
+   *
+   * @param fullHost the full host name (e.g., subdomain.example.com)
+   * @return an optional enriched host
+   */
   @Query(
       "select h.id, h.SLD, concat(h.SLD, '.', z.NAME) full_host, h.API_TOKEN, h.ZONE_ID, "
           + " z.NAME as ZONE, z.NS, h.CHANGED from HOST h "
@@ -28,6 +39,12 @@ public interface HostRepo extends ListCrudRepository<Host, Integer> {
           + "order by h.id")
   Optional<HostEnriched> findByFullHost(String fullHost);
 
+  /**
+   * Finds all hosts by zone ID.
+   *
+   * @param zoneId the zone ID to filter by
+   * @return a list of enriched hosts for the specified zone
+   */
   @Query(
       "select h.id, h.SLD, concat(h.SLD, '.', z.NAME) full_host, h.API_TOKEN, h.ZONE_ID, "
           + " z.NAME as ZONE, z.NS, h.CHANGED from HOST h "

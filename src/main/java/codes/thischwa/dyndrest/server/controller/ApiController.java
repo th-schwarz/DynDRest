@@ -29,12 +29,12 @@ public class ApiController implements ApiRoutes {
 
   private final ControllerService controllerService;
 
-
   /**
    * Instantiates a new Api controller.
    *
-   * @param provider             the provider
-   * @param hostZoneService      the service for maintaining hosts and zones
+   * @param provider          the provider
+   * @param hostZoneService   the service for maintaining hosts and zones
+   * @param controllerService the service for processing controller operations
    */
   public ApiController(
       Provider provider,
@@ -44,6 +44,16 @@ public class ApiController implements ApiRoutes {
     this.controllerService = controllerService;
   }
 
+  /**
+   * Updates the IP address(es) for a given host.
+   *
+   * @param host     the host to update
+   * @param apiToken the API token for authentication
+   * @param ipv4     the IPv4 address (optional)
+   * @param ipv6     the IPv6 address (optional)
+   * @param req      the HTTP servlet request
+   * @return a response entity with no content on success
+   */
   @Override
   public ResponseEntity<Void> updateHost(
       String host,
@@ -52,11 +62,18 @@ public class ApiController implements ApiRoutes {
       @Nullable InetAddress ipv6,
       HttpServletRequest req) {
     log.debug(
-        "entered #update: host={}, apiToken={}, ipv4={}, ipv6={}", host, apiToken, ipv4, ipv6);
+        "entered #addOrUpdate: host={}, apiToken={}, ipv4={}, ipv6={}", host, apiToken, ipv4, ipv6);
     validateHost(host, apiToken);
     return controllerService.processIpUpdate(host, ipv4, ipv6, req);
   }
 
+  /**
+   * Fetches the current IP setting for a given host.
+   *
+   * @param host     the host to query
+   * @param apiToken the API token for authentication
+   * @return a response entity containing the IP setting
+   */
   @Override
   public ResponseEntity<IpSetting> fetchHostIpSetting(String host, @RequestParam String apiToken) {
     log.debug("entered #info: host={}", host);

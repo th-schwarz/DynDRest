@@ -14,22 +14,37 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * This interface defines alternative routes for routers that do not support the PUT method.  The authentication differs from the other routes. The user is the host and the password is the 'apiToken'
+ * This interface defines alternative routes for routers that do not support the PUT method.
+ * The authentication differs from the other routes. The user is the host and the password
+ * is the 'apiToken'.
  */
 public interface RouterRoutes {
-  /*+
-   * It's a duplicate of {@link codes.thischwa.dyndrest.server.controller.ApiRoutes#updateHost} for routers which can't use the PUT method.
+  /**
+   * It's a duplicate of
+   * {@link codes.thischwa.dyndrest.server.controller.ApiRoutes#updateHost} for routers which
+   * can't use the PUT method.
+   *
+   * @param userDetails the authenticated user details
+   * @param host        the full host name to update
+   * @param ipv4        the IPv4 address (optional)
+   * @param ipv6        the IPv6 address (optional)
+   * @param req         the HTTP servlet request
+   * @return a response entity with no content
    */
   @Operation(
       summary =
-          "Updates the desired IP addresses of the 'host'. If both parameters for IP addresses aren't set, an attempt is made to fetch the remote IP. It is an alternative route for routers which requires the GET method!  The authentication differs from the other routes. The user is the host and the password is the 'apiToken'.")
+          "Updates the desired IP addresses of the 'host'. If both parameters for IP addresses "
+          + "aren't set, an attempt is made to fetch the remote IP. It is an alternative route "
+          + "for routers which requires the GET method! The authentication differs from the "
+          + "other routes. The user is the host and the password is the 'apiToken'.")
   @ApiResponses(
       value = {
           @ApiResponse(responseCode = "200", description = "The IPs are still up to date."),
           @ApiResponse(
               responseCode = "201",
               description =
-                  "One or both IPs are changed. Update successful processed. (Dependent on the configuration the response code could be '200'! "),
+                  "One or both IPs are changed. Update successful processed. (Dependent on the "
+                  + "configuration the response code could be '200'! "),
           @ApiResponse(
               responseCode = "400",
               description =
@@ -38,12 +53,12 @@ public interface RouterRoutes {
               responseCode = "403",
               description = "If the authentication is wrong."),
           @ApiResponse(responseCode = "404", description = "The desired host doesn't exists."),
-          @ApiResponse(responseCode = "500", description = "If the update failed.")
+          @ApiResponse(responseCode = "500", description = "If the addOrUpdate failed.")
       })
-
   @GetMapping(value = "/router/{host}")
   ResponseEntity<Void> routerUpdateHost(
-      @AuthenticationPrincipal UserDetails userDetails, @Schema(
+      @AuthenticationPrincipal UserDetails userDetails,
+      @Schema(
           description =
               "The host, for which the IPs must be updated. It has to be a full domain name.",
           type = "string",

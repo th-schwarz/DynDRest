@@ -1,6 +1,5 @@
 package codes.thischwa.dyndrest.model.config.database;
 
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**

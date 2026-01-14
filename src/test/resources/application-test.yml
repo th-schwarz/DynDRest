@@ -19,9 +19,6 @@ spring:
     drop-first: true
     contexts: test
 
-  jpa:
-    show-sql: true
-
 server:
   address: 127.0.0.1
   port: 8081
@@ -69,7 +66,6 @@ dyndrest:
     restore:
       enabled: true
       path: ./restore
-  update-interval-seconds: 1
 
 zones:
 - name: dynhost0.info

@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.jspecify.annotations.Nullable;
 
-/** The UpdateLog class represents a log entry for a zone update operation. */
+/** The UpdateLog class represents a log entry for a zone addOrUpdate operation. */
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class UpdateLog extends AbstractJdbcEntity {
@@ -25,8 +25,8 @@ public class UpdateLog extends AbstractJdbcEntity {
    *
    * @param hostId The host id.
    * @param ipSetting The IP settings.
-   * @param status The status of the update log entry.
-   * @param changedUpdate The date and time of the changed update, can be null.
+   * @param status The status of the addOrUpdate log entry.
+   * @param changedUpdate The date and time of the changed addOrUpdate, can be null.
    * @param changed The date and time of the log entry creation.
    * @return A new instance of UpdateLog.
    */
@@ -46,7 +46,7 @@ public class UpdateLog extends AbstractJdbcEntity {
     return updateLog;
   }
 
-  /** The Status enum represents the possible statuses for an update log entry. */
+  /** The Status enum represents the possible statuses for an addOrUpdate log entry. */
   public enum Status {
     failed,
     waiting,

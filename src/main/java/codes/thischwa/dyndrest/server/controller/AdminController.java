@@ -2,7 +2,6 @@ package codes.thischwa.dyndrest.server.controller;
 
 import codes.thischwa.dyndrest.model.HostEnriched;
 import codes.thischwa.dyndrest.model.Zone;
-import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.provider.Provider;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.service.HostZoneService;
@@ -22,19 +21,16 @@ import org.springframework.web.server.ResponseStatusException;
 public class AdminController implements AdminRoutes {
 
   private final DomainNameValidator domainNameValidator = new DomainNameValidator();
-  private final AppConfig config;
   private final HostZoneService hostZoneService;
   private final Provider provider;
 
   /**
    * Creates a new instance of the AdminController class.
    *
-   * @param config The application configuration.
    * @param hostZoneService The host zone service.
    * @param provider The provider.
    */
-  public AdminController(AppConfig config, HostZoneService hostZoneService, Provider provider) {
-    this.config = config;
+  public AdminController(HostZoneService hostZoneService, Provider provider) {
     this.hostZoneService = hostZoneService;
     this.provider = provider;
   }
@@ -97,12 +93,8 @@ public class AdminController implements AdminRoutes {
       log.error("Host {} already exists.", host);
       throw new ResponseStatusException(HttpStatus.CONFLICT);
     }
-    try {
-      provider.addHost(zoneName, host);
-    } catch (ProviderException e) {
-      log.error("Failed to add host: zone=" + zoneName + ", host=" + host, e);
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-    }
+
+    // add host into the database
     hostZoneService.addHost(zone, host, apiToken);
     return ResponseEntity.ok().build();
   }
@@ -124,6 +116,4 @@ public class AdminController implements AdminRoutes {
     hostZoneService.deleteHost(hostEnriched);
     return ResponseEntity.ok().build();
   }
-
-
 }

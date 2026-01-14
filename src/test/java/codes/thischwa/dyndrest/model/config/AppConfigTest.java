@@ -5,10 +5,18 @@ import static org.junit.jupiter.api.Assertions.*;
 import codes.thischwa.dyndrest.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 
 class AppConfigTest extends AbstractIntegrationTest {
 
   @Autowired private AppConfig appConfig;
+
+
+  @DynamicPropertySource
+  static void configureProperties(DynamicPropertyRegistry registry) {
+    registry.add("dyndrest.zone-update-interval-seconds", () -> 1);
+  }
 
   @Test
   final void testConfig() {
@@ -31,6 +39,6 @@ class AppConfigTest extends AbstractIntegrationTest {
     assertEquals("admin", appConfig.adminUserName());
     assertEquals("adm1n", appConfig.adminUserPassword());
 
-    assertEquals(1, appConfig.updateIntervalSeconds());
+    assertEquals(1, appConfig.zoneUpdateIntervalSeconds());
   }
 }

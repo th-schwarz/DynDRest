@@ -17,23 +17,30 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.web.server.ResponseStatusException;
 
-@DisplayName("Integration tests: controller - api-update")
+@DisplayName("Integration tests: controller - api-addOrUpdate")
 @Slf4j
-class ApiControllerUpdateTest extends AbstractControllerTest {
+class ApiControllerUpdateMockTest extends AbstractControllerMockTest {
 
   private final String ipStr = "192.168.1.1";
   private final String validToken = "valid_token";
 
+  @DynamicPropertySource
+  static void configureProperties(DynamicPropertyRegistry registry) {
+    registry.add("dyndrest.zone-update-interval-seconds", () -> 1);
+  }
+
   @BeforeEach
   void resetMocks() {
-    reset(provider, hostZoneService, dynamicSecurityChainManager, zoneUpdateOrderService, updateLogService);
+    reset(provider, hostZoneService, dynamicSecurityChainManager, zoneUpdaterService, updateLogService);
   }
 
   @Test
   void testSuccess() throws Exception {
-    String host = buildHostName("domain.update");
+    String host = buildHostName("domain.addOrUpdate");
     log.debug("entered #testSuccess: {}", host);
     IpSetting setting = new IpSetting(ipStr);
     MockHttpServletRequest request = new MockHttpServletRequest();
@@ -47,12 +54,12 @@ class ApiControllerUpdateTest extends AbstractControllerTest {
         apiController.updateHost(host, validToken, setting.getIpv4(), null, request);
 
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-    verify(zoneUpdateOrderService, times(1)).addOrUpdateHost(any());
+    verify(zoneUpdaterService, times(1)).addOrUpdateHost(any());
   }
 
   @Test
   void testSuccess_guessRemoteIp() throws Exception {
-    String host = buildHostName("domain.update");
+    String host = buildHostName("domain.addOrUpdate");
     log.debug("entered #testSuccess_guessRemoteIp: {}", host);
     MockHttpServletRequest request = new MockHttpServletRequest();
     request.setRemoteAddr("192.168.1.10");
@@ -65,12 +72,12 @@ class ApiControllerUpdateTest extends AbstractControllerTest {
         apiController.updateHost(host, validToken, null, null, request);
 
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-    verify(zoneUpdateOrderService, times(1)).addOrUpdateHost(any());
+    verify(zoneUpdaterService, times(1)).addOrUpdateHost(any());
   }
 
   @Test
   void testWithInvalidHost() throws Exception {
-    String host = buildHostName("domain.update");
+    String host = buildHostName("domain.addOrUpdate");
     log.debug("entered #testWithInvalidHost: {}", host);
     IpSetting setting = new IpSetting(ipStr);
     MockHttpServletRequest request = new MockHttpServletRequest();
@@ -92,7 +99,7 @@ class ApiControllerUpdateTest extends AbstractControllerTest {
 
   @Test
   void testWithInvalidToken() throws Exception {
-    String host = buildHostName("domain.update");
+    String host = buildHostName("domain.addOrUpdate");
     log.debug("entered #testWithInvalidToken: {}", host);
     String invalidToken = "invalid_token";
     IpSetting setting = new IpSetting(ipStr);
@@ -115,7 +122,7 @@ class ApiControllerUpdateTest extends AbstractControllerTest {
 
   @Test
   void testWithProviderException() throws Exception {
-    String host = buildHostName("domain.update");
+    String host = buildHostName("domain.addOrUpdate");
     log.debug("entered #testWithProviderException: {}", host);
     String apiToken = "valid_token";
     IpSetting setting = new IpSetting(ipStr);
@@ -126,7 +133,7 @@ class ApiControllerUpdateTest extends AbstractControllerTest {
     when(hostZoneService.validate(host, apiToken)).thenReturn(true);
     when(hostZoneService.getHost(host)).thenReturn(Optional.of(hostEnriched));
     doThrow(new RuntimeException("Provider error"))
-        .when(zoneUpdateOrderService).addOrUpdateHost(any());
+        .when(zoneUpdaterService).addOrUpdateHost(any());
 
     try {
       apiController.updateHost(host, apiToken, setting.getIpv4(), null, request);
@@ -135,7 +142,7 @@ class ApiControllerUpdateTest extends AbstractControllerTest {
       assertEquals("Provider error", e.getMessage());
     }
 
-    verify(zoneUpdateOrderService, times(1)).addOrUpdateHost(any());
+    verify(zoneUpdaterService, times(1)).addOrUpdateHost(any());
   }
 
 }

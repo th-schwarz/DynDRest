@@ -14,7 +14,7 @@ import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.provider.impl.GenericProvider;
 import codes.thischwa.dyndrest.server.config.DynamicSecurityChainManager;
 import codes.thischwa.dyndrest.service.HostZoneService;
-import codes.thischwa.dyndrest.service.ZoneUpdateOrderService;
+import codes.thischwa.dyndrest.service.ZoneUpdaterService;
 import codes.thischwa.dyndrest.util.NetUtil;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -40,9 +40,9 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
   private final int defaultTtl;
 
   CloudflareProvider(
-      AppConfig appConfig, CloudflareConfig config, HostZoneService hostZoneService, ZoneUpdateOrderService zoneUpdateOrderService,
+      AppConfig appConfig, CloudflareConfig config, HostZoneService hostZoneService, ZoneUpdaterService zoneUpdaterService,
       DynamicSecurityChainManager securityChainManager) {
-    super(appConfig, securityChainManager, hostZoneService, zoneUpdateOrderService);
+    super(appConfig, securityChainManager, hostZoneService, zoneUpdaterService);
     this.defaultTtl = config.defaultTtl();
     if (config.baseUrl() != null) {
       cfDnsClient = new CfDnsClient(config.baseUrl(), config.email(), config.apiKey());
@@ -52,14 +52,14 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
   }
 
   @Override
-  public void update(String host, IpSetting ipSetting) throws ProviderException {
-    ZoneEntity zone = fetchZoneFromHost(host);
-    String sld = getSldFromHost(host);
+  public void addOrUpdate(String fqdn, IpSetting ipSetting) throws ProviderException {
+    ZoneEntity zone = fetchZoneFromHost(fqdn);
+    String sld = getSldFromHost(fqdn);
     try {
       boolean updated =
           sldCreateUpdateOrDeleteIp(zone, sld, ipSetting.getIpv4(), ipSetting.getIpv6());
       if (!updated) {
-        log.info("*** No update required for host: {}", host);
+        log.info("*** No addOrUpdate required for host: {}", fqdn);
       }
     } catch (CloudflareApiException e) {
       throw new ProviderException(e);
@@ -72,17 +72,17 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
     String sld = getSldFromHost(fqdn);
     IpSetting ipSetting = new IpSetting();
     try {
-      List<RecordEntity> recsA = cfDnsClient.recordList(zone, sld, RecordType.A);
-      if (!recsA.isEmpty()) {
-        ipSetting.setIpv4(recsA.get(0).getContent());
+      List<RecordEntity> arecords = cfDnsClient.recordList(zone, sld, RecordType.A);
+      if (!arecords.isEmpty()) {
+        ipSetting.setIpv4(arecords.get(0).getContent());
       }
     } catch (CloudflareApiException e) {
       log.warn("Error while getting A record of host {}", fqdn, e);
     }
     try {
-      List<RecordEntity> recAAAA = cfDnsClient.recordList(zone, sld, RecordType.AAAA);
-      if (!recAAAA.isEmpty()) {
-        ipSetting.setIpv6(recAAAA.get(0).getContent());
+      List<RecordEntity> aaaaRecords = cfDnsClient.recordList(zone, sld, RecordType.AAAA);
+      if (!aaaaRecords.isEmpty()) {
+        ipSetting.setIpv6(aaaaRecords.get(0).getContent());
       }
     } catch (CloudflareApiException e) {
       log.warn("Error while getting AAAA record of host {}", fqdn, e);
@@ -91,23 +91,18 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
   }
 
   @Override
-  public void addHost(String zoneName, String host) throws ProviderException {
-    // not required for cloudflare. #update adds the required records.
-  }
-
-  @Override
-  public void removeHostIpSettings(String host) throws ProviderException {
+  public void removeHostIpSettings(String fqdn) throws ProviderException {
     ZoneEntity zone;
     try {
-      zone = fetchZoneFromHost(host);
+      zone = fetchZoneFromHost(fqdn);
     } catch (IllegalArgumentException e) {
       throw new ProviderException(e);
     }
-    Optional<HostEnriched> optFullHost = hostZoneService.getHost(host);
+    Optional<HostEnriched> optFullHost = hostZoneService.getHost(fqdn);
     if (optFullHost.isEmpty()) {
-      throw new IllegalArgumentException("Host isn't configured: " + host);
+      throw new IllegalArgumentException("Host isn't configured: " + fqdn);
     }
-    String sld = getSldFromHost(host);
+    String sld = getSldFromHost(fqdn);
     try {
       sldDeleteIpSettings(zone, sld);
     } catch (CloudflareApiException e) {

@@ -18,6 +18,12 @@ public interface UpdateLogRepo
     extends ListPagingAndSortingRepository<UpdateLog, Integer>,
         ListCrudRepository<UpdateLog, Integer> {
 
+  /**
+   * Finds all update logs with the specified status(es).
+   *
+   * @param status the status(es) to filter by
+   * @return a list of enriched update logs
+   */
   @Query(
       "select u.ID, u.HOST_ID, u.IPV4, u.IPV6, u.CHANGED, u.CHANGED_UPDATE, u.STATUS, "
           + "concat(h.SLD, '.', z.NAME) host "
@@ -28,6 +34,12 @@ public interface UpdateLogRepo
           + "order by u.CHANGED DESC")
   List<UpdateLogEnriched> findAllByStatus(UpdateLog.Status... status);
 
+  /**
+   * Finds all update logs by their IDs.
+   *
+   * @param ids the list of IDs to filter by
+   * @return a list of enriched update logs
+   */
   @Query(
       "select u.ID, u.HOST_ID, u.IPV4, u.IPV6, u.CHANGED, u.CHANGED_UPDATE, u.STATUS, "
           + "concat(h.SLD, '.', z.NAME) host "
@@ -38,6 +50,11 @@ public interface UpdateLogRepo
           + "order by u.CHANGED DESC")
   List<UpdateLogEnriched> findAllFullUpdateLogsByIds(List<Integer> ids);
 
+  /**
+   * Finds all update logs.
+   *
+   * @return a list of all enriched update logs
+   */
   @Query(
       "select u.ID, u.HOST_ID, u.IPV4, u.IPV6, u.CHANGED, u.CHANGED_UPDATE, u.STATUS, "
           + "concat(h.SLD, '.', z.NAME) host "
@@ -47,6 +64,12 @@ public interface UpdateLogRepo
           + "order by u.CHANGED DESC")
   List<UpdateLogEnriched> findAllFullUpdateLogs();
 
+  /**
+   * Finds all update logs for a specific host.
+   *
+   * @param hostId the host ID to filter by
+   * @return a list of enriched update logs for the specified host
+   */
   @Query(
           "select u.ID, u.HOST_ID, u.IPV4, u.IPV6, u.CHANGED, u.CHANGED_UPDATE, u.STATUS, "
                   + "concat(h.SLD, '.', z.NAME) host "

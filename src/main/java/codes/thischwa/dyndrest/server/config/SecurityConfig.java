@@ -69,14 +69,14 @@ public class SecurityConfig {
 
     healthEnabled = !"none".equals(healthAccess);
 
-    // check if credentials for update-log-view exist
-    boolean isUpdateLogCredentialsEmpty = !StringUtils.hasText(appConfig.updateLogUserName()) ||
-        !StringUtils.hasText(appConfig.updateLogUserPassword());
+    // check if credentials for addOrUpdate-log-view exist
+    boolean isUpdateLogCredentialsEmpty = !StringUtils.hasText(appConfig.updateLogUserName())
+        || !StringUtils.hasText(appConfig.updateLogUserPassword());
     updateLogEnabled = appConfig.updateLogPageEnabled() && !isUpdateLogCredentialsEmpty;
 
     // check if credentials for admin exit
-    adminEnabled = StringUtils.hasText(appConfig.adminUserName()) &&
-        StringUtils.hasText(appConfig.adminUserPassword());
+    adminEnabled = StringUtils.hasText(appConfig.adminUserName())
+        && StringUtils.hasText(appConfig.adminUserPassword());
 
     if (Arrays.asList(env.getActiveProfiles()).contains("opendoc")) {
       PUBLIC_ENDPOINTS.add("/v3/api-docs*");
@@ -133,8 +133,9 @@ public class SecurityConfig {
     if (h2ConsoleEnabled) {
       // h2 settings
       http.authorizeHttpRequests(
-          auth -> auth.requestMatchers("/h2-console/**").permitAll()).headers(
-          headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
+              auth -> auth.requestMatchers("/h2-console/**").permitAll())
+          .headers(
+              headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
     }
 
     if (updateLogEnabled) {

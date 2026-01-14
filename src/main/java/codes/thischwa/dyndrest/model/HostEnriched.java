@@ -16,9 +16,9 @@ public class HostEnriched extends Host {
 
   @Override
   public String toString() {
-    return "HostEnriched{" +
-        "zone='" + zone + '\'' +
-        ", ns='" + ns + '\'' +
-        "} " + super.toString();
+    return "HostEnriched{"
+        + "zone='" + zone + '\''
+        + ", ns='" + ns + '\''
+        + "} " + super.toString();
   }
 }

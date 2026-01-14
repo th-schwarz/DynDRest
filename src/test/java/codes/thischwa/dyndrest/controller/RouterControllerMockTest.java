@@ -2,9 +2,7 @@ package codes.thischwa.dyndrest.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -21,10 +19,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 
-@DisplayName("Integration tests: controller - router-update")
+@DisplayName("Integration tests: controller - router-addOrUpdate")
 @Slf4j
-public class RouterControllerTest extends AbstractControllerTest{
+public class RouterControllerMockTest extends AbstractControllerMockTest {
+
+  @DynamicPropertySource
+  static void configureProperties(DynamicPropertyRegistry registry) {
+    registry.add("dyndrest.zone-update-interval-seconds", () -> 1);
+  }
 
   @Test
   void routerUpdateHost_successfulUpdate() throws Exception {
@@ -45,7 +50,7 @@ public class RouterControllerTest extends AbstractControllerTest{
     ResponseEntity<Void> response = routerController.routerUpdateHost(userDetails, host, ipv4, ipv6, req);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
-    verify(zoneUpdateOrderService, times(1)).addOrUpdateHost(any(HostInfoHolder.class));
+    verify(zoneUpdaterService, times(1)).addOrUpdateHost(any(HostInfoHolder.class));
   }
 
   @Test

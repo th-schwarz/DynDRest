@@ -6,7 +6,7 @@ import codes.thischwa.dyndrest.server.config.DynamicSecurityChainManager;
 import codes.thischwa.dyndrest.server.controller.ApiController;
 import codes.thischwa.dyndrest.server.controller.RouterController;
 import codes.thischwa.dyndrest.service.ControllerService;
-import codes.thischwa.dyndrest.service.ZoneUpdateOrderService;
+import codes.thischwa.dyndrest.service.ZoneUpdaterService;
 import codes.thischwa.dyndrest.service.HostZoneService;
 import codes.thischwa.dyndrest.service.UpdateLogService;
 import codes.thischwa.dyndrest.service.ZoneUpdaterScheduler;
@@ -19,7 +19,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @SpringBootTest
 @ActiveProfiles("test")
-abstract class AbstractControllerTest {
+abstract class AbstractControllerMockTest {
 
   @TestConfiguration
   static class TestConfig {
@@ -48,7 +48,7 @@ abstract class AbstractControllerTest {
   protected ZoneUpdaterScheduler zoneUpdaterScheduler;
 
   @MockitoBean
-  protected ZoneUpdateOrderService zoneUpdateOrderService;
+  protected ZoneUpdaterService zoneUpdaterService;
 
   @Autowired
   protected ApiController apiController;

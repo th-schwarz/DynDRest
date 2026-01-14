@@ -4,7 +4,7 @@ import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.provider.Provider;
 import codes.thischwa.dyndrest.server.config.DynamicSecurityChainManager;
 import codes.thischwa.dyndrest.service.HostZoneService;
-import codes.thischwa.dyndrest.service.ZoneUpdateOrderService;
+import codes.thischwa.dyndrest.service.ZoneUpdaterService;
 import lombok.extern.slf4j.Slf4j;
 import org.domainrobot.sdk.client.Domainrobot;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -22,23 +22,23 @@ class DomainRobotConfigurator {
   private final DomainRobotConfig.Autodns autoDnsConfig;
   private final DomainRobotConfig domainRobotConfig;
   private final DynamicSecurityChainManager securityChainManager;
-  private final ZoneUpdateOrderService zoneUpdateOrderService;
+  private final ZoneUpdaterService zoneUpdaterService;
 
   public DomainRobotConfigurator(
       AppConfig appConfig, HostZoneService hostZoneService, DomainRobotConfig domainRobotConfig,
-      DynamicSecurityChainManager securityChainManager, ZoneUpdateOrderService zoneUpdateOrderService) {
+      DynamicSecurityChainManager securityChainManager, ZoneUpdaterService zoneUpdaterService) {
     this.appConfig = appConfig;
     this.hostZoneService = hostZoneService;
     this.autoDnsConfig = domainRobotConfig.autodns();
     this.domainRobotConfig = domainRobotConfig;
     this.securityChainManager = securityChainManager;
-    this.zoneUpdateOrderService = zoneUpdateOrderService;
+    this.zoneUpdaterService = zoneUpdaterService;
   }
 
   @Bean
   Provider provider() {
     final ZoneClientWrapper zcw = buildZoneClientWrapper();
-    return new DomainRobotProvider(appConfig, hostZoneService, zoneUpdateOrderService, zcw, securityChainManager);
+    return new DomainRobotProvider(appConfig, hostZoneService, zoneUpdaterService, zcw, securityChainManager);
   }
 
   ZoneClientWrapper buildZoneClientWrapper() {

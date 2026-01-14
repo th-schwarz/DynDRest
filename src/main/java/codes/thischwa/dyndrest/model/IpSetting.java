@@ -23,6 +23,9 @@ public class IpSetting {
 
   private @Nullable Inet6Address ipv6;
 
+  /**
+   * Default constructor.
+   */
   public IpSetting() {}
 
   /**
@@ -85,16 +88,31 @@ public class IpSetting {
     this.ipv6 = remoteIp instanceof Inet6Address ? (Inet6Address) remoteIp : null;
   }
 
+  /**
+   * Checks if neither IPv4 nor IPv6 is set.
+   *
+   * @return true if both IP addresses are null, false otherwise
+   */
   @JsonIgnore
   public boolean isNotSet() {
     return ipv4 == null && ipv6 == null;
   }
 
+  /**
+   * Returns the IPv4 address as a string.
+   *
+   * @return the IPv4 address string, or null if not set
+   */
   @JsonGetter("ipv4")
   public @Nullable String ipv4ToString() {
     return ipv4 == null ? null : ipv4.getHostAddress();
   }
 
+  /**
+   * Returns the IPv6 address as a string.
+   *
+   * @return the IPv6 address string, or null if not set
+   */
   @JsonGetter("ipv6")
   public @Nullable String ipv6ToString() {
     return ipv6 == null ? null : ipv6.getHostAddress();
@@ -121,6 +139,16 @@ public class IpSetting {
   }
 
   /**
+   * Sets the IPv4 address for this instance.
+   *
+   * @param ipv4 the IPv4 address to set, or null to clear the current IPv4 address. If provided,
+   *             the address must be an instance of {@link Inet4Address}.
+   */
+  public void setIpv4(@Nullable Inet4Address ipv4) {
+    this.ipv4 = ipv4;
+  }
+
+  /**
    * Sets the IPv6 address for this instance. The provided value is validated and converted into an
    * {@link Inet6Address} object. If the value is null, the IPv6 address is cleared.
    *
@@ -138,16 +166,6 @@ public class IpSetting {
     } catch (UnknownHostException e) {
       throw new IllegalArgumentException("Invalid IPv6 address: " + value, e);
     }
-  }
-
-  /**
-   * Sets the IPv4 address for this instance.
-   *
-   * @param ipv4 the IPv4 address to set, or null to clear the current IPv4 address. If provided,
-   *             the address must be an instance of {@link Inet4Address}.
-   */
-  public void setIpv4(@Nullable Inet4Address ipv4) {
-    this.ipv4 = ipv4;
   }
 
   /**

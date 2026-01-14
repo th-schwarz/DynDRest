@@ -26,9 +26,15 @@ public class HostInfoHolder extends HostEnriched {
 
   @Override
   public boolean equals(@Nullable Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    if (!super.equals(o)) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    if (!super.equals(o)) {
+      return false;
+    }
     HostInfoHolder that = (HostInfoHolder) o;
     return java.util.Objects.equals(ipSetting, that.ipSetting);
   }
@@ -38,6 +44,13 @@ public class HostInfoHolder extends HostEnriched {
     return java.util.Objects.hash(super.hashCode(), ipSetting);
   }
 
+  /**
+   * Creates a HostInfoHolder from a HostEnriched and IpSetting.
+   *
+   * @param host      the enriched host
+   * @param ipSetting the IP setting
+   * @return a new HostInfoHolder instance
+   */
   public static HostInfoHolder of(HostEnriched host, IpSetting ipSetting) {
     HostInfoHolder hostInfoHolder = new HostInfoHolder();
     hostInfoHolder.setZoneId(host.getZoneId());

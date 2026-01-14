@@ -4,6 +4,9 @@ import codes.thischwa.dyndrest.model.HostEnriched;
 import codes.thischwa.dyndrest.model.HostInfoHolder;
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.model.UpdateLog;
+import codes.thischwa.dyndrest.model.config.AppConfig;
+import codes.thischwa.dyndrest.provider.Provider;
+import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.util.NetUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
@@ -16,9 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
- * Service class that handles IP update processing for a given host.
+ * Service class that handles IP addOrUpdate processing for a given host.
  *
- * <p>The {@code ControllerService} is responsible for orchestrating the validation and update of IP
+ * <p>The {@code ControllerService} is responsible for orchestrating the validation and addOrUpdate of IP
  * settings associated with a host. It integrates with a DNS provider implementation, application
  * configuration, and a logging service to ensure that updates are processed correctly and recorded
  * accordingly.
@@ -29,17 +32,41 @@ public class ControllerService {
 
   private final UpdateLogService updateLogService;
 
-  private final ZoneUpdateOrderService zoneUpdateOrderService;
+  private final ZoneUpdaterService zoneUpdaterService;
 
   private final HostZoneService hostZoneService;
 
+  private final AppConfig appConfig;
+  private final Provider provider;
+
+  /**
+   * Constructor for ControllerService.
+   *
+   * @param updateLogService   the update log service
+   * @param zoneUpdaterService the zone updater service
+   * @param hostZoneService    the host zone service
+   * @param appConfig          the application configuration
+   * @param provider           the DNS provider
+   */
   public ControllerService(UpdateLogService updateLogService,
-                           ZoneUpdateOrderService zoneUpdateOrderService, HostZoneService hostZoneService) {
+                           ZoneUpdaterService zoneUpdaterService, HostZoneService hostZoneService, AppConfig appConfig,
+                           Provider provider) {
     this.updateLogService = updateLogService;
-    this.zoneUpdateOrderService = zoneUpdateOrderService;
+    this.zoneUpdaterService = zoneUpdaterService;
     this.hostZoneService = hostZoneService;
+    this.appConfig = appConfig;
+    this.provider = provider;
   }
 
+  /**
+   * Processes an IP update request for a specific host.
+   *
+   * @param host the full host name
+   * @param ipv4 the IPv4 address (optional)
+   * @param ipv6 the IPv6 address (optional)
+   * @param req  the HTTP servlet request
+   * @return a response entity indicating success or failure
+   */
   public ResponseEntity<Void> processIpUpdate(String host, @Nullable InetAddress ipv4,
                                               @Nullable InetAddress ipv6, HttpServletRequest req) {
     Optional<HostEnriched> optHost = hostZoneService.getHost(host);
@@ -71,8 +98,23 @@ public class ControllerService {
     return ResponseEntity.ok().build();
   }
 
+  /**
+   * Processes an IP update for a host information holder.
+   *
+   * @param hostInfoHolder the host information holder containing the update details
+   */
   public void processIpUpdate(HostInfoHolder hostInfoHolder) {
-    updateLogService.log(hostInfoHolder.getFullHost(), hostInfoHolder.getIpSetting(), UpdateLog.Status.waiting);
-    zoneUpdateOrderService.addOrUpdateHost(hostInfoHolder);
+    if (appConfig.schedulerEnabled()) {
+      updateLogService.log(hostInfoHolder.getFullHost(), hostInfoHolder.getIpSetting(),
+          UpdateLog.Status.waiting);
+      zoneUpdaterService.addOrUpdateHost(hostInfoHolder);
+      return;
+    }
+
+    try {
+      provider.addOrUpdate(hostInfoHolder.getFullHost(), hostInfoHolder.getIpSetting());
+    } catch (ProviderException e) {
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

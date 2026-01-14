@@ -46,7 +46,6 @@ public record ZoneImportConfig(@Nullable List<ZoneImportConfig.Zone> zones) {
    */
   public record Zone(String name, String ns, List<Host> hosts) {}
 
-
   /**
    * Represents a Host entity with an sld (second-level domain) and an apiToken.
    *

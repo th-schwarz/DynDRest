@@ -25,6 +25,14 @@ public abstract class BeanCollector implements BeanPostProcessor {
   private final Collection<Object> initialized = new HashSet<>();
   private boolean processed;
 
+  /**
+   * Constructor for the BeanCollector class.
+   * This protected constructor initializes the `wanted` collection with the desired bean types
+   * specified by the subclass through the {@link #getWanted()} method.
+   *
+   * <p>The classes returned by `getWanted()` represent the types of Spring-managed beans
+   * that need to be collected and processed by the specific implementation of this abstract class.
+   */
   protected BeanCollector() {
     Collections.addAll(wanted, getWanted());
   }

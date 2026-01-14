@@ -6,21 +6,21 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import codes.thischwa.cf.CloudflareApiException;
+import codes.thischwa.cf.model.RecordEntity;
+import codes.thischwa.cf.model.RecordType;
 import codes.thischwa.cf.model.ZoneEntity;
 import codes.thischwa.dyndrest.AbstractCloudflareTest;
 import codes.thischwa.dyndrest.model.Host;
-import codes.thischwa.dyndrest.model.HostEnriched;
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.provider.Provider;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.service.HostZoneService;
+import codes.thischwa.dyndrest.service.ZoneUpdaterService;
 import jakarta.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,6 @@ public class CloudflareProviderTest extends AbstractCloudflareTest {
   private static final String SLD_PREFIX = "it-";
   private static final String DEFAULT_SLD = SLD_PREFIX + "default";
   private static final String DEFAULT_FQDN = DEFAULT_SLD + "." + ZONE_NAME;
-  private static final List<String> SLDS_TO_USE = List.of("host1", "host2", "host3", "host4");
 
   // Test IP constants
   private static final String TEST_IPV4_BASE = "192.0.1.1";
@@ -46,6 +45,8 @@ public class CloudflareProviderTest extends AbstractCloudflareTest {
   @Autowired
   private Provider provider;
   @Autowired
+  private ZoneUpdaterService zoneUpdaterService;
+  @Autowired
   private HostZoneService hostZoneService;
   private CloudflareProvider cloudflareProvider;
   private codes.thischwa.dyndrest.model.Zone DEFAULT_ZONE_MODEL;
@@ -54,6 +55,7 @@ public class CloudflareProviderTest extends AbstractCloudflareTest {
 
   @PostConstruct
   void init() {
+    zoneUpdaterService.clearForTesting();
     cloudflareProvider = (CloudflareProvider) provider;
     try {
       DEFAULT_IP_SETTING = new IpSetting("192.0.0.1", "2001:db8::1");
@@ -90,7 +92,7 @@ public class CloudflareProviderTest extends AbstractCloudflareTest {
 
   @Test
   void testWorkflowHosts() throws Exception {
-    testHostCreationAndUpdate();
+    testHostCreationAndAddOrUpdate();
     testZoneFetching();
     testHostRemoval();
   }
@@ -120,12 +122,20 @@ public class CloudflareProviderTest extends AbstractCloudflareTest {
   }
 
   private void cleanupDefaultHosts() {
-    for (String sld : SLDS_TO_USE) {
-      removeHost(SLD_PREFIX + sld + "." + ZONE_NAME);
+    try {
+      List<RecordEntity> records = cloudflareProvider.cfDnsClient.recordList(DEFAULT_ZONE_CF, RecordType.A, RecordType.AAAA);
+      for (RecordEntity record : records) {
+        if (record.getName().startsWith(SLD_PREFIX)) {
+          cloudflareProvider.cfDnsClient.recordDelete(DEFAULT_ZONE_CF, record.getId());
+        }
+      }
+    } catch (CloudflareApiException e) {
+      // ignore
+      log.warn("Error while listing records of zone {}", DEFAULT_ZONE_CF.getName(), e);
     }
   }
 
-  private void testHostCreationAndUpdate() throws Exception {
+  private void testHostCreationAndAddOrUpdate() throws Exception {
     Host host1 = activateHost(SLD_PREFIX + "host1", DEFAULT_IP_SETTING);
     verifyHostIpSetting(host1, DEFAULT_IP_SETTING);
 
@@ -184,7 +194,7 @@ public class CloudflareProviderTest extends AbstractCloudflareTest {
         host = hostZoneService.getHost(sld + "." + ZONE_NAME).get();
       }
       if (ipSetting != null) {
-        cloudflareProvider.update(sld + "." + ZONE_NAME, ipSetting);
+        cloudflareProvider.addOrUpdate(sld + "." + ZONE_NAME, ipSetting);
       }
       return host;
     } catch (ProviderException e) {
@@ -201,8 +211,4 @@ public class CloudflareProviderTest extends AbstractCloudflareTest {
     }
   }
 
-  private void removeHost(String fqdn) {
-    Optional<HostEnriched> hostEnrichedOpt = hostZoneService.getHost(fqdn);
-    hostEnrichedOpt.ifPresent(this::removeHost);
-  }
 }

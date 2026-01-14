@@ -3,7 +3,7 @@
 
         <property name="log_path" value="/var/log"/>
 
-        <!-- daily rolling update log, retention period 30d -->
+        <!-- daily rolling addOrUpdate log, retention period 30d -->
         <appender name="update"
                 class="ch.qos.logback.core.rolling.RollingFileAppender">
                 <file>${log_path}/dyndrest-update.log</file>

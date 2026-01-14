@@ -28,6 +28,13 @@ public class RouterController implements RouterRoutes {
 
   private final DynamicSecurityChainManager securityChainManager;
 
+  /**
+   * Constructor for RouterController.
+   *
+   * @param controllerService     the controller service
+   * @param hostZoneService       the host zone service
+   * @param securityChainManager  the security chain manager
+   */
   public RouterController(ControllerService controllerService, HostZoneService hostZoneService,
                           DynamicSecurityChainManager securityChainManager) {
     this.controllerService = controllerService;
@@ -53,7 +60,7 @@ public class RouterController implements RouterRoutes {
     // CRITICAL: Check if the authenticated username matches the host in the path
     String authenticatedUsername = userDetails.getUsername();
     if (!authenticatedUsername.equals(host) || !securityChainManager.isHostRegistered(host)) {
-      log.warn("Authorization failed: User {} attempted to update host {}", authenticatedUsername, host);
+      log.warn("Authorization failed: User {} attempted to addOrUpdate host {}", authenticatedUsername, host);
       return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 

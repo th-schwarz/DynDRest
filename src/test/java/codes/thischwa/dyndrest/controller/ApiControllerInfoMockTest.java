@@ -15,7 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @DisplayName("Integration tests: controller - api-info")
 @Slf4j
-class ApiControllerInfoTest extends AbstractControllerTest {
+class ApiControllerInfoMockTest extends AbstractControllerMockTest {
 
   @Test
   void testSuccess() throws Exception {

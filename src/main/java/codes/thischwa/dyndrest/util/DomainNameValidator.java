@@ -15,6 +15,12 @@ public class DomainNameValidator {
       Pattern.compile(
           "^(?:(?:[a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.){1,}[a-zA-Z]{2,}$");
 
+  /**
+   * Validates multiple domain names.
+   *
+   * @param domainNames the domain names to validate
+   * @return true if all domain names are valid, false otherwise
+   */
   public boolean isValidDomainNames(String... domainNames) {
     return Arrays.stream(domainNames).allMatch(this::isValidDomainName);
   }

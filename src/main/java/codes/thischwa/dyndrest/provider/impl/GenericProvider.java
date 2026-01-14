@@ -8,7 +8,7 @@ import codes.thischwa.dyndrest.provider.Provider;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.server.config.DynamicSecurityChainManager;
 import codes.thischwa.dyndrest.service.HostZoneService;
-import codes.thischwa.dyndrest.service.ZoneUpdateOrderService;
+import codes.thischwa.dyndrest.service.ZoneUpdaterService;
 import codes.thischwa.dyndrest.util.NetUtil;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -23,14 +23,22 @@ public abstract class GenericProvider implements Provider {
   protected final AppConfig appConfig;
   protected final DynamicSecurityChainManager securityChainManager;
   protected final HostZoneService hostZoneService;
-  protected final ZoneUpdateOrderService zoneUpdateOrderService;
+  protected final ZoneUpdaterService zoneUpdaterService;
 
+  /**
+   * Constructor for GenericProvider.
+   *
+   * @param appConfig              the application configuration
+   * @param securityChainManager   the security chain manager
+   * @param hostZoneService        the host zone service
+   * @param zoneUpdaterService     the zone updater service
+   */
   protected GenericProvider(AppConfig appConfig, DynamicSecurityChainManager securityChainManager, HostZoneService hostZoneService,
-                            ZoneUpdateOrderService zoneUpdateOrderService) {
+                            ZoneUpdaterService zoneUpdaterService) {
     this.appConfig = appConfig;
     this.securityChainManager = securityChainManager;
     this.hostZoneService = hostZoneService;
-    this.zoneUpdateOrderService = zoneUpdateOrderService;
+    this.zoneUpdaterService = zoneUpdaterService;
   }
 
   @Override
@@ -38,7 +46,9 @@ public abstract class GenericProvider implements Provider {
     List<HostEnriched> configuredHosts = hostZoneService.getConfiguredHosts();
     try {
       List<HostInfoHolder> hostInfoHolderList = getCurrentConfiguredHosts(configuredHosts);
-      zoneUpdateOrderService.addCurrentHosts(hostInfoHolderList.toArray(new HostInfoHolder[0]));
+      if (appConfig.schedulerEnabled()) {
+        zoneUpdaterService.addCurrentHosts(hostInfoHolderList.toArray(new HostInfoHolder[0]));
+      }
       if (appConfig.hostValidationEnabled()) {
         hostZoneService.getConfiguredZones().forEach(this::confirmZone);
       }

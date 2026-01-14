@@ -16,7 +16,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 class ZoneUpdaterSchedulerTest {
 
   @MockitoBean
-  private ZoneUpdateOrderService zoneUpdateOrderService;
+  private ZoneUpdaterService zoneUpdaterService;
 
   @MockitoBean
   private Provider provider;

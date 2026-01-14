@@ -18,7 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-/** The service class for managing zone update logs. */
+/** The service class for managing zone addOrUpdate logs. */
 @Service
 @Slf4j
 public class UpdateLogService {
@@ -61,11 +61,11 @@ public class UpdateLogService {
   }
 
   /**
-   * Logs the update of a host with the given IP settings and status.
+   * Logs the addOrUpdate of a host with the given IP settings and status.
    *
-   * @param host The host to update.
-   * @param reqIpSetting The IP settings for the update.
-   * @param status The status of the update log entry.
+   * @param host The host to addOrUpdate.
+   * @param reqIpSetting The IP settings for the addOrUpdate.
+   * @param status The status of the addOrUpdate log entry.
    * @throws IllegalArgumentException If the host is not found.
    */
   public void log(String host, IpSetting reqIpSetting, UpdateLog.Status status) {

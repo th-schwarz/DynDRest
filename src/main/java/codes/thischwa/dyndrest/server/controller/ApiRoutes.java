@@ -23,10 +23,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * This interface defines the API routes for a dynamic DNS REST service.
- * It provides endpoints to update and fetch IP settings for specific hosts.
+ * It provides endpoints to addOrUpdate and fetch IP settings for specific hosts.
  *
- * <p> The API is designed to handle requests related to host IP management,
- * where users can either update their IP configurations or retrieve the
+ * <p>The API is designed to handle requests related to host IP management,
+ * where users can either addOrUpdate their IP configurations or retrieve the
  * current settings of a host.
  *
  * <p>The API implements basic REST principles and makes use of OpenAPI
@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.RequestParam;
         @Info(
             title = "A Dynamic DNS REST Service.",
             description = "The routes of the dynamic DNS API",
-            version = "0.3",
+            version = "0.4",
             contact =
                 @Contact(
                     name = "Thilo Schwarz",
@@ -62,86 +62,86 @@ interface ApiRoutes {
           "Updates the desired IP addresses of the 'host'. If both parameters for IP addresses aren't set, an attempt is made to fetch the remote IP.")
   @ApiResponses(
       value = {
-        @ApiResponse(responseCode = "200", description = "The IPs are still up to date."),
-        @ApiResponse(
-            responseCode = "201",
-            description =
-                "One or both IPs are changed. Update successful processed. (Dependent on the configuration the response code could be '200'! "),
-        @ApiResponse(
-            responseCode = "400",
-            description =
-                "At least one IP address isn't valid or the remote IP couldn't be determined."),
-        @ApiResponse(
-            responseCode = "403",
-            description = "If the 'apiToken' doesn't belong to the host."),
-        @ApiResponse(responseCode = "404", description = "The desired host doesn't exists."),
-        @ApiResponse(responseCode = "500", description = "If the update failed.")
+          @ApiResponse(responseCode = "200", description = "The IPs are still up to date."),
+          @ApiResponse(
+              responseCode = "201",
+              description =
+                  "One or both IPs are changed. Update successful processed. (Dependent on the configuration the response code could be '200'! "),
+          @ApiResponse(
+              responseCode = "400",
+              description =
+                  "At least one IP address isn't valid or the remote IP couldn't be determined."),
+          @ApiResponse(
+              responseCode = "403",
+              description = "If the 'apiToken' doesn't belong to the host."),
+          @ApiResponse(responseCode = "404", description = "The desired host doesn't exists."),
+          @ApiResponse(responseCode = "500", description = "If the addOrUpdate failed.")
       })
   @PutMapping(value = "/api/ips/{host}")
   ResponseEntity<Void> updateHost(
       @Schema(
-              description =
-                  "The host, for which the IPs must be updated. It has to be a full domain name.",
-              type = "string",
-              example = "mydyndns.domain.com")
-          @PathVariable
-          String host,
+          description =
+              "The host, for which the IPs must be updated. It has to be a full domain name.",
+          type = "string",
+          example = "mydyndns.domain.com")
+      @PathVariable
+      String host,
       @Schema(
-              description = "The 'apiToken' to authenticate the changes of the IPs for this host.",
-              type = "string")
-          @RequestParam
-          String apiToken,
+          description = "The 'apiToken' to authenticate the changes of the IPs for this host.",
+          type = "string")
+      @RequestParam
+      String apiToken,
       @Schema(
-              description = "An IPv4 address.",
-              type = "string",
-              examples = "127.1.2.4")
-          @RequestParam(name = "ipv4", required = false)
-          InetAddress ipv4,
+          description = "An IPv4 address.",
+          type = "string",
+          examples = "127.1.2.4")
+      @RequestParam(name = "ipv4", required = false)
+      InetAddress ipv4,
       @Schema(
-              description = "An IPv6 address.",
-              type = "string",
-              examples = "2a03:4000:41:32:0:0:0:2")
+          description = "An IPv6 address.",
+          type = "string",
+          examples = "2a03:4000:41:32:0:0:0:2")
       @RequestParam(name = "ipv6", required = false) InetAddress ipv6,
       HttpServletRequest req);
 
   @Operation(summary = "Determines the IP settings of the 'host' and returns it in a JSON object.")
   @ApiResponses(
       value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "A JSON object with the IP settings of the 'host'.",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    examples =
-                        @ExampleObject(
-                            value =
-                                "{\"ipv4\":\"127.1.2.4\",\"ipv6\":\"2a03:4000:41:32:0:0:0:2\"}"))),
-        @ApiResponse(
-            responseCode = "403",
-            description =
-                "If the 'apiToken' doesn't belong to the host, IP addresses aren't valid or the remote IP couldn't determine.",
-            content = @Content(schema = @Schema(hidden = true))),
-        @ApiResponse(
-            responseCode = "404",
-            description = "If the 'host' isn't configured.",
-            content = @Content(schema = @Schema(hidden = true))),
-        @ApiResponse(
-            responseCode = "500",
-            description = "If the zone info fails.",
-            content = @Content(schema = @Schema(hidden = true)))
+          @ApiResponse(
+              responseCode = "200",
+              description = "A JSON object with the IP settings of the 'host'.",
+              content =
+              @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  examples =
+                  @ExampleObject(
+                      value =
+                          "{\"ipv4\":\"127.1.2.4\",\"ipv6\":\"2a03:4000:41:32:0:0:0:2\"}"))),
+          @ApiResponse(
+              responseCode = "403",
+              description =
+                  "If the 'apiToken' doesn't belong to the host, IP addresses aren't valid or the remote IP couldn't determine.",
+              content = @Content(schema = @Schema(hidden = true))),
+          @ApiResponse(
+              responseCode = "404",
+              description = "If the 'host' isn't configured.",
+              content = @Content(schema = @Schema(hidden = true))),
+          @ApiResponse(
+              responseCode = "500",
+              description = "If the zone info fails.",
+              content = @Content(schema = @Schema(hidden = true)))
       })
   @GetMapping(value = "/api/ips/{host}", produces = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<IpSetting> fetchHostIpSetting(
       @Schema(
-              description = "The host, for which the IPs must be determined.",
-              type = "string",
-              example = "mydyndns.domain.com")
-          @PathVariable
-          String host,
+          description = "The host, for which the IPs must be determined.",
+          type = "string",
+          example = "mydyndns.domain.com")
+      @PathVariable
+      String host,
       @Schema(
-              description = "The 'apiToken', which must belong to the host'.",
-              type = "string")
-          @RequestParam
-          String apiToken);
+          description = "The 'apiToken', which must belong to the host'.",
+          type = "string")
+      @RequestParam
+      String apiToken);
 }

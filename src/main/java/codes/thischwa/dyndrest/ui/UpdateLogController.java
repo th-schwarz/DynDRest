@@ -14,7 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-/** A controller that delivers a page to show the zone update logs. */
+/** A controller that delivers a page to show the zone addOrUpdate logs. */
 @Controller
 @ConditionalOnProperty(name = "dyndrest.update-log-page-enabled")
 public class UpdateLogController {
@@ -23,15 +23,21 @@ public class UpdateLogController {
 
   private final UpdateLogService updateLogService;
 
+  /**
+   * Constructor for UpdateLogController.
+   *
+   * @param config           the application configuration
+   * @param updateLogService the update log service
+   */
   public UpdateLogController(AppConfig config, UpdateLogService updateLogService) {
     this.config = config;
     this.updateLogService = updateLogService;
   }
 
   /**
-   * Delivers page to show the zone update logs.
+   * Delivers page to show the zone addOrUpdate logs.
    *
-   * @return a string that redirects to the 1st zone update logs page
+   * @return a string that redirects to the 1st zone addOrUpdate logs page
    */
   @GetMapping(value = "/log-ui", produces = MediaType.TEXT_HTML_VALUE)
   public String log() {
@@ -39,11 +45,11 @@ public class UpdateLogController {
   }
 
   /**
-   * Delivers page to show the zone update logs.
+   * Delivers page to show the zone addOrUpdate logs.
    *
    * @param model optional model for processing
    * @param page number of the requested page, starts with '0'
-   * @return the zone update logs page
+   * @return the zone addOrUpdate logs page
    */
   @SuppressWarnings("SameReturnValue")
   @GetMapping(value = "/log-ui/{page}", produces = MediaType.TEXT_HTML_VALUE)

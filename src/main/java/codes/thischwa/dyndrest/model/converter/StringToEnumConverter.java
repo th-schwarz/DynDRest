@@ -14,6 +14,11 @@ public class StringToEnumConverter<T extends Enum<T>> implements Converter<Strin
 
   private final Class<T> cls;
 
+  /**
+   * Constructor for StringToEnumConverter.
+   *
+   * @param cls the enum class to convert to
+   */
   public StringToEnumConverter(Class<T> cls) {
     this.cls = cls;
   }

@@ -8,18 +8,14 @@ import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.provider.impl.GenericProvider;
 import codes.thischwa.dyndrest.server.config.DynamicSecurityChainManager;
 import codes.thischwa.dyndrest.service.HostZoneService;
-import codes.thischwa.dyndrest.service.ZoneUpdateOrderService;
+import codes.thischwa.dyndrest.service.ZoneUpdaterService;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.domainrobot.sdk.models.generated.IpRestriction;
 import org.domainrobot.sdk.models.generated.Zone;
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.InitializingBean;
@@ -41,36 +37,32 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
    * @param zcw                  the zcw
    * @param securityChainManager the dynamic security chain manager
    */
-  DomainRobotProvider(AppConfig appConfig, HostZoneService hostZoneService, ZoneUpdateOrderService zoneUpdateOrderService, ZoneClientWrapper zcw,
+  DomainRobotProvider(AppConfig appConfig, HostZoneService hostZoneService, ZoneUpdaterService zoneUpdaterService,
+                      ZoneClientWrapper zcw,
                       DynamicSecurityChainManager securityChainManager) {
-    super(appConfig, securityChainManager,hostZoneService,zoneUpdateOrderService);
+    super(appConfig, securityChainManager, hostZoneService, zoneUpdaterService);
     this.zcw = zcw;
   }
 
   @Override
-  public void update(String host, IpSetting ipSetting) throws ProviderException {
-    String sld = host.substring(0, host.indexOf("."));
+  public void addOrUpdate(String fqdn, IpSetting ipSetting) throws ProviderException {
+    String sld = fqdn.substring(0, fqdn.indexOf("."));
 
     // set the IPs in the zone object
-    Zone zone = fetchZoneFromHost(host);
+    Zone zone = fetchZoneFromHost(fqdn);
     if (!zcw.hasIpsChanged(zone, sld, ipSetting)) {
       return;
     }
     zcw.process(zone, sld, ipSetting);
 
-    // processing the update
+    // processing the addOrUpdate
     zcw.update(zone);
   }
 
   @Override
-  public IpSetting  info(String fqdn) throws ProviderException {
+  public IpSetting info(String fqdn) throws ProviderException {
     Zone zone = fetchZoneFromHost(fqdn);
     return zcw.info(zone, fqdn.substring(0, fqdn.indexOf(".")));
-  }
-
-  @Override
-  public void addHost(String zoneName, String host) {
-    // not required for domainrobot. #update adds the required records.
   }
 
   @Override
@@ -89,6 +81,9 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
   public void patch(String zoneStr, @Nullable List<HostInfoHolder> creates, @Nullable List<HostInfoHolder> updates,
                     @Nullable List<String> deletes) throws ProviderException {
     codes.thischwa.dyndrest.model.Zone zoneDb = hostZoneService.getZone(zoneStr);
+    if (zoneDb == null) {
+      throw new IllegalArgumentException("Zone not found: " + zoneStr);
+    }
     Zone zone = zcw.info(zoneDb.getName(), zoneDb.getNs());
     List<HostInfoHolder> hostsToProcess = new ArrayList<>();
 
@@ -132,8 +127,8 @@ class DomainRobotProvider extends GenericProvider implements InitializingBean {
 
     for (HostEnriched host : hostsEnriched) {
       if (!knownRealZones.containsKey(host.getZone())) {
-          Zone zone = zcw.info(host.getZone(), host.getNs());
-          knownRealZones.put(host.getZone(), zone);
+        Zone zone = zcw.info(host.getZone(), host.getNs());
+        knownRealZones.put(host.getZone(), zone);
       }
 
       Zone zone = knownRealZones.get(host.getZone());

@@ -14,45 +14,49 @@ import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.FatalBeanException;
-import org.springframework.core.env.Environment;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-/** This class provides database restore functionality based on the provided configuration. */
-@Component
+/**
+ * This class provides database restore functionality based on the provided configuration.
+ */
+@Service
 @Slf4j
+@Profile({"!test", "!opendoc"})
 public class DatabaseRestoreHandler extends BeanCollector {
 
   private static final Class<?>[] wantedBeans =
       new Class<?>[] {DatabaseServiceConfig.class, DatabaseRestoreConfig.class, DataSource.class};
 
-  private final Environment env;
+  @Nullable
+  private JdbcTemplate jdbcTemplate;
 
-  @Nullable private JdbcTemplate jdbcTemplate;
-
-    private boolean dbExists;
+  private boolean dbExists;
 
   private boolean restoreEnabled;
 
-  @Nullable private Path restorePath = null;
+  @Nullable
+  private Path restorePath = null;
 
-  @Nullable private Path restorePathBak = null;
+  @Nullable
+  private Path restorePathBak = null;
 
-  public DatabaseRestoreHandler(Environment env) {
-    this.env = env;
-  }
 
+  /**
+   * Processes the provided collection of beans to restore the database if restore is enabled.
+   * If the restore process is disabled and the database does not exist, a default schema
+   * will be restored using Liquibase.
+   *
+   * @param wantedBeans the collection of beans used for setting up database restoration parameters
+   * @throws BeansException if an error occurs during the processing of beans or restoration
+   */
   @Override
   public void process(Collection<Object> wantedBeans) throws BeansException {
     log.info("entered #process");
-    // don't know why @Profil don't work
-    if (env.matchesProfiles("test", "opendoc")) {
-      log.info("Skip processing, not in production profile!");
-      return;
-    }
     setupRestorationParams(wantedBeans);
     if (restoreEnabled) {
       try {

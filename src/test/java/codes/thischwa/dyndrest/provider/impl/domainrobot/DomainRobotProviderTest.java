@@ -9,14 +9,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import codes.thischwa.dyndrest.AbstractIntegrationTest;
 import codes.thischwa.dyndrest.model.Host;
 import codes.thischwa.dyndrest.model.HostEnriched;
+import codes.thischwa.dyndrest.model.HostInfoHolder;
 import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.provider.Provider;
 import codes.thischwa.dyndrest.provider.ProviderException;
+import codes.thischwa.dyndrest.service.ZoneUpdaterService;
 import jakarta.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.domainrobot.sdk.models.generated.ResourceRecord;
 import org.domainrobot.sdk.models.generated.Zone;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.AfterEach;
@@ -35,7 +38,6 @@ public class DomainRobotProviderTest extends AbstractIntegrationTest {
   private static final String SLD_PREFIX = "it-";
   private static final String DEFAULT_SLD = SLD_PREFIX + "default";
   private static final String DEFAULT_FQDN = DEFAULT_SLD + "." + ZONE_NAME;
-  private static final List<String> SLDS_TO_USE = List.of("host1", "host2", "host3", "host4");
 
   // Test IP constants
   private static final String TEST_IPV4_BASE = "192.0.1.1";
@@ -45,6 +47,7 @@ public class DomainRobotProviderTest extends AbstractIntegrationTest {
 
   @Autowired
   private Provider provider;
+  @Autowired private ZoneUpdaterService zoneUpdaterService;
   private DomainRobotProvider domainRobotProvider;
   private final List<String> createdHosts = new ArrayList<>();
   private codes.thischwa.dyndrest.model.Zone DEFAULT_ZONE_MODEL;
@@ -53,6 +56,7 @@ public class DomainRobotProviderTest extends AbstractIntegrationTest {
 
   @PostConstruct
   void init() {
+    zoneUpdaterService.clearForTesting();
     domainRobotProvider = (DomainRobotProvider) provider;
     try {
       DEFAULT_IP_SETTING = new IpSetting("192.0.0.1", "2001:db8::1");
@@ -100,13 +104,13 @@ public class DomainRobotProviderTest extends AbstractIntegrationTest {
 
   @Test
   void testWorkflowHosts() throws Exception {
-    testHostCreationAndUpdate();
+    testHostCreationAndAddOrUpdate();
     testZoneFetching();
     testHostRemoval();
   }
 
   @Test
-  void testUpdateMultipleHostsWithZcw() throws Exception {
+  void testAddOrUpdateMultipleHostsWithZcw() throws Exception {
     ZoneClientWrapper zcw = domainRobotProvider.getZcw();
     Zone zone = zcw.info(ZONE_NAME, PRIMARY_NS);
 
@@ -154,13 +158,102 @@ public class DomainRobotProviderTest extends AbstractIntegrationTest {
     });
   }
 
+  @Test
+  void testPatch() throws Exception {
+    // Prepare test data: 3 hosts to create
+    String sldCreate1 = SLD_PREFIX + "patch-create1";
+    String sldCreate2 = SLD_PREFIX + "patch-create2";
+    String sldUpdate1 = SLD_PREFIX + "patch-update1";
+
+    IpSetting ipCreate1 = new IpSetting("192.0.3.10", "2001:db8::50");
+    IpSetting ipCreate2 = new IpSetting("192.0.3.11", "2001:db8::51");
+    IpSetting ipUpdate1New = new IpSetting("192.0.3.20", "2001:db8::60");
+
+    // Create HostInfoHolder instances
+    HostInfoHolder create1 = new HostInfoHolder();
+    create1.setZoneId(DEFAULT_ZONE_MODEL.getId());
+    create1.setZone(ZONE_NAME);
+    create1.setNs(PRIMARY_NS);
+    create1.setSld(sldCreate1);
+    create1.setIpSetting(ipCreate1);
+
+    HostInfoHolder create2 = new HostInfoHolder();
+    create2.setZoneId(DEFAULT_ZONE_MODEL.getId());
+    create2.setZone(ZONE_NAME);
+    create2.setNs(PRIMARY_NS);
+    create2.setSld(sldCreate2);
+    create2.setIpSetting(ipCreate2);
+
+    HostInfoHolder update1 = new HostInfoHolder();
+    update1.setZoneId(DEFAULT_ZONE_MODEL.getId());
+    update1.setZone(ZONE_NAME);
+    update1.setNs(PRIMARY_NS);
+    update1.setSld(sldUpdate1);
+    update1.setIpSetting(ipUpdate1New);
+
+    // Create test lists
+    List<HostInfoHolder> creates = List.of(create1, create2);
+    List<HostInfoHolder> updates = List.of(update1);
+
+    // Execute patch with creates and updates
+    domainRobotProvider.patch(ZONE_NAME, creates, updates, null);
+
+    // Verify creates
+    ZoneClientWrapper zcw = domainRobotProvider.getZcw();
+    Zone zone = zcw.info(ZONE_NAME, PRIMARY_NS);
+
+    IpSetting resultCreate1 = zcw.info(zone, sldCreate1);
+    assertEquals(ipCreate1, resultCreate1);
+
+    IpSetting resultCreate2 = zcw.info(zone, sldCreate2);
+    assertEquals(ipCreate2, resultCreate2);
+
+    // Verify addOrUpdate
+    IpSetting resultUpdate1 = zcw.info(zone, sldUpdate1);
+    assertEquals(ipUpdate1New, resultUpdate1);
+
+    // Test delete operation
+    List<String> deletes = List.of(sldCreate1, sldCreate2);
+    domainRobotProvider.patch(ZONE_NAME, null, null, deletes);
+
+    // Verify deletes
+    zone = zcw.info(ZONE_NAME, PRIMARY_NS);
+    IpSetting resultAfterDelete1 = zcw.info(zone, sldCreate1);
+    assertTrue(resultAfterDelete1.isNotSet());
+
+    IpSetting resultAfterDelete2 = zcw.info(zone, sldCreate2);
+    assertTrue(resultAfterDelete2.isNotSet());
+
+    // Cleanup
+    removeHost(sldUpdate1 + "." + ZONE_NAME);
+  }
+
   private void cleanupDefaultHosts() {
-    for (String sld : SLDS_TO_USE) {
-      removeHost(sld + "." + ZONE_NAME);
+    ZoneClientWrapper zcw = domainRobotProvider.getZcw();
+    List<ResourceRecord> resourceRecords = DEFAULT_ZONE_ADNS.getResourceRecords();
+    
+    // Collect records to remove
+    List<ResourceRecord> recordsToRemove = new ArrayList<>();
+    for (ResourceRecord resourceRecord : resourceRecords) {
+      if (resourceRecord.getName().startsWith(SLD_PREFIX)) {
+        recordsToRemove.add(resourceRecord);
+      }
+    }
+    
+    // Remove the collected records
+    for (ResourceRecord recordToRemove : recordsToRemove) {
+      zcw.removeIp(DEFAULT_ZONE_ADNS, recordToRemove.getName(), 
+          ZoneClientWrapper.ResourceRecordTypeIp.valueOf(recordToRemove.getType()));
+    }
+    
+    try {
+      zcw.update(DEFAULT_ZONE_ADNS);
+    } catch (ProviderException e) {
+      log.warn("Error while updating zone {}", DEFAULT_ZONE_ADNS.getOrigin(), e);
     }
   }
 
-  private void testHostCreationAndUpdate() throws Exception {
+  private void testHostCreationAndAddOrUpdate() throws Exception {
     Host host1 = activateHost(SLD_PREFIX + "host1", DEFAULT_IP_SETTING);
     verifyHostIpSetting(host1, DEFAULT_IP_SETTING);
 
@@ -235,7 +328,7 @@ public class DomainRobotProviderTest extends AbstractIntegrationTest {
         host = hostZoneService.getHost(sld + "." + ZONE_NAME).get();
       }
       if (ipSetting != null) {
-        domainRobotProvider.update(sld + "." + ZONE_NAME, ipSetting);
+        domainRobotProvider.addOrUpdate(sld + "." + ZONE_NAME, ipSetting);
       }
       return host;
     } catch (ProviderException e) {
@@ -248,7 +341,7 @@ public class DomainRobotProviderTest extends AbstractIntegrationTest {
     try {
       domainRobotProvider.removeHostIpSettings(host.getSld() + "." + ZONE_NAME);
     } catch (ProviderException e) {
-      // Ignore
+      log.warn("Error while removing host {}", host.getSld(), e);
     }
   }
 

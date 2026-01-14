@@ -48,8 +48,12 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
     log.info("  * provider: {}", config.provider());
     log.info("  * greeting-enabled: {}", config.greetingEnabled());
     log.info("  * host-validation-enabled: {}", config.hostValidationEnabled());
-    log.info("  * update-interval-seconds: {}", config.updateIntervalSeconds());
     log.info("  * update-log-page-enabled: {}", config.updateLogPageEnabled());
+    if (config.schedulerEnabled()) {
+      log.info("  * ZoneUpdaterServvice initialized with update-interval-seconds: {}", config.zoneUpdateIntervalSeconds());
+    } else {
+      log.info("  * ZoneUpdaterService disabled");
+    }
     log.info("h2 setting:");
     log.info("  - spring.h2.console.enabled: {}", env.getProperty("spring.h2.console.enabled"));
     log.info("  - spring.h2.console.path: {}", env.getProperty("spring.h2.console.path"));

@@ -20,5 +20,16 @@ public record AppConfig(
     @Nullable String healthCheckUserPassword,
     @Nullable String adminUserName,
     @Nullable String adminUserPassword,
-    int updateIntervalSeconds) {
+    @Nullable Integer zoneUpdateIntervalSeconds
+) {
+
+  /**
+   * Determines whether the scheduler is enabled based on the presence of the update interval.
+   *
+   * @return true if an update interval is defined, indicating that the scheduler is enabled;
+   *         false otherwise
+   */
+  public boolean schedulerEnabled() {
+    return zoneUpdateIntervalSeconds != null;
+  }
 }

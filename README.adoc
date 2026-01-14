@@ -151,13 +151,13 @@ NOTE: This project uses _spring-doc_ to document the routes. The endpoints for t
 === Database
 
 The Database is currently h2. +
-If not configured otherwise, the database is expected in the current working directory. If there isn't a database, a new one with the current default schema will be created by https://www.liquibase.com/community[liquibase].
+If not configured otherwise, the database is expected in the current working directory. If there doesn't exist a database, https://www.liquibase.com/community[liquibase] will create a new one with the current default schema.
 
 ==== Backup & Restore
 
 There are 2 very basic configurations:
 
-- Backup: A cron-triggered service to dump the database regular.
+- Backup: A cron-triggered service to dump the database regularly.
 
 - Restore: Very basic strategy, if _restore_ is enabled and the file `./restore/dump.sql` exists at start, the dump will be restored and the file renamed to `./restore/dump.sql.bak`.
 
@@ -166,6 +166,48 @@ For further info, see <<docs/dyndrest-configuration.adoc#backup_restore, Backup 
 === Suggested AutoDNS setup
 
 For security reasons, it makes sense to create a separate owner for the zones updated by DynDRest. This owner just needs the permission for  zone-info and zone-updates!
+
+=== Hints
+
+==== Zone Update
+
+DynDRest supports two modes of operation for processing IP updates:
+
+* **Immediate Mode** (default): IP updates are processed instantly when requested via the API.
+* **Scheduled Mode**: IP updates are queued and processed in batches by a background scheduler.
+
+The scheduled mode is enabled by setting the `dyndrest.zone-update-interval-seconds` property to a positive integer value (in seconds). When this property is configured, DynDRest will:
+
+- Queue incoming IP update requests instead of processing them immediately
+- Log each request with status "waiting" in the update log
+- Process all queued updates in batches at the specified interval
+- Reduce API calls to the DNS provider by batching multiple updates together
+
+**Configuration examples:**
+
+[source,yaml]
+----
+dyndrest:
+  zone-update-interval-seconds: 60  # Process updates every 60 seconds
+----
+
+To disable the scheduler and return to immediate processing, simply remove or comment out this property:
+
+[source,yaml]
+----
+dyndrest:
+  # zone-update-interval-seconds: 60  # Disabled - immediate processing
+----
+
+**Benefits of scheduled mode:**
+- Reduces load on DNS provider APIs
+- Better handling of multiple rapid updates for the same host
+- Improved reliability for high-frequency update scenarios
+
+**Use immediate mode when:**
+- You need instant DNS updates
+- Update frequency is low
+- Simple setup without background processing is preferred
 
 == Start
 

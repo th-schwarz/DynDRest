@@ -21,9 +21,8 @@ import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.server.config.DynamicSecurityChainManager;
 import codes.thischwa.dyndrest.service.HostZoneService;
-import codes.thischwa.dyndrest.service.ZoneUpdateOrderService;
+import codes.thischwa.dyndrest.service.ZoneUpdaterService;
 import java.net.Inet4Address;
-import java.net.Inet6Address;
 import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.Optional;
@@ -47,10 +46,10 @@ class CloudflareProviderMockTest {
 		when(config.apiKey()).thenReturn("test-api-key");
 
 		hostZoneService = mock(HostZoneService.class);
-		ZoneUpdateOrderService zoneUpdateOrderService = mock(ZoneUpdateOrderService.class);
+		ZoneUpdaterService zoneUpdaterService = mock(ZoneUpdaterService.class);
 		DynamicSecurityChainManager securityChainManager = mock(DynamicSecurityChainManager.class);
 
-		provider = new CloudflareProvider(appConfig, config, hostZoneService, zoneUpdateOrderService, securityChainManager);
+		provider = new CloudflareProvider(appConfig, config, hostZoneService, zoneUpdaterService, securityChainManager);
 		cfDnsClient = mock(CfDnsClient.class);
 		provider.cfDnsClient = cfDnsClient;
 
@@ -60,7 +59,7 @@ class CloudflareProviderMockTest {
 	}
 
 	@Test
-	void testCreateUpdateDeleteRecord() throws CloudflareApiException, ProviderException, UnknownHostException {
+	void testCreateAddOrUpdateDeleteRecord() throws CloudflareApiException, ProviderException, UnknownHostException {
 		String host = "test.example.com";
 		String sld = "test";
 		Inet4Address ipv4 = (Inet4Address) Inet4Address.getByName("192.0.2.1");
@@ -79,7 +78,7 @@ class CloudflareProviderMockTest {
 
 		IpSetting createIpSetting = new IpSetting();
 		createIpSetting.setIpv4(ipv4);
-		provider.update(host, createIpSetting);
+		provider.addOrUpdate(host, createIpSetting);
 
 		ArgumentCaptor<RecordEntity> createCaptor = ArgumentCaptor.forClass(RecordEntity.class);
 		verify(cfDnsClient, times(1)).recordCreate(eq(zoneEntity), createCaptor.capture());
@@ -89,7 +88,7 @@ class CloudflareProviderMockTest {
 		assertEquals("192.0.2.1", createdRecord.getContent());
 		assertEquals(300, createdRecord.getTtl());
 
-		// UPDATE: Existing record with different IP, update it
+		// UPDATE: Existing record with different IP, addOrUpdate it
 		RecordEntity existingRecord = new RecordEntity();
 		existingRecord.setId("record-id-123");
 		existingRecord.setName(sld);
@@ -102,7 +101,7 @@ class CloudflareProviderMockTest {
 
 		IpSetting updateIpSetting = new IpSetting();
 		updateIpSetting.setIpv4(ipv4Updated);
-		provider.update(host, updateIpSetting);
+		provider.addOrUpdate(host, updateIpSetting);
 
 		ArgumentCaptor<RecordEntity> updateCaptor = ArgumentCaptor.forClass(RecordEntity.class);
 		verify(cfDnsClient, times(1)).recordUpdate(eq(zoneEntity), updateCaptor.capture());
@@ -114,7 +113,7 @@ class CloudflareProviderMockTest {
 				.thenReturn(Collections.singletonList(existingRecord));
 
 		IpSetting deleteIpSetting = new IpSetting();
-		provider.update(host, deleteIpSetting);
+		provider.addOrUpdate(host, deleteIpSetting);
 
 		verify(cfDnsClient, times(1)).recordDelete(eq(zoneEntity), eq(existingRecord));
 	}

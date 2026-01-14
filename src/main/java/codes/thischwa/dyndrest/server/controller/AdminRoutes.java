@@ -23,6 +23,14 @@ import org.springframework.web.bind.annotation.RequestParam;
  * by an admin token for authorization.
  */
 public interface AdminRoutes {
+  /**
+   * Adds a zone with the specified name and name server.
+   * See {@link Operation} for detailed API documentation.
+   *
+   * @param zoneName the zone name
+   * @param ns       the name server
+   * @return response entity
+   */
   @Operation(summary = "Adds a zone with the specified name and name server.")
   @ApiResponses(
       value = {
@@ -48,6 +56,13 @@ public interface AdminRoutes {
           @PathVariable
           String ns);
 
+  /**
+   * Deletes the zone with the specified name.
+   * See {@link Operation} for detailed API documentation.
+   *
+   * @param name the zone name
+   * @return response entity
+   */
   @Operation(summary = "Deletes the zone with the specified name.")
   @ApiResponses(
       value = {
@@ -63,6 +78,12 @@ public interface AdminRoutes {
           @PathVariable
           String name);
 
+  /**
+   * Returns a list of all configured zones.
+   * See {@link Operation} for detailed API documentation.
+   *
+   * @return response entity with list of zones
+   */
   @Operation(summary = "Returns a list of all configured zones.")
   @ApiResponses(
       value = {
@@ -84,6 +105,13 @@ public interface AdminRoutes {
   @GetMapping(value = "/admin/zones", produces = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<List<Zone>> listZones();
 
+  /**
+   * Returns a list of hosts of the desired zone.
+   * See {@link Operation} for detailed API documentation.
+   *
+   * @param zoneName the zone name
+   * @return response entity with list of hosts
+   */
   @Operation(summary = "Returns a list of hosts of the desired zone.")
   @ApiResponses(
       value = {
@@ -114,7 +142,16 @@ public interface AdminRoutes {
           @PathVariable
           String zoneName);
 
-  @Operation(summary = "Adds a host with the specified host for the desired zone.")
+  /**
+   * Adds a host with the specified host for the desired zone.
+   * See {@link Operation} for detailed API documentation.
+   *
+   * @param zoneName the zone name
+   * @param host     the host name (subdomain)
+   * @param apiToken the API token for authentication
+   * @return response entity
+   */
+  @Operation(summary = "Adds a host with the specified host for the desired zone into the local storage.")
   @ApiResponses(
       value = {
         @ApiResponse(
@@ -145,6 +182,13 @@ public interface AdminRoutes {
           @RequestParam
           String apiToken);
 
+  /**
+   * Deletes the host with the specified host name.
+   * See {@link Operation} for detailed API documentation.
+   *
+   * @param host the full host name
+   * @return response entity
+   */
   @Operation(summary = "Deletes the host with the specified host name.")
   @ApiResponses(
       value = {

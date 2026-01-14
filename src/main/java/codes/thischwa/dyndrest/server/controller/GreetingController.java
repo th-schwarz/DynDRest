@@ -13,11 +13,16 @@ public class GreetingController {
 
   private final AppConfig appConfig;
 
-    public GreetingController(AppConfig appConfig) {
-        this.appConfig = appConfig;
-    }
+  /**
+   * Constructor for GreetingController.
+   *
+   * @param appConfig the application configuration
+   */
+  public GreetingController(AppConfig appConfig) {
+    this.appConfig = appConfig;
+  }
 
-    /**
+  /**
    * Delivers a welcome page.
    *
    * @return the welcome page
