@@ -121,42 +121,32 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
       throw new ProviderException(e);
     }
 
-    List<RecordEntity> recordsToCreate;
-    if (creates == null) {
-      recordsToCreate = null;
-    } else {
-      recordsToCreate = new ArrayList<>();
-      creates.forEach(record -> {
-        IpSetting ipSetting = record.getIpSetting();
-        if (ipSetting.getIpv4() != null) {
-          recordsToCreate.add(convert(record.getSld(), RecordType.A, ipSetting.getIpv4()));
-        }
-        if (ipSetting.getIpv6() != null) {
-          recordsToCreate.add(convert(record.getSld(), RecordType.AAAA, ipSetting.getIpv6()));
-        }
-      });
-    }
-    List<RecordEntity> recordsToUpdate;
-    if (updates == null) {
-      recordsToUpdate = null;
-    } else {
-      recordsToUpdate = new ArrayList<>();
-      updates.forEach(rec -> {
-        IpSetting ipSetting = rec.getIpSetting();
-        if (ipSetting.getIpv4() != null) {
-          recordsToUpdate.add(convert(rec.getSld(), RecordType.A, ipSetting.getIpv4()));
-        }
-        if (ipSetting.getIpv6() != null) {
-          recordsToUpdate.add(convert(rec.getSld(), RecordType.AAAA, ipSetting.getIpv6()));
-        }
-      });
-    }
+    List<RecordEntity> recordsToCreate = convertToRecords(creates);
+    List<RecordEntity> recordsToUpdate = convertToRecords(updates);
 
     try {
       cfDnsClient.recordBatch(zoneEntity, recordsToCreate, recordsToUpdate, null, null);
     } catch (CloudflareApiException e) {
       throw new ProviderException(e);
     }
+  }
+
+  @Nullable
+  private List<RecordEntity> convertToRecords(@Nullable List<HostInfoHolder> hosts) {
+    if (hosts == null) {
+      return null;
+    }
+    List<RecordEntity> records = new ArrayList<>();
+    hosts.forEach(rec -> {
+      IpSetting ipSetting = rec.getIpSetting();
+      if (ipSetting.getIpv4() != null) {
+        records.add(convert(rec.getSld(), RecordType.A, ipSetting.getIpv4()));
+      }
+      if (ipSetting.getIpv6() != null) {
+        records.add(convert(rec.getSld(), RecordType.AAAA, ipSetting.getIpv6()));
+      }
+    });
+    return records;
   }
 
   private RecordEntity convert(String sld, RecordType recordType, InetAddress ip) {
@@ -213,8 +203,15 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
 
     // fetch data from cloudflare
     for (ZoneEntity zone : knownRealZones.values()) {
-      Map<String, IpSetting> result = fetchIpSettingOfZone(zone, hostsByString.keySet());
-      for (String fqdn : result.keySet()) {
+      Map<String, IpSetting> result = null;
+      try {
+        result = fetchIpSettingOfZone(zone, hostsByString.keySet());
+      } catch (CloudflareApiException e) {
+        log.error("Error while fetching IP settings of zone {}", zone.getName(), e);
+        throw new ProviderException("Error while fetching IP settings.", e);
+      }
+      for (Map.Entry<String, IpSetting> entry : result.entrySet()) {
+        String fqdn = entry.getKey();
         HostEnriched host = hostsByString.get(fqdn);
         IpSetting ipSetting = result.get(fqdn);
         hosts.add(HostInfoHolder.of(host, ipSetting));
@@ -224,15 +221,10 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
     return hosts;
   }
 
-  private Map<String, IpSetting> fetchIpSettingOfZone(ZoneEntity zone, Set<String> relevantHosts) {
+  private Map<String, IpSetting> fetchIpSettingOfZone(ZoneEntity zone, Set<String> relevantHosts) throws CloudflareApiException {
     Map<String, IpSetting> result = new HashMap<>();
     List<RecordEntity> records;
-    try {
-      records = cfDnsClient.recordList(zone, RecordType.A, RecordType.AAAA);
-    } catch (CloudflareApiException e) {
-      log.error("Error while getting records of zone {}", zone.getName(), e);
-      throw new RuntimeException(e);
-    }
+    records = cfDnsClient.recordList(zone, RecordType.A, RecordType.AAAA);
 
     Map<String, List<RecordEntity>> recordsByHost = CfDnsClient.groupRecordsByFqdn(records);
     for (Map.Entry<String, List<RecordEntity>> recByHost : recordsByHost.entrySet()) {
@@ -304,7 +296,7 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
   }
 
   @Override
-  public void afterPropertiesSet() throws Exception {
+  public void afterPropertiesSet() {
     validateHostZoneConfiguration();
   }
 
