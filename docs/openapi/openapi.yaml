@@ -9,7 +9,7 @@ info:
   license:
     name: MIT Licence
     url: https://github.com/th-schwarz/DynDRest/blob/develop/LICENSE
-  version: "0.4"
+  version: "0.3"
 externalDocs:
   description: DynDRest on Github
   url: https://github.com/th-schwarz/DynDRest
@@ -195,7 +195,7 @@ paths:
       - router-controller
       summary: "Updates the desired IP addresses of the 'host'. If both parameters\
         \ for IP addresses aren't set, an attempt is made to fetch the remote IP.\
-        \ It is an alternative route for routers which requires the GET method!  The\
+        \ It is an alternative route for routers which requires the GET method! The\
         \ authentication differs from the other routes. The user is the host and the\
         \ password is the 'apiToken'."
       operationId: routerUpdateHost
