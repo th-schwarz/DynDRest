@@ -154,9 +154,6 @@ domainrobot:
     X-Domainrobot-WS: NONE
 ----
 
-===
-
-
 [[backup_restore]]
 === Backup and Restore
 
