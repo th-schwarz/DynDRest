@@ -68,7 +68,7 @@ domainrobot:
 
 ## configuration for the cloudflare API
 cloudflare:
-  base-url: https://api.cloudflare.com/client/v4
+  base-url: https://api.cloudflare.com/client/v4 # optional
   api-token: YQSn-xWAQiiEh9qM58wZNnyQS7FUdoqGIUAbrh7T
   api-key: 12345678901234567890123456789
   email: email@mydomain.com
@@ -93,12 +93,6 @@ spring:
 
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.yml
-
-  jpa:
-    show-sql: true
-    database-platform: org.hibernate.dialect.H2Dialect
-    hibernate:
-      ddl-auto: none
 
   h2:
     console:
@@ -133,9 +127,9 @@ zones:
     hosts:
     - sld: myhost
       api-token: 1234567890abcdef
------
+----
 
-NOTE: The api-token have max lenth of 20 chars
+NOTE: The api-token have max. length of 20 chars
 
 === Provider settings for AutoDNS (domainrobot-sdk)
 
@@ -146,7 +140,7 @@ domainrobot:
     user: userName
     password: secretPwd
 ----
-That's the minimal setting for the domainrobot-api. For further fine adjustments, the following settings can be  overwritten or changed:
+That's the very basic setting for the domainrobot-api. For further fine adjustments, the following settings can be  overwritten or changed:
 [source,yaml]
 ----
 domainrobot:
@@ -160,10 +154,13 @@ domainrobot:
     X-Domainrobot-WS: NONE
 ----
 
+===
+
+
 [[backup_restore]]
 === Backup and Restore
 
-There is a very simple cron-triggered service to dump the database regular, it's part of the database configuration:
+There is a basic cron-triggered service to dump the database regular, it's part of the database configuration:
 
 [source,yaml]
 ----
