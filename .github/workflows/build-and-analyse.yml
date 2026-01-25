@@ -49,6 +49,5 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           DOMAINROBOT_USER: ${{ secrets.DOMAINROBOT_USER }}
           DOMAINROBOT_PASSWORD: ${{ secrets.DOMAINROBOT_PASSWORD }}
-          CF_API_EMAIL: ${{ secrets.CF_API_EMAIL }}
-          CF_API_KEY: ${{ secrets.CF_API_KEY }}
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
         run: mvn -B -DtestClasspath=src/test/ verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=th-schwarz_DynDRest
