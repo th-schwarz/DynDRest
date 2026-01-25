@@ -30,9 +30,8 @@ import org.springframework.test.context.DynamicPropertySource;
 @Slf4j
 public class CloudflareProviderTest extends AbstractCloudflareTest {
   private static final String ZONE_NAME = "mein-d-ns.de";
-  private static final String API_EMAIL = System.getenv("CF_API_EMAIL");
-  private static final String API_KEY = System.getenv("CF_API_KEY");
-  private static final String SLD_PREFIX = "it-";
+  private static final String API_TOKEN = System.getenv("CF_API_TOKEN");
+  private static final String SLD_PREFIX = "dynit-";
   private static final String DEFAULT_SLD = SLD_PREFIX + "default";
   private static final String DEFAULT_FQDN = DEFAULT_SLD + "." + ZONE_NAME;
 
@@ -72,14 +71,12 @@ public class CloudflareProviderTest extends AbstractCloudflareTest {
 
   @BeforeAll
   static void checkEnv() {
-    assertNotNull(API_EMAIL, "CF_API_EMAIL environment variable must be set");
-    assertNotNull(API_KEY, "CF_API_KEY environment variable must be set");
+    assertNotNull(API_TOKEN, "CF_API_TOKEN environment variable must be set");
   }
 
   @DynamicPropertySource
   static void configureProperties(DynamicPropertyRegistry registry) {
-    registry.add("cloudflare.email", () -> API_EMAIL);
-    registry.add("cloudflare.api-key", () -> API_KEY);
+    registry.add("cloudflare.apiToken", () -> API_TOKEN);
   }
 
   @Test
@@ -100,25 +97,19 @@ public class CloudflareProviderTest extends AbstractCloudflareTest {
   @Test
   void testFetchZoneFromInvalidSld() {
     String invalidSld = "nonexistent-" + DEFAULT_FQDN;
-    assertThrows(IllegalArgumentException.class, () -> {
-      cloudflareProvider.fetchZoneFromHost(invalidSld);
-    });
+    assertThrows(IllegalArgumentException.class, () -> cloudflareProvider.fetchZoneFromHost(invalidSld));
   }
 
   @Test
   void testInfoInvalidSld() {
     String invalidSld = "nonexistent-" + DEFAULT_FQDN;
-    assertThrows(IllegalArgumentException.class, () -> {
-      cloudflareProvider.info(invalidSld);
-    });
+    assertThrows(IllegalArgumentException.class, () -> cloudflareProvider.info(invalidSld));
   }
 
   @Test
   void testRemoveHostIpSettingsInvalidSld() {
     String invalidSld = "nonexistent-" + SLD_PREFIX + ZONE_NAME;
-    assertThrows(ProviderException.class, () -> {
-      cloudflareProvider.removeHostIpSettings(invalidSld);
-    });
+    assertThrows(ProviderException.class, () -> cloudflareProvider.removeHostIpSettings(invalidSld));
   }
 
   private void cleanupDefaultHosts() {

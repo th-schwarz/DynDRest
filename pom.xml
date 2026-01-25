@@ -27,7 +27,7 @@
 
         <springdoc.version>2.8.14</springdoc.version>
         <domainrobot.version>0.2.8</domainrobot.version>
-        <cloudflare-java.version>0.2.0-beta-SNAPSHOT</cloudflare-java.version>
+        <cloudflare-java.version>0.3.0-SNAPSHOT</cloudflare-java.version>
         <dnsjava.version>3.6.3</dnsjava.version>
         <janino.version>3.1.12</janino.version>
         <jspecify.version>1.0.0</jspecify.version>
@@ -176,6 +176,10 @@
             <groupId>codes.thischwa</groupId>
             <artifactId>cloudflaredns</artifactId>
             <version>${cloudflare-java.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents.core5</groupId>
+            <artifactId>httpcore5</artifactId>
         </dependency>
         <dependency>
             <!-- required for conditional processing in logback -->

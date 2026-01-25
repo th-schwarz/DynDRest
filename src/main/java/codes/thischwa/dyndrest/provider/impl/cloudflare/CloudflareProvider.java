@@ -1,6 +1,7 @@
 package codes.thischwa.dyndrest.provider.impl.cloudflare;
 
 import codes.thischwa.cf.CfDnsClient;
+import codes.thischwa.cf.CfDnsClientBuilder;
 import codes.thischwa.cf.CloudflareApiException;
 import codes.thischwa.cf.model.RecordEntity;
 import codes.thischwa.cf.model.RecordType;
@@ -44,11 +45,16 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
       DynamicSecurityChainManager securityChainManager) {
     super(appConfig, securityChainManager, hostZoneService, zoneUpdaterService);
     this.defaultTtl = config.defaultTtl();
+    CfDnsClientBuilder clientBuilder = new CfDnsClientBuilder();
     if (config.baseUrl() != null) {
-      cfDnsClient = new CfDnsClient(config.baseUrl(), config.email(), config.apiKey());
-    } else {
-      cfDnsClient = new CfDnsClient(config.email(), config.apiKey());
+      clientBuilder.withBaseUrl(config.baseUrl());
     }
+    if (config.isApiTokenConfigured()) {
+      clientBuilder.withApiTokenAuth(config.apiToken());
+    } else {
+      clientBuilder.withEmailKeyAuth(config.email(), config.apiKey());
+    }
+    cfDnsClient = clientBuilder.build();
   }
 
   @Override
@@ -203,7 +209,7 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
 
     // fetch data from cloudflare
     for (ZoneEntity zone : knownRealZones.values()) {
-      Map<String, IpSetting> result = null;
+      Map<String, IpSetting> result;
       try {
         result = fetchIpSettingOfZone(zone, hostsByString.keySet());
       } catch (CloudflareApiException e) {

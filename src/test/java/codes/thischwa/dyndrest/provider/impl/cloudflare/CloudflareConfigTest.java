@@ -15,5 +15,6 @@ public class CloudflareConfigTest extends AbstractCloudflareTest {
     assertEquals("https://api.cloudflare.com/client/v4", config.baseUrl());
     assertEquals("12345678901234567890123456789", config.apiKey());
     assertEquals("email@mydomain.com", config.email());
+    assertEquals("12345678901234567890123456789", config.apiKey());
   }
 }
