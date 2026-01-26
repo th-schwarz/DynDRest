@@ -1,8 +1,17 @@
 package codes.thischwa.dyndrest.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import codes.thischwa.dyndrest.model.HostEnriched;
 import codes.thischwa.dyndrest.model.IpSetting;
@@ -50,7 +59,7 @@ class ApiControllerUpdateMockTest extends AbstractControllerMockTest {
 
     when(hostZoneService.validate(host, validToken)).thenReturn(true);
     when(hostZoneService.getHost(host)).thenReturn(Optional.of(hostEnriched));
-    
+
     ResponseEntity<Void> responseEntity =
         apiController.updateHost(host, validToken, setting.getIpv4(), null, request);
 
@@ -68,7 +77,7 @@ class ApiControllerUpdateMockTest extends AbstractControllerMockTest {
 
     when(hostZoneService.validate(host, validToken)).thenReturn(true);
     when(hostZoneService.getHost(host)).thenReturn(Optional.of(hostEnriched));
-    
+
     ResponseEntity<Void> responseEntity =
         apiController.updateHost(host, validToken, null, null, request);
 
@@ -94,7 +103,7 @@ class ApiControllerUpdateMockTest extends AbstractControllerMockTest {
     }
 
     verify(provider, never()).info(host);
-   verify(provider, never()).addOrUpdate(host, setting);
+    verify(provider, never()).addOrUpdate(host, setting);
     verify(updateLogService, never()).log(eq(host), any(IpSetting.class), any(UpdateLog.Status.class));
   }
 
@@ -117,7 +126,7 @@ class ApiControllerUpdateMockTest extends AbstractControllerMockTest {
     }
 
     verify(provider, never()).info(host);
-  //  verify(provider, never()).processUpdate(host, setting);
+    verify(provider, never()).addOrUpdate(host, setting);
     verify(updateLogService, never()).log(eq(host), any(IpSetting.class), any(UpdateLog.Status.class));
   }
 
