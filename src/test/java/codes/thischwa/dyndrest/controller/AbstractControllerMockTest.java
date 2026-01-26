@@ -25,7 +25,7 @@ abstract class AbstractControllerMockTest {
   static class TestConfig {
     @Bean
     public AppConfig appConfig() {
-      return new AppConfig("dummy", false, false, 200, 4, "", false, null, null, false, null, null, "admin", "adm1n", 0);
+      return new AppConfig("dummy", false, false, 200, 4, "", false, null, null, false, null, null, "admin", "adm1n", false, 0);
     }
   }
 

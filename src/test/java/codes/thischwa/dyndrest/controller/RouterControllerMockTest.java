@@ -28,7 +28,7 @@ public class RouterControllerMockTest extends AbstractControllerMockTest {
 
   @DynamicPropertySource
   static void configureProperties(DynamicPropertyRegistry registry) {
-    registry.add("dyndrest.zone-update-interval-seconds", () -> 1);
+    registry.add("dyndrest.zone-update-scheduler-enabled", () -> true);
   }
 
   @Test

@@ -22,7 +22,6 @@ management:
 dyndrest:
   greeting-enabled: true
   host-validation-enabled: true
-  update-interval-seconds: 30
   # http status code for the case at least one IP has changed, e.g. 201
   update-ip-changed-status: 200
   update-log-page-enabled: false
@@ -37,6 +36,8 @@ dyndrest:
       enabled: false
       path: ./restore
     dump-file: dump.sql
+  zone-update-scheduler-enabled: true
+  zone-update-scheduler-interval-seconds: 30
 
 ##  configuration for the domain robot sdk
 domainrobot:

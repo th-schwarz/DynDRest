@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
  * service that uses the scheduling feature of Spring Framework to run the addOrUpdate task at regular
  * intervals.
  */
-@ConditionalOnProperty(name = "dyndrest.zone-update-interval-seconds")
+@ConditionalOnProperty(name = "dyndrest.zone-update-scheduler-enabled", havingValue = "true")
 @Service
 @EnableScheduling
 @Slf4j
@@ -36,7 +36,7 @@ public class ZoneUpdaterScheduler {
     this.provider = provider;
   }
 
-  @Scheduled(fixedDelayString = "${dyndrest.update-interval-seconds}", timeUnit = TimeUnit.SECONDS)
+  @Scheduled(fixedDelayString = "${dyndrest.zone-update-scheduler-interval-seconds}", timeUnit = TimeUnit.SECONDS)
   void process() {
     log.debug("Starting zone addOrUpdate...");
     for (String zone : zoneUpdaterService.getZones()) {

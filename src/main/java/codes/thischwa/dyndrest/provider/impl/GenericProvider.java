@@ -46,7 +46,7 @@ public abstract class GenericProvider implements Provider {
     List<HostEnriched> configuredHosts = hostZoneService.getConfiguredHosts();
     try {
       List<HostInfoHolder> hostInfoHolderList = getCurrentConfiguredHosts(configuredHosts);
-      if (appConfig.schedulerEnabled()) {
+      if (appConfig.zoneUpdateSchedulerEnabled()) {
         zoneUpdaterService.addCurrentHosts(hostInfoHolderList.toArray(new HostInfoHolder[0]));
       }
       if (appConfig.hostValidationEnabled()) {

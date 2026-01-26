@@ -30,7 +30,8 @@ class ApiControllerUpdateMockTest extends AbstractControllerMockTest {
 
   @DynamicPropertySource
   static void configureProperties(DynamicPropertyRegistry registry) {
-    registry.add("dyndrest.zone-update-interval-seconds", () -> 1);
+    registry.add("dyndrest.zone-update-scheduler-enabled", () -> true);
+    registry.add("dyndrest.zone-update-scheduler-interval-seconds", () -> 1);
   }
 
   @BeforeEach
@@ -93,7 +94,7 @@ class ApiControllerUpdateMockTest extends AbstractControllerMockTest {
     }
 
     verify(provider, never()).info(host);
- //   verify(provider, never()).processUpdate(host, setting);
+   verify(provider, never()).addOrUpdate(host, setting);
     verify(updateLogService, never()).log(eq(host), any(IpSetting.class), any(UpdateLog.Status.class));
   }
 

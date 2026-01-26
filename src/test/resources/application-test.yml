@@ -66,6 +66,8 @@ dyndrest:
     restore:
       enabled: true
       path: ./restore
+  zone-update-scheduler-enabled: false
+  zone-update-scheduler-interval-seconds: 30
 
 zones:
 - name: dynhost0.info

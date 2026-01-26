@@ -65,6 +65,9 @@ domainrobot:
   # custom headers
   custom-header:
     X-Domainrobot-WS: NONE
+  # zpn update scheduling
+  zone-update-scheduler-enabled: true
+  zone-update-scheduler-interval-seconds: 30
 
 ## configuration for the cloudflare API
 cloudflare:
@@ -117,6 +120,29 @@ spring:
       password: oauthpasswd
 ----
 
+[[backup_restore]]
+=== Backup and Restore
+
+There is a basic cron-triggered service to dump the database regular, it's part of the database configuration:
+
+[source,yaml]
+----
+dyndrest:
+  database:
+    backup:
+      enabled: true
+      path: ./backup
+      cron: "0 30 18 * * MON"
+    restore:
+      enabled: true
+      path: ./restore
+    dump-file: dump.sql
+----
+
+In this example every monday at 18:30 a database dump will be written to `./backup/dump.sql`. The file will be overwritten every time!
+
+If _restore_ is enabled and the file `./restore/dump.sql` exists at start, the dump will be restored and the file renamed to `./restore/dump.sql.bak`.
+
 === Zone Settings
 
 [source,yaml]
@@ -153,29 +179,6 @@ domainrobot:
   custom-header:
     X-Domainrobot-WS: NONE
 ----
-
-[[backup_restore]]
-=== Backup and Restore
-
-There is a basic cron-triggered service to dump the database regular, it's part of the database configuration:
-
-[source,yaml]
-----
-dyndrest:
-  database:
-    backup:
-      enabled: true
-      path: ./backup
-      cron: "0 30 18 * * MON"
-    restore:
-      enabled: true
-      path: ./restore
-    dump-file: dump.sql
-----
-
-In this example every monday at 18:30 a database dump will be written to `./backup/dump.sql`. The file will be overwritten every time!
-
-If _restore_ is enabled and the file `./restore/dump.sql` exists at start, the dump will be restored and the file renamed to `./restore/dump.sql.bak`.
 
 === Logging
 

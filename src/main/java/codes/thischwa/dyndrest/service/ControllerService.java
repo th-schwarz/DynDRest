@@ -104,7 +104,7 @@ public class ControllerService {
    * @param hostInfoHolder the host information holder containing the update details
    */
   public void processIpUpdate(HostInfoHolder hostInfoHolder) {
-    if (appConfig.schedulerEnabled()) {
+    if (appConfig.zoneUpdateSchedulerEnabled()) {
       updateLogService.log(hostInfoHolder.getFullHost(), hostInfoHolder.getIpSetting(),
           UpdateLog.Status.waiting);
       zoneUpdaterService.addOrUpdateHost(hostInfoHolder);
