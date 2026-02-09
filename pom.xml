@@ -53,7 +53,7 @@
         <openapi.outputFile>${openapi.outputFile.extless}.yaml</openapi.outputFile>
 
         <!-- checkstyle -->
-        <checkstyle.version>12.3.0</checkstyle.version>
+        <checkstyle.version>12.3.1</checkstyle.version>
         <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
         <checkstyle.config.location>${project.basedir}/src/checkstyle/google_custom_checks.xml
         </checkstyle.config.location>
