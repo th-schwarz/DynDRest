@@ -23,10 +23,6 @@ https://github.com/th-schwarz/DynDRest/releases[image:https://img.shields.io/git
 image:https://img.shields.io/github/downloads/th-schwarz/DynDRest/total[GitHub Downloads (all assets, all releases)]
 image:https://ghcr-badge.elias.eu.org/shield/th-schwarz/DynDRest/dyndrest[]
 
-DynDRest is kindly supported by
-
-image::https://resources.jetbrains.com/storage/products/company/brand/logos/IntelliJ_IDEA.png[IntelliJ IDEA logo,250,link="https://jb.gg/OpenSourceSupport"]
-
 == Preface
 
 DynDRest is a simple REST-service for dynamic DNS. The basic idea is to have multiple implementations of different dns providers.
