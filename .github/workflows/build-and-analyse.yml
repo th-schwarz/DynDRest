@@ -49,6 +49,6 @@ jobs:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
         run: mvn -B -DtestClasspath=src/test/ verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=th-schwarz_DynDRest
 
-      - name: Test Summary
-        uses: jeantessier/test-summary-action@v1
-        if: ${{ always() }}
+#      - name: Test Summary
+#        uses: jeantessier/test-summary-action@v1
+#        if: ${{ always() }}
