@@ -1,0 +1,35 @@
+name: Publish JUnit Report (Short Names)
+description: Normalize JUnit XML report names and publish a summary-only test report.
+inputs:
+  token:
+    description: GitHub token for creating the check run.
+    required: true
+  report-name:
+    description: Name shown for the test report.
+    required: false
+    default: Summary of JUnit Tests
+
+runs:
+  using: composite
+  steps:
+    - name: Normalize JUnit report names
+      shell: bash
+      run: |
+        mkdir -p junit-short
+        shopt -s globstar nullglob
+        for f in **/target/*-reports/TEST-*.xml; do
+          base="$(basename "$f")"
+          short="${base#TEST-}"
+          short="${short%.xml}"
+          cp "$f" "junit-short/${short}"
+        done
+
+    - name: Publish Test Report
+      uses: dorny/test-reporter@v2
+      with:
+        token: ${{ inputs.token }}
+        name: ${{ inputs.report-name }}
+        path: "*"
+        reporter: java-junit
+        only-summary: true
+        working-directory: "junit-short"
