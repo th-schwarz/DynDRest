@@ -32,7 +32,7 @@ jobs:
           <settings>
             <servers>
               <server>
-                <id>github-cloudflaredns</id>
+                <id>codeberg-cloudflaredns</id>
                 <username>th-schwarz</username>
                 <password>${{ secrets.GITHUB_TOKEN }}</password>
               </server>
