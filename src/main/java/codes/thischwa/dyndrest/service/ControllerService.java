@@ -113,7 +113,11 @@ public class ControllerService {
 
     try {
       provider.addOrUpdate(hostInfoHolder.getFullHost(), hostInfoHolder.getIpSetting());
+      updateLogService.log(hostInfoHolder.getFullHost(), hostInfoHolder.getIpSetting(),
+          UpdateLog.Status.success);
     } catch (ProviderException e) {
+      updateLogService.log(hostInfoHolder.getFullHost(), hostInfoHolder.getIpSetting(),
+          UpdateLog.Status.failed);
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
