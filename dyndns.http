@@ -1,0 +1,11 @@
+### GET IPs for host
+GET {{baseUrl}}/api/ips/{{testHost}}?apiToken={{testToken}}
+Authorization: Basic {{testUser}} {{testPass}}
+
+###
+
+### GET router, set ISs for host
+GET {{baseUrl}}/router/{{testHost}}?ipv4=127.1.1.1&ipv6=2a03:4000:41:32::2
+Authorization: Basic {{testHost}} {{testToken}}
+
+###

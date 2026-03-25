@@ -6,6 +6,7 @@ pom.xml.*
 /.factorypath
 /.springBeans
 /.idea
+/.claude/
 
 # local files
 /info.txt
