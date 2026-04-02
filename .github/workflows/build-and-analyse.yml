@@ -27,6 +27,7 @@ jobs:
       - name: Build and analyze with SonarCloud
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           DOMAINROBOT_USER: ${{ secrets.DOMAINROBOT_USER }}
           DOMAINROBOT_PASSWORD: ${{ secrets.DOMAINROBOT_PASSWORD }}
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
