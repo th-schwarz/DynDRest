@@ -21,24 +21,8 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
-
       - name: Setup Java and Maven
         uses: ./.github/actions/setup-java-maven
-
-      - name: Set up Maven with GitHub Packages
-        run: |
-          mkdir -p ~/.m2
-          cat > ~/.m2/settings.xml << 'EOF'
-          <settings>
-            <servers>
-              <server>
-                <id>codeberg-cloudflaredns</id>
-                <username>th-schwarz</username>
-                <password>${{ secrets.GITHUB_TOKEN }}</password>
-              </server>
-            </servers>
-          </settings>
-          EOF
 
       - name: Build and analyze with SonarCloud
         env:
