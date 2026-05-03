@@ -15,7 +15,6 @@ spring:
     username: dba
 
   liquibase:
-    change-log: classpath:/db/changelog/db.changelog-master.yml
     drop-first: true
     contexts: test
 

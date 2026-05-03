@@ -15,7 +15,7 @@ public class LiquidBaseConf {
   public SpringLiquibase liquibase(DataSource dataSource) {
     SpringLiquibase liquibase = new SpringLiquibase();
     liquibase.setDataSource(dataSource);
-    liquibase.setChangeLog("classpath:/db/changelog/db.changelog-master.yml");
+    liquibase.setChangeLog("classpath:/db/changelog/db.changelog-master.yaml");
     liquibase.setContexts("test");
     liquibase.setDropFirst(true);
     return liquibase;
