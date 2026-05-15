@@ -53,18 +53,17 @@ public class SecurityConfig {
   @Value("${spring.h2.console.enabled}")
   private boolean h2ConsoleEnabled;
 
-  @Value("${management.endpoint.health.access}")
-  private String healthAccess;
-
   private final boolean healthEnabled;
 
   /**
    * Constructs a SecurityConfig object with the given AppConfig and Environment.
    *
-   * @param appConfig The AppConfig object containing application configuration.
-   * @param env       The Environment object containing environment-specific information.
+   * @param appConfig     The AppConfig object containing application configuration.
+   * @param env           The Environment object containing environment-specific information.
+   * @param healthAccess  The health endpoint access setting.
    */
-  public SecurityConfig(AppConfig appConfig, Environment env) {
+  public SecurityConfig(AppConfig appConfig, Environment env,
+      @Value("${management.endpoint.health.access}") String healthAccess) {
     this.appConfig = appConfig;
 
     healthEnabled = !"none".equals(healthAccess);

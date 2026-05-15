@@ -124,15 +124,17 @@ public class ZoneUpdaterService {
     for (String host : hosts) {
       String zone = ZoneStringUtil.getZoneName(host);
       hostsPerZoneToDelete.computeIfAbsent(zone, k -> new ArrayList<>()).add(host);
-      if (hostsPerZoneToCreate.get(zone) != null) {
-        hostsPerZoneToCreate.get(zone).removeIf(h -> h.getFullHost().equals(host));
-        if (hostsPerZoneToCreate.get(zone).isEmpty()) {
+      List<HostInfoHolder> toCreate = hostsPerZoneToCreate.get(zone);
+      if (toCreate != null) {
+        toCreate.removeIf(h -> h.getFullHost().equals(host));
+        if (toCreate.isEmpty()) {
           hostsPerZoneToCreate.remove(zone);
         }
       }
-      if (hostsPerZoneToUpdate.get(zone) != null) {
-        hostsPerZoneToUpdate.get(zone).removeIf(h -> h.getFullHost().equals(host));
-        if (hostsPerZoneToUpdate.get(zone).isEmpty()) {
+      List<HostInfoHolder> toUpdate = hostsPerZoneToUpdate.get(zone);
+      if (toUpdate != null) {
+        toUpdate.removeIf(h -> h.getFullHost().equals(host));
+        if (toUpdate.isEmpty()) {
           hostsPerZoneToUpdate.remove(zone);
         }
       }

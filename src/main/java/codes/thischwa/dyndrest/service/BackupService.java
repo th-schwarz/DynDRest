@@ -47,13 +47,11 @@ public class BackupService {
   @PostConstruct
   void init() {
     Path backupPath = Paths.get(backup.path()).normalize();
-    if (!Files.exists(backupPath)) {
-      try {
-        Files.createDirectories(backupPath);
-        log.info("Backup directory successful created: {}", backupPath.toAbsolutePath());
-      } catch (IOException e) {
-        throw new RuntimeException("couldn't create backup path: " + backupPath.toAbsolutePath());
-      }
+    try {
+      Files.createDirectories(backupPath);
+      log.info("Backup directory successful created: {}", backupPath.toAbsolutePath());
+    } catch (IOException e) {
+      throw new RuntimeException("couldn't create backup path: " + backupPath.toAbsolutePath());
     }
   }
 

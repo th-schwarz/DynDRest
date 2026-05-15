@@ -155,7 +155,8 @@ public class HostZoneService {
     host.setId(tmpHost.getId());
     host.setChanged(tmpHost.getChanged());
 
-    Zone zone = zoneRepo.findById(host.getZoneId()).get();
+    Zone zone = zoneRepo.findById(host.getZoneId())
+        .orElseThrow(() -> new IllegalStateException("Zone not found for id: " + host.getZoneId()));
     String fqdn = ZoneStringUtil.getFqdn(host.getSld(), zone);
     Optional<HostEnriched> optHostEnriched = hostRepo.findByFullHost(fqdn);
     optHostEnriched.ifPresent(securityChainManager::addOrUpdateHost);
@@ -231,7 +232,7 @@ public class HostZoneService {
   public Optional<List<HostEnriched>> findHostsOfZone(String zoneName) {
     Zone zone = zoneRepo.findByName(zoneName);
     if (zone == null) {
-      log.warn("Zone isn't configured: " + zoneName);
+      log.warn("Zone isn't configured: {}", zoneName);
       return Optional.empty();
     }
     if (zone.getId() == null) {
@@ -267,7 +268,8 @@ public class HostZoneService {
     if (host.getId() == null) {
       throw new IllegalArgumentException("Host id should not be null.");
     }
-    Zone zone = zoneRepo.findById(host.getZoneId()).get();
+    Zone zone = zoneRepo.findById(host.getZoneId())
+        .orElseThrow(() -> new IllegalStateException("Zone not found for id: " + host.getZoneId()));
     String fqdn = ZoneStringUtil.getFqdn(host.getSld(), zone);
     securityChainManager.removeHost(fqdn);
     hostRepo.deleteById(host.getId());

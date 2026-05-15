@@ -4,8 +4,8 @@ import static codes.thischwa.dyndrest.server.config.Roles.ROLE_HOST;
 import static codes.thischwa.dyndrest.server.config.SecurityConfig.PASSWORD_ENCODER;
 
 import codes.thischwa.dyndrest.model.HostEnriched;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,7 +23,7 @@ public class DynamicSecurityChainManager {
   private final InMemoryUserDetailsManager userDetailsManager;
 
   // Track which hosts are registered to avoid duplicates
-  private final Map<String, String> registeredHosts = new HashMap<>();
+  private final Map<String, String> registeredHosts = new ConcurrentHashMap<>();
 
   /**
    * Creates a new DynamicSecurityChainManager.
