@@ -238,11 +238,6 @@ services:
       - /opt/dyndrest-dockerized/logback.xml:/app/logback.xml:ro
       - /opt/dyndrest-dockerized/log:/app/log
       - /opt/dyndrest-dockerized:/app
-    environment:
-      - SERVER_ADDRESS=0.0.0.0
-      - SERVER_PORT=8080
-      - SPRING_CONFIG_IMPORT=file:/app/dyndrest.yml
-      - SPRING_DATASOURCE_URL=jdbc:h2:file:/app/dyndrest
     ports:
       - "127.0.0.1:8081:8080"
 ----
