@@ -154,7 +154,8 @@ zones:
 
 NOTE: The api-token have max. length of 20 chars
 
-=== Provider settings for AutoDNS (domainrobot-sdk)
+=== Provider settings
+==== AutoDNS (domainrobot-sdk)
 
 [source,yaml]
 ----
@@ -176,6 +177,40 @@ domainrobot:
   custom-header:
     X-Domainrobot-WS: NONE
 ----
+
+==== Cloudflare
+
+Cloudflare supports two authentication methods. Using an API token is the recommended approach:
+
+[source,yaml]
+----
+cloudflare:
+  api-token: YQSn-xWAQiiEh9qM58wZNnyQS7FUdoqGIUAbrh7T
+----
+
+Alternatively, authentication via a global API key requires both the key and the associated account email:
+
+[source,yaml]
+----
+cloudflare:
+  api-key: 12345678901234567890123456789
+  email: email@mydomain.com
+----
+
+If both `api-token` and `api-key`/`email` are configured, the API token takes precedence.
+
+The following optional settings can be adjusted:
+
+[source,yaml]
+----
+cloudflare:
+  base-url: https://api.cloudflare.com/client/v4
+  default-ttl: 60
+----
+
+The `base-url` defaults to the official Cloudflare API endpoint and normally does not need to be changed. The `default-ttl` controls the time-to-live (in seconds) for DNS records managed by DynDRest.
+
+NOTE: The Cloudflare integration is implemented via https://git.mein-gateway.de/thischwa/CloudflareDNS-java[CloudflareDNS-java].
 
 === Logging
 
