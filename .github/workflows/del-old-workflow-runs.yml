@@ -1,6 +1,8 @@
 name: delete old workflow runs
 
-on: [push]
+on:
+  schedule:
+    - cron: '0 4 * * *'
 
 jobs:
   build:
