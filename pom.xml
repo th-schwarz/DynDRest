@@ -312,6 +312,7 @@
     <profiles>
         <profile>
             <id>opendoc</id>
+            <!--  mvn -P opendoc clean integration-test -DskipTests=true -->
             <build>
                 <plugins>
                     <plugin>
