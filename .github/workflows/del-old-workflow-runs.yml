@@ -2,7 +2,7 @@ name: delete old workflow runs
 
 on:
   schedule:
-    - cron: '4 15 * * *'
+    - cron: '15 5 * * *'
 
 jobs:
   build:
