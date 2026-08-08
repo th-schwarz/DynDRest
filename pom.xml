@@ -31,6 +31,7 @@
         <dnsjava.version>3.6.3</dnsjava.version>
         <janino.version>3.1.12</janino.version>
         <jspecify.version>1.0.1</jspecify.version>
+        <swagger-v3-annotations.version>2.2.52</swagger-v3-annotations.version>
 
         <fakerepo.dir>${project.basedir}/fake-repo</fakerepo.dir>
 
@@ -193,6 +194,13 @@
             <artifactId>jspecify</artifactId>
             <version>${jspecify.version}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>${swagger-v3-annotations.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
