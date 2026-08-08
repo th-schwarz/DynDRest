@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.4</version>
+        <version>4.0.7</version>
         <relativePath />
     </parent>
     <groupId>codes.thischwa</groupId>
@@ -24,12 +24,12 @@
         <project.build.sourceEncoding>${file.encoding}</project.build.sourceEncoding>
         <project.reporting.outputEncoding>${file.encoding}</project.reporting.outputEncoding>
 
-        <springdoc.version>2.8.14</springdoc.version>
+        <springdoc.version>3.1.0</springdoc.version>
         <domainrobot.version>0.2.8</domainrobot.version>
         <cloudflare-java.version>0.4.0</cloudflare-java.version>
         <dnsjava.version>3.6.3</dnsjava.version>
         <janino.version>3.1.12</janino.version>
-        <jspecify.version>1.0.0</jspecify.version>
+        <jspecify.version>1.0.1</jspecify.version>
 
         <fakerepo.dir>${project.basedir}/fake-repo</fakerepo.dir>
 
