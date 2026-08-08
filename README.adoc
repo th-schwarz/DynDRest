@@ -141,8 +141,6 @@ cloudflare:
   email: email@mydomain.com
 ----
 
-NOTE: This project uses _spring-doc_ to document the routes. The endpoints for this and the _swagger-ui_ are disabled by default!
-
 === Database
 
 The Database is currently h2. +

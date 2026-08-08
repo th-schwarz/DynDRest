@@ -76,13 +76,6 @@ cloudflare:
   api-key: 12345678901234567890123456789
   email: email@mydomain.com
 
-## disable springdoc endpoints and swagger-ui by default
-springdoc:
-  api-docs:
-    enabled: false
-  swagger-ui:
-    enabled: false
-
 ## import of the individual configuration settings
 spring:
   config:

@@ -55,13 +55,6 @@ cloudflare:
   base-url: https://api.cloudflare.com/client/v4
   default-ttl: 60
 
-## disable springdoc endpoints and swagger-ui by default
-springdoc:
-  api-docs:
-    enabled: false
-  swagger-ui:
-    enabled: false
-
 ## import of the individual configuration settings
 spring:
   config:
