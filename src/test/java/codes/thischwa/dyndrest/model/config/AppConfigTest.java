@@ -4,11 +4,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import codes.thischwa.dyndrest.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.ActiveProfiles;
 
-class AppConfigTest extends AbstractIntegrationTest {
+@SpringBootTest(classes = AppConfigTest.EmptyConfig.class)
+@EnableConfigurationProperties(AppConfig.class)
+@ActiveProfiles("test")
+class AppConfigTest {
+
+  @Configuration
+  static class EmptyConfig {}
 
   @Autowired
   private AppConfig appConfig;

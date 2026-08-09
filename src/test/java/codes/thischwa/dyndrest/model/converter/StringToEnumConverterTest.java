@@ -1,6 +1,6 @@
 package codes.thischwa.dyndrest.model.converter;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import codes.thischwa.dyndrest.model.UpdateLog;
 import org.junit.jupiter.api.Test;
