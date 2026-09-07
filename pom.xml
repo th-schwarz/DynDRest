@@ -27,7 +27,7 @@
 
         <springdoc.version>3.1.0</springdoc.version>
         <domainrobot.version>0.2.8</domainrobot.version>
-        <cloudflare-java.version>0.4.0</cloudflare-java.version>
+        <cloudflare-java.version>0.5.0</cloudflare-java.version>
         <dnsjava.version>3.6.3</dnsjava.version>
         <janino.version>3.1.12</janino.version>
         <jspecify.version>1.0.1</jspecify.version>
