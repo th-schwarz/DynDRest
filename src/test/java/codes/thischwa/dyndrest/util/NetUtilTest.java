@@ -25,7 +25,7 @@ class NetUtilTest {
   void testResolve() throws IOException {
     IpSetting ips = resolve("mein-mail-server.de");
     assertEquals(
-        "IpSetting(ipv4=mein-mail-server.de./152.53.130.243, ipv6=mein-mail-server.de./2a0a:4cc0:c0:1e4:0:0:0:1)",
+        "IpSetting(ipv4=mein-mail-server.de./37.120.182.186, ipv6=mein-mail-server.de./2a0a:4cc0:c0:1e4:0:0:0:2)",
         ips.toString());
   }
 
