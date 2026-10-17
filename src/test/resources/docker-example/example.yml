@@ -28,7 +28,6 @@ dyndrest:
   provider: domainrobot
   greeting-enabled: true
   host-validation-enabled: true
-  update-log-page-enabled: true
   update-log-page-size: 30
   update-log-user-name: log-dev
   update-log-user-password: l0g-dev

@@ -48,7 +48,6 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
     log.info("  * provider: {}", config.provider());
     log.info("  * greeting-enabled: {}", config.greetingEnabled());
     log.info("  * host-validation-enabled: {}", config.hostValidationEnabled());
-    log.info("  * update-log-page-enabled: {}", config.updateLogPageEnabled());
     if (config.zoneUpdateSchedulerEnabled()) {
       log.info("  * ZoneUpdaterService initialized with update-interval-seconds: {}", config.zoneUpdateSchedulerIntervalSeconds());
     } else {

@@ -32,7 +32,6 @@ class AppConfigTest {
     assertEquals("domainrobot", appConfig.provider());
 
     assertEquals("yyyy-MM-dd HH:mm:SSS", appConfig.updateLogDatePattern());
-    assertTrue(appConfig.updateLogPageEnabled());
     assertEquals(4, appConfig.updateLogPageSize());
     assertEquals("log-dev", appConfig.updateLogUserName());
     assertEquals("l0g-dev", appConfig.updateLogUserPassword());

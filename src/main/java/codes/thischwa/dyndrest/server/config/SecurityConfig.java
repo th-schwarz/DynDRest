@@ -68,10 +68,9 @@ public class SecurityConfig {
 
     healthEnabled = !"none".equals(healthAccess);
 
-    // check if credentials for addOrUpdate-log-view exist
-    boolean isUpdateLogCredentialsEmpty = !StringUtils.hasText(appConfig.updateLogUserName())
-        || !StringUtils.hasText(appConfig.updateLogUserPassword());
-    updateLogEnabled = appConfig.updateLogPageEnabled() && !isUpdateLogCredentialsEmpty;
+    // the log-view is enabled, if its credentials exist
+    updateLogEnabled = StringUtils.hasText(appConfig.updateLogUserName())
+        && StringUtils.hasText(appConfig.updateLogUserPassword());
 
     // check if credentials for admin exit
     adminEnabled = StringUtils.hasText(appConfig.adminUserName())
@@ -141,6 +140,9 @@ public class SecurityConfig {
       // enable security for the log-view
       http.authorizeHttpRequests(
           req -> req.requestMatchers(LOG_UI_ENDPOINTS).hasAnyRole(Roles.ROLE_LOGVIEWER));
+    } else {
+      // log-view has no credentials, it must not fall back to ROLE_USER
+      http.authorizeHttpRequests(req -> req.requestMatchers(LOG_UI_ENDPOINTS).denyAll());
     }
 
     if (healthEnabled) {
@@ -154,6 +156,9 @@ public class SecurityConfig {
       http.authorizeHttpRequests(req -> req.requestMatchers(ADMIN_ENDPOINT).hasRole(Roles.ROLE_ADMIN))
           .sessionManagement(
               session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+    } else {
+      // admin has no credentials, it must not fall back to ROLE_USER
+      http.authorizeHttpRequests(req -> req.requestMatchers(ADMIN_ENDPOINT).denyAll());
     }
 
     // host-specific authentication for /router/{host} routes

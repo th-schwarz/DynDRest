@@ -326,7 +326,7 @@ Another possibility to start DynDRest is as `init.d` service. Further informatio
 All routes are secured by BasicAuth with the properties `spring.security.user.name` and `spring.security.user.password` except for:
 
 * _/router/{host}_: It uses the full hostname as user and the 'apiToken' as password.
-* _/admin/**_: It is secured by a separate user, which is defined by the properties `dyndrest.admin-user-name` and `dyndrest.admin-user-password`.
+* _/admin/**_: It is secured by a separate user, which is defined by the properties `dyndrest.admin-user-name` and `dyndrest.admin-user-password`. If they aren't set, the admin routes are disabled.
 * _/manage/health_ and _/log-ui_: They use their own users, see below.
 
 A detailed description of the routes can be found at the https://th-schwarz.github.io/DynDRest/openapi-develop.html[OAS3 documentation].
@@ -336,11 +336,9 @@ There are additional routes:
 * [/]: A simple html greeting page which is enabled by default. It can be disabled by setting
 the property `dyndrest.greeting-enabled=false`.
 * [/manage/health]: A very basic health check with an extra basic-auth user. It is disabled by default. It can be enabled by setting `management.endpoint.health.access=read-only` and configured by the both properties `dyndrest.healthcheck-user-name` and `dyndrest.healthcheck-user-password`.
-* [/log-ui]: Delivers a  simple web page to view the zone update logs. It is secured by
-basic-auth and can be configured by setting the two properties
-`dyndrest.update-log-user-name` and `dyndrest.update-log-user-password`.
-It is enabled by default, but it can be disabled by setting the property
-`dyndrest.update-log-page-enabled=false`.
+* [/log-ui]: Delivers a simple web page to view the zone update logs. It is secured by
+a separate basic-auth user. It is disabled by default and only enabled, if both properties
+`dyndrest.update-log-user-name` and `dyndrest.update-log-user-password` are set.
 
 == Setup for a router for dynamic DNS
 

@@ -46,7 +46,6 @@ dyndrest:
   provider: domainrobot
   greeting-enabled: true
   update-log-date-pattern: yyyy-MM-dd HH:mm:SSS
-  update-log-page-enabled: true
   update-log-page-size: 4
   update-log-user-name: log-dev
   update-log-user-password: l0g-dev

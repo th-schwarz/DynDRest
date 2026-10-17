@@ -12,7 +12,6 @@ public record AppConfig(
     int updateIpChangedStatus,
     int updateLogPageSize,
     String updateLogDatePattern,
-    boolean updateLogPageEnabled,
     @Nullable String updateLogUserName,
     @Nullable String updateLogUserPassword,
     boolean updateLogRestForceHttps,

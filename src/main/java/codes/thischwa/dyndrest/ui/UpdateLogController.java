@@ -6,7 +6,6 @@ import codes.thischwa.dyndrest.service.UpdateLogService;
 import codes.thischwa.dyndrest.util.NetUtil;
 import java.util.List;
 import java.util.stream.IntStream;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 /** A controller that delivers a page to show the zone addOrUpdate logs. */
 @Controller
-@ConditionalOnProperty(name = "dyndrest.update-log-page-enabled")
 public class UpdateLogController {
 
   private final AppConfig config;
