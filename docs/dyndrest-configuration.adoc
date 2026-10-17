@@ -13,7 +13,7 @@ Below all default settings are listed.
 
 [source,yaml]
 // include is disabled on github
-// application.yml 2025-05
+// application.yml 2026-10
 ----
 ## server settings
 server:
@@ -35,7 +35,6 @@ management:
     health:
       access: none
 
-
 ## dyndrest config
 dyndrest:
   greeting-enabled: true
@@ -54,6 +53,9 @@ dyndrest:
       enabled: false
       path: ./restore
     dump-file: dump.sql
+  # zone update scheduling
+  zone-update-scheduler-enabled: true
+  zone-update-scheduler-interval-seconds: 30
 
 ##  configuration for the domain robot sdk
 domainrobot:
@@ -65,9 +67,6 @@ domainrobot:
   # custom headers
   custom-header:
     X-Domainrobot-WS: NONE
-  # zpn update scheduling
-  zone-update-scheduler-enabled: true
-  zone-update-scheduler-interval-seconds: 30
 
 ## configuration for the cloudflare API
 cloudflare:
@@ -100,7 +99,7 @@ The individual configuration file `dyndrest.yml` should be inside the applicatio
 
 === BasicAuth
 
-Used for all routes except health check and log-view.
+Used for all routes except router, admin, health check and log-view.
 [source,yaml]
 ----
 spring:
