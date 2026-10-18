@@ -15,6 +15,12 @@ databaseChangeLog:
   - changeSet:
       id: 1
       author: thilo schwarz
+      # changelog was renamed from *.yml to *.yaml, so databases created before see this changeset as new
+      preConditions:
+        - onFail: MARK_RAN
+        - columnExists:
+            tableName: host
+            columnName: name
       changes:
         - renameColumn:
             tableName: host
