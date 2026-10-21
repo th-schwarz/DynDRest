@@ -25,6 +25,7 @@
         <project.reporting.outputEncoding>${file.encoding}</project.reporting.outputEncoding>
 
         <springdoc.version>3.1.0</springdoc.version>
+        <springdoc.plugin.version>1.5</springdoc.plugin.version>
         <domainrobot.version>0.2.8</domainrobot.version>
         <cloudflare-java.version>0.5.0</cloudflare-java.version>
         <dnsjava.version>3.6.3</dnsjava.version>
@@ -146,6 +147,11 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <!-- h2 console, it's disabled by default -->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-h2console</artifactId>
         </dependency>
 
         <dependency>
@@ -362,6 +368,7 @@
                         <!-- generates the openapi docu -->
                         <groupId>org.springdoc</groupId>
                         <artifactId>springdoc-openapi-maven-plugin</artifactId>
+                        <version>${springdoc.plugin.version}</version>
                         <configuration>
                             <apiDocsUrl>http://localhost:8080/v3/api-docs.yaml</apiDocsUrl>
                             <outputDir>${openapi.outputDir}</outputDir>

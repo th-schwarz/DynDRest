@@ -34,7 +34,7 @@ There are currently the following implementations:
 
 DynDRest is based on spring boot 4, that's why Java 17 or later is required!
 
-The restful-api can be used with many routers, for example the AVM Fritz!Box. DynDRest can be executed by `commandline`, `init.d` or `systemd`.
+The restful-api can be used with many routers, for example the AVM Fritz!Box. DynDRest can be executed by `commandline`, `docker` or `systemd`.
 
 If you find a bug or certain features are missing, don’t hesitate to file an issue on https://github.com/th-schwarz/DynDRest/issues[Github].
 
@@ -131,15 +131,26 @@ The `zones` section should be used for importing the hosts and zones configurati
 
 NOTE: api-token is 20 chars max.
 
-If you want to use Cloudflare, the property `dyndrest.provider` has to be set to `cloudflare` and the following minimal configuration must be used:
+If you want to use Cloudflare, the property `dyndrest.provider` has to be set to `cloudflare`. Cloudflare supports two authentication methods, just one of them has to be configured.
+
+Using an API token is the recommended approach:
 
 [source,yaml]
 ----
 cloudflare:
   api-token: YQSn-xWAQiiEh9qM58wZNnyQS7FUdoqGIUAbrh7T
+----
+
+Alternatively, the global API key and the associated account email can be used:
+
+[source,yaml]
+----
+cloudflare:
   api-key: 12345678901234567890123456789
   email: email@mydomain.com
 ----
+
+If both are configured, the API token takes precedence and the API key and email are ignored. Further settings can be found at link:docs/dyndrest-configuration.adoc#_cloudflare[Cloudflare configuration].
 
 === Database
 
@@ -205,7 +216,7 @@ dyndrest:
 
 == Start
 
-The fully executable jar can be executed in different ways.
+The jar can be executed in different ways.
 
 === by Command Line
 
@@ -236,13 +247,16 @@ services:
       - /opt/dyndrest-dockerized/logback.xml:/app/logback.xml:ro
       - /opt/dyndrest-dockerized/log:/app/log
       - /opt/dyndrest-dockerized:/app
+    environment:
+      - SERVER_ADDRESS=0.0.0.0
+      - SERVER_PORT=8081
     ports:
-      - "127.0.0.1:8081:8080"
+      - "127.0.0.1:8081:8081"
 ----
 
 Allowed values for `tagged-version`:
 
-- `latest` is built from the `main` branch.
+- `latest` is the latest release, it's built from the newest release tag `v*`.
 - `develop` is built from the `develop` branch.
 - `v0.11.0` is built from the tag `v0.11.0`.
 - `feature-xyz` is built from `feature/xyz` branch.
@@ -252,12 +266,12 @@ Work steps:
 * Uses the official DynDRest Docker image from GitHub Container Registry
 * Sets up the necessary volume mounts for configuration files and persistent storage
 * Configures the server to listen on all interfaces within the container
-* Maps port 8081 on localhost to port 8080 in the container
+* Maps port 8081 on localhost to port 8081 in the container
 * Ensures the service automatically restarts unless explicitly stopped
 
 Important settings:
 
-1. **Server Address / Server Port**: The `SERVER_ADDRESS=0.0.0.0` setting allows the application to accept connections from any IP address and to `SERVER_PORT=8080` within the container. This is necessary for the port mapping to work. The equivalent setting in `dyndrest.yml` should be removed.
+1. **Server Address / Server Port**: The `SERVER_ADDRESS=0.0.0.0` setting allows the application to accept connections from any IP address and to `SERVER_PORT=8081` within the container. This is necessary for the port mapping to work. The equivalent setting in `dyndrest.yml` should be removed.
 
 1. **Database Persistence**: The H2 database files will be stored in the mounted volume at `/opt/dyndrest-dockerized`, ensuring data persistence between container restarts.
 
@@ -305,10 +319,10 @@ docker run -d --name dyndrest \
   -v /opt/dyndrest-dockerized/log:/app/log \
   -v /opt/dyndrest-dockerized:/app \
   -e SERVER_ADDRESS=0.0.0.0 \
-  -e SERVER_PORT=8080 \
+  -e SERVER_PORT=8081 \
   -e SPRING_CONFIG_IMPORT=file:/app/dyndrest.yml \
   -e SPRING_DATASOURCE_URL=jdbc:h2:file:/app/dyndrest \
-  -p 127.0.0.1:8081:8080 \
+  -p 127.0.0.1:8081:8081 \
   --restart unless-stopped \
   ghcr.io/th-schwarz/dyndrest:latest
 ----
@@ -316,10 +330,6 @@ docker run -d --name dyndrest \
 === by systemd Service
 
 DynDRest can also be started easily as a systemd service. An example for the desired service configuration can be found at the documentation link:docs/systemd-configuration.adoc[systemd Service Configuration].
-
-=== by init.d Service
-
-Another possibility to start DynDRest is as `init.d` service. Further information can be found at the documentation of spring boot, https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#deployment.installing.nix-services.init-d[Installation as an init.d Service (System V)].
 
 == Routes
 
@@ -343,8 +353,7 @@ a separate basic-auth user. It is disabled by default and only enabled, if both 
 == Setup for a router for dynamic DNS
 
 As an example, let’s have a look at the setup of dynamic DNS in the
-https://service.avm.de/help/en/FRITZ-Box-7530/019p2/hilfe_dyndns[Fritz!Box
-7590]. The following settings are required:
+https://fritz.com/en/apps/knowledge-base/FRITZ-Box-7590/30_Setting-up-dynamic-DNS-in-the-FRITZ-Box[Fritz!Box 7590]. The following settings are required:
 
 * _DynDNS Provider:_
 User-defined
@@ -356,3 +365,10 @@ updated.
 [your-host:port]/router/<domain>?ipv4=<ipaddr>&ipv6=<ip6addr>
 If both IP parameters are omitted, an attempt is made to fetch the remote IP.
 
+The router calls the update-URL like the following curl command, which can be used to test the setup:
+
+[source,console]
+----
+curl -u mydyndns.domain.com:1234567890abcdf -i \
+   "http://localhost:8081/router/mydyndns.domain.com?ipv4=127.1.2.4&ipv6=2a03:4000:41:32::2"
+----

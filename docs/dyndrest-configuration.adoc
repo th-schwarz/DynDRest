@@ -39,8 +39,6 @@ management:
 dyndrest:
   greeting-enabled: true
   host-validation-enabled: true
-  # http status code for the case at least one IP has changed, e.g. 201
-  update-ip-changed-status: 200
   update-log-page-size: 30
   update-log-date-pattern: yyyy-MM-dd HH:mm:ss
   # database config, credentials should be set at the individual properties
@@ -69,10 +67,14 @@ domainrobot:
 
 ## configuration for the cloudflare API
 cloudflare:
-  base-url: https://api.cloudflare.com/client/v4 # optional
-  api-token: YQSn-xWAQiiEh9qM58wZNnyQS7FUdoqGIUAbrh7T
-  api-key: 12345678901234567890123456789
-  email: email@mydomain.com
+  base-url: https://api.cloudflare.com/client/v4
+  default-ttl: 60
+  # authentication, has to be set at the individual properties, api-token is recommended
+  # variant 1: api token
+  #api-token: YQSn-xWAQiiEh9qM58wZNnyQS7FUdoqGIUAbrh7T
+  # variant 2: global api key and the associated account email
+  #api-key: 12345678901234567890123456789
+  #email: email@mydomain.com
 
 ## import of the individual configuration settings
 spring:
@@ -128,6 +130,8 @@ dyndrest:
 ----
 
 In this example every monday at 18:30 a database dump will be written to `./backup/dump.sql`. The file will be overwritten every time!
+
+NOTE: There is no default for `cron`. If the backup is enabled, `dyndrest.database.backup.cron` must be set, otherwise DynDRest won't start. The format is the 6-field cron expression of spring: second, minute, hour, day of month, month, day of week.
 
 If _restore_ is enabled and the file `./restore/dump.sql` exists at start, the dump will be restored and the file renamed to `./restore/dump.sql.bak`.
 

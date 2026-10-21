@@ -62,11 +62,10 @@ interface ApiRoutes {
           "Updates the desired IP addresses of the 'host'. If both parameters for IP addresses aren't set, an attempt is made to fetch the remote IP.")
   @ApiResponses(
       value = {
-          @ApiResponse(responseCode = "200", description = "The IPs are still up to date."),
           @ApiResponse(
-              responseCode = "201",
+              responseCode = "200",
               description =
-                  "One or both IPs are changed. Update successful processed. (Dependent on the configuration the response code could be '200'! "),
+                  "The update request was accepted. If the zone update scheduler is enabled (default), the update is queued and processed asynchronously, otherwise it is processed immediately."),
           @ApiResponse(
               responseCode = "400",
               description =
@@ -75,7 +74,9 @@ interface ApiRoutes {
               responseCode = "403",
               description = "If the 'apiToken' doesn't belong to the host."),
           @ApiResponse(responseCode = "404", description = "The desired host doesn't exists."),
-          @ApiResponse(responseCode = "500", description = "If the addOrUpdate failed.")
+          @ApiResponse(
+              responseCode = "500",
+              description = "If the update failed. Only possible if the zone update scheduler is disabled.")
       })
   @PutMapping(value = "/api/ips/{host}")
   ResponseEntity<Void> updateHost(
@@ -119,8 +120,7 @@ interface ApiRoutes {
                           "{\"ipv4\":\"127.1.2.4\",\"ipv6\":\"2a03:4000:41:32:0:0:0:2\"}"))),
           @ApiResponse(
               responseCode = "403",
-              description =
-                  "If the 'apiToken' doesn't belong to the host, IP addresses aren't valid or the remote IP couldn't determine.",
+              description = "If the 'apiToken' doesn't belong to the host.",
               content = @Content(schema = @Schema(hidden = true))),
           @ApiResponse(
               responseCode = "404",

@@ -53,6 +53,9 @@ public class SecurityConfig {
   @Value("${spring.h2.console.enabled}")
   private boolean h2ConsoleEnabled;
 
+  @Value("${spring.h2.console.path:/h2-console}")
+  private String h2ConsolePath;
+
   private final boolean healthEnabled;
 
   /**
@@ -131,7 +134,7 @@ public class SecurityConfig {
     if (h2ConsoleEnabled) {
       // h2 settings
       http.authorizeHttpRequests(
-              auth -> auth.requestMatchers("/h2-console/**").permitAll())
+              auth -> auth.requestMatchers(h2ConsolePath + "/**").permitAll())
           .headers(
               headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
     }

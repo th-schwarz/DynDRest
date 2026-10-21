@@ -8,7 +8,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.xbill.DNS.AAAARecord;
 import org.xbill.DNS.ARecord;
 import org.xbill.DNS.DClass;
@@ -77,21 +76,6 @@ public class NetUtil {
     String base64Creds =
         Base64.getEncoder().encodeToString(authStr.getBytes(StandardCharsets.UTF_8));
     return "Basic " + base64Creds;
-  }
-
-  /**
-   * Fetches the base url from spring {@link ServletUriComponentsBuilder#fromCurrentContextPath()}
-   * and fores https if desired.
-   *
-   * @param forceHttps the force https
-   * @return the base url
-   */
-  public static String getBaseUrl(boolean forceHttps) {
-    ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentContextPath();
-    if (forceHttps) {
-      builder.scheme("https");
-    }
-    return builder.replacePath(null).build().toUriString();
   }
 
   /**

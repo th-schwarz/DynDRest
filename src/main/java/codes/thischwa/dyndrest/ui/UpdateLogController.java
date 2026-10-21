@@ -3,7 +3,6 @@ package codes.thischwa.dyndrest.ui;
 import codes.thischwa.dyndrest.model.UpdateLogEnriched;
 import codes.thischwa.dyndrest.model.config.AppConfig;
 import codes.thischwa.dyndrest.service.UpdateLogService;
-import codes.thischwa.dyndrest.util.NetUtil;
 import java.util.List;
 import java.util.stream.IntStream;
 import org.springframework.data.domain.Page;
@@ -52,8 +51,6 @@ public class UpdateLogController {
   @SuppressWarnings("SameReturnValue")
   @GetMapping(value = "/log-ui/{page}", produces = MediaType.TEXT_HTML_VALUE)
   public String log(@PathVariable int page, Model model) {
-    String baseUrl = NetUtil.getBaseUrl(config.updateLogRestForceHttps());
-    model.addAttribute("server_url", baseUrl + "/log-ui/");
 
     Page<UpdateLogEnriched> pageLog = updateLogService.getPage(page);
     model.addAttribute("logDatePattern", config.updateLogDatePattern());

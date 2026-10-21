@@ -1,0 +1,20 @@
+name: Fast-forward main to release tag
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  update-main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      # no --force: fails if main contains commits that aren't part of the release
+      - name: Fast-forward main
+        run: git push origin "HEAD:refs/heads/main"

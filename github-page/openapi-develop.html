@@ -2,17 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <redoc spec-url="https://raw.githubusercontent.com/th-schwarz/DynDRest/develop/docs/openapi/openapi.yaml"
-           required-props-first=true
-           theme='{
-         "sidebar": {
-           "backgroundColor": "LemonChiffon"
-         }
-       }'></redoc>
-    <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"> </script>
     <title>DynDRest :: OAS</title>
 </head>
 <body>
-
+<redoc spec-url="https://raw.githubusercontent.com/th-schwarz/DynDRest/develop/docs/openapi/openapi.yaml"
+       required-props-first="true"></redoc>
+<!-- redoc 3 is an ES module, the version is pinned to avoid breaking changes by 'latest' -->
+<script type="module" src="https://cdn.redoc.ly/redoc/v3.0.1/bundles/redoc.standalone.js"></script>
 </body>
 </html>

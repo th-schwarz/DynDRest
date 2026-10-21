@@ -1,6 +1,5 @@
 package codes.thischwa.dyndrest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
@@ -13,18 +12,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import codes.thischwa.dyndrest.model.Host;
 import codes.thischwa.dyndrest.model.Zone;
 import codes.thischwa.dyndrest.service.HostZoneService;
-import codes.thischwa.dyndrest.util.NetUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 @DisplayName("Integration tests: Rest - '/admin/'")
 class AdminRestTest extends AbstractIntegrationTest {
@@ -165,18 +160,5 @@ class AdminRestTest extends AbstractIntegrationTest {
         post("/admin/zones/dynhost0.info/hosts/my,dynhost0.info")
           .with(httpBasic("admin", "adm1n")))
       .andExpect(status().isBadRequest());
-  }
-
-  @Test
-  void testBaseUrl() {
-    // feed the mock
-    MockHttpServletRequest mockRequest = new MockHttpServletRequest();
-    mockRequest.setContextPath("/");
-    mockRequest.setServerPort(port);
-    ServletRequestAttributes attrs = new ServletRequestAttributes(mockRequest);
-    RequestContextHolder.setRequestAttributes(attrs);
-
-    assertEquals("http://localhost:" + port, NetUtil.getBaseUrl(false));
-    assertEquals("https://localhost:" + port, NetUtil.getBaseUrl(true));
   }
 }

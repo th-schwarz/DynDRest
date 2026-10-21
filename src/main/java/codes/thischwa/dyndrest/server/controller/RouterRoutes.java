@@ -39,12 +39,12 @@ public interface RouterRoutes {
           + "other routes. The user is the host and the password is the 'apiToken'.")
   @ApiResponses(
       value = {
-          @ApiResponse(responseCode = "200", description = "The IPs are still up to date."),
           @ApiResponse(
-              responseCode = "201",
+              responseCode = "200",
               description =
-                  "One or both IPs are changed. Update successful processed. (Dependent on the "
-                  + "configuration the response code could be '200'! "),
+                  "The update request was accepted. If the zone update scheduler is enabled "
+                  + "(default), the update is queued and processed asynchronously, otherwise it is "
+                  + "processed immediately."),
           @ApiResponse(
               responseCode = "400",
               description =
@@ -53,7 +53,10 @@ public interface RouterRoutes {
               responseCode = "403",
               description = "If the authentication is wrong."),
           @ApiResponse(responseCode = "404", description = "The desired host doesn't exists."),
-          @ApiResponse(responseCode = "500", description = "If the addOrUpdate failed.")
+          @ApiResponse(
+              responseCode = "500",
+              description = "If the update failed. Only possible if the zone update scheduler is "
+                  + "disabled.")
       })
   @GetMapping(value = "/router/{host}")
   ResponseEntity<Void> routerUpdateHost(

@@ -28,20 +28,35 @@ jobs:
           owner="${GITHUB_REPOSITORY_OWNER,,}"
           image="$REGISTRY/$owner/dyndrest"
 
+          # main is fast-forwarded by update-main.yml with the GITHUB_TOKEN, which doesn't trigger
+          # this workflow, so release tags publish 'latest' themselves
+          extra_tag=""
           if [ "${GITHUB_REF_NAME}" = "main" ]; then
             tag="latest"
           else
             tag="${GITHUB_REF_NAME,,}"
             tag="${tag//\//-}"
             tag="$(echo "$tag" | sed -E 's/[^a-z0-9._-]/-/g')"
+            if [ "${GITHUB_REF_TYPE}" = "tag" ] && [[ "${GITHUB_REF_NAME}" == v* ]]; then
+              extra_tag="latest"
+            fi
           fi
 
           echo "IMAGE=$image" >> "$GITHUB_ENV"
           echo "TAG=$tag" >> "$GITHUB_ENV"
-          echo "Will push $image:$tag"
+          echo "EXTRA_TAG=$extra_tag" >> "$GITHUB_ENV"
+          echo "Will push $image:$tag ${extra_tag:+and $image:$extra_tag}"
 
       - name: Build
-        run: docker build . -t "$IMAGE:$TAG"
+        run: |
+          docker build . -t "$IMAGE:$TAG"
+          if [ -n "$EXTRA_TAG" ]; then
+            docker tag "$IMAGE:$TAG" "$IMAGE:$EXTRA_TAG"
+          fi
 
       - name: Push
-        run: docker push "$IMAGE:$TAG"
+        run: |
+          docker push "$IMAGE:$TAG"
+          if [ -n "$EXTRA_TAG" ]; then
+            docker push "$IMAGE:$EXTRA_TAG"
+          fi
