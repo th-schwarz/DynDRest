@@ -49,8 +49,7 @@ paths:
                 ipv4: 127.1.2.4
                 ipv6: 2a03:4000:41:32:0:0:0:2
         "403":
-          description: "If the 'apiToken' doesn't belong to the host, IP addresses\
-            \ aren't valid or the remote IP couldn't determine."
+          description: If the 'apiToken' doesn't belong to the host.
         "404":
           description: If the 'host' isn't configured.
         "500":
@@ -102,10 +101,9 @@ paths:
           - 2a03:4000:41:32:0:0:0:2
       responses:
         "200":
-          description: The IPs are still up to date.
-        "201":
-          description: 'One or both IPs are changed. Update successful processed.
-            (Dependent on the configuration the response code could be ''200''! '
+          description: "The update request was accepted. If the zone update scheduler\
+            \ is enabled (default), the update is queued and processed asynchronously,\
+            \ otherwise it is processed immediately."
         "400":
           description: At least one IP address isn't valid or the remote IP couldn't
             be determined.
@@ -114,7 +112,8 @@ paths:
         "404":
           description: The desired host doesn't exists.
         "500":
-          description: If the addOrUpdate failed.
+          description: If the update failed. Only possible if the zone update scheduler
+            is disabled.
   /admin/zones/{zoneName}/{ns}:
     post:
       tags:
@@ -231,10 +230,9 @@ paths:
           - 2a03:4000:41:32:0:0:0:2
       responses:
         "200":
-          description: The IPs are still up to date.
-        "201":
-          description: 'One or both IPs are changed. Update successful processed.
-            (Dependent on the configuration the response code could be ''200''! '
+          description: "The update request was accepted. If the zone update scheduler\
+            \ is enabled (default), the update is queued and processed asynchronously,\
+            \ otherwise it is processed immediately."
         "400":
           description: At least one IP address isn't valid or the remote IP couldn't
             be determined.
@@ -243,7 +241,8 @@ paths:
         "404":
           description: The desired host doesn't exists.
         "500":
-          description: If the addOrUpdate failed.
+          description: If the update failed. Only possible if the zone update scheduler
+            is disabled.
   /admin/zones:
     get:
       tags:

@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y curl && apt-get full-upgrade -y && rm -
 WORKDIR /app
 
 # Expose the default HTTP port used by DynDRest when running in container
-EXPOSE 8080
+EXPOSE 8081
 
 # Copy the built Spring Boot fat JAR to a fixed path outside /app so mounting /app won't hide the JAR
 # Keep WORKDIR at /app with no subdirectories for config and H2 database files

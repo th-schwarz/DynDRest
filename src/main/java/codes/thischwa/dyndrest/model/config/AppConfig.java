@@ -9,7 +9,6 @@ public record AppConfig(
     String provider,
     boolean greetingEnabled,
     boolean hostValidationEnabled,
-    int updateIpChangedStatus,
     int updateLogPageSize,
     String updateLogDatePattern,
     @Nullable String updateLogUserName,

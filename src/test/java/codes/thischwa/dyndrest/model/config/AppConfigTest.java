@@ -27,8 +27,6 @@ class AppConfigTest {
     assertFalse(appConfig.hostValidationEnabled());
     assertTrue(appConfig.greetingEnabled());
 
-    assertEquals(201, appConfig.updateIpChangedStatus());
-
     assertEquals("domainrobot", appConfig.provider());
 
     assertEquals("yyyy-MM-dd HH:mm:SSS", appConfig.updateLogDatePattern());

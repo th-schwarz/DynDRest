@@ -2,6 +2,7 @@ package codes.thischwa.dyndrest;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -89,6 +91,15 @@ class OtherRestMockTest {
     @Test
     void testFavicon() throws Exception {
         mockMvc.perform(get("/favicon.ico")).andExpect(status().isOk()).andExpect(content().string(""));
+    }
+
+    @Test
+    void testNoAuth_h2Console() throws Exception {
+        // the h2 console is a separate servlet, which isn't reachable by MockMvc,
+        // so just check its registration and that the security permits its path
+        ServletRegistrationBean<?> h2Console = context.getBean("h2Console", ServletRegistrationBean.class);
+        assertTrue(h2Console.getUrlMappings().contains("/h2/*"));
+        mockMvc.perform(get("/h2/")).andExpect(status().isNotFound());
     }
 
 }

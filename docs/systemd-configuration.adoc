@@ -15,7 +15,8 @@ Requires=network.target
 [Service]
 User=dyndrest
 Group=dyndrest
-ExecStart=/opt/dyndrest/dyndrest.jar
+WorkingDirectory=/opt/dyndrest
+ExecStart=/usr/bin/java -jar /opt/dyndrest/dyndrest.jar
 ExecStop=/bin/kill -15 $MAINPID
 SuccessExitStatus=143
 
@@ -24,7 +25,9 @@ WantedBy=multi-user.target
 ----
 
 ====
-Don't forget to customize user, group and the path to the jar file!
+Don't forget to customize user, group, the path to java and the path to the jar file!
+
+The `WorkingDirectory` is important, because `dyndrest.yml` and the h2 database are expected in the working directory by default.
 ====
 
 == Status Output
@@ -34,21 +37,20 @@ Don't forget to customize user, group and the path to the jar file!
 ● dyndrest.service - DynDRest - A simple REST-service for dynamic DNS.
      Loaded: loaded (/etc/systemd/system/dyndrest.service; enabled; vendor preset: enabled)
      Active: active (running) since Sat 2023-02-25 18:52:20 CET; 21min ago
-   Main PID: 399617 (dyndrest.jar)
+   Main PID: 399652 (java)
       Tasks: 36 (limit: 65000)
      Memory: 261.3M
      CGroup: /system.slice/dyndrest.service
-             ├─399617 /bin/bash /opt/dyndrest/dyndrest.jar
-             └─399652 /usr/bin/java -Dsun.misc.URLClassPath.disableJarChecking=true -jar /opt/dyndrest/dyndrest-0.3.jar
+             └─399652 /usr/bin/java -jar /opt/dyndrest/dyndrest.jar
 
 systemd[1]: Started DynDRest - A simple REST-service for dynamic DNS..
-dyndrest.jar[399652]:   ____              ____  ____           _
-dyndrest.jar[399652]:  |  _ \ _   _ _ __ |  _ \|  _ \ ___  ___| |_
-dyndrest.jar[399652]:  | | | | | | | '_ \| | | | |_) / _ \/ __| __|
-dyndrest.jar[399652]:  | |_| | |_| | | | | |_| |  _ <  __/\__ \ |_
-dyndrest.jar[399652]:  |____/ \__, |_| |_|____/|_| \_\___||___/\__|
-dyndrest.jar[399652]:         |___/
-dyndrest.jar[399652]: Version: 0.3
-dyndrest.jar[399652]: :: Spring Boot (v3.0.3) ::
-dyndrest.jar[399652]: running on java 17.0.5
+java[399652]:   ____              ____  ____           _
+java[399652]:  |  _ \ _   _ _ __ |  _ \|  _ \ ___  ___| |_
+java[399652]:  | | | | | | | '_ \| | | | |_) / _ \/ __| __|
+java[399652]:  | |_| | |_| | | | | |_| |  _ <  __/\__ \ |_
+java[399652]:  |____/ \__, |_| |_|____/|_| \_\___||___/\__|
+java[399652]:         |___/
+java[399652]: Version: 0.13.0
+java[399652]: :: Spring Boot (v4.1.1) ::
+java[399652]: running on java 17.0.19
 ----
