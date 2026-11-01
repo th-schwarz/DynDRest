@@ -44,7 +44,7 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
   public void onApplicationEvent(final ApplicationReadyEvent event) {
     String profiles = String.join(",", env.getActiveProfiles());
     log.info("*** Settings for DynDRest:");
-    log.info("  * active profile(s): {}", !StringUtils.hasText(profiles) ? "n/a" : profiles);
+    log.info("  * active profile(s): {}", StringUtils.hasText(profiles) ? profiles : "n/a");
     log.info("  * provider: {}", config.provider());
     log.info("  * greeting-enabled: {}", config.greetingEnabled());
     log.info("  * host-validation-enabled: {}", config.hostValidationEnabled());

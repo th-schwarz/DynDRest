@@ -30,7 +30,7 @@ import org.springframework.stereotype.Service;
 public class DatabaseRestoreHandler extends BeanCollector {
 
   private static final Class<?>[] wantedBeans =
-      new Class<?>[] {DatabaseServiceConfig.class, DatabaseRestoreConfig.class, DataSource.class};
+      {DatabaseServiceConfig.class, DatabaseRestoreConfig.class, DataSource.class};
 
   @Nullable
   private JdbcTemplate jdbcTemplate;
