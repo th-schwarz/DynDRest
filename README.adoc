@@ -205,11 +205,13 @@ dyndrest:
 ----
 
 **Benefits of scheduled mode:**
+
 - Reduces load on DNS provider APIs
 - Better handling of multiple rapid updates for the same host
 - Improved reliability for high-frequency update scenarios
 
 **Use immediate mode when:**
+
 - You need instant DNS updates
 - Update frequency is low
 - Simple setup without background processing is preferred
