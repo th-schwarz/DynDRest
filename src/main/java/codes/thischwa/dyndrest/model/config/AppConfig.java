@@ -13,7 +13,6 @@ public record AppConfig(
     String updateLogDatePattern,
     @Nullable String updateLogUserName,
     @Nullable String updateLogUserPassword,
-    boolean updateLogRestForceHttps,
     @Nullable String healthCheckUserName,
     @Nullable String healthCheckUserPassword,
     @Nullable String adminUserName,

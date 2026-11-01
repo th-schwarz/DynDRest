@@ -365,3 +365,10 @@ updated.
 [your-host:port]/router/<domain>?ipv4=<ipaddr>&ipv6=<ip6addr>
 If both IP parameters are omitted, an attempt is made to fetch the remote IP.
 
+The router calls the update-URL like the following curl command, which can be used to test the setup:
+
+[source,console]
+----
+curl -u mydyndns.domain.com:1234567890abcdf -i \
+   "http://localhost:8081/router/mydyndns.domain.com?ipv4=127.1.2.4&ipv6=2a03:4000:41:32::2"
+----
