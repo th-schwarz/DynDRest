@@ -114,7 +114,7 @@ public class CloudflareProviderTest extends AbstractCloudflareTest {
 
   private void cleanupDefaultHosts() {
     try {
-      List<RecordEntity> records = cloudflareProvider.cfDnsClient.recordList(DEFAULT_ZONE_CF, RecordType.A, RecordType.AAAA);
+      List<RecordEntity> records = cloudflareProvider.cfDnsClient.recordListByType(DEFAULT_ZONE_CF, RecordType.A, RecordType.AAAA);
       for (RecordEntity record : records) {
         if (record.getName().startsWith(SLD_PREFIX)) {
           cloudflareProvider.cfDnsClient.recordDelete(DEFAULT_ZONE_CF, record.getId());

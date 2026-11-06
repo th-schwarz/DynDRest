@@ -49,6 +49,12 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
     if (config.baseUrl() != null) {
       clientBuilder.withBaseUrl(config.baseUrl());
     }
+    if (config.connectTimeout() != null) {
+      clientBuilder.withConnectTimeout(config.connectTimeout());
+    }
+    if (config.responseTimeout() != null) {
+      clientBuilder.withResponseTimeout(config.responseTimeout());
+    }
     if (config.isApiTokenConfigured()) {
       clientBuilder.withApiTokenAuth(config.apiToken());
     } else {
@@ -60,7 +66,7 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
   @Override
   public void addOrUpdate(String fqdn, IpSetting ipSetting) throws ProviderException {
     ZoneEntity zone = fetchZoneFromHost(fqdn);
-    String sld = getSldFromHost(fqdn);
+    String sld = getSubdomainFromHost(fqdn);
     try {
       boolean updated =
           sldCreateUpdateOrDeleteIp(zone, sld, ipSetting.getIpv4(), ipSetting.getIpv6());
@@ -75,10 +81,10 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
   @Override
   public IpSetting info(String fqdn) throws ProviderException {
     ZoneEntity zone = fetchZoneFromHost(fqdn);
-    String sld = getSldFromHost(fqdn);
+    String subdomain = getSubdomainFromHost(fqdn);
     IpSetting ipSetting = new IpSetting();
     try {
-      List<RecordEntity> arecords = cfDnsClient.recordList(zone, sld, RecordType.A);
+      List<RecordEntity> arecords = cfDnsClient.recordListBySubdomain(zone, subdomain, RecordType.A);
       if (!arecords.isEmpty()) {
         ipSetting.setIpv4(arecords.get(0).getContent());
       }
@@ -86,7 +92,7 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
       log.warn("Error while getting A record of host {}", fqdn, e);
     }
     try {
-      List<RecordEntity> aaaaRecords = cfDnsClient.recordList(zone, sld, RecordType.AAAA);
+      List<RecordEntity> aaaaRecords = cfDnsClient.recordListBySubdomain(zone, subdomain, RecordType.AAAA);
       if (!aaaaRecords.isEmpty()) {
         ipSetting.setIpv6(aaaaRecords.get(0).getContent());
       }
@@ -108,7 +114,7 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
     if (optFullHost.isEmpty()) {
       throw new IllegalArgumentException("Host isn't configured: " + fqdn);
     }
-    String sld = getSldFromHost(fqdn);
+    String sld = getSubdomainFromHost(fqdn);
     try {
       sldDeleteIpSettings(zone, sld);
     } catch (CloudflareApiException e) {
@@ -229,8 +235,7 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
 
   private Map<String, IpSetting> fetchIpSettingOfZone(ZoneEntity zone, Set<String> relevantHosts) throws CloudflareApiException {
     Map<String, IpSetting> result = new HashMap<>();
-    List<RecordEntity> records;
-    records = cfDnsClient.recordList(zone, RecordType.A, RecordType.AAAA);
+    List<RecordEntity> records = cfDnsClient.recordListByType(zone, RecordType.A, RecordType.AAAA);
 
     Map<String, List<RecordEntity>> recordsByHost = CfDnsClient.groupRecordsByFqdn(records);
     for (Map.Entry<String, List<RecordEntity>> recByHost : recordsByHost.entrySet()) {
@@ -306,7 +311,7 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
     validateHostZoneConfiguration();
   }
 
-  private String getSldFromHost(String host) {
+  private String getSubdomainFromHost(String host) {
     return host.substring(0, host.indexOf("."));
   }
 
@@ -338,7 +343,7 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
   private boolean sldCreateUpdateOrDeleteIp(
       ZoneEntity zone, String sld, @Nullable String ip, RecordType type)
       throws CloudflareApiException {
-    List<RecordEntity> recs = cfDnsClient.recordList(zone, sld, type);
+    List<RecordEntity> recs = cfDnsClient.recordListBySubdomain(zone, sld, type);
     if (recs.isEmpty()) {
       if (ip != null) {
         cfDnsClient.recordCreate(zone, RecordEntity.build(sld, type, defaultTtl, ip));
@@ -363,9 +368,9 @@ public class CloudflareProvider extends GenericProvider implements InitializingB
 
   private boolean hasSubTld(CfDnsClient client, ZoneEntity zone, String host)
       throws CloudflareApiException {
-    String sld = getSldFromHost(host);
+    String sld = getSubdomainFromHost(host);
     try {
-      List<RecordEntity> recsA = client.recordList(zone, sld, RecordType.A, RecordType.AAAA);
+      List<RecordEntity> recsA = client.recordListBySubdomain(zone, sld, RecordType.A, RecordType.AAAA);
       return !recsA.isEmpty();
     } catch (CloudflareApiException e) {
       log.error("Unexpected error while getting A record of host {}", host, e);

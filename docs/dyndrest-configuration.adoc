@@ -69,6 +69,8 @@ domainrobot:
 cloudflare:
   base-url: https://api.cloudflare.com/client/v4
   default-ttl: 60
+  connect-timeout: 10s
+  response-timeout: 30s
   # authentication, has to be set at the individual properties, api-token is recommended
   # variant 1: api token
   #api-token: YQSn-xWAQiiEh9qM58wZNnyQS7FUdoqGIUAbrh7T
@@ -201,9 +203,11 @@ The following optional settings can be adjusted:
 cloudflare:
   base-url: https://api.cloudflare.com/client/v4
   default-ttl: 60
+  connect-timeout: 10s
+  response-timeout: 30s
 ----
 
-The `base-url` defaults to the official Cloudflare API endpoint and normally does not need to be changed. The `default-ttl` controls the time-to-live (in seconds) for DNS records managed by DynDRest.
+The `base-url` defaults to the official Cloudflare API endpoint and normally does not need to be changed. The `default-ttl` controls the time-to-live (in seconds) for DNS records managed by DynDRest. The `connect-timeout` (default: `10s`) and `response-timeout` (default: `30s`) configure the network timeouts for requests to the Cloudflare API.
 
 NOTE: The Cloudflare integration is implemented via https://git.mein-gateway.de/thischwa/CloudflareDNS-java[CloudflareDNS-java].
 

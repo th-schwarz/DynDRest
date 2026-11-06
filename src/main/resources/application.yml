@@ -51,6 +51,8 @@ domainrobot:
 cloudflare:
   base-url: https://api.cloudflare.com/client/v4
   default-ttl: 60
+  connect-timeout: 10s
+  response-timeout: 30s
 
 ## import of the individual configuration settings
 spring:

@@ -24,6 +24,7 @@ import codes.thischwa.dyndrest.service.HostZoneService;
 import codes.thischwa.dyndrest.service.ZoneUpdaterService;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,6 +45,8 @@ class CloudflareProviderMockTest {
 		when(config.defaultTtl()).thenReturn(300);
 		when(config.email()).thenReturn("test@example.com");
 		when(config.apiKey()).thenReturn("test-api-key");
+		when(config.connectTimeout()).thenReturn(Duration.ofSeconds(10));
+		when(config.responseTimeout()).thenReturn(Duration.ofSeconds(30));
 
 		hostZoneService = mock(HostZoneService.class);
 		ZoneUpdaterService zoneUpdaterService = mock(ZoneUpdaterService.class);
@@ -71,9 +74,9 @@ class CloudflareProviderMockTest {
 		when(cfDnsClient.zoneGet("example.com")).thenReturn(zoneEntity);
 
 		// CREATE: No existing records, create new A record
-		when(cfDnsClient.recordList(eq(zoneEntity), eq(sld), eq(RecordType.A)))
+		when(cfDnsClient.recordListBySubdomain(eq(zoneEntity), eq(sld), eq(RecordType.A)))
 				.thenReturn(Collections.emptyList());
-		when(cfDnsClient.recordList(eq(zoneEntity), eq(sld), eq(RecordType.AAAA)))
+		when(cfDnsClient.recordListBySubdomain(eq(zoneEntity), eq(sld), eq(RecordType.AAAA)))
 				.thenReturn(Collections.emptyList());
 
 		IpSetting createIpSetting = new IpSetting();
@@ -96,7 +99,7 @@ class CloudflareProviderMockTest {
 		existingRecord.setContent("192.0.2.1");
 		existingRecord.setTtl(300);
 
-		when(cfDnsClient.recordList(eq(zoneEntity), eq(sld), eq(RecordType.A)))
+		when(cfDnsClient.recordListBySubdomain(eq(zoneEntity), eq(sld), eq(RecordType.A)))
 				.thenReturn(Collections.singletonList(existingRecord));
 
 		IpSetting updateIpSetting = new IpSetting();
@@ -109,7 +112,7 @@ class CloudflareProviderMockTest {
 		assertEquals("192.0.2.2", updatedRecord.getContent());
 
 		// DELETE: Set IP to null, delete the record
-		when(cfDnsClient.recordList(eq(zoneEntity), eq(sld), eq(RecordType.A)))
+		when(cfDnsClient.recordListBySubdomain(eq(zoneEntity), eq(sld), eq(RecordType.A)))
 				.thenReturn(Collections.singletonList(existingRecord));
 
 		IpSetting deleteIpSetting = new IpSetting();
