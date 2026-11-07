@@ -15,6 +15,7 @@ import codes.thischwa.dyndrest.provider.Provider;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.service.ZoneUpdaterService;
 import jakarta.annotation.PostConstruct;
+import java.net.IDN;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -135,6 +136,28 @@ public class DomainRobotProviderTest extends AbstractIntegrationTest {
   }
 
   @Test
+  void testIdnHostCreationAndUpdate() throws Exception {
+    String idnSld = SLD_PREFIX + IDN.toASCII("müller");
+    String fqdn = idnSld + "." + ZONE_NAME;
+    Host host = hostZoneService.addHost(DEFAULT_ZONE_MODEL, idnSld, "1234567890abcdef");
+
+    try {
+      IpSetting initialIpSetting = new IpSetting("192.0.4.10", "2001:db8::70");
+      domainRobotProvider.addOrUpdate(fqdn, initialIpSetting);
+      assertEquals(initialIpSetting, domainRobotProvider.info(fqdn));
+
+      IpSetting updatedIpSetting = new IpSetting("192.0.4.11", "2001:db8::71");
+      domainRobotProvider.addOrUpdate(fqdn, updatedIpSetting);
+      assertEquals(updatedIpSetting, domainRobotProvider.info(fqdn));
+
+      domainRobotProvider.removeHostIpSettings(fqdn);
+      assertTrue(domainRobotProvider.info(fqdn).isNotSet());
+    } finally {
+      cleanupIdnHost(host, idnSld);
+    }
+  }
+
+  @Test
   void testFetchZoneFromInvalidSld() {
     String invalidSld = "nonexistent-" + DEFAULT_FQDN;
     assertThrows(IllegalArgumentException.class, () -> {
@@ -251,6 +274,19 @@ public class DomainRobotProviderTest extends AbstractIntegrationTest {
     } catch (ProviderException e) {
       log.warn("Error while updating zone {}", DEFAULT_ZONE_ADNS.getOrigin(), e);
     }
+  }
+
+  private void cleanupIdnHost(Host host, String sld) {
+    ZoneClientWrapper zcw = domainRobotProvider.getZcw();
+    try {
+      Zone zone = zcw.info(ZONE_NAME, PRIMARY_NS);
+      zcw.removeSld(zone, sld);
+      zcw.removeSld(zone, IDN.toASCII(sld));
+      zcw.update(zone);
+    } catch (Exception e) {
+      log.warn("Error while removing IDN host records {}", sld, e);
+    }
+    hostZoneService.deleteHost(host);
   }
 
   private void testHostCreationAndAddOrUpdate() throws Exception {

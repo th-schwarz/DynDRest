@@ -18,6 +18,7 @@ import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.service.HostZoneService;
 import codes.thischwa.dyndrest.service.ZoneUpdaterService;
 import jakarta.annotation.PostConstruct;
+import java.net.IDN;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
@@ -127,6 +128,9 @@ public class CloudflareProviderTest extends AbstractCloudflareTest {
   }
 
   private void testHostCreationAndAddOrUpdate() throws Exception {
+    Host idnHost = activateHost(IDN.toASCII(SLD_PREFIX + "höstIdn"), DEFAULT_IP_SETTING);
+    verifyHostIpSetting(idnHost, DEFAULT_IP_SETTING);
+
     Host host1 = activateHost(SLD_PREFIX + "host1", DEFAULT_IP_SETTING);
     verifyHostIpSetting(host1, DEFAULT_IP_SETTING);
 
