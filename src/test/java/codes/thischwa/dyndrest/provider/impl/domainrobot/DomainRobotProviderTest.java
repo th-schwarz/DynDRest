@@ -25,11 +25,13 @@ import org.domainrobot.sdk.models.generated.Zone;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
+@DisplayName("Integration tests: Provider AutoDNS (Domainrobot)")
 @Slf4j
 public class DomainRobotProviderTest extends AbstractIntegrationTest {
   private static final String ZONE_NAME = "mein-virtuelles-blech.de";

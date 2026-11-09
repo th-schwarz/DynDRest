@@ -22,7 +22,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
-@DisplayName("Integration tests: controller - router-addOrUpdate")
+@DisplayName("Mock tests: controller - router-addOrUpdate")
 @Slf4j
 public class RouterControllerMockTest extends AbstractControllerMockTest {
 

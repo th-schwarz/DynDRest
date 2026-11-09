@@ -23,11 +23,13 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
+@DisplayName("Integration tests: Provider Cloudflare")
 @Slf4j
 public class CloudflareProviderTest extends AbstractCloudflareTest {
   private static final String ZONE_NAME = "mein-d-ns.de";
