@@ -131,6 +131,21 @@ class ZoneClientWrapperTest extends AbstractIntegrationTest {
 	}
 
 	@Test
+	void testMissingResourceRecordAndIpDoNotCountAsChanged() throws Exception {
+		zcw.removeIpv4(zone, "sub");
+		assertFalse(zcw.hasIpsChanged(zone, "sub", new IpSetting((String) null, "2a03:4000:41:32::10")));
+
+		zcw.removeIp6(zone, "sub");
+		assertFalse(zcw.hasIpsChanged(zone, "sub", new IpSetting()));
+	}
+
+	@Test
+	void testExistingResourceRecordWithMissingIpCountsAsChanged() throws Exception {
+		assertTrue(zcw.hasIpsChanged(zone, "sub", new IpSetting("85.209.51.215")));
+		assertTrue(zcw.hasIpsChanged(zone, "sub", new IpSetting((String) null, "2a03:4000:41:32::10")));
+	}
+
+	@Test
 	void testHasSubTld() {
 		assertTrue(zcw.hasSubTld(zone, "sub"));
 		assertFalse(zcw.hasSubTld(zone, "unknown"));

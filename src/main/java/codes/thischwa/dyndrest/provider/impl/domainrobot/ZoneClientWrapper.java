@@ -64,18 +64,21 @@ class ZoneClientWrapper {
     }
     ResourceRecord rrv4 = searchResourceRecord(zone, sld, ResourceRecordTypeIp.A);
     ResourceRecord rrv6 = searchResourceRecord(zone, sld, ResourceRecordTypeIp.AAAA);
-    boolean ipv4Changed = !hasIpChanged(rrv4, ipSetting.getIpv4());
-    boolean ipv6Changed = !hasIpChanged(rrv6, ipSetting.getIpv6());
+    boolean ipv4Changed = hasIpChanged(rrv4, ipSetting.getIpv4());
+    boolean ipv6Changed = hasIpChanged(rrv6, ipSetting.getIpv6());
     return ipv4Changed || ipv6Changed;
   }
 
   private boolean hasIpChanged(@Nullable ResourceRecord rr, @Nullable InetAddress ip) {
-    if (rr == null || ip == null) {
-      return false;
+    if (rr == null) {
+      return ip != null;
+    }
+    if (ip == null) {
+      return true;
     }
     try {
       InetAddress rrIp = InetAddress.getByName(rr.getValue());
-      return rrIp.equals(ip);
+      return !rrIp.equals(ip);
     } catch (UnknownHostException e) {
       throw new IllegalArgumentException("Couldn't get Ip from value: " + rr.getValue(), e);
     }
