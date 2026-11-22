@@ -66,6 +66,15 @@ public class HostZoneService {
   }
 
   /**
+   * Validates host labels before they are used for provider operations.
+   *
+   * @param hosts the hosts to validate
+   */
+  public void validateHostnames(List<? extends Host> hosts) {
+    hosts.forEach(host -> validateHostLabel(host.getSld()));
+  }
+
+  /**
    * Retrieves the list of configured zones.
    *
    * @return The list of Zone objects representing the configured zones.
@@ -114,6 +123,7 @@ public class HostZoneService {
    */
   public void importOnStart() {
     List<HostEnriched> hostsToImport = zoneImportConfig.getHosts();
+    validateHostnames(hostsToImport);
     if (hostsToImport.isEmpty()) {
       log.info("No zones found for import.");
       return;
@@ -149,6 +159,7 @@ public class HostZoneService {
    * @param host the Host entity to be saved or updated
    */
   public void saveOrUpdate(Host host) {
+    validateHostLabel(host.getSld());
     preSaveOrUpdate(host);
     Host tmpHost = getInstance(host);
     hostRepo.save(tmpHost);
@@ -189,6 +200,12 @@ public class HostZoneService {
 
   private void preSaveOrUpdate(AbstractJdbcEntity entity) {
     entity.setChanged(LocalDateTime.now());
+  }
+
+  private void validateHostLabel(String hostname) {
+    if (!ZoneStringUtil.isValidHostLabel(hostname)) {
+      throw new IllegalArgumentException("Host name must be a single valid DNS label: " + hostname);
+    }
   }
 
   /**

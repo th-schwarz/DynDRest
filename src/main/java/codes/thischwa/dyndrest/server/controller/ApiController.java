@@ -62,7 +62,7 @@ public class ApiController implements ApiRoutes {
       @Nullable InetAddress ipv6,
       HttpServletRequest req) {
     log.debug(
-        "entered #addOrUpdate: host={}, apiToken={}, ipv4={}, ipv6={}", host, apiToken, ipv4, ipv6);
+        "entered #addOrUpdate: host={}, ipv4={}, ipv6={}", host, ipv4, ipv6);
     validateHost(host, apiToken);
     return controllerService.processIpUpdate(host, ipv4, ipv6, req);
   }

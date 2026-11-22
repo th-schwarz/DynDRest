@@ -45,8 +45,7 @@ public class DynamicSecurityChainManager {
       String username = host.getFullHost();
       String password = host.getApiToken();
 
-      log.debug("Attempting to register host: {} with apiToken: {}", username,
-          password.substring(0, Math.min(4, password.length())) + "***");
+      log.debug("Attempting to register host: {}", username);
 
       if (registeredHosts.containsKey(username)) {
         // Update existing user

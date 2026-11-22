@@ -129,6 +129,8 @@ domainrobot:
 
 The `zones` section should be used for importing the hosts and zones configuration to the database initially. Existing data entries won't be updated. The example defines a host `myhost.dynhost.info` with the api-token `1234567890abcdef`.
 
+A host's `sld` must be a single DNS label (for example, `myhost`); dots and Unicode dot variants are not allowed. The zone may still contain multiple labels. Existing database entries with multi-label host names must be removed or corrected before upgrading, because provider startup now rejects them before making DNS provider calls.
+
 NOTE: api-token is 20 chars max.
 
 If you want to use Cloudflare, the property `dyndrest.provider` has to be set to `cloudflare`. Cloudflare supports two authentication methods, just one of them has to be configured.

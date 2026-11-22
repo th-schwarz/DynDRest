@@ -6,6 +6,7 @@ import codes.thischwa.dyndrest.provider.Provider;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.service.HostZoneService;
 import codes.thischwa.dyndrest.util.DomainNameValidator;
+import codes.thischwa.dyndrest.util.ZoneStringUtil;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -87,6 +88,9 @@ public class AdminController implements AdminRoutes {
     Zone zone = hostZoneService.getZone(zoneName);
     if (zone == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
+    if (!ZoneStringUtil.isValidHostLabel(host)) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
     Optional<List<HostEnriched>> fullHosts = hostZoneService.findHostsOfZone(zoneName);
     if (fullHosts.isPresent() && fullHosts.get().stream().anyMatch(h -> h.getSld().equals(host))) {

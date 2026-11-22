@@ -160,5 +160,13 @@ class AdminRestTest extends AbstractIntegrationTest {
         post("/admin/zones/dynhost0.info/hosts/my,dynhost0.info")
           .with(httpBasic("admin", "adm1n")))
       .andExpect(status().isBadRequest());
+
+    mockMvc
+      .perform(
+        post("/admin/zones/dynhost0.info/hosts/mynew.subdomain")
+          .param("apiToken", "token456")
+          .with(httpBasic("admin", "adm1n")))
+      .andExpect(status().isBadRequest());
+    assertNull(hostZoneService.getHost("mynew.subdomain.dynhost0.info").orElse(null));
   }
 }
