@@ -105,9 +105,15 @@ public class ControllerService {
    */
   public void processIpUpdate(HostInfoHolder hostInfoHolder) {
     if (appConfig.zoneUpdateSchedulerEnabled()) {
-      updateLogService.log(hostInfoHolder.getFullHost(), hostInfoHolder.getIpSetting(),
-          UpdateLog.Status.waiting);
-      zoneUpdaterService.addOrUpdateHost(hostInfoHolder);
+      try {
+        zoneUpdaterService.runExclusive(() -> {
+          zoneUpdaterService.addOrUpdateHost(hostInfoHolder);
+          updateLogService.log(hostInfoHolder.getFullHost(), hostInfoHolder.getIpSetting(),
+              UpdateLog.Status.waiting);
+        });
+      } catch (IllegalArgumentException e) {
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+      }
       return;
     }
 

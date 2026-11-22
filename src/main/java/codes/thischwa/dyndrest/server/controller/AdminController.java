@@ -5,6 +5,7 @@ import codes.thischwa.dyndrest.model.Zone;
 import codes.thischwa.dyndrest.provider.Provider;
 import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.service.HostZoneService;
+import codes.thischwa.dyndrest.service.ZoneUpdaterService;
 import codes.thischwa.dyndrest.util.DomainNameValidator;
 import codes.thischwa.dyndrest.util.ZoneStringUtil;
 import java.util.List;
@@ -16,23 +17,28 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.server.ResponseStatusException;
 
-/** The AdminController provides methods for managing zones and hosts in the system. */
+/**
+ * The AdminController provides methods for managing zones and hosts in the system.
+ */
 @Controller
 @Slf4j
 public class AdminController implements AdminRoutes {
 
   private final DomainNameValidator domainNameValidator = new DomainNameValidator();
   private final HostZoneService hostZoneService;
+  private final ZoneUpdaterService zoneUpdaterService;
   private final Provider provider;
 
   /**
    * Creates a new instance of the AdminController class.
    *
-   * @param hostZoneService The host zone service.
-   * @param provider The provider.
+   * @param hostZoneService    The host zone service.
+   * @param zoneUpdaterService The service responsible for pending zone updates.
+   * @param provider           The provider.
    */
-  public AdminController(HostZoneService hostZoneService, Provider provider) {
+  public AdminController(HostZoneService hostZoneService, ZoneUpdaterService zoneUpdaterService, Provider provider) {
     this.hostZoneService = hostZoneService;
+    this.zoneUpdaterService = zoneUpdaterService;
     this.provider = provider;
   }
 
@@ -111,13 +117,16 @@ public class AdminController implements AdminRoutes {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
     HostEnriched hostEnriched = optionalFullHost.get();
-    try {
-      provider.removeHostIpSettings(hostEnriched.getFullHost());
-    } catch (ProviderException e) {
-      log.error("Failed to remove host: fullHost=" + hostEnriched.getFullHost(), e);
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-    }
-    hostZoneService.deleteHost(hostEnriched);
+    zoneUpdaterService.runExclusive(() -> {
+      try {
+        provider.removeHostIpSettings(hostEnriched.getFullHost());
+      } catch (ProviderException e) {
+        log.error("Failed to remove host: fullHost={}", hostEnriched.getFullHost(), e);
+        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+      }
+      zoneUpdaterService.purgeHost(hostEnriched.getFullHost());
+      hostZoneService.deleteHost(hostEnriched);
+    });
     return ResponseEntity.ok().build();
   }
 }
