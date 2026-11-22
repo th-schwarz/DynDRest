@@ -18,9 +18,8 @@ import org.springframework.stereotype.Service;
 
 /**
  * The ZoneUpdaterService class facilitates management and updates of host information
- * within specific zones. It provides functionality to track currently active hosts,
- * as well as hosts pending creation, update, or deletion, while ensuring changes
- * are logged and synchronized appropriately.
+ * within specific zones. It provides functionality to track currently active hosts
+ * and hosts pending update, while ensuring changes are logged and synchronized appropriately.
  *
  * <p>This class uses a ConcurrentHashMap for thread-safe operations and integrates with
  * an UpdateLogService to record update logs for hosts.
@@ -28,10 +27,9 @@ import org.springframework.stereotype.Service;
  * <p>Responsibilities include:
  * <ul>
  * <li>Adding and updating host information.</li>
- * <li>Deleting hosts from tracked zones.</li>
+ * <li>Removing deleted hosts from tracked zones.</li>
  * <li>Querying current hosts and zones involved in changes.</li>
- * <li>Managing host updates, ensuring they are correctly categorized in terms of creation,
- * update, and deletion.</li>
+ * <li>Managing host updates, ensuring they are queued only for hosts with known IP settings.</li>
  * </ul>
  */
 @Service
@@ -44,11 +42,7 @@ public class ZoneUpdaterService {
 
   private final Map<String, HostInfoHolder> currentHosts = new ConcurrentHashMap<>();
 
-  private final Map<String, List<HostInfoHolder>> hostsPerZoneToCreate = new ConcurrentHashMap<>();
-
   private final Map<String, List<HostInfoHolder>> hostsPerZoneToUpdate = new ConcurrentHashMap<>();
-
-  private final Map<String, List<String>> hostsPerZoneToDelete = new ConcurrentHashMap<>();
 
   /**
    * Constructor for the ZoneUpdaterService class.
@@ -93,10 +87,9 @@ public class ZoneUpdaterService {
   }
 
   /**
-   * Adds new hosts or updates existing ones. If a host does not exist, it is marked for creation.
-   * If a host exists but has a different IP setting, it is marked for update.
+   * Adds an update for a host with a known IP setting to the scheduler queue.
    *
-   * @param hosts the hosts to add or update
+   * @param hosts the hosts to update
    */
   public void addOrUpdateHost(HostInfoHolder... hosts) {
     runExclusive(() -> {
@@ -107,39 +100,18 @@ public class ZoneUpdaterService {
       }
       for (HostInfoHolder host : hosts) {
         String zoneStr = host.getZone();
-        if (!hostExists(host.getFullHost())) {
-          List<HostInfoHolder> hostsToCreate = hostsPerZoneToCreate.computeIfAbsent(zoneStr, k -> new ArrayList<>());
-          hostsToCreate.removeIf(h -> h.getFullHost().equals(host.getFullHost()));
-          hostsToCreate.add(host);
-          log.debug("Added new host: {}", host);
-        } else {
-          HostInfoHolder existing = currentHosts.get(host.getFullHost());
-          if (!existing.getIpSetting().equals(host.getIpSetting())) {
-            List<HostInfoHolder> hostsToUpdate = hostsPerZoneToUpdate.computeIfAbsent(zoneStr, k -> new ArrayList<>());
-            hostsToUpdate.removeIf(h -> h.getFullHost().equals(host.getFullHost()));
-            hostsToUpdate.add(host);
-            log.debug("Added host to addOrUpdate: {}", host);
-          } else {
-            log.debug("Host already up to date: {}", host);
-          }
+        HostInfoHolder existing = currentHosts.get(host.getFullHost());
+        if (existing == null || existing.getIpSetting() == null || existing.getIpSetting().isNotSet()) {
+          throw new IllegalStateException("Initial assignment must be processed synchronously: " + host.getFullHost());
         }
-      }
-    });
-  }
-
-  /**
-   * Marks hosts for deletion. If a host was previously marked for creation or update,
-   * it is removed from those lists.
-   *
-   * @param hosts the full host names to delete
-   */
-  public void deleteHost(String... hosts) {
-    runExclusive(() -> {
-      for (String host : hosts) {
-        String zone = ZoneStringUtil.getZoneName(host);
-        hostsPerZoneToDelete.computeIfAbsent(zone, k -> new ArrayList<>()).add(host);
-        removeHost(hostsPerZoneToCreate, zone, host);
-        removeHost(hostsPerZoneToUpdate, zone, host);
+        if (!existing.getIpSetting().equals(host.getIpSetting())) {
+          List<HostInfoHolder> hostsToUpdate = hostsPerZoneToUpdate.computeIfAbsent(zoneStr, k -> new ArrayList<>());
+          hostsToUpdate.removeIf(h -> h.getFullHost().equals(host.getFullHost()));
+          hostsToUpdate.add(host);
+          log.debug("Added host to addOrUpdate: {}", host);
+        } else {
+          log.debug("Host already up to date: {}", host);
+        }
       }
     });
   }
@@ -153,17 +125,8 @@ public class ZoneUpdaterService {
   public void purgeHost(String host) {
     runExclusive(() -> {
       String zone = ZoneStringUtil.getZoneName(host);
-      logPendingAsFailed(hostsPerZoneToCreate.get(zone), host);
       logPendingAsFailed(hostsPerZoneToUpdate.get(zone), host);
-      removeHost(hostsPerZoneToCreate, zone, host);
       removeHost(hostsPerZoneToUpdate, zone, host);
-      List<String> toDelete = hostsPerZoneToDelete.get(zone);
-      if (toDelete != null) {
-        toDelete.removeIf(host::equals);
-        if (toDelete.isEmpty()) {
-          hostsPerZoneToDelete.remove(zone);
-        }
-      }
       currentHosts.remove(host);
     });
   }
@@ -194,15 +157,7 @@ public class ZoneUpdaterService {
     runExclusive(() -> {
       String fullHost = host.getFullHost();
       String zone = host.getZone();
-      removeHost(hostsPerZoneToCreate, zone, fullHost);
       removeHost(hostsPerZoneToUpdate, zone, fullHost);
-      List<String> toDelete = hostsPerZoneToDelete.get(zone);
-      if (toDelete != null) {
-        toDelete.removeIf(fullHost::equals);
-        if (toDelete.isEmpty()) {
-          hostsPerZoneToDelete.remove(zone);
-        }
-      }
       currentHosts.remove(fullHost);
       try {
         updateLogService.log(fullHost, host.getIpSetting(), UpdateLog.Status.failed);
@@ -214,7 +169,7 @@ public class ZoneUpdaterService {
 
   /**
    * Called after a successful host update. Adds the host to current hosts,
-   * removes it from the update and delete lists, and logs the update.
+   * removes it from the update queue, and logs the update.
    *
    * @param hosts the hosts that were successfully updated
    */
@@ -227,42 +182,10 @@ public class ZoneUpdaterService {
           continue;
         }
         currentHosts.put(fullHost, host);
-        removeAppliedCreate(host);
         removeAppliedUpdate(host);
         updateLogService.log(fullHost, host.getIpSetting(), UpdateLog.Status.success);
-
-        List<String> hostsToDelete = hostsPerZoneToDelete.get(host.getZone());
-        if (hostsToDelete != null) {
-          hostsToDelete.remove(fullHost);
-          if (hostsToDelete.isEmpty()) {
-            hostsPerZoneToDelete.remove(host.getZone());
-          }
-        }
       }
     });
-  }
-
-  private void removeAppliedCreate(HostInfoHolder applied) {
-    String zone = applied.getZone();
-    String fullHost = applied.getFullHost();
-    List<HostInfoHolder> creates = hostsPerZoneToCreate.get(zone);
-    if (creates == null) {
-      return;
-    }
-    List<HostInfoHolder> newerCreates = creates.stream()
-        .filter(h -> h.getFullHost().equals(fullHost) && !h.getIpSetting().equals(applied.getIpSetting()))
-        .toList();
-    creates.removeIf(h -> h.getFullHost().equals(fullHost));
-    if (creates.isEmpty()) {
-      hostsPerZoneToCreate.remove(zone);
-    }
-    for (HostInfoHolder newerCreate : newerCreates) {
-      if (!newerCreate.getIpSetting().equals(applied.getIpSetting())) {
-        List<HostInfoHolder> updates = hostsPerZoneToUpdate.computeIfAbsent(zone, k -> new ArrayList<>());
-        updates.removeIf(h -> h.getFullHost().equals(fullHost));
-        updates.add(newerCreate);
-      }
-    }
   }
 
   private void removeAppliedUpdate(HostInfoHolder applied) {
@@ -278,25 +201,6 @@ public class ZoneUpdaterService {
   }
 
   /**
-   * Clears successfully deleted hosts from the tracked state and pending delete list.
-   *
-   * @param zone  the zone whose delete operation completed
-   * @param hosts the full host names that were deleted
-   */
-  public void afterDelete(String zone, List<String> hosts) {
-    runExclusive(() -> {
-      hosts.forEach(currentHosts::remove);
-      List<String> toDelete = hostsPerZoneToDelete.get(zone);
-      if (toDelete != null) {
-        toDelete.removeAll(hosts);
-        if (toDelete.isEmpty()) {
-          hostsPerZoneToDelete.remove(zone);
-        }
-      }
-    });
-  }
-
-  /**
    * Checks if a host exists in the current hosts map.
    *
    * @param host the full host name to check
@@ -307,24 +211,10 @@ public class ZoneUpdaterService {
   }
 
   /**
-   * Returns a safe snapshot of hosts pending creation in the specified zone.
-   */
-  public List<HostInfoHolder> getHostsToCreate(String zone) {
-    return withLock(() -> List.copyOf(hostsPerZoneToCreate.getOrDefault(zone, List.of())));
-  }
-
-  /**
    * Returns a safe snapshot of hosts pending update in the specified zone.
    */
   public List<HostInfoHolder> getHostsToUpdate(String zone) {
     return withLock(() -> List.copyOf(hostsPerZoneToUpdate.getOrDefault(zone, List.of())));
-  }
-
-  /**
-   * Returns a safe snapshot of hosts pending deletion in the specified zone.
-   */
-  public List<String> getHostsToDelete(String zone) {
-    return withLock(() -> List.copyOf(hostsPerZoneToDelete.getOrDefault(zone, List.of())));
   }
 
   /**
@@ -349,16 +239,14 @@ public class ZoneUpdaterService {
   }
 
   /**
-   * Retrieves all zones that have pending changes (create, update, or delete).
+   * Retrieves all zones that have pending updates.
    *
    * @return a set of zone names with pending changes
    */
   public Set<String> getZones() {
     return withLock(() -> {
       Set<String> zones = new HashSet<>();
-      zones.addAll(hostsPerZoneToCreate.keySet());
       zones.addAll(hostsPerZoneToUpdate.keySet());
-      zones.addAll(hostsPerZoneToDelete.keySet());
       return zones;
     });
   }
@@ -368,10 +256,24 @@ public class ZoneUpdaterService {
    */
   public void clearForTesting() {
     runExclusive(() -> {
-      hostsPerZoneToCreate.clear();
       hostsPerZoneToUpdate.clear();
-      hostsPerZoneToDelete.clear();
       currentHosts.clear();
+    });
+  }
+
+  /**
+   * Checks whether a host requires a synchronous initial assignment.
+   *
+   * @param fullHost the full host name
+   * @return true if no known IP setting is cached for the host
+   */
+  public boolean isInitialAssignment(String fullHost) {
+    return withLock(() -> {
+      if (!hostZoneService.hostExists(fullHost)) {
+        throw new IllegalArgumentException("Host not found: " + fullHost);
+      }
+      HostInfoHolder current = currentHosts.get(fullHost);
+      return current == null || current.getIpSetting() == null || current.getIpSetting().isNotSet();
     });
   }
 }

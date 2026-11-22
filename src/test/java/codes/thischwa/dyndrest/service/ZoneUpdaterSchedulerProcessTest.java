@@ -45,27 +45,24 @@ class ZoneUpdaterSchedulerProcessTest {
   }
 
   @Test
-  void process_AppliesCreatesAndClearsDeletes() throws Exception {
+  void process_PatchesOnlyUpdates() throws Exception {
     UpdateLogService updateLogService = mock(UpdateLogService.class);
     HostZoneService hostZoneService = mock(HostZoneService.class);
     Provider provider = mock(Provider.class);
     when(hostZoneService.hostExists(anyString())).thenReturn(true);
     ZoneUpdaterService zoneUpdaterService = new ZoneUpdaterService(updateLogService, hostZoneService);
-    HostInfoHolder deleted = createHost("old", "192.0.2.1");
-    HostInfoHolder created = createHost("new", "192.0.2.2");
-    zoneUpdaterService.addCurrentHosts(deleted);
-    zoneUpdaterService.addOrUpdateHost(created);
-    zoneUpdaterService.deleteHost(deleted.getFullHost());
+    HostInfoHolder current = createHost("www", "192.0.2.1");
+    HostInfoHolder update = createHost("www", "192.0.2.2");
+    zoneUpdaterService.addCurrentHosts(current);
+    zoneUpdaterService.addOrUpdateHost(update);
 
     new ZoneUpdaterScheduler(zoneUpdaterService, hostZoneService, provider).process();
 
-    verify(provider).patch(eq(ZONE), eq(List.of(created)), eq((List<HostInfoHolder>) null),
-        eq(List.of(deleted.getFullHost())));
-    assertTrue(zoneUpdaterService.hostExists(created.getFullHost()));
-    assertFalse(zoneUpdaterService.hostExists(deleted.getFullHost()));
-    assertTrue(zoneUpdaterService.getHostsToCreate(ZONE).isEmpty());
-    assertTrue(zoneUpdaterService.getHostsToDelete(ZONE).isEmpty());
-    verify(updateLogService).log(created.getFullHost(), created.getIpSetting(), UpdateLog.Status.success);
+    verify(provider).patch(eq(ZONE), eq((List<HostInfoHolder>) null), eq(List.of(update)),
+        eq((List<String>) null));
+    assertTrue(zoneUpdaterService.hostExists(update.getFullHost()));
+    assertTrue(zoneUpdaterService.getHostsToUpdate(ZONE).isEmpty());
+    verify(updateLogService).log(update.getFullHost(), update.getIpSetting(), UpdateLog.Status.success);
   }
 
   private HostInfoHolder createHost(String sld, String ipv4) throws UnknownHostException {

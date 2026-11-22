@@ -37,15 +37,28 @@ class ZoneUpdaterServiceTest {
   }
 
   @Test
-  void testAddOrUpdateHost_NewHost() throws UnknownHostException {
+  void testAddOrUpdateHost_InitialAssignmentIsRejected() throws UnknownHostException {
     HostInfoHolder host = createHost("www", EXAMPLE_ZONE, "192.168.1.1");
 
-    zoneUpdaterService.addOrUpdateHost(host);
-
-    List<HostInfoHolder> hostsToCreate = zoneUpdaterService.getHostsToCreate(EXAMPLE_ZONE);
-    assertEquals(1, hostsToCreate.size());
-    assertEquals("www.example.com", hostsToCreate.get(0).getFullHost());
+    assertThrows(IllegalStateException.class, () -> zoneUpdaterService.addOrUpdateHost(host));
     assertTrue(zoneUpdaterService.getHostsToUpdate(EXAMPLE_ZONE).isEmpty());
+  }
+
+  @Test
+  void testIsInitialAssignment() throws UnknownHostException {
+    HostInfoHolder host = createHost("www", EXAMPLE_ZONE, "192.168.1.1");
+    assertTrue(zoneUpdaterService.isInitialAssignment(host.getFullHost()));
+
+    zoneUpdaterService.addCurrentHosts(host);
+    assertFalse(zoneUpdaterService.isInitialAssignment(host.getFullHost()));
+
+    HostInfoHolder withoutIp = createHost("empty", EXAMPLE_ZONE, "192.168.1.1");
+    withoutIp.setIpSetting(new IpSetting((InetAddress) null, null));
+    zoneUpdaterService.addCurrentHosts(withoutIp);
+    assertTrue(zoneUpdaterService.isInitialAssignment(withoutIp.getFullHost()));
+
+    when(hostZoneService.hostExists("deleted.example.com")).thenReturn(false);
+    assertThrows(IllegalArgumentException.class, () -> zoneUpdaterService.isInitialAssignment("deleted.example.com"));
   }
 
   @Test
@@ -53,9 +66,7 @@ class ZoneUpdaterServiceTest {
     HostInfoHolder host1 = createHost("www", EXAMPLE_ZONE, "192.168.1.1");
     HostInfoHolder host2 = createHost("www", EXAMPLE_ZONE, "192.168.1.2");
 
-    zoneUpdaterService.addOrUpdateHost(host1);
-    zoneUpdaterService.deleteHost("www.example.com");
-    zoneUpdaterService.afterUpdate(host1);
+    zoneUpdaterService.addCurrentHosts(host1);
     zoneUpdaterService.addOrUpdateHost(host2);
 
     List<HostInfoHolder> hostsToUpdate = zoneUpdaterService.getHostsToUpdate(EXAMPLE_ZONE);
@@ -67,9 +78,7 @@ class ZoneUpdaterServiceTest {
   void testAddOrUpdateHost_SameIpNoUpdate() throws UnknownHostException {
     HostInfoHolder host = createHost("www", EXAMPLE_ZONE, "192.168.1.1");
 
-    zoneUpdaterService.addOrUpdateHost(host);
-    zoneUpdaterService.deleteHost("www.example.com");
-    zoneUpdaterService.afterUpdate(host);
+    zoneUpdaterService.addCurrentHosts(host);
     zoneUpdaterService.addOrUpdateHost(host);
 
     List<HostInfoHolder> hostsToUpdate = zoneUpdaterService.getHostsToUpdate(EXAMPLE_ZONE);
@@ -77,25 +86,17 @@ class ZoneUpdaterServiceTest {
   }
 
   @Test
-  void testDeleteHost() {
-    zoneUpdaterService.deleteHost("www.example.com");
-
-    List<String> hostsToDelete = zoneUpdaterService.getHostsToDelete(EXAMPLE_ZONE);
-    assertEquals(1, hostsToDelete.size());
-    assertEquals("www.example.com", hostsToDelete.get(0));
-  }
-
-  @Test
   void testAfterUpdate() throws UnknownHostException {
-    HostInfoHolder host = createHost("www", EXAMPLE_ZONE, "192.168.1.1");
+    HostInfoHolder current = createHost("www", EXAMPLE_ZONE, "192.168.1.1");
+    HostInfoHolder update = createHost("www", EXAMPLE_ZONE, "192.168.1.2");
 
-    zoneUpdaterService.addOrUpdateHost(host);
-    zoneUpdaterService.deleteHost("www.example.com");
-    zoneUpdaterService.afterUpdate(host);
+    zoneUpdaterService.addCurrentHosts(current);
+    zoneUpdaterService.addOrUpdateHost(update);
+    zoneUpdaterService.afterUpdate(update);
 
     assertTrue(zoneUpdaterService.hostExists("www.example.com"));
     verify(updateLogService, times(1)).log(eq("www.example.com"), any(IpSetting.class), eq(UpdateLog.Status.success));
-    assertTrue(zoneUpdaterService.getHostsToCreate(EXAMPLE_ZONE).isEmpty());
+    assertTrue(zoneUpdaterService.getHostsToUpdate(EXAMPLE_ZONE).isEmpty());
   }
 
   @Test
@@ -104,7 +105,7 @@ class ZoneUpdaterServiceTest {
     when(hostZoneService.hostExists(host.getFullHost())).thenReturn(false);
 
     assertThrows(IllegalArgumentException.class, () -> zoneUpdaterService.addOrUpdateHost(host));
-    assertTrue(zoneUpdaterService.getHostsToCreate(EXAMPLE_ZONE).isEmpty());
+    assertTrue(zoneUpdaterService.getHostsToUpdate(EXAMPLE_ZONE).isEmpty());
   }
 
   @Test
@@ -118,7 +119,6 @@ class ZoneUpdaterServiceTest {
 
     assertFalse(zoneUpdaterService.hostExists("www.example.com"));
     assertTrue(zoneUpdaterService.getHostsToUpdate(EXAMPLE_ZONE).isEmpty());
-    assertTrue(zoneUpdaterService.getHostsToDelete(EXAMPLE_ZONE).isEmpty());
     verify(updateLogService).log("www.example.com", update.getIpSetting(), UpdateLog.Status.failed);
   }
 
@@ -140,9 +140,7 @@ class ZoneUpdaterServiceTest {
 
     assertFalse(zoneUpdaterService.hostExists("www.example.com"));
 
-    zoneUpdaterService.addOrUpdateHost(host);
-    zoneUpdaterService.deleteHost("www.example.com");
-    zoneUpdaterService.afterUpdate(host);
+    zoneUpdaterService.addCurrentHosts(host);
 
     assertTrue(zoneUpdaterService.hostExists("www.example.com"));
   }
@@ -151,10 +149,7 @@ class ZoneUpdaterServiceTest {
   void testRemoveFromCurrentHosts() throws UnknownHostException {
     HostInfoHolder host = createHost("www", EXAMPLE_ZONE, "192.168.1.1");
 
-    zoneUpdaterService.addOrUpdateHost(host);
-    zoneUpdaterService.deleteHost("www.example.com");
-    zoneUpdaterService.afterUpdate(host);
-    assertTrue(zoneUpdaterService.hostExists("www.example.com"));
+    zoneUpdaterService.addCurrentHosts(host);
 
     zoneUpdaterService.removeFromCurrentHosts("www.example.com");
     assertFalse(zoneUpdaterService.hostExists("www.example.com"));
@@ -165,12 +160,7 @@ class ZoneUpdaterServiceTest {
     HostInfoHolder host1 = createHost("www", EXAMPLE_ZONE, "192.168.1.1");
     HostInfoHolder host2 = createHost("mail", EXAMPLE_ZONE, "192.168.1.2");
 
-    zoneUpdaterService.addOrUpdateHost(host1);
-    zoneUpdaterService.deleteHost("www.example.com");
-    zoneUpdaterService.afterUpdate(host1);
-    zoneUpdaterService.addOrUpdateHost(host2);
-    zoneUpdaterService.deleteHost("mail.example.com");
-    zoneUpdaterService.afterUpdate(host2);
+    zoneUpdaterService.addCurrentHosts(host1, host2);
 
     assertEquals(2, zoneUpdaterService.getCurrentHosts().size());
   }

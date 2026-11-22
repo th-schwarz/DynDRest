@@ -53,28 +53,18 @@ public class ZoneUpdaterScheduler {
   }
 
   private void processZone(String zone) {
-    List<HostInfoHolder> hostsToCreate = zoneUpdaterService.getHostsToCreate(zone);
     List<HostInfoHolder> hostsToUpdate = zoneUpdaterService.getHostsToUpdate(zone);
-    List<String> hostsToDelete = zoneUpdaterService.getHostsToDelete(zone);
     Set<String> discardedHosts = new HashSet<>();
-    hostsToCreate = filterExistingHosts(hostsToCreate, discardedHosts);
     hostsToUpdate = filterExistingHosts(hostsToUpdate, discardedHosts);
 
-    if (hostsToCreate.isEmpty() && hostsToUpdate.isEmpty() && hostsToDelete.isEmpty()) {
+    if (hostsToUpdate.isEmpty()) {
       log.debug("No changes found for zone: {}", zone);
       return;
     }
 
     try {
-      provider.patch(zone, emptyToNull(hostsToCreate), emptyToNull(hostsToUpdate), emptyToNull(hostsToDelete));
-      List<HostInfoHolder> updatedHosts = new ArrayList<>(hostsToCreate);
-      updatedHosts.addAll(hostsToUpdate);
-      if (!updatedHosts.isEmpty()) {
-        zoneUpdaterService.afterUpdate(updatedHosts.toArray(new HostInfoHolder[0]));
-      }
-      if (!hostsToDelete.isEmpty()) {
-        zoneUpdaterService.afterDelete(zone, hostsToDelete);
-      }
+      provider.patch(zone, null, emptyToNull(hostsToUpdate), null);
+      zoneUpdaterService.afterUpdate(hostsToUpdate.toArray(new HostInfoHolder[0]));
     } catch (ProviderException e) {
       log.error("Error while updating zone: {}", zone, e);
     }

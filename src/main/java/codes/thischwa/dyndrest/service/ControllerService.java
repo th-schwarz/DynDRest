@@ -107,9 +107,22 @@ public class ControllerService {
     if (appConfig.zoneUpdateSchedulerEnabled()) {
       try {
         zoneUpdaterService.runExclusive(() -> {
-          zoneUpdaterService.addOrUpdateHost(hostInfoHolder);
-          updateLogService.log(hostInfoHolder.getFullHost(), hostInfoHolder.getIpSetting(),
-              UpdateLog.Status.waiting);
+          if (zoneUpdaterService.isInitialAssignment(hostInfoHolder.getFullHost())) {
+            try {
+              provider.addOrUpdate(hostInfoHolder.getFullHost(), hostInfoHolder.getIpSetting());
+            } catch (ProviderException e) {
+              updateLogService.log(hostInfoHolder.getFullHost(), hostInfoHolder.getIpSetting(),
+                  UpdateLog.Status.failed);
+              throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+            }
+            zoneUpdaterService.addCurrentHosts(hostInfoHolder);
+            updateLogService.log(hostInfoHolder.getFullHost(), hostInfoHolder.getIpSetting(),
+                UpdateLog.Status.success);
+          } else {
+            zoneUpdaterService.addOrUpdateHost(hostInfoHolder);
+            updateLogService.log(hostInfoHolder.getFullHost(), hostInfoHolder.getIpSetting(),
+                UpdateLog.Status.waiting);
+          }
         });
       } catch (IllegalArgumentException e) {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
