@@ -62,6 +62,8 @@ DynDRest is a spring boot application, that’s why the application is extremely
 
 NOTE: To avoid the use of the java keystore tool, DynDRest could be run behind a proxy. Corresponding headers are set by default.
 
+IMPORTANT: It is assumed that each defined zone is managed by exactly one DynDRest instance. Pending updates of the zone update scheduler and the cache of current host IPs are held in memory and aren't shared between instances. Running several instances for the same zone may lead to conflicting or outdated DNS records, e.g. a host deleted on one instance could be restored by another one.
+
 === File Structure
 
 First, download the https://github.com/th-schwarz/DynDRest/releases[last release jar]. +
@@ -342,6 +344,8 @@ All routes are secured by BasicAuth with the properties `spring.security.user.na
 * _/router/{host}_: It uses the full hostname as user and the 'apiToken' as password.
 * _/admin/**_: It is secured by a separate user, which is defined by the properties `dyndrest.admin-user-name` and `dyndrest.admin-user-password`. If they aren't set, the admin routes are disabled.
 * _/manage/health_ and _/log-ui_: They use their own users, see below.
+
+NOTE: The api-token is passed as a request parameter (`apiToken`) or, for _/router/{host}_, as the basic-auth password. Passing it in a header isn't supported, because routers like the Fritz!Box only allow configuring the update URL and the credentials. Since the token is part of the URL, DynDRest should only be accessed via TLS, e.g. behind a reverse proxy, and access logs should be protected accordingly.
 
 A detailed description of the routes can be found at the https://th-schwarz.github.io/DynDRest/openapi-develop.html[OAS3 documentation].
 
