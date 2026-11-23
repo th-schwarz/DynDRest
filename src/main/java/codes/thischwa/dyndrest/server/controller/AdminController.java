@@ -69,7 +69,11 @@ public class AdminController implements AdminRoutes {
       log.error("Zone with name {} not found.", name);
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
-    hostZoneService.deleteZone(zone);
+    List<HostEnriched> hosts = hostZoneService.findHostsOfZone(name).orElse(List.of());
+    zoneUpdaterService.runExclusive(() -> {
+      hosts.forEach(this::removeHost);
+      hostZoneService.deleteZone(zone);
+    });
     return ResponseEntity.ok().build();
   }
 
@@ -117,16 +121,18 @@ public class AdminController implements AdminRoutes {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
     HostEnriched hostEnriched = optionalFullHost.get();
-    zoneUpdaterService.runExclusive(() -> {
-      try {
-        provider.removeHostIpSettings(hostEnriched.getFullHost());
-      } catch (ProviderException e) {
-        log.error("Failed to remove host: fullHost={}", hostEnriched.getFullHost(), e);
-        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-      }
-      zoneUpdaterService.purgeHost(hostEnriched.getFullHost());
-      hostZoneService.deleteHost(hostEnriched);
-    });
+    zoneUpdaterService.runExclusive(() -> removeHost(hostEnriched));
     return ResponseEntity.ok().build();
+  }
+
+  private void removeHost(HostEnriched host) {
+    try {
+      provider.removeHostIpSettings(host.getFullHost());
+    } catch (ProviderException e) {
+      log.error("Failed to remove host: fullHost={}", host.getFullHost(), e);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+    }
+    zoneUpdaterService.purgeHost(host.getFullHost());
+    hostZoneService.deleteHost(host);
   }
 }

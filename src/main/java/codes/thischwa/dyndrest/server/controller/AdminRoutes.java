@@ -67,7 +67,8 @@ public interface AdminRoutes {
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "200", description = "The Zone deleted successful."),
-        @ApiResponse(responseCode = "404", description = "The zone doesn't exists.")
+        @ApiResponse(responseCode = "404", description = "The zone doesn't exists."),
+        @ApiResponse(responseCode = "500", description = "If a host or its DNS entry couldn't be removed.")
       })
   @DeleteMapping(value = "/admin/zones/{name}")
   ResponseEntity<Void> deleteZone(

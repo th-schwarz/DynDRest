@@ -190,6 +190,7 @@ The scheduled mode is enabled by default and can be controlled with the `dyndres
 - Queue updates only for hosts with a known current IP setting, logging each queued request with status "waiting"
 - Process queued updates in batches at the specified interval (default: 30 seconds)
 - Reduce API calls to the DNS provider by batching multiple updates together
+- Deleting a host or its zone removes its DNS entry and discards its cached IP and pending updates
 
 **Configuration:**
 
