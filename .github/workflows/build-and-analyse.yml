@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - develop
-      - feature*
+      - 'feature/**'
   pull_request:
     types: [ opened, synchronize, reopened ]
 
@@ -16,6 +16,9 @@ jobs:
 
   build-and-analyse:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
     steps:
       - uses: actions/checkout@v5
         with:
