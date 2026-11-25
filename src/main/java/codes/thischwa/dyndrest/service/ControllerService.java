@@ -104,40 +104,35 @@ public class ControllerService {
    * @param hostInfoHolder the host information holder containing the update details
    */
   public void processIpUpdate(HostInfoHolder hostInfoHolder) {
-    if (appConfig.zoneUpdateSchedulerEnabled()) {
-      try {
-        zoneUpdaterService.runExclusive(() -> {
-          if (zoneUpdaterService.isInitialAssignment(hostInfoHolder.getFullHost())) {
-            try {
-              provider.addOrUpdate(hostInfoHolder.getFullHost(), hostInfoHolder.getIpSetting());
-            } catch (ProviderException e) {
-              updateLogService.log(hostInfoHolder.getFullHost(), hostInfoHolder.getIpSetting(),
-                  UpdateLog.Status.failed);
-              throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-            }
-            zoneUpdaterService.addCurrentHosts(hostInfoHolder);
-            updateLogService.log(hostInfoHolder.getFullHost(), hostInfoHolder.getIpSetting(),
-                UpdateLog.Status.success);
-          } else {
-            zoneUpdaterService.addOrUpdateHost(hostInfoHolder);
-            updateLogService.log(hostInfoHolder.getFullHost(), hostInfoHolder.getIpSetting(),
-                UpdateLog.Status.waiting);
-          }
-        });
-      } catch (IllegalArgumentException e) {
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-      }
+    String fullHost = hostInfoHolder.getFullHost();
+    IpSetting ipSetting = hostInfoHolder.getIpSetting();
+    if (!appConfig.zoneUpdateSchedulerEnabled()) {
+      updateViaProvider(fullHost, ipSetting);
+      updateLogService.log(fullHost, ipSetting, UpdateLog.Status.success);
       return;
     }
 
     try {
-      provider.addOrUpdate(hostInfoHolder.getFullHost(), hostInfoHolder.getIpSetting());
-      updateLogService.log(hostInfoHolder.getFullHost(), hostInfoHolder.getIpSetting(),
-          UpdateLog.Status.success);
+      zoneUpdaterService.runExclusive(() -> {
+        if (zoneUpdaterService.isInitialAssignment(fullHost)) {
+          updateViaProvider(fullHost, ipSetting);
+          zoneUpdaterService.addCurrentHosts(hostInfoHolder);
+          updateLogService.log(fullHost, ipSetting, UpdateLog.Status.success);
+        } else if (zoneUpdaterService.addOrUpdateHost(hostInfoHolder)) {
+          updateLogService.log(fullHost, ipSetting, UpdateLog.Status.waiting);
+        }
+      });
+    } catch (IllegalArgumentException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+    }
+  }
+
+  private void updateViaProvider(String fullHost, IpSetting ipSetting) {
+    try {
+      provider.addOrUpdate(fullHost, ipSetting);
     } catch (ProviderException e) {
-      updateLogService.log(hostInfoHolder.getFullHost(), hostInfoHolder.getIpSetting(),
-          UpdateLog.Status.failed);
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+      updateLogService.log(fullHost, ipSetting, UpdateLog.Status.failed);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
     }
   }
 }

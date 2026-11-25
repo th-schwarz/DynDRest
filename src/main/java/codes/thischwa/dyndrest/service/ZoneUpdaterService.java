@@ -90,14 +90,16 @@ public class ZoneUpdaterService {
    * Adds an update for a host with a known IP setting to the scheduler queue.
    *
    * @param hosts the hosts to update
+   * @return true if at least one host was added to the update queue
    */
-  public void addOrUpdateHost(HostInfoHolder... hosts) {
-    runExclusive(() -> {
+  public boolean addOrUpdateHost(HostInfoHolder... hosts) {
+    return withLock(() -> {
       for (HostInfoHolder host : hosts) {
         if (!hostZoneService.hostExists(host.getFullHost())) {
           throw new IllegalArgumentException("Host not found: " + host.getFullHost());
         }
       }
+      boolean queued = false;
       for (HostInfoHolder host : hosts) {
         String zoneStr = host.getZone();
         HostInfoHolder existing = currentHosts.get(host.getFullHost());
@@ -108,11 +110,14 @@ public class ZoneUpdaterService {
           List<HostInfoHolder> hostsToUpdate = hostsPerZoneToUpdate.computeIfAbsent(zoneStr, k -> new ArrayList<>());
           hostsToUpdate.removeIf(h -> h.getFullHost().equals(host.getFullHost()));
           hostsToUpdate.add(host);
+          queued = true;
           log.debug("Added host to addOrUpdate: {}", host);
         } else {
+          removeHost(hostsPerZoneToUpdate, zoneStr, host.getFullHost());
           log.debug("Host already up to date: {}", host);
         }
       }
+      return queued;
     });
   }
 

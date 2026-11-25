@@ -70,6 +70,17 @@ class ControllerServiceTest {
   }
 
   @Test
+  void processIpUpdate_SameIpDoesNotLogWaiting() throws Exception {
+    HostInfoHolder current = createHost("www", "192.0.2.1");
+    zoneUpdaterService.addCurrentHosts(current);
+
+    controllerService.processIpUpdate(current);
+
+    assertTrue(zoneUpdaterService.getHostsToUpdate("example.com").isEmpty());
+    verify(updateLogService, never()).log(current.getFullHost(), current.getIpSetting(), UpdateLog.Status.waiting);
+  }
+
+  @Test
   void processIpUpdate_ProviderFailureReturnsServerErrorWithoutCachingHost() throws Exception {
     HostInfoHolder host = createHost("www", "192.0.2.1");
     doThrow(new ProviderException("provider failure"))

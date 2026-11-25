@@ -67,7 +67,7 @@ class ZoneUpdaterServiceTest {
     HostInfoHolder host2 = createHost("www", EXAMPLE_ZONE, "192.168.1.2");
 
     zoneUpdaterService.addCurrentHosts(host1);
-    zoneUpdaterService.addOrUpdateHost(host2);
+    assertTrue(zoneUpdaterService.addOrUpdateHost(host2));
 
     List<HostInfoHolder> hostsToUpdate = zoneUpdaterService.getHostsToUpdate(EXAMPLE_ZONE);
     assertEquals(1, hostsToUpdate.size());
@@ -79,10 +79,24 @@ class ZoneUpdaterServiceTest {
     HostInfoHolder host = createHost("www", EXAMPLE_ZONE, "192.168.1.1");
 
     zoneUpdaterService.addCurrentHosts(host);
-    zoneUpdaterService.addOrUpdateHost(host);
+    assertFalse(zoneUpdaterService.addOrUpdateHost(host));
 
     List<HostInfoHolder> hostsToUpdate = zoneUpdaterService.getHostsToUpdate(EXAMPLE_ZONE);
     assertTrue(hostsToUpdate.isEmpty());
+  }
+
+  @Test
+  void testAddOrUpdateHost_ReturnToCurrentIpRemovesPendingUpdate() throws UnknownHostException {
+    HostInfoHolder current = createHost("www", EXAMPLE_ZONE, "192.168.1.1");
+    HostInfoHolder pending = createHost("www", EXAMPLE_ZONE, "192.168.1.2");
+
+    zoneUpdaterService.addCurrentHosts(current);
+    assertTrue(zoneUpdaterService.addOrUpdateHost(pending));
+
+    assertFalse(zoneUpdaterService.addOrUpdateHost(current));
+
+    assertTrue(zoneUpdaterService.getHostsToUpdate(EXAMPLE_ZONE).isEmpty());
+    assertTrue(zoneUpdaterService.getZones().isEmpty());
   }
 
   @Test
