@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
@@ -46,6 +47,10 @@ class ApiControllerUpdateMockTest extends AbstractControllerMockTest {
   @BeforeEach
   void resetMocks() {
     reset(provider, hostZoneService, dynamicSecurityChainManager, zoneUpdaterService, updateLogService);
+    doAnswer(invocation -> {
+      ((Runnable) invocation.getArgument(0)).run();
+      return null;
+    }).when(zoneUpdaterService).runExclusive(any(Runnable.class));
   }
 
   @Test

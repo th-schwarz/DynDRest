@@ -2,6 +2,7 @@ package codes.thischwa.dyndrest.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -46,6 +47,10 @@ public class RouterControllerMockTest extends AbstractControllerMockTest {
     when(userDetails.getUsername()).thenReturn(host);
     when(hostZoneService.getHost(host)).thenReturn(Optional.of(holder));
     when(dynamicSecurityChainManager.isHostRegistered(host)).thenReturn(true);
+    doAnswer(invocation -> {
+      ((Runnable) invocation.getArgument(0)).run();
+      return null;
+    }).when(zoneUpdaterService).runExclusive(any(Runnable.class));
 
     ResponseEntity<Void> response = routerController.routerUpdateHost(userDetails, host, ipv4, ipv6, req);
 
@@ -86,6 +91,6 @@ public class RouterControllerMockTest extends AbstractControllerMockTest {
     ResponseEntity<Void> response = routerController.routerUpdateHost(userDetails, host, ipv4, ipv6, req);
 
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-   //_ verify(provider, never()).processUpdate(anyString(), any(IpSetting.class));
+    //_ verify(provider, never()).processUpdate(anyString(), any(IpSetting.class));
   }
 }

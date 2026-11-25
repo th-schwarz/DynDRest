@@ -67,7 +67,8 @@ public interface AdminRoutes {
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "200", description = "The Zone deleted successful."),
-        @ApiResponse(responseCode = "404", description = "The zone doesn't exists.")
+        @ApiResponse(responseCode = "404", description = "The zone doesn't exists."),
+        @ApiResponse(responseCode = "500", description = "If a host or its DNS entry couldn't be removed.")
       })
   @DeleteMapping(value = "/admin/zones/{name}")
   ResponseEntity<Void> deleteZone(
@@ -157,6 +158,7 @@ public interface AdminRoutes {
         @ApiResponse(
             responseCode = "200",
             description = "The desired host was successfully created."),
+        @ApiResponse(responseCode = "400", description = "The host must be a single DNS label."),
         @ApiResponse(responseCode = "404", description = "The zone doesn't exists."),
         @ApiResponse(responseCode = "409", description = "The desired host already exists."),
         @ApiResponse(responseCode = "500", description = "If the operation has failed.")
@@ -170,7 +172,7 @@ public interface AdminRoutes {
           @PathVariable
           String zoneName,
       @Schema(
-              description = "The name of the host to create, it's just the sub-domain part.",
+              description = "The host label to create; it must contain no dots.",
               type = "string",
               example = "host1")
           @PathVariable

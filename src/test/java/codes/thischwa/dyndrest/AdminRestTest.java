@@ -1,7 +1,11 @@
 package codes.thischwa.dyndrest;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -10,13 +14,20 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import codes.thischwa.dyndrest.model.Host;
+import codes.thischwa.dyndrest.model.HostEnriched;
+import codes.thischwa.dyndrest.model.HostInfoHolder;
+import codes.thischwa.dyndrest.model.IpSetting;
 import codes.thischwa.dyndrest.model.Zone;
+import codes.thischwa.dyndrest.provider.Provider;
+import codes.thischwa.dyndrest.provider.ProviderException;
 import codes.thischwa.dyndrest.service.HostZoneService;
+import codes.thischwa.dyndrest.service.ZoneUpdaterService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -28,6 +39,10 @@ class AdminRestTest extends AbstractIntegrationTest {
   private WebApplicationContext context;
   @Autowired
   private HostZoneService hostZoneService;
+  @Autowired
+  private ZoneUpdaterService zoneUpdaterService;
+  @MockitoBean
+  private Provider provider;
 
   private MockMvc mockMvc;
 
@@ -68,6 +83,10 @@ class AdminRestTest extends AbstractIntegrationTest {
 
   @Test
   void testDeleteZone() throws Exception {
+    HostEnriched host = hostZoneService.findHostsOfZone("dynhost1.info").orElseThrow().get(0);
+    zoneUpdaterService.addCurrentHosts(HostInfoHolder.of(host, new IpSetting("203.0.113.1")));
+    zoneUpdaterService.addOrUpdateHost(HostInfoHolder.of(host, new IpSetting("203.0.113.2")));
+
     mockMvc
       .perform(
         delete("/admin/zones/dynhost1.info")
@@ -75,6 +94,9 @@ class AdminRestTest extends AbstractIntegrationTest {
       .andExpect(status().isOk());
     Zone z = hostZoneService.getZone("dynhost1.info");
     assertNull(z);
+    assertFalse(zoneUpdaterService.hostExists("my1.dynhost1.info"));
+    assertTrue(zoneUpdaterService.getHostsToUpdate("dynhost1.info").isEmpty());
+    verify(provider).removeHostIpSettings("my1.dynhost1.info");
 
     // test unknown
     mockMvc
@@ -82,6 +104,43 @@ class AdminRestTest extends AbstractIntegrationTest {
         delete("/admin/zones/unknown.info")
           .with(httpBasic("admin", "adm1n")))
       .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  void testDeleteZoneProviderErrorKeepsZoneAndHost() throws Exception {
+    doThrow(new ProviderException("provider error"))
+        .when(provider).removeHostIpSettings("my1.dynhost1.info");
+
+    mockMvc
+      .perform(
+        delete("/admin/zones/dynhost1.info")
+          .with(httpBasic("admin", "adm1n")))
+      .andExpect(status().isInternalServerError());
+
+    assertNotNull(hostZoneService.getZone("dynhost1.info"));
+    assertTrue(hostZoneService.getHost("my1.dynhost1.info").isPresent());
+  }
+
+  @Test
+  void testDeleteAndRecreateZoneMakesHostInitialAssignment() throws Exception {
+    mockMvc
+      .perform(
+        delete("/admin/zones/dynhost1.info")
+          .with(httpBasic("admin", "adm1n")))
+      .andExpect(status().isOk());
+    mockMvc
+      .perform(
+        post("/admin/zones/dynhost1.info/ns1.domain.info")
+          .with(httpBasic("admin", "adm1n")))
+      .andExpect(status().isOk());
+    mockMvc
+      .perform(
+        post("/admin/zones/dynhost1.info/hosts/my1")
+          .param("apiToken", "1234567890abcdef")
+          .with(httpBasic("admin", "adm1n")))
+      .andExpect(status().isOk());
+
+    assertTrue(zoneUpdaterService.isInitialAssignment("my1.dynhost1.info"));
   }
 
   @Test
@@ -160,5 +219,13 @@ class AdminRestTest extends AbstractIntegrationTest {
         post("/admin/zones/dynhost0.info/hosts/my,dynhost0.info")
           .with(httpBasic("admin", "adm1n")))
       .andExpect(status().isBadRequest());
+
+    mockMvc
+      .perform(
+        post("/admin/zones/dynhost0.info/hosts/mynew.subdomain")
+          .param("apiToken", "token456")
+          .with(httpBasic("admin", "adm1n")))
+      .andExpect(status().isBadRequest());
+    assertNull(hostZoneService.getHost("mynew.subdomain.dynhost0.info").orElse(null));
   }
 }

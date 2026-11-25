@@ -44,6 +44,7 @@ public abstract class GenericProvider implements Provider {
   @Override
   public void validateHostZoneConfiguration() throws IllegalArgumentException {
     List<HostEnriched> configuredHosts = hostZoneService.getConfiguredHosts();
+    hostZoneService.validateHostnames(configuredHosts);
     try {
       List<HostInfoHolder> hostInfoHolderList = getCurrentConfiguredHosts(configuredHosts);
       if (appConfig.zoneUpdateSchedulerEnabled()) {
