@@ -14,4 +14,4 @@ pom.xml.*
 /dyndrest**
 /docs/openapi/.swagger-codegen**
 /zone*.yml
-/http-client.private.env.json
+/intellij/http-client.private.env.json
