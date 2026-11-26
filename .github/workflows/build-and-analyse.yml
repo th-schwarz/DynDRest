@@ -9,6 +9,12 @@ on:
   pull_request:
     types: [ opened, synchronize, reopened ]
 
+# only one run per branch: push and pull_request events of the same branch share a group,
+# a newer run cancels the older one (e.g. the multiple pushes of a maven release)
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
 defaults:
   run:
     shell: bash

@@ -4,6 +4,12 @@ on:
   push:
   workflow_dispatch:
 
+# only one run per ref; github.ref (not ref_name) keeps tag runs in their own group,
+# so a release image isn't cancelled by a develop push
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
